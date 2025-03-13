@@ -127,7 +127,7 @@ const BubbleEffect: React.FC = () => {
   return (
     <div 
       ref={containerRef} 
-      className="fixed inset-0 pointer-events-none overflow-hidden z-0"
+      className="fixed inset-0 pointer-events-none overflow-hidden z-30"
       aria-hidden="true"
     >
       {bubbles.map((bubble) => (
