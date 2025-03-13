@@ -70,12 +70,12 @@ const BubbleEffect: React.FC = () => {
             const dy = mousePosition.y - bubble.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
             
-            // Apply gentle force away from mouse when close
+            // Apply stronger repulsion force when mouse is close
             let newVelocityX = bubble.velocity.x;
             let newVelocityY = bubble.velocity.y;
             
-            if (distance < 200) {
-              const repulsionStrength = 0.05;
+            if (distance < 300) {  // Increased detection range
+              const repulsionStrength = 0.15;  // Increased strength
               const repulsionForceX = (dx / distance) * repulsionStrength;
               const repulsionForceY = (dy / distance) * repulsionStrength;
               
@@ -84,8 +84,8 @@ const BubbleEffect: React.FC = () => {
             }
             
             // Apply drag force
-            newVelocityX *= 0.99;
-            newVelocityY *= 0.99;
+            newVelocityX *= 0.98;  // Slightly reduced drag for more movement
+            newVelocityY *= 0.98;
             
             // Calculate new position
             let newX = bubble.x + newVelocityX * (deltaTime / 16);
@@ -151,16 +151,12 @@ const BubbleEffect: React.FC = () => {
           animate={{
             x: bubble.x,
             y: bubble.y,
-            scale: [1, 1.02, 1],
           }}
           transition={{
-            x: { type: "spring", stiffness: 10, damping: 20 },
-            y: { type: "spring", stiffness: 10, damping: 20 },
-            scale: { 
-              repeat: Infinity, 
-              repeatType: "reverse", 
-              duration: 2 + Math.random() * 3 
-            },
+            type: "spring",
+            stiffness: 50,
+            damping: 20,
+            mass: 1
           }}
         />
       ))}
