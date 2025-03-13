@@ -1,0 +1,43 @@
+
+import React from "react";
+import { PackageOption, PackageType, VehicleType, VehicleSize } from "@/lib/types";
+import ServiceCard from "@/components/ui/ServiceCard";
+
+interface PackageSelectionProps {
+  packageOptions: PackageOption[];
+  selectedPackage: PackageType | null;
+  vehicleType: VehicleType;
+  vehicleSize: VehicleSize;
+  onSelect: (packageType: PackageType) => void;
+}
+
+const PackageSelection: React.FC<PackageSelectionProps> = ({
+  packageOptions,
+  selectedPackage,
+  vehicleType,
+  vehicleSize,
+  onSelect,
+}) => {
+  return (
+    <div className="mb-16">
+      <h2 className="text-2xl font-bold mb-8 text-center text-white">
+        Choose Your <span className="text-gold">Package</span>
+      </h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {packageOptions.map((packageOption) => (
+          <ServiceCard
+            key={packageOption.id}
+            packageOption={packageOption}
+            selectedPackage={selectedPackage}
+            vehicleType={vehicleType}
+            vehicleSize={vehicleSize}
+            onSelect={onSelect}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default PackageSelection;
