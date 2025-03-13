@@ -86,17 +86,11 @@ const Gallery = () => {
       name: "Sarah Mitchell",
       vehicle: "Range Rover Autobiography",
       image: "https://images.unsplash.com/photo-1619468129361-605ebea04b44?q=80&w=1171&auto=format&fit=crop",
-      text: "I've tried many valeting services but LuxeClean is by far the best. They take such care with every aspect of the cleaning process. My Range Rover has never looked better."
+      text: "I've tried many valeting services but Mid-Cheshire is by far the best. They take such care with every aspect of the cleaning process with an outstanding finish. My Range Rover has never looked better."
     },
+    {
     {
       id: 3,
-      name: "Robert Taylor",
-      vehicle: "Fleet Manager, Express Delivery",
-      image: "https://images.unsplash.com/photo-1558222218-b7b54eede3f3?q=80&w=1171&auto=format&fit=crop",
-      text: "Managing a fleet of 15 vans, I need reliability and consistency. LuxeClean delivers every time with their efficient service. They're flexible with scheduling and the vans always look professional."
-    },
-    {
-      id: 4,
       name: "Emma Thompson",
       vehicle: "Audi RS6 Avant",
       image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1288&auto=format&fit=crop",
@@ -224,7 +218,7 @@ const Gallery = () => {
             className="text-center mb-16"
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
-              What Our Clients Say
+              What Our Clients Say (most recent first) no cherry-picking
             </h2>
             <motion.div 
               className="w-20 h-1 bg-gold mx-auto"

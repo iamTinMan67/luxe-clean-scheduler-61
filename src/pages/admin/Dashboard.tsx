@@ -73,8 +73,7 @@ const Dashboard = () => {
     { name: "Car", count: 65 },
     { name: "SUV", count: 45 },
     { name: "Van", count: 25 },
-    { name: "Truck", count: 15 },
-    { name: "Caravan", count: 10 }
+    { name: "Truck", count: 15 }
   ];
   
   // Recent bookings
@@ -84,7 +83,7 @@ const Dashboard = () => {
       customer: "John Smith",
       vehicle: "Porsche 911",
       package: "Elite",
-      date: "2023-09-15",
+      date: "2024-09-15",
       time: "10:00",
       status: "completed"
     },
@@ -93,7 +92,7 @@ const Dashboard = () => {
       customer: "Sarah Johnson",
       vehicle: "Range Rover Sport",
       package: "Medium",
-      date: "2023-09-16",
+      date: "2024-09-16",
       time: "14:30",
       status: "in-progress"
     },
@@ -102,7 +101,7 @@ const Dashboard = () => {
       customer: "Michael Brown",
       vehicle: "Tesla Model S",
       package: "Elite",
-      date: "2023-09-17",
+      date: "2024-09-17",
       time: "09:00",
       status: "confirmed"
     },
@@ -111,7 +110,7 @@ const Dashboard = () => {
       customer: "Emma Wilson",
       vehicle: "BMW M4",
       package: "Basic",
-      date: "2023-09-18",
+      date: "2024-09-18",
       time: "11:00",
       status: "pending"
     },
@@ -120,7 +119,7 @@ const Dashboard = () => {
       customer: "David Clark",
       vehicle: "Mercedes S-Class",
       package: "Medium",
-      date: "2023-09-19",
+      date: "2024-09-19",
       time: "15:00",
       status: "confirmed"
     }

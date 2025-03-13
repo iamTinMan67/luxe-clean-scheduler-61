@@ -15,12 +15,12 @@ const Index = () => {
     {
       icon: <Droplets className="h-10 w-10 text-gold" />,
       title: "Self-Sufficient Equipment",
-      description: "Our vans come fully equipped with water and power supplies, allowing us to operate anywhere."
+      description: "Our vans come fully equipped with independent water and low-noise, power supplies, allowing us to operate anywhere."
     },
     {
       icon: <Leaf className="h-10 w-10 text-gold" />,
       title: "Eco-Friendly Products",
-      description: "We use environmentally friendly cleaning products that are tough on dirt but gentle on your vehicle."
+      description: "We use environmentally friendly machinery and cleaning products that are tough on dirt but gentle on your vehicle."
     },
     {
       icon: <Shield className="h-10 w-10 text-gold" />,
@@ -30,17 +30,17 @@ const Index = () => {
     {
       icon: <Truck className="h-10 w-10 text-gold" />,
       title: "Fleet Solutions",
-      description: "Specialized services for commercial fleets of any size with flexible scheduling options."
+      description: "Services for commercial fleets of any size with flexible scheduling options."
     },
     {
       icon: <ThumbsUp className="h-10 w-10 text-gold" />,
       title: "Satisfaction Guaranteed",
-      description: "We're not happy until you're thrilled with the results of our premium valeting service."
+      description: "We're not happy until you're thrilled with the results of our sqeaky-clean service."
     },
     {
       icon: <Zap className="h-10 w-10 text-gold" />,
       title: "Efficient Service",
-      description: "Our professional team works efficiently to minimize vehicle downtime without compromising quality."
+      description: "Our team works efficiently to minimize vehicle downtime without compromising quality."
     }
   ];
   
@@ -83,7 +83,7 @@ const Index = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
           >
-            Premium Vehicle Valeting For <span className="text-gold">Exceptional</span> Cars
+            Elite Vehicle Valeting For <span className="text-gold">Exceptional</span> Cars
           </motion.h1>
           
           <motion.p 
@@ -92,7 +92,7 @@ const Index = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, delay: 0.4 }}
           >
-            Specialized cleaning and detailing services for high-end vehicles and commercial fleets
+            Premium cleaning and detailing services for high-end vehicles and commercial fleets
           </motion.p>
           
           <motion.div
@@ -208,12 +208,7 @@ const Index = () => {
               {
                 name: "Sarah Mitchell",
                 car: "Range Rover Autobiography",
-                text: "I've tried many valeting services but LuxeClean is by far the best. They take such care with every aspect of the cleaning process."
-              },
-              {
-                name: "Robert Taylor",
-                car: "Fleet Manager, Express Delivery",
-                text: "Managing a fleet of 15 vans, I need reliability and consistency. LuxeClean delivers every time with their efficient service."
+                text: "I've tried many valeting services but Mid-Cheshire is by far the best. They take such care with every aspect of the cleaning process and with an outstanding finish."
               }
             ].map((testimonial, index) => (
               <motion.div
@@ -281,7 +276,7 @@ const Index = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              Book your premium valeting service today and give your vehicle the care it deserves.
+              Book your elite valeting service today and give your vehicle the care you deserve.
             </motion.p>
             
             <motion.button 
