@@ -12,7 +12,7 @@ import ConditionSlider from "@/components/ui/ConditionSlider";
 const ServicePackage = () => {
   const navigate = useNavigate();
   
-  // Default package options
+  // Default package options - MODIFY THESE TO CHANGE PACKAGES AND PRICES
   const packageOptions: PackageOption[] = [
     {
       id: "basic",
@@ -82,7 +82,7 @@ const ServicePackage = () => {
     }
   ];
   
-  // Additional services
+  // Additional services - MODIFY THESE TO CHANGE ADDITIONAL SERVICES AND PRICES
   const additionalServices: AdditionalService[] = [
     { id: "engine-detail", name: "Engine Bay Detailing", price: 45, description: "Deep cleaning of the engine compartment", selected: false },
     { id: "headlight-restore", name: "Headlight Restoration", price: 35, description: "Restores clarity to foggy or yellowed headlights", selected: false },
