@@ -2,6 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, Droplets, Truck, ThumbsUp, Leaf, Shield, Zap } from "lucide-react";
+import BubbleEffect from "@/components/effects/BubbleEffect";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -58,6 +59,9 @@ const Index = () => {
   
   return (
     <div className="overflow-hidden">
+      {/* Bubble Effect */}
+      <BubbleEffect />
+      
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
         {/* Hero Background */}
