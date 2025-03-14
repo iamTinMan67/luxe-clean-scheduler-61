@@ -83,7 +83,7 @@ const Index = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
           >
-            Elite Vehicle Valeting For <span className="text-gold">Exceptional</span> Cars
+            Professional Valeting For <span className="text-gold">Exceptional</span> Cars
           </motion.h1>
           
           <motion.p 
@@ -145,7 +145,7 @@ const Index = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              Why Choose <span className="text-gold">LuxeClean</span>
+              Why Choose <span className="text-gold">MidCheshireValeting</span>
             </motion.h2>
             <motion.div 
               className="w-20 h-1 bg-gold mx-auto"
