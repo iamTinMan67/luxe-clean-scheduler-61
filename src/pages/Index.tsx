@@ -25,7 +25,7 @@ const Index = () => {
     {
       icon: <Shield className="h-10 w-10 text-gold" />,
       title: "Premium Protection",
-      description: "Our elite packages include ceramic coating and paint protection for long-lasting results."
+      description: "Our best packages include ceramic coating and paint protection for long-lasting results."
     },
     {
       icon: <Truck className="h-10 w-10 text-gold" />,
@@ -35,7 +35,7 @@ const Index = () => {
     {
       icon: <ThumbsUp className="h-10 w-10 text-gold" />,
       title: "Satisfaction Guaranteed",
-      description: "We're not happy until you're thrilled with the results of our sqeaky-clean service."
+      description: "We're not happy until you're thrilled with the results of our squeaky-clean service."
     },
     {
       icon: <Zap className="h-10 w-10 text-gold" />,
@@ -92,7 +92,7 @@ const Index = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, delay: 0.4 }}
           >
-            Premium cleaning and detailing services for high-end vehicles and commercial fleets
+            Professional cleaning and detailing services for high-end results.
           </motion.p>
           
           <motion.div
@@ -145,7 +145,7 @@ const Index = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              Why Choose <span className="text-gold">MidCheshireValeting</span>
+              Why Choose <span className="text-gold">Mid Cheshire Valeting</span>
             </motion.h2>
             <motion.div 
               className="w-20 h-1 bg-gold mx-auto"
