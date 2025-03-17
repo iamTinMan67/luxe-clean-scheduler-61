@@ -20,7 +20,9 @@ const VehicleTypeSelector = ({
   const vehicleTypes: Array<{ type: VehicleType; label: string }> = [
     { type: "car", label: "Car" },
     { type: "suv", label: "SUV" },
-    { type: "van", label: "Van" }
+    { type: "van", label: "Van" },
+    { type: "truck", label: "Truck" },
+    { type: "caravan", label: "Caravan" }
   ];
 
   const vehicleSizes: Array<{ size: VehicleSize; label: string }> = [
@@ -105,6 +107,10 @@ const VehicleIcon = ({ type, selected }: { type: VehicleType; selected: boolean 
         return "🚙";
       case "van":
         return "🚐";
+      case "truck":
+        return "🚚";
+      case "caravan":
+        return "🚍";
       default:
         return "🚗";
     }
