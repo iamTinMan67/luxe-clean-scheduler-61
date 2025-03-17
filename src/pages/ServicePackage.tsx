@@ -98,7 +98,6 @@ const ServicePackage = () => {
             packageOptions={packageOptions}
             selectedPackage={currentVehicle.package}
             vehicleType={currentVehicle.type}
-            vehicleSize={currentVehicle.size}
             onSelect={handlePackageSelect}
           />
           

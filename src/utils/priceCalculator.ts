@@ -5,7 +5,9 @@ export const calculateTotalPrice = (vehicles: Vehicle[], packageOptions: Package
   return vehicles.reduce((total, vehicle) => {
     // Get base package price
     const packageOption = packageOptions.find(p => p.type === vehicle.package);
-    const basePrice = packageOption?.basePrice[vehicle.type] || 0;
+    
+    // Since we're now using 'medium' as the default size, get the price for medium
+    const basePrice = packageOption?.basePrice[vehicle.type].medium || 0;
     
     // Add additional services
     const additionalPrice = vehicle.additionalServices.reduce(
