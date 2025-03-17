@@ -10,7 +10,7 @@ const Footer = () => {
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <div>
-            <h3 className="text-xl font-bold text-white mb-4">LUXE<span className="text-gold">CLEAN</span></h3>
+            <h3 className="text-xl font-bold text-white mb-4">Mid Cheshire Valeting</h3>
             <p className="text-gray-300 mb-4 max-w-md">
               Premium vehicle valeting service specializing in executive and high-end vehicles. 
               We also provide solutions for commercial fleets with our self-sufficient equipment.
@@ -134,8 +134,8 @@ const Footer = () => {
               </li>
               <li className="flex items-center">
                 <Mail className="mr-2 text-gold flex-shrink-0" size={18} />
-                <a href="mailto:info@luxeclean.com" className="text-gray-400 hover:text-gold transition-colors duration-300">
-                  info@luxeclean.com
+                <a href="mailto:info@midcheshirevaleting.com" className="text-gray-400 hover:text-gold transition-colors duration-300">
+                  info@midcheshirevaleting.com
                 </a>
               </li>
             </ul>
@@ -144,7 +144,7 @@ const Footer = () => {
         
         <div className="border-t border-gray-800 pt-8 mt-8 text-center">
           <p className="text-gray-500">
-            © {currentYear} LUXECLEAN. All rights reserved.
+            © {currentYear} Mid Cheshire Valeting. All rights reserved.
           </p>
           <div className="mt-2 flex justify-center space-x-4 text-sm">
             <Link to="/privacy" className="text-gray-500 hover:text-gold transition-colors duration-300">

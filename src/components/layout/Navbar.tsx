@@ -87,7 +87,7 @@ const Navbar = () => {
     >
       <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
         <Link to="/" className="flex items-center space-x-2" aria-label="Home">
-          <span className="text-white font-bold text-2xl">LUXE<span className="text-gold">CLEAN</span></span>
+          <span className="text-white font-bold text-2xl">Mid Cheshire Valeting</span>
         </Link>
 
         {/* Desktop Menu */}
