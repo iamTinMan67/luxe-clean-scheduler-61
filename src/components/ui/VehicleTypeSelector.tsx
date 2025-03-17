@@ -47,12 +47,12 @@ const VehicleTypeSelector = ({
                 "absolute inset-0 flex flex-col items-center justify-center p-2 transition-colors bg-gray-900 group-hover:bg-gray-800",
                 selectedType === type ? "bg-black" : ""
               )}>
-                <div className="w-12 h-12 mb-2 flex items-center justify-center">
-                  {/* Replace with actual vehicle SVG icons */}
+                <div className="w-18 h-18 mb-3 flex items-center justify-center">
+                  {/* Increased size of icon container by 50% from w-12 h-12 to w-18 h-18 */}
                   <VehicleIcon type={type} selected={selectedType === type} />
                 </div>
                 <span className={cn(
-                  "text-sm font-medium transition-colors",
+                  "text-base font-medium transition-colors", // Increased text size from text-sm to text-base
                   selectedType === type ? "text-gold" : "text-gray-300 group-hover:text-white"
                 )}>
                   {label}
@@ -112,7 +112,7 @@ const VehicleIcon = ({ type, selected }: { type: VehicleType; selected: boolean 
 
   return (
     <div className={cn(
-      "text-2xl transition-transform transform",
+      "text-3xl transition-transform transform", // Increased text size from text-2xl to text-3xl
       selected ? "scale-110" : "scale-100"
     )}>
       {getVehicleEmoji()}
