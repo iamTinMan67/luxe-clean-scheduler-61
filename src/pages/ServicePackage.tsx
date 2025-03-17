@@ -70,15 +70,6 @@ const ServicePackage = () => {
             </p>
           </motion.div>
           
-          {/* Vehicle Selector Tabs */}
-          <VehicleTabs
-            vehicles={vehicles}
-            currentVehicleIndex={currentVehicleIndex}
-            setCurrentVehicleIndex={setCurrentVehicleIndex}
-            handleAddVehicle={handleAddVehicle}
-            handleRemoveVehicle={handleRemoveVehicle}
-          />
-          
           <div className="mb-16">
             <VehicleTypeSelector
               selectedType={currentVehicle.type}
@@ -106,6 +97,15 @@ const ServicePackage = () => {
             additionalServices={additionalServices}
             selectedServices={currentVehicle.additionalServices}
             onToggleService={handleAdditionalServiceToggle}
+          />
+          
+          {/* Vehicle Selector Tabs - Moved just above Price Summary */}
+          <VehicleTabs
+            vehicles={vehicles}
+            currentVehicleIndex={currentVehicleIndex}
+            setCurrentVehicleIndex={setCurrentVehicleIndex}
+            handleAddVehicle={handleAddVehicle}
+            handleRemoveVehicle={handleRemoveVehicle}
           />
           
           {/* Price Summary */}
