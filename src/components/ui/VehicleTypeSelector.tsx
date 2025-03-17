@@ -6,14 +6,12 @@ import { VehicleType, VehicleSize } from "@/lib/types";
 
 interface VehicleTypeSelectorProps {
   selectedType: VehicleType;
-  selectedSize: VehicleSize;
   onTypeChange: (type: VehicleType) => void;
   onSizeChange: (size: VehicleSize) => void;
 }
 
 const VehicleTypeSelector = ({
   selectedType,
-  selectedSize,
   onTypeChange,
   onSizeChange,
 }: VehicleTypeSelectorProps) => {
@@ -23,13 +21,7 @@ const VehicleTypeSelector = ({
     { type: "van", label: "Van" }
   ];
 
-  const vehicleSizes: Array<{ size: VehicleSize; label: string }> = [
-    { size: "small", label: "Small" },
-    { size: "medium", label: "Medium" },
-    { size: "large", label: "Large" },
-  ];
-
-  return (
+return (
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-semibold mb-3 text-white">Select Vehicle Type</h3>
@@ -72,24 +64,6 @@ const VehicleTypeSelector = ({
         </div>
       </div>
 
-      <div>
-        <h3 className="text-lg font-semibold mb-3 text-white">Select Size</h3>
-        <div className="flex flex-wrap gap-3">
-          {vehicleSizes.map(({ size, label }) => (
-            <button
-              key={size}
-              onClick={() => onSizeChange(size)}
-              className={cn(
-                "relative px-6 py-3 rounded-md transition-colors",
-                selectedSize === size
-                  ? "gold-gradient text-black"
-                  : "bg-gray-900 text-gray-300 hover:bg-gray-800 hover:text-white"
-              )}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
       </div>
     </div>
   );
