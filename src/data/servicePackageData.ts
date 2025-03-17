@@ -19,9 +19,7 @@ export const packageOptions: PackageOption[] = [
     basePrice: {
       car: { small: 49, medium: 59, large: 69 },
       suv: { small: 59, medium: 69, large: 79 },
-      van: { small: 69, medium: 79, large: 89 },
-      truck: { small: 79, medium: 89, large: 99 },
-      caravan: { small: 89, medium: 99, large: 109 }
+      van: { small: 69, medium: 79, large: 89 }
     }
   },
   {
