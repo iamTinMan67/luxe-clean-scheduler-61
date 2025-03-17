@@ -8,7 +8,6 @@ interface ServiceCardProps {
   packageOption: PackageOption;
   selectedPackage: PackageType | null;
   vehicleType: VehicleType;
-  vehicleSize: VehicleSize;
   onSelect: (packageType: PackageType) => void;
 }
 
@@ -16,7 +15,6 @@ const ServiceCard = ({
   packageOption,
   selectedPackage,
   vehicleType,
-  vehicleSize,
   onSelect,
 }: ServiceCardProps) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -28,7 +26,7 @@ const ServiceCard = ({
     onSelect(packageOption.type);
   };
   
-  const price = packageOption.basePrice[vehicleType][vehicleSize];
+  const price = packageOption.basePrice[vehicleType];
   
   return (
     <div 
