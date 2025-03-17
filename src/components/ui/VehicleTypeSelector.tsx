@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { VehicleType, VehicleSize } from "@/lib/types";
+import { VehicleType } from "@/lib/types";
 
 interface VehicleTypeSelectorProps {
   selectedType: VehicleType;
@@ -12,7 +12,6 @@ interface VehicleTypeSelectorProps {
 const VehicleTypeSelector = ({
   selectedType,
   onTypeChange,
-  onSizeChange,
 }: VehicleTypeSelectorProps) => {
   const vehicleTypes: Array<{ type: VehicleType; label: string }> = [
     { type: "car", label: "Car" },
@@ -20,7 +19,7 @@ const VehicleTypeSelector = ({
     { type: "van", label: "Van" }
   ];
 
-return (
+  return (
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-semibold mb-3 text-white">Select Vehicle Type</h3>
@@ -39,11 +38,10 @@ return (
                 selectedType === type ? "bg-black" : ""
               )}>
                 <div className="w-18 h-18 mb-3 flex items-center justify-center">
-                  {/* Increased size of icon container by 50% from w-12 h-12 to w-18 h-18 */}
                   <VehicleIcon type={type} selected={selectedType === type} />
                 </div>
                 <span className={cn(
-                  "text-base font-medium transition-colors", // Increased text size from text-sm to text-base
+                  "text-base font-medium transition-colors",
                   selectedType === type ? "text-gold" : "text-gray-300 group-hover:text-white"
                 )}>
                   {label}
@@ -61,8 +59,6 @@ return (
             </button>
           ))}
         </div>
-      </div>
-
       </div>
     </div>
   );
@@ -85,7 +81,7 @@ const VehicleIcon = ({ type, selected }: { type: VehicleType; selected: boolean 
 
   return (
     <div className={cn(
-      "text-3xl transition-transform transform", // Increased text size from text-2xl to text-3xl
+      "text-3xl transition-transform transform",
       selected ? "scale-110" : "scale-100"
     )}>
       {getVehicleEmoji()}

@@ -25,7 +25,6 @@ const ServicePackage = () => {
     setCurrentVehicleIndex,
     currentVehicle,
     handleVehicleTypeChange,
-    handleVehicleSizeChange,
     handleConditionChange,
     handlePackageSelect,
     handleAdditionalServiceToggle,
@@ -83,9 +82,7 @@ const ServicePackage = () => {
           <div className="mb-16">
             <VehicleTypeSelector
               selectedType={currentVehicle.type}
-              selectedSize={currentVehicle.size}
               onTypeChange={handleVehicleTypeChange}
-              onSizeChange={handleVehicleSizeChange}
             />
           </div>
           
