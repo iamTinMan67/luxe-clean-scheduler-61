@@ -7,7 +7,6 @@ import { VehicleType, VehicleSize } from "@/lib/types";
 interface VehicleTypeSelectorProps {
   selectedType: VehicleType;
   onTypeChange: (type: VehicleType) => void;
-  onSizeChange: (size: VehicleSize) => void;
 }
 
 const VehicleTypeSelector = ({
