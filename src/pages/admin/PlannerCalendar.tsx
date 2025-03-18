@@ -1,6 +1,7 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { format, addDays, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay } from "date-fns";
+import { format, addDays, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, parseISO } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,53 +9,52 @@ import {
   ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, 
   Clock, User, Car, MapPin, CheckCircle2, AlertCircle 
 } from "lucide-react";
+import { toast } from "sonner";
+
+// Define the booking type for better type safety
+interface Booking {
+  id: string;
+  customer: string;
+  vehicle: string;
+  packageType: string;
+  date: Date | string;
+  time?: string;
+  startTime?: string;
+  endTime?: string;
+  location: string;
+  contact?: string;
+  email?: string;
+  notes?: string;
+  status: "pending" | "confirmed" | "cancelled";
+  condition?: number;
+  staff?: string[];
+  createdAt?: string;
+}
 
 const PlannerCalendar = () => {
   const [date, setDate] = useState<Date>(new Date());
   const [view, setView] = useState<"daily" | "weekly">("daily");
+  const [pendingBookings, setPendingBookings] = useState<Booking[]>([]);
   
-  // Mock pending bookings with vehicle condition added
-  const pendingBookings = [
-    {
-      id: "BK-12345",
-      customer: "John Smith",
-      vehicle: "Porsche 911",
-      packageType: "Elite",
-      date: new Date(),
-      time: "10:00",
-      location: "23 Hillcrest Avenue, London",
-      contact: "0123 456 789",
-      status: "pending",
-      condition: 7 // Added vehicle condition
-    },
-    {
-      id: "BK-12346",
-      customer: "Sarah Johnson",
-      vehicle: "Range Rover Sport",
-      packageType: "Medium",
-      date: new Date(),
-      time: "14:30",
-      location: "45 Oak Lane, Manchester",
-      contact: "0123 456 790",
-      status: "pending",
-      condition: 3 // Added vehicle condition (below 5)
-    },
-    {
-      id: "BK-12347",
-      customer: "Michael Brown",
-      vehicle: "Tesla Model S",
-      packageType: "Elite",
-      date: addDays(new Date(), 1),
-      time: "09:00",
-      location: "12 Elm Street, Birmingham",
-      contact: "0123 456 791",
-      status: "pending",
-      condition: 4 // Added vehicle condition (below 5)
+  // Load saved bookings from localStorage on component mount
+  useEffect(() => {
+    const savedBookings = localStorage.getItem('pendingBookings');
+    if (savedBookings) {
+      try {
+        // Parse the JSON and convert date strings to Date objects
+        const parsedBookings = JSON.parse(savedBookings).map((booking: any) => ({
+          ...booking,
+          date: typeof booking.date === 'string' ? parseISO(booking.date) : new Date(booking.date)
+        }));
+        setPendingBookings(parsedBookings);
+      } catch (error) {
+        console.error('Error parsing bookings:', error);
+      }
     }
-  ];
+  }, []);
   
   // Mock confirmed bookings (schedule)
-  const confirmedBookings = [
+  const confirmedBookings: Booking[] = [
     {
       id: "BK-12340",
       customer: "Alex Wilson",
@@ -95,7 +95,7 @@ const PlannerCalendar = () => {
   
   // Filter events for the selected date
   const filteredPendingBookings = pendingBookings.filter(booking => 
-    isSameDay(booking.date, date)
+    booking.date instanceof Date && isSameDay(booking.date, date)
   );
   
   // Get schedule for the selected view
@@ -144,17 +144,45 @@ const PlannerCalendar = () => {
   
   // Handle booking actions
   const handleConfirmBooking = (bookingId: string) => {
-    // In a real app, this would update the booking status in your backend
-    console.log(`Confirming booking ${bookingId}`);
+    // Find the booking to confirm
+    const bookingToConfirm = pendingBookings.find(booking => booking.id === bookingId);
+    if (!bookingToConfirm) return;
+    
+    // Create a confirmed booking from the pending booking
+    const confirmedBooking: Booking = {
+      ...bookingToConfirm,
+      status: "confirmed",
+      startTime: bookingToConfirm.time,
+      endTime: bookingToConfirm.time ? 
+        `${parseInt(bookingToConfirm.time.split(':')[0]) + 2}:${bookingToConfirm.time.split(':')[1]}` : 
+        "12:00", // Default 2 hours later
+      staff: ["James Carter", "Michael Scott"] // Default staff assignment
+    };
+    
+    // Update localStorage by removing the booking from pending and adding to confirmed
+    const updatedPendingBookings = pendingBookings.filter(booking => booking.id !== bookingId);
+    setPendingBookings(updatedPendingBookings);
+    localStorage.setItem('pendingBookings', JSON.stringify(updatedPendingBookings));
+    
+    // In a real app, you would also save the confirmed booking to your backend
+    toast.success(`Booking ${bookingId} confirmed successfully!`);
   };
   
   const handleCancelBooking = (bookingId: string) => {
-    // In a real app, this would update the booking status in your backend
-    console.log(`Cancelling booking ${bookingId}`);
+    // Update the bookings state by removing the cancelled booking
+    const updatedBookings = pendingBookings.filter(booking => booking.id !== bookingId);
+    setPendingBookings(updatedBookings);
+    
+    // Update localStorage
+    localStorage.setItem('pendingBookings', JSON.stringify(updatedBookings));
+    
+    // Show success message
+    toast.success(`Booking ${bookingId} cancelled successfully!`);
   };
   
   // Get background color based on vehicle condition
-  const getBookingBackground = (condition: number) => {
+  const getBookingBackground = (condition?: number) => {
+    if (condition === undefined) return "bg-gray-800 border-gray-700";
     return condition < 5 ? "bg-orange-800 border-orange-700" : "bg-gray-800 border-gray-700";
   };
   
@@ -211,7 +239,12 @@ const PlannerCalendar = () => {
                         
                         <div className="flex items-center text-gray-300">
                           <Clock className="w-4 h-4 mr-2 text-gold" />
-                          <span>{format(booking.date, "MMM dd, yyyy")} at {booking.time}</span>
+                          <span>
+                            {booking.date instanceof Date 
+                              ? format(booking.date, "MMM dd, yyyy") 
+                              : "Date not available"} 
+                            at {booking.time || "Not specified"}
+                          </span>
                         </div>
                         
                         <div className="flex items-center text-gray-300">
@@ -221,15 +254,17 @@ const PlannerCalendar = () => {
                         
                         <div className="flex items-center text-gray-300">
                           <User className="w-4 h-4 mr-2 text-gold" />
-                          <span>{booking.contact}</span>
+                          <span>{booking.contact || booking.email || "No contact provided"}</span>
                         </div>
                         
                         {/* Add vehicle condition indicator */}
-                        <div className="flex items-center text-gray-300">
-                          <span className={`text-sm ${booking.condition < 5 ? "text-orange-400" : "text-green-400"}`}>
-                            Vehicle Condition: {booking.condition}/10
-                          </span>
-                        </div>
+                        {booking.condition !== undefined && (
+                          <div className="flex items-center text-gray-300">
+                            <span className={`text-sm ${booking.condition < 5 ? "text-orange-400" : "text-green-400"}`}>
+                              Vehicle Condition: {booking.condition}/10
+                            </span>
+                          </div>
+                        )}
                       </div>
                       
                       <div className="flex gap-2">
