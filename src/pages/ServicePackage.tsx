@@ -70,13 +70,6 @@ const ServicePackage = () => {
             </p>
           </motion.div>
           
-          <div className="mb-16">
-            <VehicleTypeSelector
-              selectedType={currentVehicle.type}
-              onTypeChange={handleVehicleTypeChange}
-            />
-          </div>
-          
           <div className="mb-16 max-w-3xl mx-auto">
             <ConditionSlider
               value={currentVehicle.condition}
@@ -99,7 +92,15 @@ const ServicePackage = () => {
             onToggleService={handleAdditionalServiceToggle}
           />
           
-          {/* Vehicle Selector Tabs - Moved just above Price Summary */}
+          {/* Vehicle Type Selector - Moved below Additional Services */}
+          <div className="mb-16 text-center">
+            <VehicleTypeSelector
+              selectedType={currentVehicle.type}
+              onTypeChange={handleVehicleTypeChange}
+            />
+          </div>
+          
+          {/* Vehicle Selector Tabs */}
           <VehicleTabs
             vehicles={vehicles}
             currentVehicleIndex={currentVehicleIndex}
