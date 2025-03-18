@@ -72,8 +72,8 @@ const Navbar = () => {
     { path: "/admin/planner", label: "Planner Calendar" },
     { path: "/admin/staff", label: "Staff Planner" },
     { path: "/admin/inspection", label: "Pre-Inspection" },
-    { path: "/admin/van-inventory", label: "Van Inventory" },
-    { path: "/admin/warehouse", label: "Warehouse" },
+    { path: "/admin/van-inventory", label: "Van Stock" },
+    { path: "/admin/inventory", label: "Inventory" },
     { path: "/admin/invoices", label: "Invoices" },
     { path: "/admin/todos", label: "To-do List" },
   ];
@@ -93,7 +93,7 @@ const Navbar = () => {
         {/* Desktop Menu */}
         <nav className="hidden md:flex items-center space-x-1">
           <NavLink to="/">Home</NavLink>
-          <NavLink to="/services">Services</NavLink>
+          <NavLink to="/Packages">Packages</NavLink>
           <NavLink to="/booking">Booking</NavLink>
           <NavLink to="/gallery">Gallery</NavLink>
           <NavLink to="/progress">Track Progress</NavLink>
@@ -162,7 +162,7 @@ const Navbar = () => {
       >
         <nav className="flex flex-col p-4">
           <NavLink to="/" isMobile>Home</NavLink>
-          <NavLink to="/services" isMobile>Services</NavLink>
+          <NavLink to="/packages" isMobile>Packages</NavLink>
           <NavLink to="/booking" isMobile>Booking</NavLink>
           <NavLink to="/gallery" isMobile>Gallery</NavLink>
           <NavLink to="/progress" isMobile>Track Progress</NavLink>
