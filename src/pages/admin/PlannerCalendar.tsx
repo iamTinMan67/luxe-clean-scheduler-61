@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { format, addDays, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay } from "date-fns";
@@ -14,7 +13,7 @@ const PlannerCalendar = () => {
   const [date, setDate] = useState<Date>(new Date());
   const [view, setView] = useState<"daily" | "weekly">("daily");
   
-  // Mock pending bookings
+  // Mock pending bookings with vehicle condition added
   const pendingBookings = [
     {
       id: "BK-12345",
@@ -25,7 +24,8 @@ const PlannerCalendar = () => {
       time: "10:00",
       location: "23 Hillcrest Avenue, London",
       contact: "0123 456 789",
-      status: "pending"
+      status: "pending",
+      condition: 7 // Added vehicle condition
     },
     {
       id: "BK-12346",
@@ -36,7 +36,8 @@ const PlannerCalendar = () => {
       time: "14:30",
       location: "45 Oak Lane, Manchester",
       contact: "0123 456 790",
-      status: "pending"
+      status: "pending",
+      condition: 3 // Added vehicle condition (below 5)
     },
     {
       id: "BK-12347",
@@ -47,7 +48,8 @@ const PlannerCalendar = () => {
       time: "09:00",
       location: "12 Elm Street, Birmingham",
       contact: "0123 456 791",
-      status: "pending"
+      status: "pending",
+      condition: 4 // Added vehicle condition (below 5)
     }
   ];
   
@@ -151,6 +153,11 @@ const PlannerCalendar = () => {
     console.log(`Cancelling booking ${bookingId}`);
   };
   
+  // Get background color based on vehicle condition
+  const getBookingBackground = (condition: number) => {
+    return condition < 5 ? "bg-orange-800 border-orange-700" : "bg-gray-800 border-gray-700";
+  };
+  
   return (
     <div className="min-h-screen bg-black pb-16">
       <section className="relative py-8">
@@ -189,7 +196,7 @@ const PlannerCalendar = () => {
                   {pendingBookings.map(booking => (
                     <div 
                       key={booking.id}
-                      className="bg-gray-800 rounded-lg p-4 border border-gray-700"
+                      className={`rounded-lg p-4 border ${getBookingBackground(booking.condition)}`}
                     >
                       <div className="flex justify-between items-start mb-3">
                         <h3 className="text-lg font-medium text-white">{booking.customer}</h3>
@@ -215,6 +222,13 @@ const PlannerCalendar = () => {
                         <div className="flex items-center text-gray-300">
                           <User className="w-4 h-4 mr-2 text-gold" />
                           <span>{booking.contact}</span>
+                        </div>
+                        
+                        {/* Add vehicle condition indicator */}
+                        <div className="flex items-center text-gray-300">
+                          <span className={`text-sm ${booking.condition < 5 ? "text-orange-400" : "text-green-400"}`}>
+                            Vehicle Condition: {booking.condition}/10
+                          </span>
                         </div>
                       </div>
                       

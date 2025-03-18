@@ -70,13 +70,6 @@ const ServicePackage = () => {
             </p>
           </motion.div>
           
-          <div className="mb-16 max-w-3xl mx-auto">
-            <ConditionSlider
-              value={currentVehicle.condition}
-              onChange={handleConditionChange}
-            />
-          </div>
-          
           {/* Package Selection */}
           <PackageSelection
             packageOptions={packageOptions}
@@ -97,6 +90,14 @@ const ServicePackage = () => {
             <VehicleTypeSelector
               selectedType={currentVehicle.type}
               onTypeChange={handleVehicleTypeChange}
+            />
+          </div>
+          
+          {/* Vehicle Condition - Moved above Vehicle Selector Tabs */}
+          <div className="mb-8 max-w-3xl mx-auto">
+            <ConditionSlider
+              value={currentVehicle.condition}
+              onChange={handleConditionChange}
             />
           </div>
           
