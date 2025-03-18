@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ChevronDown, User, Lock } from "lucide-react";
+import { Menu, X, ChevronDown, User, Lock, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NavLink = ({ 
@@ -93,7 +93,7 @@ const Navbar = () => {
         {/* Desktop Menu */}
         <nav className="hidden md:flex items-center space-x-1">
           <NavLink to="/">Home</NavLink>
-          <NavLink to="/Packages">Packages</NavLink>
+          <NavLink to="/packages">Packages</NavLink>
           <NavLink to="/booking">Booking</NavLink>
           <NavLink to="/gallery">Gallery</NavLink>
           <NavLink to="/progress">Track Progress</NavLink>
