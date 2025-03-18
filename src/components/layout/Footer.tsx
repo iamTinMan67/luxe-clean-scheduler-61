@@ -1,5 +1,4 @@
-
-import { Mail, Phone, MapPin, Facebook, Instagram, Twitter, Linkedin } from "lucide-react";
+import { Mail, Phone, Facebook, Instagram, Twitter } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -12,8 +11,8 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold text-white mb-4">Mid Cheshire Valeting</h3>
             <p className="text-gray-300 mb-4 max-w-md">
-              Premium vehicle valeting service specializing in executive and high-end vehicles. 
-              We also provide solutions for commercial fleets with our self-sufficient equipment.
+              Professional vehicle valeting service specializing in high-end vehicles profiles. 
+              We also provide solutions for commercial fleets upon request.
             </p>
             <div className="flex space-x-4">
               <a 
@@ -43,15 +42,6 @@ const Footer = () => {
               >
                 <Twitter size={20} />
               </a>
-              <a 
-                href="https://linkedin.com" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="text-gray-400 hover:text-gold transition-colors duration-300"
-                aria-label="LinkedIn"
-              >
-                <Linkedin size={20} />
-              </a>
             </div>
           </div>
           
@@ -70,17 +60,12 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/services" className="text-gray-400 hover:text-gold transition-colors duration-300">
-                  Elite Package
+                  Premium Package
                 </Link>
               </li>
               <li>
                 <Link to="/services" className="text-gray-400 hover:text-gold transition-colors duration-300">
                   Commercial Fleet Service
-                </Link>
-              </li>
-              <li>
-                <Link to="/services" className="text-gray-400 hover:text-gold transition-colors duration-300">
-                  Special Vehicles
                 </Link>
               </li>
             </ul>
@@ -96,7 +81,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/services" className="text-gray-400 hover:text-gold transition-colors duration-300">
-                  Services
+                  Packages
                 </Link>
               </li>
               <li>
@@ -123,13 +108,13 @@ const Footer = () => {
               <li className="flex items-start">
                 <MapPin className="mr-2 text-gold flex-shrink-0 mt-1" size={18} />
                 <span className="text-gray-400">
-                  123 Luxury Lane, Prestige District, AB12 3CD
+                  14 Manor Square, Winsford, CW7 2YG
                 </span>
               </li>
               <li className="flex items-center">
                 <Phone className="mr-2 text-gold flex-shrink-0" size={18} />
-                <a href="tel:+441234567890" className="text-gray-400 hover:text-gold transition-colors duration-300">
-                  +44 1234 567890
+                <a href="tel:+440123 456 789" className="text-gray-400 hover:text-gold transition-colors duration-300">
+                  +44 0123 456 789
                 </a>
               </li>
               <li className="flex items-center">
