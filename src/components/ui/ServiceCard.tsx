@@ -2,13 +2,12 @@
 import { useState } from "react";
 import { Check, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { PackageOption, PackageType, VehicleType, VehicleSize } from "@/lib/types";
+import { PackageOption, PackageType, VehicleType } from "@/lib/types";
 
 interface ServiceCardProps {
   packageOption: PackageOption;
   selectedPackage: PackageType | null;
   vehicleType: VehicleType;
-  vehicleSize: VehicleSize;
   onSelect: (packageType: PackageType) => void;
 }
 
@@ -16,7 +15,6 @@ const ServiceCard = ({
   packageOption,
   selectedPackage,
   vehicleType,
-  vehicleSize,
   onSelect,
 }: ServiceCardProps) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -28,7 +26,8 @@ const ServiceCard = ({
     onSelect(packageOption.type);
   };
   
-  const price = packageOption.basePrice[vehicleType][vehicleSize];
+  // Since we're removing size, we'll use 'medium' as the default size for pricing
+  const price = packageOption.basePrice[vehicleType].medium;
   
   return (
     <div 

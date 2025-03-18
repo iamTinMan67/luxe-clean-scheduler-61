@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -88,7 +87,6 @@ const Gallery = () => {
       image: "https://images.unsplash.com/photo-1619468129361-605ebea04b44?q=80&w=1171&auto=format&fit=crop",
       text: "I've tried many valeting services but Mid-Cheshire is by far the best. They take such care with every aspect of the cleaning process with an outstanding finish. My Range Rover has never looked better."
     },
-    {
     {
       id: 3,
       name: "Emma Thompson",

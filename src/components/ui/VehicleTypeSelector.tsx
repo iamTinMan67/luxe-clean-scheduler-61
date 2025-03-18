@@ -2,40 +2,28 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { VehicleType, VehicleSize } from "@/lib/types";
+import { VehicleType } from "@/lib/types";
 
 interface VehicleTypeSelectorProps {
   selectedType: VehicleType;
-  selectedSize: VehicleSize;
   onTypeChange: (type: VehicleType) => void;
-  onSizeChange: (size: VehicleSize) => void;
 }
 
 const VehicleTypeSelector = ({
   selectedType,
-  selectedSize,
   onTypeChange,
-  onSizeChange,
 }: VehicleTypeSelectorProps) => {
   const vehicleTypes: Array<{ type: VehicleType; label: string }> = [
     { type: "car", label: "Car" },
     { type: "suv", label: "SUV" },
-    { type: "van", label: "Van" },
-    { type: "truck", label: "Truck" },
-    { type: "caravan", label: "Caravan" },
-  ];
-
-  const vehicleSizes: Array<{ size: VehicleSize; label: string }> = [
-    { size: "small", label: "Small" },
-    { size: "medium", label: "Medium" },
-    { size: "large", label: "Large" },
+    { type: "van", label: "Van" }
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold mb-3 text-white">Select Vehicle Type</h3>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+        <h3 className="text-lg font-semibold mb-3 text-white text-center">Select Vehicle Type</h3>
+        <div className="grid grid-cols-3 gap-3 max-w-md mx-auto">
           {vehicleTypes.map(({ type, label }) => (
             <button
               key={type}
@@ -49,12 +37,11 @@ const VehicleTypeSelector = ({
                 "absolute inset-0 flex flex-col items-center justify-center p-2 transition-colors bg-gray-900 group-hover:bg-gray-800",
                 selectedType === type ? "bg-black" : ""
               )}>
-                <div className="w-12 h-12 mb-2 flex items-center justify-center">
-                  {/* Replace with actual vehicle SVG icons */}
+                <div className="w-18 h-18 mb-3 flex items-center justify-center">
                   <VehicleIcon type={type} selected={selectedType === type} />
                 </div>
                 <span className={cn(
-                  "text-sm font-medium transition-colors",
+                  "text-base font-medium transition-colors",
                   selectedType === type ? "text-gold" : "text-gray-300 group-hover:text-white"
                 )}>
                   {label}
@@ -73,26 +60,6 @@ const VehicleTypeSelector = ({
           ))}
         </div>
       </div>
-
-      <div>
-        <h3 className="text-lg font-semibold mb-3 text-white">Select Size</h3>
-        <div className="flex flex-wrap gap-3">
-          {vehicleSizes.map(({ size, label }) => (
-            <button
-              key={size}
-              onClick={() => onSizeChange(size)}
-              className={cn(
-                "relative px-6 py-3 rounded-md transition-colors",
-                selectedSize === size
-                  ? "gold-gradient text-black"
-                  : "bg-gray-900 text-gray-300 hover:bg-gray-800 hover:text-white"
-              )}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
     </div>
   );
 };
@@ -107,10 +74,6 @@ const VehicleIcon = ({ type, selected }: { type: VehicleType; selected: boolean 
         return "🚙";
       case "van":
         return "🚐";
-      case "truck":
-        return "🚚";
-      case "caravan":
-        return "🚍";
       default:
         return "🚗";
     }
@@ -118,7 +81,7 @@ const VehicleIcon = ({ type, selected }: { type: VehicleType; selected: boolean 
 
   return (
     <div className={cn(
-      "text-2xl transition-transform transform",
+      "text-3xl transition-transform transform",
       selected ? "scale-110" : "scale-100"
     )}>
       {getVehicleEmoji()}

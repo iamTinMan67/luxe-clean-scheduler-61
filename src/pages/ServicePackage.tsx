@@ -25,7 +25,6 @@ const ServicePackage = () => {
     setCurrentVehicleIndex,
     currentVehicle,
     handleVehicleTypeChange,
-    handleVehicleSizeChange,
     handleConditionChange,
     handlePackageSelect,
     handleAdditionalServiceToggle,
@@ -71,37 +70,11 @@ const ServicePackage = () => {
             </p>
           </motion.div>
           
-          {/* Vehicle Selector Tabs */}
-          <VehicleTabs
-            vehicles={vehicles}
-            currentVehicleIndex={currentVehicleIndex}
-            setCurrentVehicleIndex={setCurrentVehicleIndex}
-            handleAddVehicle={handleAddVehicle}
-            handleRemoveVehicle={handleRemoveVehicle}
-          />
-          
-          <div className="mb-16">
-            <VehicleTypeSelector
-              selectedType={currentVehicle.type}
-              selectedSize={currentVehicle.size}
-              onTypeChange={handleVehicleTypeChange}
-              onSizeChange={handleVehicleSizeChange}
-            />
-          </div>
-          
-          <div className="mb-16 max-w-3xl mx-auto">
-            <ConditionSlider
-              value={currentVehicle.condition}
-              onChange={handleConditionChange}
-            />
-          </div>
-          
           {/* Package Selection */}
           <PackageSelection
             packageOptions={packageOptions}
             selectedPackage={currentVehicle.package}
             vehicleType={currentVehicle.type}
-            vehicleSize={currentVehicle.size}
             onSelect={handlePackageSelect}
           />
           
@@ -110,6 +83,31 @@ const ServicePackage = () => {
             additionalServices={additionalServices}
             selectedServices={currentVehicle.additionalServices}
             onToggleService={handleAdditionalServiceToggle}
+          />
+          
+          {/* Vehicle Type Selector - Moved below Additional Services */}
+          <div className="mb-16 text-center">
+            <VehicleTypeSelector
+              selectedType={currentVehicle.type}
+              onTypeChange={handleVehicleTypeChange}
+            />
+          </div>
+          
+          {/* Vehicle Condition - Moved above Vehicle Selector Tabs */}
+          <div className="mb-8 max-w-3xl mx-auto">
+            <ConditionSlider
+              value={currentVehicle.condition}
+              onChange={handleConditionChange}
+            />
+          </div>
+          
+          {/* Vehicle Selector Tabs */}
+          <VehicleTabs
+            vehicles={vehicles}
+            currentVehicleIndex={currentVehicleIndex}
+            setCurrentVehicleIndex={setCurrentVehicleIndex}
+            handleAddVehicle={handleAddVehicle}
+            handleRemoveVehicle={handleRemoveVehicle}
           />
           
           {/* Price Summary */}

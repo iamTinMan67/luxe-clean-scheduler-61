@@ -1,13 +1,12 @@
 
 import React from "react";
-import { PackageOption, PackageType, VehicleType, VehicleSize } from "@/lib/types";
+import { PackageOption, PackageType, VehicleType } from "@/lib/types";
 import ServiceCard from "@/components/ui/ServiceCard";
 
 interface PackageSelectionProps {
   packageOptions: PackageOption[];
   selectedPackage: PackageType | null;
   vehicleType: VehicleType;
-  vehicleSize: VehicleSize;
   onSelect: (packageType: PackageType) => void;
 }
 
@@ -15,7 +14,6 @@ const PackageSelection: React.FC<PackageSelectionProps> = ({
   packageOptions,
   selectedPackage,
   vehicleType,
-  vehicleSize,
   onSelect,
 }) => {
   return (
@@ -31,7 +29,6 @@ const PackageSelection: React.FC<PackageSelectionProps> = ({
             packageOption={packageOption}
             selectedPackage={selectedPackage}
             vehicleType={vehicleType}
-            vehicleSize={vehicleSize}
             onSelect={onSelect}
           />
         ))}

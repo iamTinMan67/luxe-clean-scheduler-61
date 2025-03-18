@@ -1,7 +1,7 @@
 
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Droplets, Truck, ThumbsUp, Leaf, Shield, Zap } from "lucide-react";
+import { ArrowRight, Droplets, ThumbsUp, Leaf, Shield, Zap } from "lucide-react";
 import BubbleEffect from "@/components/effects/BubbleEffect";
 
 const Index = () => {
@@ -15,7 +15,7 @@ const Index = () => {
     {
       icon: <Droplets className="h-10 w-10 text-gold" />,
       title: "Self-Sufficient Equipment",
-      description: "Our vans come fully equipped with independent water and low-noise, power supplies, allowing us to operate anywhere."
+      description: "Our vans come fully equipped with independent water and low-noise level, power supplies and equipment, allowing us to operate anywhere."
     },
     {
       icon: <Leaf className="h-10 w-10 text-gold" />,
@@ -25,17 +25,12 @@ const Index = () => {
     {
       icon: <Shield className="h-10 w-10 text-gold" />,
       title: "Premium Protection",
-      description: "Our elite packages include ceramic coating and paint protection for long-lasting results."
-    },
-    {
-      icon: <Truck className="h-10 w-10 text-gold" />,
-      title: "Fleet Solutions",
-      description: "Services for commercial fleets of any size with flexible scheduling options."
+      description: "Our best package include ceramic coating and paint protection for long-lasting results."
     },
     {
       icon: <ThumbsUp className="h-10 w-10 text-gold" />,
       title: "Satisfaction Guaranteed",
-      description: "We're not happy until you're thrilled with the results of our sqeaky-clean service."
+      description: "We're not happy until you're thrilled with the results of our squeaky-clean service."
     },
     {
       icon: <Zap className="h-10 w-10 text-gold" />,
@@ -92,7 +87,7 @@ const Index = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, delay: 0.4 }}
           >
-            Premium cleaning and detailing services for high-end vehicles and commercial fleets
+            Professional cleaning and detailing services for high-end results.
           </motion.p>
           
           <motion.div
@@ -145,7 +140,7 @@ const Index = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              Why Choose <span className="text-gold">MidCheshireValeting</span>
+              Why Choose <span className="text-gold">Mid Cheshire Valeting</span>
             </motion.h2>
             <motion.div 
               className="w-20 h-1 bg-gold mx-auto"

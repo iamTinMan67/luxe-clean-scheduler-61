@@ -46,6 +46,30 @@ const Booking = () => {
       return;
     }
     
+    // Create a booking object with all the relevant details
+    const bookingData = {
+      id: `BK-${Math.floor(Math.random() * 90000) + 10000}`,
+      customer: `${firstName} ${lastName}`,
+      vehicle: vehicleDetails.length > 0 ? `${vehicleDetails[0].type}` : "Not specified",
+      packageType: vehicleDetails.length > 0 ? vehicleDetails[0].package : "Basic",
+      date: date,
+      time: time,
+      location: "Customer address",
+      contact: phone,
+      email: email,
+      notes: notes,
+      status: "pending",
+      condition: vehicleDetails.length > 0 ? vehicleDetails[0].condition : 5,
+      createdAt: new Date().toISOString()
+    };
+    
+    // Save booking to localStorage
+    const existingBookings = localStorage.getItem('pendingBookings') 
+      ? JSON.parse(localStorage.getItem('pendingBookings') || '[]') 
+      : [];
+    
+    localStorage.setItem('pendingBookings', JSON.stringify([...existingBookings, bookingData]));
+    
     // In a real app, you would send this data to your backend
     toast.success("Booking submitted successfully!", {
       description: `We'll confirm your appointment soon.`,

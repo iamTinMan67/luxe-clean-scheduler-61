@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ChevronDown, User, Lock } from "lucide-react";
+import { Menu, X, ChevronDown, User, Lock, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NavLink = ({ 
@@ -72,8 +72,8 @@ const Navbar = () => {
     { path: "/admin/planner", label: "Planner Calendar" },
     { path: "/admin/staff", label: "Staff Planner" },
     { path: "/admin/inspection", label: "Pre-Inspection" },
-    { path: "/admin/van-inventory", label: "Van Inventory" },
-    { path: "/admin/warehouse", label: "Warehouse" },
+    { path: "/admin/van-inventory", label: "Van Stock" },
+    { path: "/admin/inventory", label: "Inventory" },
     { path: "/admin/invoices", label: "Invoices" },
     { path: "/admin/todos", label: "To-do List" },
   ];
@@ -87,13 +87,13 @@ const Navbar = () => {
     >
       <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
         <Link to="/" className="flex items-center space-x-2" aria-label="Home">
-          <span className="text-white font-bold text-2xl">LUXE<span className="text-gold">CLEAN</span></span>
+          <span className="text-white font-bold text-2xl">Mid Cheshire Valeting</span>
         </Link>
 
         {/* Desktop Menu */}
         <nav className="hidden md:flex items-center space-x-1">
           <NavLink to="/">Home</NavLink>
-          <NavLink to="/services">Services</NavLink>
+          <NavLink to="/packages">Packages</NavLink>
           <NavLink to="/booking">Booking</NavLink>
           <NavLink to="/gallery">Gallery</NavLink>
           <NavLink to="/progress">Track Progress</NavLink>
@@ -162,7 +162,7 @@ const Navbar = () => {
       >
         <nav className="flex flex-col p-4">
           <NavLink to="/" isMobile>Home</NavLink>
-          <NavLink to="/services" isMobile>Services</NavLink>
+          <NavLink to="/packages" isMobile>Packages</NavLink>
           <NavLink to="/booking" isMobile>Booking</NavLink>
           <NavLink to="/gallery" isMobile>Gallery</NavLink>
           <NavLink to="/progress" isMobile>Track Progress</NavLink>

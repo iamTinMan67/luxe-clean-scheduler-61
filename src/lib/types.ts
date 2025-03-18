@@ -1,9 +1,6 @@
-
 export type PackageType = "basic" | "medium" | "elite";
 
-export type VehicleType = "car" | "suv" | "van" | "truck" | "caravan";
-
-export type VehicleSize = "small" | "medium" | "large";
+export type VehicleType = "car" | "suv" | "van";
 
 export interface AdditionalService {
   id: string;
@@ -23,8 +20,6 @@ export interface PackageOption {
     car: { small: number; medium: number; large: number };
     suv: { small: number; medium: number; large: number };
     van: { small: number; medium: number; large: number };
-    truck: { small: number; medium: number; large: number };
-    caravan: { small: number; medium: number; large: number };
   };
 }
 
@@ -36,6 +31,9 @@ export interface Vehicle {
   package: PackageType;
   additionalServices: AdditionalService[];
 }
+
+// Keep the VehicleSize type since it's still used in other places
+export type VehicleSize = "small" | "medium" | "large";
 
 export interface Customer {
   id: string;
