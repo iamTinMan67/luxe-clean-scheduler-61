@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle2, Clock, MapPin, User, Car, CalendarClock } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { toast } from "sonner";
 
 const ProgressPage = () => {
   // Mock booking data - in a real app, this would come from your API/backend
@@ -27,6 +28,39 @@ const ProgressPage = () => {
       { id: 8, name: "Customer Review", completed: false, estimatedTime: "10 minutes" }
     ]
   });
+  
+  // Function to send text report to customer
+  const sendTextReport = () => {
+    // In a real app, this would use an SMS API service
+    console.log("Sending text report to customer:", booking.customerName);
+    toast.success("Text report sent to customer", {
+      description: `A completion report has been sent to ${booking.customerName}`
+    });
+  };
+  
+  // Function to update planner calendar status
+  const updatePlannerCalendar = () => {
+    // Get bookings from localStorage
+    const pendingBookingsStr = localStorage.getItem('pendingBookings');
+    if (!pendingBookingsStr) return;
+    
+    try {
+      const pendingBookings = JSON.parse(pendingBookingsStr);
+      // Find the current booking in pendingBookings by ID and update its status
+      const updatedBookings = pendingBookings.map((b: any) => {
+        if (b.id === booking.id) {
+          return { ...b, status: "completed" };
+        }
+        return b;
+      });
+      
+      // Save updated bookings back to localStorage
+      localStorage.setItem('pendingBookings', JSON.stringify(updatedBookings));
+      console.log("Updated booking status in planner calendar:", booking.id);
+    } catch (error) {
+      console.error("Error updating planner calendar:", error);
+    }
+  };
   
   // In a real app, you would fetch the booking status periodically
   useEffect(() => {
@@ -63,6 +97,15 @@ const ProgressPage = () => {
     return () => clearInterval(interval);
   }, []);
   
+  // Add effect to handle completion
+  useEffect(() => {
+    // When service is completed (100%), send text and update calendar
+    if (booking.status === "completed" && booking.progressPercentage === 100) {
+      sendTextReport();
+      updatePlannerCalendar();
+    }
+  }, [booking.status, booking.progressPercentage]);
+  
   // Calculate the current active step
   const currentStepIndex = booking.steps.findIndex(step => !step.completed);
   const currentStep = currentStepIndex !== -1 ? booking.steps[currentStepIndex] : null;
@@ -89,7 +132,7 @@ const ProgressPage = () => {
             className="text-center max-w-3xl mx-auto mb-16"
           >
             <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-              Track Your <span className="text-gold">Service Progress</span>
+              Track Your <span className="text-gold">Valet</span>
             </h1>
             <p className="text-xl text-gray-300">
               Follow the real-time status of your vehicle's detailing process
