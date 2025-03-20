@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { format, addDays, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, parseISO } from "date-fns";
@@ -44,7 +43,12 @@ const PlannerCalendar = () => {
         // Parse the JSON and convert date strings to Date objects
         const parsedBookings = JSON.parse(savedBookings).map((booking: any) => ({
           ...booking,
-          date: typeof booking.date === 'string' ? parseISO(booking.date) : new Date(booking.date)
+          date: new Date(booking.date),
+          // Add default time slots based on the booking time
+          startTime: booking.time || "09:00",
+          endTime: booking.time ? 
+            `${parseInt(booking.time.split(':')[0]) + 2}:${booking.time.split(':')[1]}` : 
+            "11:00"
         }));
         setPendingBookings(parsedBookings);
       } catch (error) {
@@ -93,12 +97,13 @@ const PlannerCalendar = () => {
     }
   ];
   
-  // Filter events for the selected date
-  const filteredPendingBookings = pendingBookings.filter(booking => 
-    booking.date instanceof Date && isSameDay(booking.date, date)
-  );
+  // Filter events for the selected date - include both confirmed and pending
+  const filteredBookings = [...confirmedBookings, ...pendingBookings].filter(booking => {
+    const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
+    return isSameDay(bookingDate, date);
+  });
   
-  // Get schedule for the selected view
+  // Get schedule for the selected view - include both confirmed and pending
   const getScheduleForView = () => {
     let daysToShow: Date[];
     
@@ -112,9 +117,10 @@ const PlannerCalendar = () => {
     }
     
     return daysToShow.map(day => {
-      const dayBookings = confirmedBookings.filter(booking => 
-        isSameDay(booking.date, day)
-      );
+      const dayBookings = [...confirmedBookings, ...pendingBookings].filter(booking => {
+        const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
+        return isSameDay(bookingDate, day);
+      });
       
       return {
         date: day,
@@ -181,9 +187,10 @@ const PlannerCalendar = () => {
   };
   
   // Get background color based on vehicle condition
-  const getBookingBackground = (condition?: number) => {
-    if (condition === undefined) return "bg-gray-800 border-gray-700";
-    return condition < 5 ? "bg-orange-800 border-orange-700" : "bg-gray-800 border-gray-700";
+  const getBookingBackground = (booking: Booking) => {
+    if (booking.status === "pending") return "bg-amber-900/30 border-amber-700";
+    if (booking.condition !== undefined && booking.condition < 5) return "bg-orange-800 border-orange-700";
+    return "bg-gray-800 border-gray-700";
   };
   
   return (
@@ -224,7 +231,7 @@ const PlannerCalendar = () => {
                   {pendingBookings.map(booking => (
                     <div 
                       key={booking.id}
-                      className={`rounded-lg p-4 border ${getBookingBackground(booking.condition)}`}
+                      className={`rounded-lg p-4 border ${getBookingBackground(booking)}`}
                     >
                       <div className="flex justify-between items-start mb-3">
                         <h3 className="text-lg font-medium text-white">{booking.customer}</h3>
@@ -398,11 +405,17 @@ const PlannerCalendar = () => {
                           {daySchedule.bookings.map(booking => (
                             <div 
                               key={booking.id}
-                              className="bg-gray-800 rounded-lg p-3 border-l-4 border-gold"
+                              className={`rounded-lg p-3 border-l-4 ${
+                                booking.status === "pending" ? "border-amber-500" : "border-gold"
+                              } ${getBookingBackground(booking)}`}
                             >
                               <div className="flex justify-between items-start mb-1">
                                 <h4 className="font-medium text-white">{booking.customer}</h4>
-                                <span className="text-xs bg-green-900/30 px-2 py-0.5 rounded-full text-green-400 border border-green-700">
+                                <span className={`text-xs px-2 py-0.5 rounded-full ${
+                                  booking.status === "pending" 
+                                    ? "bg-amber-900/30 text-amber-400 border border-amber-700"
+                                    : "bg-green-900/30 text-green-400 border border-green-700"
+                                }`}>
                                   {booking.status}
                                 </span>
                               </div>
@@ -416,19 +429,21 @@ const PlannerCalendar = () => {
                                 <span>{booking.startTime} - {booking.endTime}</span>
                               </div>
                               
-                              <div className="mt-2 pt-2 border-t border-gray-700">
-                                <p className="text-xs text-gray-400 mb-1">Assigned Staff:</p>
-                                <div className="flex flex-wrap gap-1">
-                                  {booking.staff.map((staffMember, idx) => (
-                                    <span 
-                                      key={idx} 
-                                      className="text-xs bg-gray-700 px-2 py-0.5 rounded-full text-white"
-                                    >
-                                      {staffMember}
-                                    </span>
-                                  ))}
+                              {booking.staff && booking.staff.length > 0 && (
+                                <div className="mt-2 pt-2 border-t border-gray-700">
+                                  <p className="text-xs text-gray-400 mb-1">Assigned Staff:</p>
+                                  <div className="flex flex-wrap gap-1">
+                                    {booking.staff.map((staffMember, idx) => (
+                                      <span 
+                                        key={idx} 
+                                        className="text-xs bg-gray-700 px-2 py-0.5 rounded-full text-white"
+                                      >
+                                        {staffMember}
+                                      </span>
+                                    ))}
+                                  </div>
                                 </div>
-                              </div>
+                              )}
                             </div>
                           ))}
                         </div>
