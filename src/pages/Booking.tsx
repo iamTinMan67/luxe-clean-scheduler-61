@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Calendar } from "@/components/ui/calendar";
@@ -21,6 +21,11 @@ const Booking = () => {
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
   const [contactPreference, setContactPreference] = useState("email");
+
+  // Add this useEffect to scroll to the top when the component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   // Retrieve the vehicle details and total price from localStorage
   const vehicleDetails = localStorage.getItem('vehicleDetails')
