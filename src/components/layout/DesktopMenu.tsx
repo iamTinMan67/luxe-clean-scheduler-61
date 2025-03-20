@@ -19,7 +19,6 @@ const DesktopMenu = ({ adminRoutes }: DesktopMenuProps) => {
     <nav className="hidden md:flex items-center space-x-1">
       <NavLink to="/">Home</NavLink>
       <NavLink to="/packages">Packages</NavLink>
-      <NavLink to="/booking">Booking</NavLink>
       <NavLink to="/gallery">Gallery</NavLink>
       <NavLink to="/progress">Track Progress</NavLink>
       
