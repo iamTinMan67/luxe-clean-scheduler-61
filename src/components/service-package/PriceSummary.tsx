@@ -16,6 +16,12 @@ const PriceSummary: React.FC<PriceSummaryProps> = ({
   calculateTotalPrice,
   onContinueToBooking,
 }) => {
+  const handleContinueClick = () => {
+    // Force scroll to top before navigation
+    window.scrollTo(0, 0);
+    onContinueToBooking();
+  };
+
   return (
     <>
       <div className="max-w-3xl mx-auto bg-gray-900/50 backdrop-blur-sm rounded-lg p-6 mb-16 border border-gray-800">
@@ -63,7 +69,7 @@ const PriceSummary: React.FC<PriceSummaryProps> = ({
       {/* CTA Button */}
       <div className="text-center">
         <button
-          onClick={onContinueToBooking}
+          onClick={handleContinueClick}
           className="gold-gradient text-black px-8 py-3 rounded-md font-medium text-lg inline-flex items-center hover:shadow-lg hover:shadow-gold/20 transition-all"
         >
           Continue to Booking

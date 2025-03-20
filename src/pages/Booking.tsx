@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -22,9 +21,15 @@ const Booking = () => {
   const [notes, setNotes] = useState("");
   const [contactPreference, setContactPreference] = useState("email");
 
-  // Add this useEffect to scroll to the top when the component mounts
+  // Enhanced useEffect to scroll to the top when the component mounts
   useEffect(() => {
-    window.scrollTo(0, 0);
+    // Using setTimeout to ensure this happens after the render
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'auto'
+      });
+    }, 0);
   }, []);
 
   // Retrieve the vehicle details and total price from localStorage

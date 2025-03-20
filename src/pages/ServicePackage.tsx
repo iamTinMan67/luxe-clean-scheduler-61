@@ -43,6 +43,8 @@ const ServicePackage = () => {
     localStorage.setItem('vehicleDetails', JSON.stringify(vehicles));
     localStorage.setItem('totalPrice', getTotalPrice().toString());
     
+    // Force scroll to top before navigation
+    window.scrollTo(0, 0);
     navigate('/booking');
   };
   
