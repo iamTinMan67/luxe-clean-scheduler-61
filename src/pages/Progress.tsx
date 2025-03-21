@@ -1,9 +1,9 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle2, Clock, MapPin, User, Car, CalendarClock } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
+import { Invoice } from "@/lib/types";
 
 const ProgressPage = () => {
   // Mock booking data - in a real app, this would come from your API/backend
@@ -17,6 +17,7 @@ const ProgressPage = () => {
     location: "23 Hillcrest Avenue, London",
     status: "in-progress", // pending, confirmed, in-progress, completed
     progressPercentage: 65,
+    totalPrice: 299,
     steps: [
       { id: 1, name: "Booking Confirmed", completed: true, time: "2023-09-10 14:30" },
       { id: 2, name: "Pre-inspection Completed", completed: true, time: "2023-09-15 10:00" },
@@ -38,24 +39,115 @@ const ProgressPage = () => {
     });
   };
   
+  // Function to generate an invoice for the completed booking
+  const generateInvoice = () => {
+    // Calculate subtotal, tax, and total
+    const subtotal = booking.totalPrice;
+    const tax = subtotal * 0.2; // 20% VAT
+    const total = subtotal + tax;
+    
+    // Create invoice items based on package type
+    const items = [
+      {
+        description: `${booking.packageType} Package for ${booking.vehicleType}`,
+        quantity: 1,
+        unitPrice: subtotal,
+        total: subtotal
+      }
+    ];
+    
+    // Create the invoice object
+    const invoice: Invoice = {
+      id: `INV-${Math.floor(Math.random() * 90000) + 10000}`,
+      bookingId: booking.id,
+      customerId: booking.id, // Using booking ID as customer ID for simplicity
+      items: items,
+      subtotal: subtotal,
+      tax: tax,
+      total: total,
+      paid: false,
+      date: new Date()
+    };
+    
+    // Save invoice to localStorage
+    const existingInvoices = localStorage.getItem('invoices') 
+      ? JSON.parse(localStorage.getItem('invoices') || '[]') 
+      : [];
+    
+    localStorage.setItem('invoices', JSON.stringify([...existingInvoices, invoice]));
+    
+    console.log("Generated invoice:", invoice);
+    toast.success("Invoice generated", {
+      description: `Invoice #${invoice.id} has been created for ${booking.customerName}`
+    });
+    
+    return invoice;
+  };
+  
   // Function to update planner calendar status
   const updatePlannerCalendar = () => {
     // Get bookings from localStorage
     const pendingBookingsStr = localStorage.getItem('pendingBookings');
-    if (!pendingBookingsStr) return;
+    const confirmedBookingsStr = localStorage.getItem('confirmedBookings');
     
     try {
-      const pendingBookings = JSON.parse(pendingBookingsStr);
-      // Find the current booking in pendingBookings by ID and update its status
-      const updatedBookings = pendingBookings.map((b: any) => {
-        if (b.id === booking.id) {
-          return { ...b, status: "completed" };
-        }
-        return b;
-      });
+      // Update pending bookings if they exist
+      if (pendingBookingsStr) {
+        const pendingBookings = JSON.parse(pendingBookingsStr);
+        // Find the current booking in pendingBookings by ID and update its status
+        const updatedPendingBookings = pendingBookings.filter((b: any) => b.id !== booking.id);
+        localStorage.setItem('pendingBookings', JSON.stringify(updatedPendingBookings));
+      }
       
-      // Save updated bookings back to localStorage
-      localStorage.setItem('pendingBookings', JSON.stringify(updatedBookings));
+      // Update confirmed bookings if they exist
+      if (confirmedBookingsStr) {
+        const confirmedBookings = JSON.parse(confirmedBookingsStr);
+        // Find the current booking in confirmedBookings by ID and update its status or add it
+        const existingIndex = confirmedBookings.findIndex((b: any) => b.id === booking.id);
+        
+        if (existingIndex >= 0) {
+          // Update existing booking
+          confirmedBookings[existingIndex] = { 
+            ...confirmedBookings[existingIndex], 
+            status: "completed",
+            totalPrice: booking.totalPrice
+          };
+        } else {
+          // Add new completed booking
+          confirmedBookings.push({
+            id: booking.id,
+            customer: booking.customerName,
+            vehicle: booking.vehicleType,
+            packageType: booking.packageType,
+            date: new Date(booking.date),
+            time: booking.time,
+            startTime: booking.time,
+            endTime: `${parseInt(booking.time.split(':')[0]) + 2}:${booking.time.split(':')[1]}`,
+            location: booking.location,
+            status: "completed",
+            totalPrice: booking.totalPrice
+          });
+        }
+        
+        localStorage.setItem('confirmedBookings', JSON.stringify(confirmedBookings));
+      } else {
+        // Create confirmedBookings if it doesn't exist
+        const newCompletedBooking = {
+          id: booking.id,
+          customer: booking.customerName,
+          vehicle: booking.vehicleType,
+          packageType: booking.packageType,
+          date: new Date(booking.date),
+          time: booking.time,
+          startTime: booking.time,
+          endTime: `${parseInt(booking.time.split(':')[0]) + 2}:${booking.time.split(':')[1]}`,
+          location: booking.location,
+          status: "completed",
+          totalPrice: booking.totalPrice
+        };
+        localStorage.setItem('confirmedBookings', JSON.stringify([newCompletedBooking]));
+      }
+      
       console.log("Updated booking status in planner calendar:", booking.id);
     } catch (error) {
       console.error("Error updating planner calendar:", error);
@@ -99,10 +191,11 @@ const ProgressPage = () => {
   
   // Add effect to handle completion
   useEffect(() => {
-    // When service is completed (100%), send text and update calendar
+    // When service is completed (100%), send text, update calendar, and generate invoice
     if (booking.status === "completed" && booking.progressPercentage === 100) {
       sendTextReport();
       updatePlannerCalendar();
+      generateInvoice();
     }
   }, [booking.status, booking.progressPercentage]);
   

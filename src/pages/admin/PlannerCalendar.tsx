@@ -9,6 +9,7 @@ import {
   Clock, User, Car, MapPin, CheckCircle2, AlertCircle 
 } from "lucide-react";
 import { toast } from "sonner";
+import { Invoice } from "@/lib/types";
 
 // Define the booking type for better type safety
 interface Booking {
@@ -24,16 +25,17 @@ interface Booking {
   contact?: string;
   email?: string;
   notes?: string;
-  status: "pending" | "confirmed" | "cancelled";
+  status: "pending" | "confirmed" | "cancelled" | "in-progress" | "completed";
   condition?: number;
   staff?: string[];
   createdAt?: string;
+  totalPrice?: number;
 }
 
 const PlannerCalendar = () => {
   const [date, setDate] = useState<Date>(new Date());
-  const [view, setView] = useState<"daily" | "weekly">("daily");
-  const [pendingBookings, setPendingBookings] = useState<Booking[]>([]);
+  const [view, setView<"daily" | "weekly">("daily");
+  const [pendingBookings, setPendingBookings<Booking[]>([]);
   
   // Load saved bookings from localStorage on component mount
   useEffect(() => {
@@ -148,6 +150,60 @@ const PlannerCalendar = () => {
     setDate(new Date());
   };
   
+  // Generate invoice for a confirmed booking
+  const generateInvoice = (booking: Booking) => {
+    // Calculate subtotal, tax, and total
+    const subtotal = booking.totalPrice || 0;
+    const tax = subtotal * 0.2; // 20% VAT
+    const total = subtotal + tax;
+    
+    // Create invoice items based on package type
+    const items = [
+      {
+        description: `${booking.packageType} Package for ${booking.vehicle}`,
+        quantity: 1,
+        unitPrice: subtotal,
+        total: subtotal
+      }
+    ];
+    
+    // Create the invoice object
+    const invoice: Invoice = {
+      id: `INV-${Math.floor(Math.random() * 90000) + 10000}`,
+      bookingId: booking.id,
+      customerId: booking.id, // Using booking ID as customer ID for simplicity
+      items: items,
+      subtotal: subtotal,
+      tax: tax,
+      total: total,
+      paid: false,
+      date: new Date()
+    };
+    
+    // Save invoice to localStorage
+    const existingInvoices = localStorage.getItem('invoices') 
+      ? JSON.parse(localStorage.getItem('invoices') || '[]') 
+      : [];
+    
+    localStorage.setItem('invoices', JSON.stringify([...existingInvoices, invoice]));
+    
+    // Send invoice notification
+    sendInvoiceNotification(booking, invoice);
+    
+    return invoice;
+  };
+  
+  // Send invoice notification via SMS/Email
+  const sendInvoiceNotification = (booking: Booking, invoice: Invoice) => {
+    // In a real app, this would connect to SMS/Email API
+    console.log(`Sending invoice ${invoice.id} notification to ${booking.customer}`);
+    
+    // Show success toast for demo
+    toast.success("Invoice generated and sent", {
+      description: `Invoice #${invoice.id} has been sent to ${booking.customer}`,
+    });
+  };
+  
   // Handle booking actions
   const handleConfirmBooking = (bookingId: string) => {
     // Find the booking to confirm
@@ -165,13 +221,27 @@ const PlannerCalendar = () => {
       staff: ["James Carter", "Michael Scott"] // Default staff assignment
     };
     
-    // Update localStorage by removing the booking from pending and adding to confirmed
+    // Update the pending bookings list
     const updatedPendingBookings = pendingBookings.filter(booking => booking.id !== bookingId);
     setPendingBookings(updatedPendingBookings);
+    
+    // Update localStorage by storing the updated pending bookings
     localStorage.setItem('pendingBookings', JSON.stringify(updatedPendingBookings));
     
-    // In a real app, you would also save the confirmed booking to your backend
-    toast.success(`Booking ${bookingId} confirmed successfully!`);
+    // Store confirmed bookings separately in localStorage
+    const existingConfirmedBookings = localStorage.getItem('confirmedBookings') 
+      ? JSON.parse(localStorage.getItem('confirmedBookings') || '[]') 
+      : [];
+    
+    localStorage.setItem('confirmedBookings', JSON.stringify([...existingConfirmedBookings, confirmedBooking]));
+    
+    // Generate invoice for the confirmed booking
+    const invoice = generateInvoice(confirmedBooking);
+    
+    // Show success message
+    toast.success(`Booking ${bookingId} confirmed successfully!`, {
+      description: "The booking has been added to your schedule."
+    });
   };
   
   const handleCancelBooking = (bookingId: string) => {
