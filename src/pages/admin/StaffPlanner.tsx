@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { format, addDays, parseISO } from "date-fns";
 import { Pencil, Trash2, CalendarClock } from "lucide-react";
 
-// Define the booking type
+// Define the booking type with a more specific status type
 interface Booking {
   id: string;
   customer: string;
@@ -32,6 +32,14 @@ interface Booking {
   totalPrice?: number;
 }
 
+// Helper function to validate booking status
+const validateBookingStatus = (status: string): "pending" | "confirmed" | "cancelled" | "in-progress" | "completed" => {
+  const validStatuses = ["pending", "confirmed", "cancelled", "in-progress", "completed"];
+  return validStatuses.includes(status) 
+    ? (status as "pending" | "confirmed" | "cancelled" | "in-progress" | "completed") 
+    : "pending"; // Default to pending if invalid status
+};
+
 const StaffPlanner = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [view, setView] = useState("daily");
@@ -49,7 +57,9 @@ const StaffPlanner = () => {
       try {
         const parsedBookings = JSON.parse(savedPendingBookings).map((booking: any) => ({
           ...booking,
-          date: new Date(booking.date)
+          date: new Date(booking.date),
+          // Ensure status is valid
+          status: validateBookingStatus(booking.status)
         }));
         setPendingBookings(parsedBookings);
       } catch (error) {
@@ -63,7 +73,9 @@ const StaffPlanner = () => {
       try {
         const parsedBookings = JSON.parse(savedConfirmedBookings).map((booking: any) => ({
           ...booking,
-          date: new Date(booking.date)
+          date: new Date(booking.date),
+          // Ensure status is valid
+          status: validateBookingStatus(booking.status)
         }));
         setConfirmedBookings(parsedBookings);
       } catch (error) {
@@ -215,7 +227,7 @@ const StaffPlanner = () => {
     if (!editingBooking || !newPackageType) return;
     
     // Update the booking
-    const updatedBooking = {
+    const updatedBooking: Booking = {
       ...editingBooking,
       packageType: newPackageType
     };
@@ -265,7 +277,7 @@ const StaffPlanner = () => {
     if (!editingBooking || !rescheduledDate) return;
     
     // Update the booking
-    const updatedBooking = {
+    const updatedBooking: Booking = {
       ...editingBooking,
       date: rescheduledDate
     };
@@ -301,7 +313,7 @@ const StaffPlanner = () => {
   // Mark booking as completed
   const handleCompleteBooking = (booking: Booking) => {
     // Update the booking
-    const updatedBooking = {
+    const updatedBooking: Booking = {
       ...booking,
       status: "completed"
     };
