@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { format, addDays, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, parseISO } from "date-fns";
@@ -34,8 +35,8 @@ interface Booking {
 
 const PlannerCalendar = () => {
   const [date, setDate] = useState<Date>(new Date());
-  const [view, setView<"daily" | "weekly">("daily");
-  const [pendingBookings, setPendingBookings<Booking[]>([]);
+  const [view, setView] = useState<"daily" | "weekly">("daily");
+  const [pendingBookings, setPendingBookings] = useState<Booking[]>([]);
   
   // Load saved bookings from localStorage on component mount
   useEffect(() => {
