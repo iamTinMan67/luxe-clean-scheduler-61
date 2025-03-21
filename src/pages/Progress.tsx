@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CheckCircle2, Clock, MapPin, User, Car, CalendarClock } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
@@ -6,7 +7,11 @@ import { toast } from "sonner";
 import { Invoice } from "@/lib/types";
 
 const ProgressPage = () => {
-  // Mock booking data - in a real app, this would come from your API/backend
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const invoiceIdFromUrl = queryParams.get('invoiceId');
+  
+  // State for booking data
   const [booking, setBooking] = useState({
     id: "BK-12345",
     customerName: "John Smith",
@@ -30,6 +35,48 @@ const ProgressPage = () => {
     ]
   });
   
+  // Load booking data based on invoice ID if available
+  useEffect(() => {
+    if (invoiceIdFromUrl) {
+      // Try to find the invoice
+      const savedInvoices = localStorage.getItem('invoices');
+      if (savedInvoices) {
+        try {
+          const parsedInvoices = JSON.parse(savedInvoices);
+          const invoice = parsedInvoices.find((inv: any) => inv.id === invoiceIdFromUrl);
+          
+          if (invoice) {
+            // Once we have the invoice, look up the booking
+            const confirmedBookingsStr = localStorage.getItem('confirmedBookings');
+            if (confirmedBookingsStr) {
+              const confirmedBookings = JSON.parse(confirmedBookingsStr);
+              const relatedBooking = confirmedBookings.find((b: any) => b.id === invoice.bookingId);
+              
+              if (relatedBooking) {
+                // Update the booking state with the found booking data
+                setBooking({
+                  ...booking,
+                  id: relatedBooking.id,
+                  customerName: relatedBooking.customer,
+                  vehicleType: relatedBooking.vehicle,
+                  packageType: relatedBooking.packageType,
+                  date: relatedBooking.date,
+                  time: relatedBooking.time,
+                  location: relatedBooking.location,
+                  status: relatedBooking.status || "in-progress",
+                  totalPrice: relatedBooking.totalPrice || booking.totalPrice,
+                  // Keep the existing steps as they're not stored in the booking
+                });
+              }
+            }
+          }
+        } catch (error) {
+          console.error('Error loading data for invoice:', error);
+        }
+      }
+    }
+  }, [invoiceIdFromUrl]);
+  
   // Function to send text report to customer
   const sendTextReport = () => {
     // In a real app, this would use an SMS API service
@@ -39,8 +86,45 @@ const ProgressPage = () => {
     });
   };
   
+  // Function to send completion and feedback request
+  const sendCompletionSMS = () => {
+    // This would be implemented with a real SMS service
+    console.log(`Sending completion SMS to ${booking.customerName}`);
+    
+    // Generate feedback URL with the invoice ID
+    const relatedInvoiceId = findInvoiceIdForBooking(booking.id);
+    const feedbackUrl = relatedInvoiceId ? `/feedback/${relatedInvoiceId}` : '/feedback';
+    
+    toast.success("Thank you message sent", {
+      description: `A thank you message with feedback request has been sent to ${booking.customerName}`
+    });
+  };
+  
+  // Helper function to find invoice ID for a booking
+  const findInvoiceIdForBooking = (bookingId: string): string | null => {
+    const savedInvoices = localStorage.getItem('invoices');
+    if (savedInvoices) {
+      try {
+        const parsedInvoices = JSON.parse(savedInvoices);
+        const invoice = parsedInvoices.find((inv: any) => inv.bookingId === bookingId);
+        return invoice ? invoice.id : null;
+      } catch (error) {
+        console.error('Error finding invoice for booking:', error);
+        return null;
+      }
+    }
+    return null;
+  };
+  
   // Function to generate an invoice for the completed booking
   const generateInvoice = () => {
+    // Check if an invoice already exists for this booking
+    const existingInvoiceId = findInvoiceIdForBooking(booking.id);
+    if (existingInvoiceId) {
+      console.log("Invoice already exists for this booking:", existingInvoiceId);
+      return { id: existingInvoiceId };
+    }
+    
     // Calculate subtotal, tax, and total
     const subtotal = booking.totalPrice;
     const tax = subtotal * 0.2; // 20% VAT
@@ -196,6 +280,7 @@ const ProgressPage = () => {
       sendTextReport();
       updatePlannerCalendar();
       generateInvoice();
+      sendCompletionSMS(); // Send the completion SMS with feedback request
     }
   }, [booking.status, booking.progressPercentage]);
   

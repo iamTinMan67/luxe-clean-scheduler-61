@@ -6,9 +6,10 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Download, Mail, MessageSquare } from "lucide-react";
+import { Download, Mail, MessageSquare, Star } from "lucide-react";
 import { toast } from "sonner";
 import { Invoice } from "@/lib/types";
+import { Link } from "react-router-dom";
 
 const Invoices = () => {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -65,6 +66,19 @@ const Invoices = () => {
     
     toast.success("Invoice download initiated", {
       description: `Your invoice #${invoice.id} is being prepared for download.`
+    });
+  };
+  
+  // Function to request customer feedback
+  const requestFeedback = (invoice: Invoice) => {
+    console.log(`Requesting feedback for invoice ${invoice.id}`);
+    
+    // Generate a feedback URL with the invoice ID
+    const feedbackUrl = `/feedback/${invoice.id}`;
+    
+    // In a real app, this would send the feedback URL to the customer
+    toast.success("Feedback request sent", {
+      description: `A feedback request has been sent to the customer for invoice #${invoice.id}.`
     });
   };
   
@@ -134,7 +148,14 @@ const Invoices = () => {
                     <TableBody>
                       {invoices.map((invoice) => (
                         <TableRow key={invoice.id} className="border-gray-800">
-                          <TableCell className="font-medium text-white">{invoice.id}</TableCell>
+                          <TableCell className="font-medium text-white">
+                            <Link 
+                              to={`/progress?invoiceId=${invoice.id}`} 
+                              className="text-gold hover:underline hover:text-gold/80 transition-colors"
+                            >
+                              {invoice.id}
+                            </Link>
+                          </TableCell>
                           <TableCell className="text-gray-300">
                             {format(new Date(invoice.date), 'dd MMM yyyy')}
                           </TableCell>
@@ -177,6 +198,15 @@ const Invoices = () => {
                                 title="Send via SMS"
                               >
                                 <MessageSquare className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="text-gray-400 hover:text-white"
+                                onClick={() => requestFeedback(invoice)}
+                                title="Request Feedback"
+                              >
+                                <Star className="h-4 w-4" />
                               </Button>
                               {!invoice.paid && (
                                 <Button

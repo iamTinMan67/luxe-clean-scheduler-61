@@ -6,6 +6,7 @@ import ServicePackage from "@/pages/ServicePackage";
 import Booking from "@/pages/Booking";
 import Progress from "@/pages/Progress";
 import Gallery from "@/pages/Gallery";
+import Feedback from "@/pages/Feedback";
 import NotFound from "@/pages/NotFound";
 import PlannerCalendar from "@/pages/admin/PlannerCalendar";
 import Dashboard from "@/pages/admin/Dashboard";
@@ -30,6 +31,7 @@ function App() {
           <Route path="/booking" element={<Booking />} />
           <Route path="/progress" element={<Progress />} />
           <Route path="/gallery" element={<Gallery />} />
+          <Route path="/feedback/:invoiceId" element={<Feedback />} />
           
           {/* Admin Routes */}
           <Route path="/admin/dashboard" element={<Dashboard />} />
