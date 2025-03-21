@@ -91,9 +91,8 @@ const ProgressPage = () => {
     // This would be implemented with a real SMS service
     console.log(`Sending completion SMS to ${booking.customerName}`);
     
-    // Generate feedback URL with the invoice ID
-    const relatedInvoiceId = findInvoiceIdForBooking(booking.id);
-    const feedbackUrl = relatedInvoiceId ? `/feedback/${relatedInvoiceId}` : '/feedback';
+    // Generate feedback URL with the invoice ID (which is now the booking.id)
+    const feedbackUrl = `/feedback/${booking.id}`;
     
     toast.success("Thank you message sent", {
       description: `A thank you message with feedback request has been sent to ${booking.customerName}`
@@ -102,27 +101,20 @@ const ProgressPage = () => {
   
   // Helper function to find invoice ID for a booking
   const findInvoiceIdForBooking = (bookingId: string): string | null => {
-    const savedInvoices = localStorage.getItem('invoices');
-    if (savedInvoices) {
-      try {
-        const parsedInvoices = JSON.parse(savedInvoices);
-        const invoice = parsedInvoices.find((inv: any) => inv.bookingId === bookingId);
-        return invoice ? invoice.id : null;
-      } catch (error) {
-        console.error('Error finding invoice for booking:', error);
-        return null;
-      }
-    }
-    return null;
+    return bookingId; // Since booking ID is now the same as invoice ID
   };
   
   // Function to generate an invoice for the completed booking
   const generateInvoice = () => {
     // Check if an invoice already exists for this booking
-    const existingInvoiceId = findInvoiceIdForBooking(booking.id);
-    if (existingInvoiceId) {
-      console.log("Invoice already exists for this booking:", existingInvoiceId);
-      return { id: existingInvoiceId };
+    const existingInvoices = localStorage.getItem('invoices') 
+      ? JSON.parse(localStorage.getItem('invoices') || '[]') 
+      : [];
+    
+    const existingInvoice = existingInvoices.find((inv: any) => inv.id === booking.id);
+    if (existingInvoice) {
+      console.log("Invoice already exists for this booking:", existingInvoice.id);
+      return existingInvoice;
     }
     
     // Calculate subtotal, tax, and total
@@ -140,9 +132,9 @@ const ProgressPage = () => {
       }
     ];
     
-    // Create the invoice object
+    // Create the invoice object using booking ID
     const invoice: Invoice = {
-      id: `INV-${Math.floor(Math.random() * 90000) + 10000}`,
+      id: booking.id, // Use booking ID as invoice ID
       bookingId: booking.id,
       customerId: booking.id, // Using booking ID as customer ID for simplicity
       items: items,
@@ -154,15 +146,11 @@ const ProgressPage = () => {
     };
     
     // Save invoice to localStorage
-    const existingInvoices = localStorage.getItem('invoices') 
-      ? JSON.parse(localStorage.getItem('invoices') || '[]') 
-      : [];
-    
     localStorage.setItem('invoices', JSON.stringify([...existingInvoices, invoice]));
     
     console.log("Generated invoice:", invoice);
     toast.success("Invoice generated", {
-      description: `Invoice #${invoice.id} has been created for ${booking.customerName}`
+      description: `Invoice for booking #${invoice.id} has been created for ${booking.customerName}`
     });
     
     return invoice;

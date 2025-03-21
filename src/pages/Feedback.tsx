@@ -34,12 +34,13 @@ const Feedback = () => {
               date: new Date(foundInvoice.date)
             });
             
+            // Since the booking ID is the same as the invoice ID, we can use it directly
             // Load customer info from confirmed bookings
             const confirmedBookings = localStorage.getItem('confirmedBookings');
             if (confirmedBookings) {
               const parsedBookings = JSON.parse(confirmedBookings);
               const relatedBooking = parsedBookings.find((booking: any) => 
-                booking.id === foundInvoice.bookingId
+                booking.id === invoiceId // Use invoiceId directly since it's the same as bookingId
               );
               
               if (relatedBooking) {

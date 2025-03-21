@@ -168,9 +168,9 @@ const PlannerCalendar = () => {
       }
     ];
     
-    // Create the invoice object
+    // Create the invoice object - Using the booking.id as the invoice ID
     const invoice: Invoice = {
-      id: `INV-${Math.floor(Math.random() * 90000) + 10000}`,
+      id: booking.id, // Use booking ID as invoice ID
       bookingId: booking.id,
       customerId: booking.id, // Using booking ID as customer ID for simplicity
       items: items,
@@ -186,10 +186,17 @@ const PlannerCalendar = () => {
       ? JSON.parse(localStorage.getItem('invoices') || '[]') 
       : [];
     
-    localStorage.setItem('invoices', JSON.stringify([...existingInvoices, invoice]));
+    // Check if an invoice with this ID already exists
+    const invoiceExists = existingInvoices.some((inv: Invoice) => inv.id === booking.id);
     
-    // Send invoice notification
-    sendInvoiceNotification(booking, invoice);
+    if (!invoiceExists) {
+      localStorage.setItem('invoices', JSON.stringify([...existingInvoices, invoice]));
+      
+      // Send invoice notification
+      sendInvoiceNotification(booking, invoice);
+    } else {
+      console.log(`Invoice for booking ${booking.id} already exists. Skipping creation.`);
+    }
     
     return invoice;
   };

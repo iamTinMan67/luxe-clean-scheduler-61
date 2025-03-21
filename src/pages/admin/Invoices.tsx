@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
@@ -73,12 +72,12 @@ const Invoices = () => {
   const requestFeedback = (invoice: Invoice) => {
     console.log(`Requesting feedback for invoice ${invoice.id}`);
     
-    // Generate a feedback URL with the invoice ID
+    // Generate a feedback URL with the invoice ID (which is now the booking ID)
     const feedbackUrl = `/feedback/${invoice.id}`;
     
     // In a real app, this would send the feedback URL to the customer
     toast.success("Feedback request sent", {
-      description: `A feedback request has been sent to the customer for invoice #${invoice.id}.`
+      description: `A feedback request has been sent to the customer for booking #${invoice.id}.`
     });
   };
   
@@ -137,9 +136,8 @@ const Invoices = () => {
                   <Table>
                     <TableHeader>
                       <TableRow className="border-gray-800">
-                        <TableHead className="text-gray-400">Invoice #</TableHead>
+                        <TableHead className="text-gray-400">Booking/Invoice #</TableHead>
                         <TableHead className="text-gray-400">Date</TableHead>
-                        <TableHead className="text-gray-400">Booking ID</TableHead>
                         <TableHead className="text-gray-400">Amount</TableHead>
                         <TableHead className="text-gray-400">Status</TableHead>
                         <TableHead className="text-gray-400">Actions</TableHead>
@@ -159,7 +157,6 @@ const Invoices = () => {
                           <TableCell className="text-gray-300">
                             {format(new Date(invoice.date), 'dd MMM yyyy')}
                           </TableCell>
-                          <TableCell className="text-gray-300">{invoice.bookingId}</TableCell>
                           <TableCell className="text-gold font-medium">{formatCurrency(invoice.total)}</TableCell>
                           <TableCell>
                             <Badge 
