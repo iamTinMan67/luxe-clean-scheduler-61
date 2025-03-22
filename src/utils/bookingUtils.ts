@@ -1,4 +1,5 @@
 
+// Make sure this file doesn't already exist, since we're recreating it
 import { Booking } from "@/types/booking";
 import { toast } from "sonner";
 

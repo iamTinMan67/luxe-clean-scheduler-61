@@ -1,4 +1,3 @@
-
 // Define the booking type with a specific status type
 export interface Booking {
   id: string;
