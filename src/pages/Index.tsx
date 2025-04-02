@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, Droplets, ThumbsUp, Leaf, Shield, Zap } from "lucide-react";

@@ -24,7 +24,6 @@ const MobileMenu = ({ isOpen, adminRoutes }: MobileMenuProps) => {
     >
       <nav className="flex flex-col p-4">
         <NavLink to="/" isMobile>Home</NavLink>
-        <NavLink to="/packages" isMobile>Packages</NavLink>
         <NavLink to="/gallery" isMobile>Gallery</NavLink>
         
         <button

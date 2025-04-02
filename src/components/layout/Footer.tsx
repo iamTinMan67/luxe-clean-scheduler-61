@@ -7,23 +7,17 @@ import FooterCopyright from "./FooterCopyright";
 
 const Footer = () => {
   const serviceLinks = [
-    { to: "/packages", label: "Basic Package" },
-    { to: "/packages", label: "Medium Package" },
-    { to: "/packages", label: "Premium Package" },
-    { to: "/packages", label: "Commercial Fleet Service" }
+    { to: "/services", label: "Main Package" },
+    { to: "/services", label: "Elite Package" },
+    { to: "/services", label: "Commercial Fleet Service" }
   ];
   
-  const quickLinks = [
-    { to: "/", label: "Home" },
-    { to: "/packages", label: "Packages" },
-    { to: "/gallery", label: "Gallery" },
-    { to: "/progress", label: "Track Progress" }
-  ];
+  // Remove Quick Links section
   
   return (
     <footer className="bg-black border-t border-gold/20 pt-16 pb-8 px-4 animate-fade-in">
       <div className="container mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           <div>
             <h3 className="text-xl font-bold text-white mb-4">Mid Cheshire Valeting</h3>
             <p className="text-gray-300 mb-4 max-w-md">
@@ -35,10 +29,6 @@ const Footer = () => {
           
           <FooterSection title="Services">
             <FooterLinks links={serviceLinks} />
-          </FooterSection>
-          
-          <FooterSection title="Quick Links">
-            <FooterLinks links={quickLinks} />
           </FooterSection>
           
           <FooterSection title="Contact Us">

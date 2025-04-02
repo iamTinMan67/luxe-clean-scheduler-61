@@ -33,6 +33,9 @@ export const usePlannerCalendar = () => {
       }
     }
 
+    // Look for both standard confirmed bookings and planner calendar bookings
+    let allConfirmedBookings: Booking[] = [];
+    
     const savedConfirmedBookings = localStorage.getItem('confirmedBookings');
     if (savedConfirmedBookings) {
       try {
@@ -41,11 +44,33 @@ export const usePlannerCalendar = () => {
           date: new Date(booking.date),
           status: validateBookingStatus(booking.status)
         }));
-        setConfirmedBookings(parsedBookings);
+        allConfirmedBookings = [...allConfirmedBookings, ...parsedBookings];
       } catch (error) {
         console.error('Error parsing confirmed bookings:', error);
       }
     }
+    
+    // Also check for bookings added directly to planner calendar
+    const plannerCalendarBookings = localStorage.getItem('plannerCalendarBookings');
+    if (plannerCalendarBookings) {
+      try {
+        const parsedBookings = JSON.parse(plannerCalendarBookings).map((booking: any) => ({
+          ...booking,
+          date: new Date(booking.date),
+          status: validateBookingStatus(booking.status)
+        }));
+        
+        // Merge bookings, avoiding duplicates by ID
+        const existingIds = new Set(allConfirmedBookings.map(b => b.id));
+        const uniquePlannerBookings = parsedBookings.filter((b: Booking) => !existingIds.has(b.id));
+        
+        allConfirmedBookings = [...allConfirmedBookings, ...uniquePlannerBookings];
+      } catch (error) {
+        console.error('Error parsing planner calendar bookings:', error);
+      }
+    }
+    
+    setConfirmedBookings(allConfirmedBookings);
   }, []);
   
   // Filter events for the selected date - include both confirmed and pending
@@ -129,6 +154,17 @@ export const usePlannerCalendar = () => {
     
     // Store confirmed bookings separately in localStorage
     localStorage.setItem('confirmedBookings', JSON.stringify(updatedConfirmedBookings));
+    
+    // Also store in plannerCalendarBookings for consistency
+    const existingPlannerData = localStorage.getItem('plannerCalendarBookings') || '[]';
+    try {
+      const plannerBookings = JSON.parse(existingPlannerData);
+      plannerBookings.push(confirmedBooking);
+      localStorage.setItem('plannerCalendarBookings', JSON.stringify(plannerBookings));
+    } catch (e) {
+      console.error('Error updating planner calendar:', e);
+      localStorage.setItem('plannerCalendarBookings', JSON.stringify([confirmedBooking]));
+    }
     
     // Generate invoice for the confirmed booking
     generateInvoice(confirmedBooking);

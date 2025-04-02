@@ -35,8 +35,19 @@ export const useBookingActions = (
     // Generate invoice
     generateInvoice(confirmedBooking);
     
+    // Also update planner calendar data
+    const existingPlannerData = localStorage.getItem('plannerCalendarBookings') || '[]';
+    try {
+      const plannerBookings = JSON.parse(existingPlannerData);
+      plannerBookings.push(confirmedBooking);
+      localStorage.setItem('plannerCalendarBookings', JSON.stringify(plannerBookings));
+    } catch (e) {
+      console.error('Error updating planner calendar:', e);
+      localStorage.setItem('plannerCalendarBookings', JSON.stringify([confirmedBooking]));
+    }
+    
     toast.success("Booking confirmed", {
-      description: `Booking for ${booking.customer} has been confirmed.`
+      description: `Booking for ${booking.customer} has been confirmed and added to the calendar.`
     });
   };
   
@@ -52,6 +63,16 @@ export const useBookingActions = (
       const updatedConfirmedBookings = confirmedBookings.filter(b => b.id !== booking.id);
       setConfirmedBookings(updatedConfirmedBookings);
       localStorage.setItem('confirmedBookings', JSON.stringify(updatedConfirmedBookings));
+      
+      // Also remove from planner calendar if present
+      try {
+        const existingPlannerData = localStorage.getItem('plannerCalendarBookings') || '[]';
+        const plannerBookings = JSON.parse(existingPlannerData);
+        const updatedPlannerBookings = plannerBookings.filter((b: Booking) => b.id !== booking.id);
+        localStorage.setItem('plannerCalendarBookings', JSON.stringify(updatedPlannerBookings));
+      } catch (e) {
+        console.error('Error removing booking from planner calendar:', e);
+      }
     }
     
     toast.success("Booking deleted", {
@@ -73,6 +94,18 @@ export const useBookingActions = (
     );
     setConfirmedBookings(updatedConfirmedBookings);
     localStorage.setItem('confirmedBookings', JSON.stringify(updatedConfirmedBookings));
+    
+    // Also update in planner calendar if present
+    try {
+      const existingPlannerData = localStorage.getItem('plannerCalendarBookings') || '[]';
+      const plannerBookings = JSON.parse(existingPlannerData);
+      const updatedPlannerBookings = plannerBookings.map((b: Booking) => 
+        b.id === updatedBooking.id ? updatedBooking : b
+      );
+      localStorage.setItem('plannerCalendarBookings', JSON.stringify(updatedPlannerBookings));
+    } catch (e) {
+      console.error('Error updating booking status in planner calendar:', e);
+    }
     
     // Send completion notification with feedback link
     sendNotification(updatedBooking, "completion");
