@@ -4,31 +4,17 @@ import { PackageOption, AdditionalService } from "@/lib/types";
 // Default package options - MODIFY THESE TO CHANGE PACKAGES AND PRICES
 export const packageOptions: PackageOption[] = [
   {
-    id: "basic",
-    name: "Basic Package",
-    type: "basic",
-    description: "Essential exterior and interior cleaning for vehicles in good condition.",
+    id: "medium",
+    name: "Main Package",
+    type: "medium",
+    description: "Comprehensive cleaning with added protection for vehicles needing extra care.",
     features: [
       "Exterior hand wash",
       "Wheel and tire cleaning",
       "Windows and mirrors cleaning",
       "Interior vacuum",
       "Dashboard and console wipe down",
-      "Door panel cleaning"
-    ],
-    basePrice: {
-      car: { small: 49, medium: 59, large: 69 },
-      suv: { small: 59, medium: 69, large: 79 },
-      van: { small: 69, medium: 79, large: 89 }
-    }
-  },
-  {
-    id: "medium",
-    name: "Medium Package",
-    type: "medium",
-    description: "Comprehensive cleaning with added protection for vehicles needing extra care.",
-    features: [
-      "All Basic Package services",
+      "Door panel cleaning",
       "Clay bar treatment",
       "Wax protection",
       "Tire dressing",
@@ -48,7 +34,7 @@ export const packageOptions: PackageOption[] = [
     type: "elite",
     description: "Premium detailing with long-lasting protection for discerning vehicle owners.",
     features: [
-      "All Medium Package services",
+      "All Main Package services",
       "Paint correction",
       "Ceramic coating application",
       "Engine bay detailing",

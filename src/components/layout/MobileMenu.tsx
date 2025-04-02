@@ -26,7 +26,6 @@ const MobileMenu = ({ isOpen, adminRoutes }: MobileMenuProps) => {
         <NavLink to="/" isMobile>Home</NavLink>
         <NavLink to="/packages" isMobile>Packages</NavLink>
         <NavLink to="/gallery" isMobile>Gallery</NavLink>
-        <NavLink to="/progress" isMobile>Track Progress</NavLink>
         
         <button
           className="text-left py-3 px-4 w-full text-lg text-white flex items-center justify-between"

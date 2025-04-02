@@ -20,7 +20,6 @@ const DesktopMenu = ({ adminRoutes }: DesktopMenuProps) => {
       <NavLink to="/">Home</NavLink>
       <NavLink to="/packages">Packages</NavLink>
       <NavLink to="/gallery">Gallery</NavLink>
-      <NavLink to="/progress">Track Progress</NavLink>
       
       <AdminDropdown 
         adminRoutes={adminRoutes} 

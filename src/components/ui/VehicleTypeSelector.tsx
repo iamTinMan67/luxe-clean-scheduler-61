@@ -15,7 +15,6 @@ const VehicleTypeSelector = ({
 }: VehicleTypeSelectorProps) => {
   const vehicleTypes: Array<{ type: VehicleType; label: string }> = [
     { type: "car", label: "Car" },
-    { type: "suv", label: "SUV" },
     { type: "van", label: "Van" }
   ];
 
@@ -23,7 +22,7 @@ const VehicleTypeSelector = ({
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-semibold mb-3 text-white text-center">Select Vehicle Type</h3>
-        <div className="grid grid-cols-3 gap-3 max-w-md mx-auto">
+        <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
           {vehicleTypes.map(({ type, label }) => (
             <button
               key={type}
@@ -70,8 +69,6 @@ const VehicleIcon = ({ type, selected }: { type: VehicleType; selected: boolean 
     switch (type) {
       case "car":
         return "🚗";
-      case "suv":
-        return "🚙";
       case "van":
         return "🚐";
       default:

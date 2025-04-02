@@ -41,6 +41,7 @@ const Navbar = () => {
     { path: "/admin/inventory", label: "Inventory" },
     { path: "/admin/invoices", label: "Invoices" },
     { path: "/admin/todos", label: "To-do List" },
+    { path: "/progress", label: "Track Progress" },
   ];
 
   return (

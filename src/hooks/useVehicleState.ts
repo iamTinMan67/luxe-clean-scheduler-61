@@ -11,7 +11,7 @@ export const useVehicleState = (additionalServices: AdditionalService[]) => {
       type: "car",
       size: "medium",
       condition: 5,
-      package: "basic" as PackageType,
+      package: "medium" as PackageType,
       additionalServices: []
     }
   ]);
@@ -102,7 +102,7 @@ export const useVehicleState = (additionalServices: AdditionalService[]) => {
       type: "car",
       size: "medium",
       condition: 5,
-      package: "basic" as PackageType,
+      package: "medium" as PackageType,
       additionalServices: []
     };
     
