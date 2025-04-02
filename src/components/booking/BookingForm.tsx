@@ -9,38 +9,29 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface BookingFormProps {
   onSubmit: (formData: {
-    firstName: string;
-    lastName: string;
-    email: string;
+    yourName: string;
     phone: string;
     notes: string;
-    contactPreference: string;
   }) => void;
 }
 
 const BookingForm = ({ onSubmit }: BookingFormProps) => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
+  const [yourName, setYourName] = useState("");
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
-  const [contactPreference, setContactPreference] = useState("email");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!firstName || !lastName || !email || !phone) {
-      toast.error("Please fill in all required fields");
+    if (!yourName || !phone) {
+      toast.error("Oops! Check Again");
       return;
     }
     
     onSubmit({
-      firstName,
-      lastName,
-      email,
+      yourName,
       phone,
       notes,
-      contactPreference
     });
   };
 
@@ -48,42 +39,19 @@ const BookingForm = ({ onSubmit }: BookingFormProps) => {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-4">
         <div>
-          <Label htmlFor="firstName" className="text-white">First Name</Label>
+          <Label htmlFor="yourName" className="text-white">Your Name</Label>
           <Input 
-            id="firstName" 
-            placeholder="Enter your first name"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
+            id="yourName" 
+            placeholder="Enter your name"
+            value={yourName}
+            onChange={(e) => setYourName(e.target.value)}
             className="bg-gray-800 border-gray-700 text-white"
             required
           />
         </div>
         
-        <div>
-          <Label htmlFor="lastName" className="text-white">Last Name</Label>
-          <Input 
-            id="lastName" 
-            placeholder="Enter your last name"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            className="bg-gray-800 border-gray-700 text-white"
-            required
-          />
-        </div>
-        
-        <div>
-          <Label htmlFor="email" className="text-white">Email</Label>
-          <Input 
-            id="email" 
-            type="email"
-            placeholder="Enter your email address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="bg-gray-800 border-gray-700 text-white"
-            required
-          />
-        </div>
-        
+    
+       
         <div>
           <Label htmlFor="phone" className="text-white">Phone Number</Label>
           <Input 
@@ -96,30 +64,9 @@ const BookingForm = ({ onSubmit }: BookingFormProps) => {
           />
         </div>
         
+       
         <div>
-          <Label className="text-white">Preferred Contact Method</Label>
-          <RadioGroup 
-            value={contactPreference} 
-            onValueChange={setContactPreference}
-            className="flex gap-4 mt-2"
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="email" id="email-option" />
-              <Label htmlFor="email-option" className="text-white">Email</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="phone" id="phone-option" />
-              <Label htmlFor="phone-option" className="text-white">Phone</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="sms" id="sms-option" />
-              <Label htmlFor="sms-option" className="text-white">SMS</Label>
-            </div>
-          </RadioGroup>
-        </div>
-        
-        <div>
-          <Label htmlFor="notes" className="text-white">Additional Notes</Label>
+          <Label htmlFor="notes" className="text-white">Any Notes</Label>
           <Textarea 
             id="notes" 
             placeholder="Any special instructions or requirements?"
