@@ -2,7 +2,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, Droplets, ThumbsUp, Leaf, Shield, Zap, Check } from "lucide-react";
-import BubbleEffect from "@/components/effects/BubbleEffect";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -54,9 +53,6 @@ const Index = () => {
   
   return (
     <div className="overflow-hidden">
-      {/* Bubble Effect */}
-      <BubbleEffect />
-      
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
         {/* Hero Background */}
@@ -72,14 +68,19 @@ const Index = () => {
         
         {/* Content */}
         <div className="container mx-auto px-4 relative z-20 text-center max-w-4xl">
-          <motion.h1 
-            className="text-4xl md:text-6xl font-bold mb-6 text-white"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
+          {/* Logo at the top */}
+          <motion.div
+            className="mb-12"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7 }}
           >
-            Professional Valeting For <span className="text-gold">Exceptional</span> Cars
-          </motion.h1>
+            <img 
+              src="/lovable-uploads/db88bc12-bb88-4318-a91c-da8a3314c406.png" 
+              alt="Mid-Cheshire Valeting" 
+              className="mx-auto w-auto h-40 md:h-56"
+            />
+          </motion.div>
           
           <motion.p 
             className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto"
@@ -140,7 +141,7 @@ const Index = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              Why Choose <span className="text-gold">Mid Cheshire Valeting</span>
+              Why Choose <span className="text-gold">Mid-Cheshire Valeting</span>
             </motion.h2>
             <motion.div 
               className="w-20 h-1 bg-gold mx-auto"

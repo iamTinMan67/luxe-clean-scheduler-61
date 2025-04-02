@@ -19,18 +19,18 @@ const BubbleEffect: React.FC = () => {
   const requestRef = useRef<number>();
   const previousTimeRef = useRef<number>();
   
-  // Generate initial bubbles
+  // Generate more bubbles with varied sizes
   useEffect(() => {
-    const initialBubbles: Bubble[] = Array.from({ length: 25 }, (_, i) => ({
+    const initialBubbles: Bubble[] = Array.from({ length: 40 }, (_, i) => ({
       id: i,
-      x: Math.random() * (window.innerWidth - 100),
-      y: Math.random() * (window.innerHeight - 100),
-      size: Math.random() * 60 + 20,
+      x: Math.random() * (window.innerWidth),
+      y: Math.random() * (window.innerHeight),
+      size: Math.random() * 120 + 20, // Increased size range for more variety
       velocity: { 
-        x: (Math.random() - 0.5) * 0.5, 
-        y: (Math.random() - 0.5) * 0.5 
+        x: (Math.random() - 0.5) * 1.2, // Increased speed
+        y: (Math.random() - 0.5) * 1.2  // Increased speed
       },
-      opacity: Math.random() * 0.3 + 0.1,
+      opacity: Math.random() * 0.4 + 0.1, // Varied opacity
       hue: Math.floor(Math.random() * 360)
     }));
     
@@ -57,7 +57,7 @@ const BubbleEffect: React.FC = () => {
     };
   }, []);
   
-  // Animation loop
+  // Enhanced animation loop
   useEffect(() => {
     const animate = (time: number) => {
       if (previousTimeRef.current !== undefined) {
@@ -74,8 +74,8 @@ const BubbleEffect: React.FC = () => {
             let newVelocityX = bubble.velocity.x;
             let newVelocityY = bubble.velocity.y;
             
-            if (distance < 300) {  // Increased detection range
-              const repulsionStrength = 0.15;  // Increased strength
+            if (distance < 350) {  // Increased detection range even more
+              const repulsionStrength = 0.3;  // Increased strength for more bounce
               const repulsionForceX = (dx / distance) * repulsionStrength;
               const repulsionForceY = (dy / distance) * repulsionStrength;
               
@@ -83,24 +83,23 @@ const BubbleEffect: React.FC = () => {
               newVelocityY -= repulsionForceY;
             }
             
-            // Apply drag force
-            newVelocityX *= 0.98;  // Slightly reduced drag for more movement
-            newVelocityY *= 0.98;
+            // Apply less drag for more persistent movement
+            newVelocityX *= 0.99;  
+            newVelocityY *= 0.99;
             
-            // Calculate new position
-            let newX = bubble.x + newVelocityX * (deltaTime / 16);
-            let newY = bubble.y + newVelocityY * (deltaTime / 16);
+            // Add a small random movement for more natural motion
+            newVelocityX += (Math.random() - 0.5) * 0.03;
+            newVelocityY += (Math.random() - 0.5) * 0.03;
             
-            // Boundary check
-            if (newX < 0 || newX > window.innerWidth) {
-              newVelocityX = -newVelocityX;
-              newX = bubble.x;
-            }
+            // Calculate new position with increased speed
+            let newX = bubble.x + newVelocityX * (deltaTime / 12); // Increased speed
+            let newY = bubble.y + newVelocityY * (deltaTime / 12); // Increased speed
             
-            if (newY < 0 || newY > window.innerHeight) {
-              newVelocityY = -newVelocityY;
-              newY = bubble.y;
-            }
+            // Wrap around boundaries instead of bouncing for continuous flow
+            if (newX < -bubble.size) newX = window.innerWidth + bubble.size;
+            if (newX > window.innerWidth + bubble.size) newX = -bubble.size;
+            if (newY < -bubble.size) newY = window.innerHeight + bubble.size;
+            if (newY > window.innerHeight + bubble.size) newY = -bubble.size;
             
             return {
               ...bubble,
@@ -127,7 +126,7 @@ const BubbleEffect: React.FC = () => {
   return (
     <div 
       ref={containerRef} 
-      className="fixed inset-0 pointer-events-none overflow-hidden z-30"
+      className="fixed inset-0 pointer-events-none overflow-hidden z-0" // Changed z-index to 0 to be behind content
       aria-hidden="true"
     >
       {bubbles.map((bubble) => (
@@ -151,12 +150,18 @@ const BubbleEffect: React.FC = () => {
           animate={{
             x: bubble.x,
             y: bubble.y,
+            scale: [1, 1.02, 0.98, 1], // Add subtle pulsing animation
           }}
           transition={{
+            scale: {
+              repeat: Infinity,
+              duration: 3 + Math.random() * 2,
+              ease: "easeInOut"
+            },
             type: "spring",
-            stiffness: 50,
-            damping: 20,
-            mass: 1
+            stiffness: 30,
+            damping: 10,
+            mass: 0.8
           }}
         />
       ))}

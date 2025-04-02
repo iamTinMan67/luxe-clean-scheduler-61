@@ -19,11 +19,13 @@ import InvoiceReport from "@/pages/admin/InvoiceReport";
 import Invoices from "@/pages/admin/Invoices";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import BubbleEffect from "@/components/effects/BubbleEffect";
 
 function App() {
   return (
     <div>
       <BrowserRouter>
+        <BubbleEffect /> {/* Added BubbleEffect here so it appears on all pages */}
         <Navbar />
         <Routes>
           <Route path="/" element={<Index />} />
