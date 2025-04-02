@@ -9,7 +9,7 @@ const Footer = () => {
   const serviceLinks = [
     { to: "/services", label: "Main Package" },
     { to: "/services", label: "Elite Package" },
-    { to: "/services", label: "Commercial Fleet Service" }
+    { to: "/services", label: "Commercials" }
   ];
   
   return (
@@ -19,8 +19,8 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold text-white mb-4">Mid Cheshire Valeting</h3>
             <p className="text-gray-300 mb-4 max-w-md">
-              Professional vehicle valeting service specializing in high-end vehicles profiles. 
-              We also provide solutions for commercial fleets upon request.
+              Professional valeting service striving for excellence, every time. 
+              We provide solutions for multiple bookings, block bookings and also commercial fleets upon request.
             </p>
             <SocialLinks />
           </div>
