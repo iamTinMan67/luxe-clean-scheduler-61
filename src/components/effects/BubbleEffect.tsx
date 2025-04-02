@@ -27,8 +27,8 @@ const BubbleEffect: React.FC = () => {
       y: Math.random() * (window.innerHeight),
       size: Math.random() * 120 + 20, // Increased size range for more variety
       velocity: { 
-        x: (Math.random() - 0.5) * 1.1, // Increased speed
-        y: (Math.random() - 0.5) * 1.1  // Increased speed
+        x: (Math.random() - 0.5) * 1.2, // Increased speed
+        y: (Math.random() - 0.5) * 1.2  // Increased speed
       },
       opacity: Math.random() * 0.4 + 0.1, // Varied opacity
       hue: Math.floor(Math.random() * 360)
@@ -126,7 +126,7 @@ const BubbleEffect: React.FC = () => {
   return (
     <div 
       ref={containerRef} 
-      className="fixed inset-0 pointer-events-none overflow-hidden z-50" // Changed z-index to 50 to be more transparent
+      className="fixed inset-0 pointer-events-none overflow-hidden z-0" // Changed z-index to 0 to be behind content
       aria-hidden="true"
     >
       {bubbles.map((bubble) => (
