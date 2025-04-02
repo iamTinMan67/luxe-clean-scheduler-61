@@ -1,8 +1,7 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronDown, User } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { User } from "lucide-react";
 import NavLink from "./NavLink";
 import AdminDropdown from "./AdminDropdown";
 

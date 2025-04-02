@@ -1,147 +1,122 @@
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { Calendar } from "@/components/ui/calendar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { DatePicker } from "@/components/ui/date-picker";
 import BookingForm from "@/components/booking/BookingForm";
-import DateTimeSelector from "@/components/booking/DateTimeSelector";
-import OrderSummary from "@/components/booking/OrderSummary";
 
 const Booking = () => {
   const navigate = useNavigate();
-  const [date, setDate] = useState<Date | undefined>(undefined);
-  const [time, setTime] = useState<string>("");
-
-  // Enhanced useEffect to scroll to the top when the component mounts
-  useEffect(() => {
-    // Using setTimeout to ensure this happens after the render
-    setTimeout(() => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'auto'
-      });
-    }, 0);
-  }, []);
-
-  // Retrieve the vehicle details and total price from localStorage
-  const vehicleDetails = localStorage.getItem('vehicleDetails')
-    ? JSON.parse(localStorage.getItem('vehicleDetails') || '[]')
-    : [];
-  const totalPrice = localStorage.getItem('totalPrice') || "0";
-
-  const handleFormSubmit = (formData: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-    notes: string;
-    contactPreference: string;
-  }) => {
-    if (!date) {
-      toast.error("Please select a date for your booking");
-      return;
-    }
-    
-    if (!time) {
-      toast.error("Please select a time for your booking");
-      return;
-    }
-    
-    // Create a booking object with all the relevant details
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [selectedTime, setSelectedTime] = useState("");
+  const [vehicleCondition, setVehicleCondition] = useState<number | undefined>(10);
+  
+  const timeOptions = [
+    "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"
+  ];
+  
+  const handleFormSubmit = (formData: any) => {
     const bookingData = {
-      id: `BK-${Math.floor(Math.random() * 90000) + 10000}`,
+      ...formData,
+      date: selectedDate,
+      time: selectedTime,
+      vehicleCondition: vehicleCondition
+    };
+    
+    // Retrieve existing bookings from localStorage
+    const existingBookings = localStorage.getItem('pendingBookings');
+    const bookings = existingBookings ? JSON.parse(existingBookings) : [];
+    
+    // Generate a unique ID for the new booking
+    const bookingId = Math.random().toString(36).substring(2, 15);
+    
+    // Add the new booking to the array
+    bookings.push({
+      id: bookingId,
+      ...bookingData,
+      status: "pending",
       customer: `${formData.firstName} ${formData.lastName}`,
-      vehicle: vehicleDetails.length > 0 ? `${vehicleDetails[0].type}` : "Not specified",
-      packageType: vehicleDetails.length > 0 ? vehicleDetails[0].package : "Basic",
-      date: date,
-      time: time,
-      location: "Customer address",
+      vehicle: "TBC",
+      packageType: "TBC",
+      location: "TBC",
       contact: formData.phone,
       email: formData.email,
       notes: formData.notes,
-      status: "pending",
-      condition: vehicleDetails.length > 0 ? vehicleDetails[0].condition : 5,
-      createdAt: new Date().toISOString()
-    };
-    
-    // Save booking to localStorage
-    const existingBookings = localStorage.getItem('pendingBookings') 
-      ? JSON.parse(localStorage.getItem('pendingBookings') || '[]') 
-      : [];
-    
-    localStorage.setItem('pendingBookings', JSON.stringify([...existingBookings, bookingData]));
-    
-    // In a real app, you would send this data to your backend
-    toast.success("Booking submitted successfully!", {
-      description: `We'll confirm your appointment soon.`,
+      condition: vehicleCondition
     });
     
-    // Navigate to the progress page
+    // Save the updated bookings array back to localStorage
+    localStorage.setItem('pendingBookings', JSON.stringify(bookings));
+    
+    toast.success("Booking request submitted!", {
+      description: "We'll review your request and get back to you soon.",
+    });
+    
+    // Change redirection to gallery page instead
     setTimeout(() => {
-      navigate("/progress");
+      navigate("/gallery");
     }, 2000);
   };
-
+  
   return (
-    <div className="min-h-screen bg-black">
-      <section className="relative py-24">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-center max-w-3xl mx-auto mb-16"
-          >
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-              Complete Your <span className="text-gold">Booking</span>
-            </h1>
-            <p className="text-xl text-gray-300">
-              Select your preferred date and time, and provide your contact details.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Booking Form */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="bg-gray-900/50 backdrop-blur-sm rounded-lg p-6 border border-gray-800"
-            >
-              <h2 className="text-2xl font-bold mb-6 text-white">Booking Details</h2>
-              <BookingForm onSubmit={handleFormSubmit} />
-            </motion.div>
-            
-            {/* Date and Time Selection */}
-            <div>
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="bg-gray-900/50 backdrop-blur-sm rounded-lg p-6 border border-gray-800 mb-8"
-              >
-                <h2 className="text-2xl font-bold mb-6 text-white">Select Date & Time</h2>
-                <DateTimeSelector 
-                  date={date}
-                  time={time}
-                  onDateChange={setDate}
-                  onTimeChange={setTime}
-                />
-              </motion.div>
+    <div className="min-h-screen bg-black text-white py-20">
+      <div className="container mx-auto px-4">
+        <div className="max-w-3xl mx-auto mb-12 text-center">
+          <h1 className="text-4xl font-bold mb-4">Book Your Valeting Service</h1>
+          <p className="text-gray-300">
+            Please fill out the form below to request a booking. We will confirm
+            availability and get back to you as soon as possible.
+          </p>
+        </div>
+        
+        <div className="max-w-3xl mx-auto bg-gray-900/50 backdrop-blur-sm rounded-lg p-8 border border-gray-800">
+          <div className="space-y-6">
+            {/* Calendar and Time Selection */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <Label className="text-white">Select Date</Label>
+                <DatePicker date={selectedDate} onDateChange={setSelectedDate} />
+              </div>
               
-              {/* Order Summary */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="bg-gray-900/50 backdrop-blur-sm rounded-lg p-6 border border-gray-800"
-              >
-                <OrderSummary vehicleDetails={vehicleDetails} totalPrice={totalPrice} />
-              </motion.div>
+              <div>
+                <Label className="text-white">Select Time</Label>
+                <select
+                  value={selectedTime}
+                  onChange={(e) => setSelectedTime(e.target.value)}
+                  className="w-full bg-gray-800 border-gray-700 rounded px-4 py-2 text-white"
+                >
+                  <option value="" disabled>Select a time</option>
+                  {timeOptions.map((time) => (
+                    <option key={time} value={time}>{time}</option>
+                  ))}
+                </select>
+              </div>
             </div>
+            
+            {/* Vehicle Condition */}
+            <div>
+              <Label htmlFor="vehicleCondition" className="text-white">Vehicle Condition (1-10)</Label>
+              <input
+                type="number"
+                id="vehicleCondition"
+                placeholder="Enter vehicle condition (1-10)"
+                value={vehicleCondition}
+                onChange={(e) => setVehicleCondition(Number(e.target.value))}
+                className="w-full bg-gray-800 border-gray-700 rounded px-4 py-2 text-white"
+                min="1"
+                max="10"
+              />
+            </div>
+            
+            <BookingForm onSubmit={handleFormSubmit} />
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 };

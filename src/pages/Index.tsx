@@ -1,6 +1,7 @@
+
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Droplets, ThumbsUp, Leaf, Shield, Zap } from "lucide-react";
+import { ArrowRight, Droplets, ThumbsUp, Leaf, Shield, Zap, Check } from "lucide-react";
 import BubbleEffect from "@/components/effects/BubbleEffect";
 
 const Index = () => {

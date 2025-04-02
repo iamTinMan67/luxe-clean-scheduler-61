@@ -12,8 +12,14 @@ const ContactInfo = () => {
       </li>
       <li className="flex items-center">
         <Phone className="mr-2 text-gold flex-shrink-0" size={18} />
-        <a href="tel:+440123 456 789" className="text-gray-400 hover:text-gold transition-colors duration-300">
-          +44 0123 456 789
+        <a href="tel:+447927208228" className="text-gray-400 hover:text-gold transition-colors duration-300">
+          07927 208 228
+        </a>
+      </li>
+      <li className="flex items-center">
+        <Phone className="mr-2 text-gold flex-shrink-0" size={18} />
+        <a href="tel:+447845574743" className="text-gray-400 hover:text-gold transition-colors duration-300">
+          07845 574 743
         </a>
       </li>
       <li className="flex items-center">
