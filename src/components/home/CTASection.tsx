@@ -39,7 +39,7 @@ const CTASection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            Book your service today and give your vehicle the care that <span className="text-gold">You</span> deserve.
+            Book our services and give your vehicle the care that <span className="text-gold">You</span> deserve.
           </motion.p>
           
           <motion.button 
