@@ -91,7 +91,7 @@ const BookingForm = ({ onSubmit }: BookingFormProps) => {
       </div>
       
       <Button type="submit" className="w-full gold-gradient text-black hover:shadow-xl hover:shadow-gold/20 transition-all">
-        Confirm Booking
+        Request Booking
       </Button>
     </form>
   );
