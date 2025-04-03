@@ -6,7 +6,7 @@ export const packageOptions: PackageOption[] = [
   {
     id: "medium",
     name: "Main Package",
-    type: "medium",
+    type: "small",
     description: "Comprehensive cleaning with added protection for vehicles needing extra care.",
     features: [
       "Exterior hand wash",
@@ -44,9 +44,8 @@ export const packageOptions: PackageOption[] = [
       "Carpet shampooing"
     ],
     basePrice: {
-      car: { small: 169, medium: 189, large: 209 },
-      suv: { small: 189, medium: 209, large: 229 },
-      van: { small: 209, medium: 229, large: 249 }
+      car: { small: 169 },
+      van: { small: 209 }
     }
   }
 ];
