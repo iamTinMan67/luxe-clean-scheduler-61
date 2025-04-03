@@ -27,8 +27,8 @@ const BubbleEffect: React.FC = () => {
       y: Math.random() * (window.innerHeight),
       size: Math.random() * 120 + 20, // Increased size range for more variety
       velocity: { 
-        x: (Math.random() - 0.5) * 1.1, // Increased speed
-        y: (Math.random() - 0.5) * 1.1  // Increased speed
+        x: (Math.random() - 0.5) * 0.5, // Reduced speed by 50%
+        y: (Math.random() - 0.5) * 0.5  // Reduced speed by 50%
       },
       opacity: Math.random() * 0.4 + 0.1, // Varied opacity
       hue: Math.floor(Math.random() * 360)
@@ -57,7 +57,7 @@ const BubbleEffect: React.FC = () => {
     };
   }, []);
   
-  // Enhanced animation loop
+  // Enhanced animation loop with reduced speed
   useEffect(() => {
     const animate = (time: number) => {
       if (previousTimeRef.current !== undefined) {
@@ -70,12 +70,12 @@ const BubbleEffect: React.FC = () => {
             const dy = mousePosition.y - bubble.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
             
-            // Apply stronger repulsion force when mouse is close
+            // Apply weaker repulsion force when mouse is close
             let newVelocityX = bubble.velocity.x;
             let newVelocityY = bubble.velocity.y;
             
-            if (distance < 350) {  // Increased detection range even more
-              const repulsionStrength = 0.3;  // Increased strength for more bounce
+            if (distance < 350) {  // Keep detection range
+              const repulsionStrength = 0.15;  // Reduced strength for gentler bounce
               const repulsionForceX = (dx / distance) * repulsionStrength;
               const repulsionForceY = (dy / distance) * repulsionStrength;
               
@@ -83,17 +83,17 @@ const BubbleEffect: React.FC = () => {
               newVelocityY -= repulsionForceY;
             }
             
-            // Apply less drag for more persistent movement
-            newVelocityX *= 0.99;  
-            newVelocityY *= 0.99;
+            // Apply more drag for slower movement
+            newVelocityX *= 0.98;  
+            newVelocityY *= 0.98;
             
-            // Add a small random movement for more natural motion
-            newVelocityX += (Math.random() - 0.5) * 0.03;
-            newVelocityY += (Math.random() - 0.5) * 0.03;
+            // Add smaller random movement for more gentle motion
+            newVelocityX += (Math.random() - 0.5) * 0.01; // Reduced random motion
+            newVelocityY += (Math.random() - 0.5) * 0.01; // Reduced random motion
             
-            // Calculate new position with increased speed
-            let newX = bubble.x + newVelocityX * (deltaTime / 12); // Increased speed
-            let newY = bubble.y + newVelocityY * (deltaTime / 12); // Increased speed
+            // Calculate new position with decreased speed
+            let newX = bubble.x + newVelocityX * (deltaTime / 24); // Decreased speed (doubled the divisor)
+            let newY = bubble.y + newVelocityY * (deltaTime / 24); // Decreased speed (doubled the divisor)
             
             // Wrap around boundaries instead of bouncing for continuous flow
             if (newX < -bubble.size) newX = window.innerWidth + bubble.size;
@@ -126,7 +126,7 @@ const BubbleEffect: React.FC = () => {
   return (
     <div 
       ref={containerRef} 
-      className="fixed inset-0 pointer-events-none overflow-hidden z-50" // Changed z-index to 50 to be more transparent
+      className="fixed inset-0 pointer-events-none overflow-hidden z-50"
       aria-hidden="true"
     >
       {bubbles.map((bubble) => (
@@ -150,18 +150,18 @@ const BubbleEffect: React.FC = () => {
           animate={{
             x: bubble.x,
             y: bubble.y,
-            scale: [1, 1.02, 0.98, 1], // Add subtle pulsing animation
+            scale: [1, 1.02, 0.98, 1], // Keep subtle pulsing animation
           }}
           transition={{
             scale: {
               repeat: Infinity,
-              duration: 3 + Math.random() * 2,
+              duration: 4 + Math.random() * 3, // Increased duration for slower pulse
               ease: "easeInOut"
             },
             type: "spring",
-            stiffness: 30,
-            damping: 10,
-            mass: 0.8
+            stiffness: 20, // Reduced stiffness for slower movement
+            damping: 15, // Increased damping for more controlled movement
+            mass: 1.2 // Increased mass for slower movement
           }}
         />
       ))}
