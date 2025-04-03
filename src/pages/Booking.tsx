@@ -69,7 +69,7 @@ const Booking = () => {
         <div className="max-w-3xl mx-auto mb-12 text-center">
           <h1 className="text-4xl font-bold mb-4">Book Your Valeting Service</h1>
           <p className="text-gray-300">
-            Please fill out the form below to request a booking. We will confirm
+            Please use our simple booking form. We will confirm
             availability and get back to you as soon as possible.
           </p>
         </div>
@@ -84,13 +84,13 @@ const Booking = () => {
               </div>
               
               <div>
-                <Label className="text-white">Select Time</Label>
+                <Label className="text-white">Pick a time</Label>
                 <select
                   value={selectedTime}
                   onChange={(e) => setSelectedTime(e.target.value)}
                   className="w-full bg-gray-800 border-gray-700 rounded px-4 py-2 text-white"
                 >
-                  <option value="" disabled>Select a time</option>
+                  <option value="" disabled>Pick a time</option>
                   {timeOptions.map((time) => (
                     <option key={time} value={time}>{time}</option>
                   ))}

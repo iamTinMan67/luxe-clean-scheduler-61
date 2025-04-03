@@ -39,7 +39,7 @@ const CTASection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            Book your elite valeting service today and give your vehicle the care you deserve.
+            Book your service today and give your vehicle the care that <span className="text-gold">You</span> deserve.
           </motion.p>
           
           <motion.button 
@@ -50,7 +50,7 @@ const CTASection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
-            Book Now
+            Book Me In
           </motion.button>
         </div>
       </div>

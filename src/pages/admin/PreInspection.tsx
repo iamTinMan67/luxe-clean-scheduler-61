@@ -26,7 +26,7 @@ const PreInspection = () => {
     >
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-white mb-2">Pre-Inspection Report</h1>
-        <p className="text-gold">Document the vehicle condition before service</p>
+        <p className="text-gold">Document the vehicle condition before commencement</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -162,7 +162,7 @@ const PreInspection = () => {
               
               <div className="mt-8">
                 <Button className="w-full gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg">
-                  Submit Inspection Report
+                  Submit Report
                 </Button>
               </div>
             </CardContent>

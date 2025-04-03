@@ -96,7 +96,7 @@ const Gallery = () => {
       name: "James Wilson",
       vehicle: "Bentley Continental GT",
       image: "https://images.unsplash.com/photo-1557862921-37829c790f19?q=80&w=1171&auto=format&fit=crop",
-      text: "Absolutely outstanding service. My Bentley looks better than the day I bought it. The attention to detail is remarkable, and the ceramic coating has kept it looking pristine for months."
+      text: "Absolutely outstanding service. My car looks awesome. The attention to detail is remarkable, and the ceramic coating has kept it looking pristine for months."
     },
     {
       id: 2,
