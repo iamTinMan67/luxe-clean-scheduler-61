@@ -23,8 +23,8 @@ export const packageOptions: PackageOption[] = [
       "Air freshening"
     ],
     basePrice: {
-      car: { small: 89, medium: 99, large: 109 },
-      suv: { small: 99, medium: 109, large: 119 },
+      car: { small: 79, medium: 99, large: 109 },
+      suv: { small: 89, medium: 109, large: 119 },
       van: { small: 109, medium: 119, large: 129 }
     }
   },
