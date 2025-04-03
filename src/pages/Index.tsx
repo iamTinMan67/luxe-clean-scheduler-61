@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, Droplets, ThumbsUp, Leaf, Shield, Zap, Check } from "lucide-react";
@@ -54,7 +53,7 @@ const Index = () => {
   return (
     <div className="overflow-hidden">
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden pt-16">
         {/* Hero Background */}
         <div 
           className="absolute inset-0 bg-black z-0 bg-cover bg-center bg-no-repeat brightness-50"
@@ -67,10 +66,10 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black z-10"></div>
         
         {/* Content */}
-        <div className="container mx-auto px-4 relative z-20 text-center max-w-4xl">
+        <div className="container mx-auto px-4 relative z-20 text-center max-w-4xl mt-[-6rem]">
           {/* Logo at the top */}
           <motion.div
-            className="mb-12"
+            className="mb-8"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7 }}
@@ -116,7 +115,7 @@ const Index = () => {
         
         {/* Scroll indicator */}
         <motion.div 
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20"
+          className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, y: [0, 10, 0] }}
           transition={{ 
@@ -131,9 +130,9 @@ const Index = () => {
       </section>
       
       {/* Features Section */}
-      <section className="py-20 bg-black">
+      <section className="py-16 bg-black">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <motion.h2 
               className="text-3xl md:text-4xl font-bold mb-4 text-white"
               initial={{ opacity: 0 }}
@@ -173,9 +172,9 @@ const Index = () => {
       </section>
       
       {/* Testimonials */}
-      <section className="py-20 bg-gradient-to-b from-black to-gray-900">
+      <section className="py-16 bg-gradient-to-b from-black to-gray-900">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <motion.h2 
               className="text-3xl md:text-4xl font-bold mb-4 text-white"
               initial={{ opacity: 0 }}
@@ -243,7 +242,7 @@ const Index = () => {
       </section>
       
       {/* CTA Section */}
-      <section className="py-24 relative">
+      <section className="py-20 relative">
         <div 
           className="absolute inset-0 bg-black z-0 bg-cover bg-center bg-no-repeat brightness-30"
           style={{

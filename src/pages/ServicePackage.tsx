@@ -48,9 +48,20 @@ const ServicePackage = () => {
     navigate('/booking');
   };
   
-  // Scroll to top on page load
+  // Scroll to top on page load - Now using both useEffect approaches for maximum compatibility
   useEffect(() => {
+    // Immediate scroll on component mount
     window.scrollTo(0, 0);
+    
+    // Also scroll after a short delay to ensure all content is loaded
+    const timeoutId = setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'instant'
+      });
+    }, 50);
+    
+    return () => clearTimeout(timeoutId);
   }, []);
   
   return (

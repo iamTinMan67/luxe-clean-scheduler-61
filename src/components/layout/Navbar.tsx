@@ -10,6 +10,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const isHomePage = location.pathname === '/';
 
   const handleToggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -52,13 +53,17 @@ const Navbar = () => {
       )}
     >
       <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
-        <Link to="/" className="flex items-center space-x-2" aria-label="Home">
-          <img 
-            src="/lovable-uploads/db88bc12-bb88-4318-a91c-da8a3314c406.png" 
-            alt="Mid-Cheshire Valeting" 
-            className="h-14 w-auto" 
-          />
-        </Link>
+        {!isHomePage && (
+          <Link to="/" className="flex items-center space-x-2" aria-label="Home">
+            <img 
+              src="/lovable-uploads/db88bc12-bb88-4318-a91c-da8a3314c406.png" 
+              alt="Mid-Cheshire Valeting" 
+              className="h-14 w-auto" 
+            />
+          </Link>
+        )}
+        
+        {isHomePage && <div className="w-14"></div>}
 
         <DesktopMenu adminRoutes={adminRoutes} />
 
