@@ -1,6 +1,6 @@
 
 import { motion } from "framer-motion";
-import { Droplets, ThumbsUp, Leaf, Shield, Zap } from "lucide-react";
+import { Droplets, ThumbsUp, Leaf, Zap } from "lucide-react";
 
 const FeaturesSection = () => {
   const features = [
@@ -15,19 +15,9 @@ const FeaturesSection = () => {
       description: "We use environmentally friendly machinery and cleaning products that are tough on dirt but gentle on your vehicle."
     },
     {
-      icon: <Shield className="h-10 w-10 text-gold" />,
-      title: "Premium Protection",
-      description: "Our best package include ceramic coating and paint protection for long-lasting results."
-    },
-    {
       icon: <ThumbsUp className="h-10 w-10 text-gold" />,
       title: "Satisfaction Guaranteed",
       description: "We're not happy until you're thrilled with the results of our squeaky-clean service."
-    },
-    {
-      icon: <Zap className="h-10 w-10 text-gold" />,
-      title: "Efficient Service",
-      description: "Our team works efficiently to minimize vehicle downtime without compromising quality."
     }
   ];
   

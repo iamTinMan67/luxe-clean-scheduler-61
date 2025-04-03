@@ -54,7 +54,7 @@ const Booking = () => {
     localStorage.setItem('pendingBookings', JSON.stringify(bookings));
     
     toast.success("Booking request submitted!", {
-      description: "We'll review your request and get back to you soon.",
+      description: "We'll check our planner and get back to you soon.",
     });
     
     // Change redirection to gallery page instead

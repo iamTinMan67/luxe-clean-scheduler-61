@@ -27,28 +27,28 @@ const Gallery = () => {
           id: 1,
           category: "exterior",
           image: "https://images.unsplash.com/photo-1635774855317-edf3ee4463db?q=80&w=1932&auto=format&fit=crop",
-          title: "Porsche 911 Exterior Detailing",
+          title: "Outside1",
           description: "Complete exterior detail with ceramic coating"
         },
         {
           id: 2,
           category: "interior",
           image: "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?q=80&w=1887&auto=format&fit=crop",
-          title: "Range Rover Interior Detail",
+          title: "Inside1",
           description: "Full interior detailing with leather conditioning"
         },
         {
           id: 3,
           category: "exterior",
           image: "https://images.unsplash.com/photo-1605515298946-d0573c9b2fdc?q=80&w=1915&auto=format&fit=crop",
-          title: "Mercedes AMG GT Detail",
+          title: "Outside2",
           description: "Full paint correction and ceramic coating"
         },
         {
           id: 4,
           category: "wheels",
           image: "https://images.unsplash.com/photo-1626063438347-5a9878b3e58b?q=80&w=1965&auto=format&fit=crop",
-          title: "Audi RS6 Wheel Detail",
+          title: "Wheel Detail1",
           description: "Complete wheel cleaning and ceramic protection"
         },
         {
@@ -62,14 +62,14 @@ const Gallery = () => {
           id: 6,
           category: "interior",
           image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1170&auto=format&fit=crop",
-          title: "Ferrari Interior Detail",
+          title: "Inside2",
           description: "Premium interior detailing with leather treatment"
         },
         {
           id: 7,
           category: "exterior",
           image: "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?q=80&w=1974&auto=format&fit=crop",
-          title: "McLaren Exterior Detail",
+          title: "Outside3",
           description: "Complete exterior detailing with paint correction"
         },
         {
@@ -83,7 +83,7 @@ const Gallery = () => {
           id: 9,
           category: "wheels",
           image: "https://images.unsplash.com/photo-1595171412833-4b6427b31c3f?q=80&w=1074&auto=format&fit=crop",
-          title: "BMW Wheel Detailing",
+          title: "Wheel Detail2",
           description: "Deep cleaning and protection for luxury wheels"
         }
       ]);
