@@ -14,12 +14,10 @@ const ProgressPage = () => {
   // State for booking data
   const [booking, setBooking] = useState({
     id: "BK-12345",
-    customerName: "John Smith",
     vehicleType: "Porsche 911",
     packageType: "Elite",
     date: "2023-09-15",
     time: "10:00",
-    location: "23 Hillcrest Avenue, London",
     status: "in-progress", // pending, confirmed, in-progress, completed
     progressPercentage: 65,
     totalPrice: 299,
