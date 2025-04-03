@@ -1,15 +1,13 @@
 
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 
 // Components
-import VehicleTabs from "@/components/service-package/VehicleTabs";
-import VehicleTypeSelector from "@/components/ui/VehicleTypeSelector";
-import ConditionSlider from "@/components/ui/ConditionSlider";
+import ServiceHero from "@/components/service-package/ServiceHero";
 import PackageSelection from "@/components/service-package/PackageSelection";
 import AdditionalServicesSelection from "@/components/service-package/AdditionalServicesSelection";
 import PriceSummary from "@/components/service-package/PriceSummary";
+import VehicleCustomization from "@/components/service-package/VehicleCustomization";
 
 // Data and hooks
 import { packageOptions, additionalServices } from "@/data/servicePackageData";
@@ -48,7 +46,7 @@ const ServicePackage = () => {
     navigate('/booking');
   };
   
-  // Scroll to top on page load - Now using both useEffect approaches for maximum compatibility
+  // Scroll to top on page load
   useEffect(() => {
     // Immediate scroll on component mount
     window.scrollTo(0, 0);
@@ -69,19 +67,8 @@ const ServicePackage = () => {
       {/* Hero section */}
       <section className="relative py-24 bg-black overflow-hidden">
         <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-center max-w-3xl mx-auto mb-16"
-          >
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-              Customize Your <span className="text-gold">Service Package</span>
-            </h1>
-            <p className="text-xl text-gray-300">
-              Select the perfect cleaning package for your vehicle and add any additional services you require.
-            </p>
-          </motion.div>
+          {/* Hero Content */}
+          <ServiceHero />
           
           {/* Package Selection */}
           <PackageSelection
@@ -98,27 +85,14 @@ const ServicePackage = () => {
             onToggleService={handleAdditionalServiceToggle}
           />
           
-          {/* Vehicle Type Selector - Moved below Additional Services */}
-          <div className="mb-16 text-center">
-            <VehicleTypeSelector
-              selectedType={currentVehicle.type}
-              onTypeChange={handleVehicleTypeChange}
-            />
-          </div>
-          
-          {/* Vehicle Condition - Moved above Vehicle Selector Tabs */}
-          <div className="mb-8 max-w-3xl mx-auto">
-            <ConditionSlider
-              value={currentVehicle.condition}
-              onChange={handleConditionChange}
-            />
-          </div>
-          
-          {/* Vehicle Selector Tabs */}
-          <VehicleTabs
+          {/* Vehicle Customization */}
+          <VehicleCustomization 
             vehicles={vehicles}
             currentVehicleIndex={currentVehicleIndex}
             setCurrentVehicleIndex={setCurrentVehicleIndex}
+            currentVehicle={currentVehicle}
+            handleVehicleTypeChange={handleVehicleTypeChange}
+            handleConditionChange={handleConditionChange}
             handleAddVehicle={handleAddVehicle}
             handleRemoveVehicle={handleRemoveVehicle}
           />
