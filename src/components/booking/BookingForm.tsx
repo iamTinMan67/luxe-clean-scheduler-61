@@ -10,6 +10,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 interface BookingFormProps {
   onSubmit: (formData: {
     yourName: string;
+    postcode: string;
     phone: string;
     notes: string;
   }) => void;
@@ -17,19 +18,21 @@ interface BookingFormProps {
 
 const BookingForm = ({ onSubmit }: BookingFormProps) => {
   const [yourName, setYourName] = useState("");
+  const [postcode, setPostcode] = useState("");
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!yourName || !phone) {
+    if (!yourName || !postcode || !phone) {
       toast.error("Oops! Check Again");
       return;
     }
     
     onSubmit({
       yourName,
+      postcode
       phone,
       notes,
     });
@@ -50,8 +53,18 @@ const BookingForm = ({ onSubmit }: BookingFormProps) => {
           />
         </div>
         
-    
-       
+        <div>
+          <Label htmlFor="postcode" className="text-white">Post Code</Label>
+          <Input 
+            id="postcode" 
+            placeholder="What's the Post Code"
+            value={postcode}
+            onChange={(e) => setPostcode(e.target.value)}
+            className="bg-gray-800 border-gray-700 text-white"
+            required
+          />
+        </div>
+   
         <div>
           <Label htmlFor="phone" className="text-white">Phone Number</Label>
           <Input 

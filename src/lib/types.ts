@@ -1,6 +1,6 @@
-export type PackageType = "basic" | "medium" | "elite";
+export type PackageType = "main" | "elite";
 
-export type VehicleType = "car" | "suv" | "van";
+export type VehicleType = "car" | "van";
 
 export interface AdditionalService {
   id: string;
@@ -18,7 +18,6 @@ export interface PackageOption {
   features: string[];
   basePrice: {
     car: { small: number; medium: number; large: number };
-    suv: { small: number; medium: number; large: number };
     van: { small: number; medium: number; large: number };
   };
 }
@@ -38,7 +37,6 @@ export type VehicleSize = "small" | "medium" | "large";
 export interface Customer {
   id: string;
   name: string;
-  email: string;
   phone: string;
   address?: string;
 }
