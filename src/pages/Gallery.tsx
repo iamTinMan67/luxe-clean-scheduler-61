@@ -146,7 +146,7 @@ const Gallery = () => {
               Our Work <span className="text-gold">Gallery</span>
             </h1>
             <p className="text-xl text-gray-300">
-              Browse through our portfolio of premium vehicle detailing work
+              Browse through our portfolio of previous work
             </p>
           </motion.div>
           
@@ -237,7 +237,7 @@ const Gallery = () => {
             className="text-center mb-16"
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
-              What Our Clients Say (most recent first) no cherry-picking
+              What Our Clients Say (most recent first) no cherry-picking. our reputation is only as good as our last customer.
             </h2>
             <motion.div 
               className="w-20 h-1 bg-gold mx-auto"
