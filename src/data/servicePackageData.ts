@@ -9,12 +9,12 @@ export const packageOptions: PackageOption[] = [
     type: "medium",
     description: "Comprehensive cleaning with added protection for vehicles needing extra care.",
     features: [
-      "Exterior hand wash",
-      "Wheel and tire cleaning",
+      "Handwash: Body & Wheels",
+      "Hand Dried"
       "Windows and mirrors cleaning",
-      "Interior vacuum",
+      "Full Interior vacuum",
       "Dashboard and console wipe down",
-      "Door panel cleaning",
+      "Doors & Sills cleaning",
       "Clay bar treatment",
       "Wax protection",
       "Tire dressing",
