@@ -32,7 +32,7 @@ const BookingForm = ({ onSubmit }: BookingFormProps) => {
     
     onSubmit({
       yourName,
-      postcode
+      postcode,
       phone,
       notes,
     });
