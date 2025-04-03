@@ -17,6 +17,7 @@ import StaffPlanner from "@/pages/admin/StaffPlanner";
 import TodoList from "@/pages/admin/TodoList";
 import InvoiceReport from "@/pages/admin/InvoiceReport";
 import Invoices from "@/pages/admin/Invoices";
+import GalleryManager from "@/pages/admin/GalleryManager";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BubbleEffect from "@/components/effects/BubbleEffect";
@@ -45,6 +46,7 @@ function App() {
           <Route path="/admin/todo-list" element={<TodoList />} />
           <Route path="/admin/invoice-report" element={<InvoiceReport />} />
           <Route path="/admin/invoices" element={<Invoices />} />
+          <Route path="/admin/gallery" element={<GalleryManager />} />
           
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -1,76 +1,94 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 
+interface GalleryItem {
+  id: number;
+  category: string;
+  image: string;
+  title: string;
+  description: string;
+}
+
 const Gallery = () => {
   const [activeTab, setActiveTab] = useState("all");
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
   
-  const galleryItems = [
-    {
-      id: 1,
-      category: "exterior",
-      image: "https://images.unsplash.com/photo-1635774855317-edf3ee4463db?q=80&w=1932&auto=format&fit=crop",
-      title: "Porsche 911 Exterior Detailing",
-      description: "Complete exterior detail with ceramic coating"
-    },
-    {
-      id: 2,
-      category: "interior",
-      image: "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?q=80&w=1887&auto=format&fit=crop",
-      title: "Range Rover Interior Detail",
-      description: "Full interior detailing with leather conditioning"
-    },
-    {
-      id: 3,
-      category: "exterior",
-      image: "https://images.unsplash.com/photo-1605515298946-d0573c9b2fdc?q=80&w=1915&auto=format&fit=crop",
-      title: "Mercedes AMG GT Detail",
-      description: "Full paint correction and ceramic coating"
-    },
-    {
-      id: 4,
-      category: "wheels",
-      image: "https://images.unsplash.com/photo-1626063438347-5a9878b3e58b?q=80&w=1965&auto=format&fit=crop",
-      title: "Audi RS6 Wheel Detail",
-      description: "Complete wheel cleaning and ceramic protection"
-    },
-    {
-      id: 5,
-      category: "commercial",
-      image: "https://images.unsplash.com/photo-1600661653561-629509216228?q=80&w=1170&auto=format&fit=crop",
-      title: "Commercial Fleet Detailing",
-      description: "Regular maintenance cleaning for a delivery fleet"
-    },
-    {
-      id: 6,
-      category: "interior",
-      image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1170&auto=format&fit=crop",
-      title: "Ferrari Interior Detail",
-      description: "Premium interior detailing with leather treatment"
-    },
-    {
-      id: 7,
-      category: "exterior",
-      image: "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?q=80&w=1974&auto=format&fit=crop",
-      title: "McLaren Exterior Detail",
-      description: "Complete exterior detailing with paint correction"
-    },
-    {
-      id: 8,
-      category: "commercial",
-      image: "https://images.unsplash.com/photo-1583267746897-2cf415887172?q=80&w=1780&auto=format&fit=crop",
-      title: "Pickup Truck Detailing",
-      description: "Full detail for a commercial pickup truck"
-    },
-    {
-      id: 9,
-      category: "wheels",
-      image: "https://images.unsplash.com/photo-1595171412833-4b6427b31c3f?q=80&w=1074&auto=format&fit=crop",
-      title: "BMW Wheel Detailing",
-      description: "Deep cleaning and protection for luxury wheels"
+  // Load gallery items from localStorage or use defaults
+  useEffect(() => {
+    const savedItems = localStorage.getItem("galleryItems");
+    if (savedItems) {
+      setGalleryItems(JSON.parse(savedItems));
+    } else {
+      // Default items if nothing is in localStorage
+      setGalleryItems([
+        {
+          id: 1,
+          category: "exterior",
+          image: "https://images.unsplash.com/photo-1635774855317-edf3ee4463db?q=80&w=1932&auto=format&fit=crop",
+          title: "Porsche 911 Exterior Detailing",
+          description: "Complete exterior detail with ceramic coating"
+        },
+        {
+          id: 2,
+          category: "interior",
+          image: "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?q=80&w=1887&auto=format&fit=crop",
+          title: "Range Rover Interior Detail",
+          description: "Full interior detailing with leather conditioning"
+        },
+        {
+          id: 3,
+          category: "exterior",
+          image: "https://images.unsplash.com/photo-1605515298946-d0573c9b2fdc?q=80&w=1915&auto=format&fit=crop",
+          title: "Mercedes AMG GT Detail",
+          description: "Full paint correction and ceramic coating"
+        },
+        {
+          id: 4,
+          category: "wheels",
+          image: "https://images.unsplash.com/photo-1626063438347-5a9878b3e58b?q=80&w=1965&auto=format&fit=crop",
+          title: "Audi RS6 Wheel Detail",
+          description: "Complete wheel cleaning and ceramic protection"
+        },
+        {
+          id: 5,
+          category: "commercial",
+          image: "https://images.unsplash.com/photo-1600661653561-629509216228?q=80&w=1170&auto=format&fit=crop",
+          title: "Commercial Fleet Detailing",
+          description: "Regular maintenance cleaning for a delivery fleet"
+        },
+        {
+          id: 6,
+          category: "interior",
+          image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1170&auto=format&fit=crop",
+          title: "Ferrari Interior Detail",
+          description: "Premium interior detailing with leather treatment"
+        },
+        {
+          id: 7,
+          category: "exterior",
+          image: "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?q=80&w=1974&auto=format&fit=crop",
+          title: "McLaren Exterior Detail",
+          description: "Complete exterior detailing with paint correction"
+        },
+        {
+          id: 8,
+          category: "commercial",
+          image: "https://images.unsplash.com/photo-1583267746897-2cf415887172?q=80&w=1780&auto=format&fit=crop",
+          title: "Pickup Truck Detailing",
+          description: "Full detail for a commercial pickup truck"
+        },
+        {
+          id: 9,
+          category: "wheels",
+          image: "https://images.unsplash.com/photo-1595171412833-4b6427b31c3f?q=80&w=1074&auto=format&fit=crop",
+          title: "BMW Wheel Detailing",
+          description: "Deep cleaning and protection for luxury wheels"
+        }
+      ]);
     }
-  ];
+  }, []);
   
   const testimonials = [
     {
@@ -187,6 +205,9 @@ const Gallery = () => {
                             src={item.image} 
                             alt={item.title}
                             className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
+                            onError={(e) => {
+                              e.currentTarget.src = "/placeholder.svg";
+                            }}
                           />
                         </AspectRatio>
                         <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
