@@ -10,7 +10,7 @@ export const packageOptions: PackageOption[] = [
     description: "Comprehensive cleaning with added protection for vehicles needing extra care.",
     features: [
       "Handwash: Body & Wheels",
-      "Hand Dried"
+      "Hand Dried",
       "Windows and mirrors cleaning",
       "Full Interior vacuum",
       "Dashboard and console wipe down",
