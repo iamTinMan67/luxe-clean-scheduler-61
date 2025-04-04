@@ -19,7 +19,7 @@ export interface PackageOption {
   basePrice: {
     car: { small: number; medium: number; large: number };
     van: { small: number; medium: number; large: number };
-  };
+  }
 }
 
 export interface Vehicle {
