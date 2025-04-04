@@ -29,7 +29,7 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({ date, bookings, getBookingBac
             >
               <div className="flex justify-between items-start mb-1">
                 <h4 className="font-medium text-white">
-                  {booking.customer || `Customer ID: ${booking.customerId}`}
+                  {booking.customer}
                 </h4>
                 <span className={`text-xs px-2 py-0.5 rounded-full ${
                   booking.status === "pending" 
@@ -41,9 +41,7 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({ date, bookings, getBookingBac
               </div>
               
               <div className="text-gray-400 text-sm mb-1">
-                {booking.vehicle || (booking.vehicles && booking.vehicles.length > 0 
-                  ? `${booking.vehicles[0].type} ${booking.vehicles[0].size}` 
-                  : "No vehicle info")} - {booking.packageType || "Standard Package"}
+                {booking.vehicle || "No vehicle info"} - {booking.packageType || "Standard Package"}
               </div>
               
               <div className="flex items-center text-gray-300 text-sm">
