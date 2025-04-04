@@ -2,7 +2,7 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { Booking } from '@/types/booking';
-import { Clock } from 'lucide-react';
+import { Clock, MapPin, Phone, FileText } from 'lucide-react';
 
 interface ScheduleDayProps {
   date: Date;
@@ -28,7 +28,9 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({ date, bookings, getBookingBac
               } ${getBookingBackground(booking)}`}
             >
               <div className="flex justify-between items-start mb-1">
-                <h4 className="font-medium text-white">{booking.customer}</h4>
+                <h4 className="font-medium text-white">
+                  {booking.customer || `Customer ID: ${booking.customerId}`}
+                </h4>
                 <span className={`text-xs px-2 py-0.5 rounded-full ${
                   booking.status === "pending" 
                     ? "bg-amber-900/30 text-amber-400 border border-amber-700"
@@ -39,13 +41,39 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({ date, bookings, getBookingBac
               </div>
               
               <div className="text-gray-400 text-sm mb-1">
-                {booking.vehicle} - {booking.packageType || "Standard Package"}
+                {booking.vehicle || (booking.vehicles && booking.vehicles.length > 0 
+                  ? `${booking.vehicles[0].type} ${booking.vehicles[0].size}` 
+                  : "No vehicle info")} - {booking.packageType || "Standard Package"}
               </div>
               
               <div className="flex items-center text-gray-300 text-sm">
                 <Clock className="w-3 h-3 mr-1 text-gold" />
                 <span>{booking.startTime || booking.time || "09:00"} - {booking.endTime || "11:00"}</span>
               </div>
+              
+              {/* Add location information if available */}
+              {booking.location && (
+                <div className="flex items-center text-gray-300 text-sm mt-1">
+                  <MapPin className="w-3 h-3 mr-1 text-gold" />
+                  <span>{booking.location}</span>
+                </div>
+              )}
+              
+              {/* Add contact information if available */}
+              {booking.contact && (
+                <div className="flex items-center text-gray-300 text-sm mt-1">
+                  <Phone className="w-3 h-3 mr-1 text-gold" />
+                  <span>{booking.contact}</span>
+                </div>
+              )}
+              
+              {/* Add notes if available */}
+              {booking.notes && (
+                <div className="flex items-start text-gray-300 text-sm mt-1">
+                  <FileText className="w-3 h-3 mr-1 mt-0.5 text-gold" />
+                  <span className="flex-1">{booking.notes}</span>
+                </div>
+              )}
               
               {booking.staff && booking.staff.length > 0 && (
                 <div className="mt-2 pt-2 border-t border-gray-700">
