@@ -1,4 +1,4 @@
-export type PackageType = "main" | "elite";
+export type PackageType = "main" | "medium" | "elite";
 
 export type VehicleType = "car" | "van";
 
@@ -18,6 +18,7 @@ export interface PackageOption {
   features: string[];
   basePrice: {
     car: { small: number; medium: number; large: number };
+    suv: { small: number; medium: number; large: number };
     van: { small: number; medium: number; large: number };
   }
 }

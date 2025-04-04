@@ -6,7 +6,7 @@ export const packageOptions: PackageOption[] = [
   {
     id: "medium",
     name: "Main Package",
-    type: "medium",
+    type: "medium", // This now matches the PackageType
     description: "Comprehensive cleaning with added protection for vehicles needing extra care.",
     features: [
       "Handwash: Body & Wheels",
@@ -24,7 +24,7 @@ export const packageOptions: PackageOption[] = [
     ],
     basePrice: {
       car: { small: 79, medium: 99, large: 109 },
-      suv: { small: 89, medium: 109, large: 119 },
+      suv: { small: 89, medium: 109, large: 119 }, // This is now allowed by the updated type
       van: { small: 109, medium: 119, large: 129 }
     }
   },
@@ -45,7 +45,7 @@ export const packageOptions: PackageOption[] = [
     ],
     basePrice: {
       car: { small: 169, medium: 189, large: 209 },
-      suv: { small: 189, medium: 209, large: 229 },
+      suv: { small: 189, medium: 209, large: 229 }, // This is now allowed by the updated type
       van: { small: 209, medium: 229, large: 249 }
     }
   }

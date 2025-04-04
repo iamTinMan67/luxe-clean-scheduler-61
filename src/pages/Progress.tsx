@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -11,13 +12,15 @@ const ProgressPage = () => {
   const queryParams = new URLSearchParams(location.search);
   const invoiceIdFromUrl = queryParams.get('invoiceId');
   
-  // State for booking data
+  // State for booking data - added customerName and location 
   const [booking, setBooking] = useState({
     id: "BK-12345",
+    customerName: "John Doe", // Added customerName
     vehicleType: "Porsche 911",
     packageType: "Elite",
     date: "2023-09-15",
     time: "10:00",
+    location: "Customer's Address", // Added location
     status: "in-progress", // pending, confirmed, in-progress, completed
     progressPercentage: 65,
     totalPrice: 299,
