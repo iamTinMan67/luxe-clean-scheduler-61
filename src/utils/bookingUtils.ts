@@ -7,8 +7,9 @@ import { toast } from "sonner";
 export const generateInvoice = (booking: Booking) => {
   // Calculate subtotal, tax, and total
   const subtotal = booking.totalPrice || 0;
-  const tax = subtotal * 0.2; // 20% VAT
-  const total = subtotal + tax;
+  // const tax = subtotal * 0.2; // 20% VAT
+  const total = subtotal;
+  //+ tax;
   
   // Create invoice items based on package type
   const items = [
@@ -27,7 +28,6 @@ export const generateInvoice = (booking: Booking) => {
     customerId: booking.id,
     items: items,
     subtotal: subtotal,
-    tax: tax,
     total: total,
     paid: false,
     date: new Date()
@@ -64,7 +64,7 @@ export const sendNotification = (booking: Booking, type: "invoice" | "update" | 
       message = `Booking updated for ${booking.customer}`;
       break;
     case "completion":
-      message = `Thank you for your business, ${booking.customer}! Your ${booking.packageType} service is complete. We'd love your feedback: ${window.location.origin}/feedback/${booking.id}`;
+      message = `Thank you for your business, ${booking.customer}! Your valet service is complete. Feedback would be GREATLY appreciated. Being as you are our last customer your comments will be shown on the website: ${window.location.origin}/feedback/${booking.id}`;
       break;
   }
   

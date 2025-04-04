@@ -13,6 +13,12 @@ const TestimonialsSection = () => {
       text: "Absolutely outstanding service. My Bentley looks better than the day I bought it. The attention to detail is remarkable."
     },
     {
+      name: "Paul SkinBack",
+      car: "Heap of Junk",
+      text: "I'm so impressed I have reserved my monthly appointment. My Bentley looks better than the day I bought it. The attention to detail is remarkable."
+    },
+
+    {
       name: "Sarah Mitchell",
       car: "Range Rover Autobiography",
       text: "I've tried many valeting services but Mid-Cheshire is by far the best. They take such care with every aspect of the cleaning process and with an outstanding finish."
@@ -30,7 +36,7 @@ const TestimonialsSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            What Our Clients Say
+            What Our Clients Say about our work ethics
           </motion.h2>
           <motion.div 
             className="w-20 h-1 bg-gold mx-auto"
@@ -71,7 +77,7 @@ const TestimonialsSection = () => {
             onClick={() => navigate("/gallery")}
             className="text-gold hover:text-white border-b border-gold hover:border-white transition-colors inline-flex items-center"
           >
-            View more testimonials
+            View more feedback
             <ArrowRight className="ml-2 h-4 w-4" />
           </button>
         </div>
