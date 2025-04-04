@@ -22,6 +22,11 @@ export const useBookingActions = (
       staff: ["James Carter", "Michael Scott"]
     };
     
+    // Ensure date is a Date object
+    if (typeof confirmedBooking.date === 'string') {
+      confirmedBooking.date = new Date(confirmedBooking.date);
+    }
+    
     // Add to confirmed bookings
     const updatedConfirmedBookings = [...confirmedBookings, confirmedBooking];
     setConfirmedBookings(updatedConfirmedBookings);

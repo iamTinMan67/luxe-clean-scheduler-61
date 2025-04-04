@@ -7,6 +7,15 @@ import PendingBookingsList from "@/components/planner/PendingBookingsList";
 import ScheduleCalendar from "@/components/planner/ScheduleCalendar";
 
 const PlannerCalendar = () => {
+  // Force re-render on mount to ensure latest data is loaded
+  const [key, setKey] = useState(0);
+
+  useEffect(() => {
+    // This will force the component to re-render on mount
+    // which will reload all bookings from localStorage
+    setKey(prev => prev + 1);
+  }, []);
+
   const {
     date,
     setDate,
@@ -23,7 +32,7 @@ const PlannerCalendar = () => {
   } = usePlannerCalendar();
 
   return (
-    <div className="min-h-screen bg-black pb-16">
+    <div className="min-h-screen bg-black pb-16" key={key}>
       <section className="relative py-8">
         <div className="container mx-auto px-4">
           {/* Calendar header with navigation */}

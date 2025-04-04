@@ -41,6 +41,7 @@ export const usePlannerCalendar = () => {
       try {
         const parsedBookings = JSON.parse(savedConfirmedBookings).map((booking: any) => ({
           ...booking,
+          // Ensure date is a Date object
           date: new Date(booking.date),
           status: validateBookingStatus(booking.status)
         }));
@@ -56,6 +57,7 @@ export const usePlannerCalendar = () => {
       try {
         const parsedBookings = JSON.parse(plannerCalendarBookings).map((booking: any) => ({
           ...booking,
+          // Ensure date is a Date object
           date: new Date(booking.date),
           status: validateBookingStatus(booking.status)
         }));
@@ -140,6 +142,11 @@ export const usePlannerCalendar = () => {
         "12:00", // Default 2 hours later
       staff: ["James Carter", "Michael Scott"] // Default staff assignment
     };
+    
+    // Ensure the date is a proper Date object
+    if (typeof confirmedBooking.date === 'string') {
+      confirmedBooking.date = new Date(confirmedBooking.date);
+    }
     
     // Update the confirmed bookings
     const updatedConfirmedBookings = [...confirmedBookings, confirmedBooking];

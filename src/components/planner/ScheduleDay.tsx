@@ -39,12 +39,12 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({ date, bookings, getBookingBac
               </div>
               
               <div className="text-gray-400 text-sm mb-1">
-                {booking.vehicle} - {booking.packageType}
+                {booking.vehicle} - {booking.packageType || "Standard Package"}
               </div>
               
               <div className="flex items-center text-gray-300 text-sm">
                 <Clock className="w-3 h-3 mr-1 text-gold" />
-                <span>{booking.startTime} - {booking.endTime}</span>
+                <span>{booking.startTime || booking.time || "09:00"} - {booking.endTime || "11:00"}</span>
               </div>
               
               {booking.staff && booking.staff.length > 0 && (
