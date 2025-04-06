@@ -6,7 +6,7 @@ import { Clock } from "lucide-react";
 interface CurrentActivityProps {
   currentStep: {
     name: string;
-    estimatedTime: string;
+    estimatedTime?: string;
   } | null;
 }
 
@@ -25,9 +25,11 @@ const CurrentActivity: React.FC<CurrentActivityProps> = ({ currentStep }) => {
         <div>
           <h3 className="text-lg font-medium text-white">Current Activity</h3>
           <p className="text-gold">{currentStep.name}</p>
-          <p className="text-gray-400 text-sm mt-1">
-            Estimated time: {currentStep.estimatedTime}
-          </p>
+          {currentStep.estimatedTime && (
+            <p className="text-gray-400 text-sm mt-1">
+              Estimated time: {currentStep.estimatedTime}
+            </p>
+          )}
         </div>
       </div>
     </motion.div>
