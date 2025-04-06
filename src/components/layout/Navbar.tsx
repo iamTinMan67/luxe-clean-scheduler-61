@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
@@ -35,12 +36,12 @@ const Navbar = () => {
   const adminRoutes = [
     { path: "/admin/dashboard", label: "Dashboard" },
     { path: "/admin/planner", label: "Planner Calendar" },
-    { path: "/admin/staff", label: "Staff Planner" },
-    { path: "/admin/inspection", label: "Pre-Inspection" },
+    { path: "/admin/staff-planner", label: "Staff Planner" },
+    { path: "/admin/pre-inspection", label: "Pre-Inspection" },
     { path: "/admin/van-inventory", label: "Van Stock" },
-    { path: "/admin/inventory", label: "Inventory" },
+    { path: "/admin/warehouse-inventory", label: "Warehouse Inventory" },
+    { path: "/admin/todo-list", label: "To-do List" },
     { path: "/admin/invoices", label: "Invoices" },
-    { path: "/admin/todos", label: "To-do List" },
     { path: "/admin/gallery", label: "Gallery Manager" },
     { path: "/progress", label: "Track Progress" },
   ];

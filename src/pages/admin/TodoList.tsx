@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -21,54 +20,85 @@ type TodoItem = {
 };
 
 const TodoList = () => {
-  const [todos, setTodos] = useState<TodoItem[]>([
-    {
-      id: "1",
-      task: "Complete exterior detailing for BMW X5",
-      completed: false,
-      booking: "BK-2023-001",
-      customer: "James Wilson",
-      estimatedTime: 120,
-      timeSpent: 80,
-      dateCreated: "2023-05-20",
-      dueDate: "2023-05-20"
-    },
-    {
-      id: "2",
-      task: "Interior deep clean for Tesla Model 3",
-      completed: false,
-      booking: "BK-2023-002",
-      customer: "Sarah Johnson",
-      estimatedTime: 90,
-      timeSpent: 45,
-      dateCreated: "2023-05-20",
-      dueDate: "2023-05-20"
-    },
-    {
-      id: "3",
-      task: "Ceramic coating application",
-      completed: false,
-      booking: "BK-2023-003",
-      customer: "Michael Brown",
-      estimatedTime: 180,
-      timeSpent: 0,
-      dateCreated: "2023-05-20",
-      dueDate: "2023-05-21"
-    },
-    {
-      id: "4",
-      task: "Wheel restoration and tire dressing",
-      completed: true,
-      booking: "BK-2023-004",
-      customer: "Emma Thompson",
-      estimatedTime: 60,
-      timeSpent: 60,
-      dateCreated: "2023-05-19",
-      dueDate: "2023-05-19"
-    }
-  ]);
-
+  const [todos, setTodos] = useState<TodoItem[]>([]);
   const [newTask, setNewTask] = useState("");
+
+  useEffect(() => {
+    // Try to load todos from localStorage
+    const savedTodos = localStorage.getItem('todoItems');
+    if (savedTodos) {
+      try {
+        const parsedTodos = JSON.parse(savedTodos);
+        setTodos(parsedTodos);
+      } catch (error) {
+        console.error('Error parsing todos:', error);
+        // Add demo data if error occurs
+        setTodos(getDemoTodos());
+      }
+    } else {
+      // Add demo data if no todos exist
+      setTodos(getDemoTodos());
+    }
+  }, []);
+
+  // Save todos to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('todoItems', JSON.stringify(todos));
+  }, [todos]);
+
+  const getDemoTodos = (): TodoItem[] => {
+    const today = new Date().toISOString().split('T')[0];
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowStr = tomorrow.toISOString().split('T')[0];
+
+    return [
+      {
+        id: "1",
+        task: "Complete exterior detailing for BMW X5",
+        completed: false,
+        booking: "BK-2023-001",
+        customer: "James Wilson",
+        estimatedTime: 120,
+        timeSpent: 80,
+        dateCreated: today,
+        dueDate: today
+      },
+      {
+        id: "2",
+        task: "Interior deep clean for Tesla Model 3",
+        completed: false,
+        booking: "BK-2023-002",
+        customer: "Sarah Johnson",
+        estimatedTime: 90,
+        timeSpent: 45,
+        dateCreated: today,
+        dueDate: today
+      },
+      {
+        id: "3",
+        task: "Ceramic coating application",
+        completed: false,
+        booking: "BK-2023-003",
+        customer: "Michael Brown",
+        estimatedTime: 180,
+        timeSpent: 0,
+        dateCreated: today,
+        dueDate: tomorrowStr
+      },
+      {
+        id: "4",
+        task: "Wheel restoration and tire dressing",
+        completed: true,
+        booking: "BK-2023-004",
+        customer: "Emma Thompson",
+        estimatedTime: 60,
+        timeSpent: 60,
+        dateCreated: today,
+        dueDate: today
+      }
+    ];
+  };
 
   const addTask = () => {
     if (!newTask.trim()) return;

@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -8,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SearchIcon, Plus, FileDown, Filter, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 // Types
 type InventoryItem = {
@@ -24,99 +24,127 @@ type InventoryItem = {
 
 const WarehouseInventory = () => {
   // Sample inventory data
-  const [inventory, setInventory] = useState<InventoryItem[]>([
-    {
-      id: "1", 
-      name: "Microfiber Cloths (Pack of 50)", 
-      category: "Cleaning", 
-      stockIn: 100, 
-      stockOut: 35, 
-      dateAdded: "2023-03-15", 
-      lastUpdated: "2023-05-20",
-      supplier: "CleanSupplies Inc.",
-      reorderPoint: 20
-    },
-    {
-      id: "2", 
-      name: "Premium Car Shampoo (5L)", 
-      category: "Chemicals", 
-      stockIn: 30, 
-      stockOut: 12, 
-      dateAdded: "2023-04-10", 
-      lastUpdated: "2023-05-18",
-      supplier: "AutoChem Ltd.",
-      reorderPoint: 10
-    },
-    {
-      id: "3", 
-      name: "Interior Cleaner (1L)", 
-      category: "Chemicals", 
-      stockIn: 45, 
-      stockOut: 28, 
-      dateAdded: "2023-03-22", 
-      lastUpdated: "2023-05-19",
-      supplier: "AutoChem Ltd.",
-      reorderPoint: 15
-    },
-    {
-      id: "4", 
-      name: "Tire Shine (500ml)", 
-      category: "Chemicals", 
-      stockIn: 50, 
-      stockOut: 22, 
-      dateAdded: "2023-04-05", 
-      lastUpdated: "2023-05-15",
-      supplier: "WheelGloss Co.",
-      reorderPoint: 15
-    },
-    {
-      id: "5", 
-      name: "Detailing Brushes Set", 
-      category: "Tools", 
-      stockIn: 25, 
-      stockOut: 18, 
-      dateAdded: "2023-02-28", 
-      lastUpdated: "2023-05-10",
-      supplier: "DetailPro Tools",
-      reorderPoint: 8
-    },
-    {
-      id: "6", 
-      name: "Clay Bar Kit", 
-      category: "Detailing", 
-      stockIn: 20, 
-      stockOut: 15, 
-      dateAdded: "2023-04-15", 
-      lastUpdated: "2023-05-12",
-      supplier: "SmoothSurface Inc.",
-      reorderPoint: 5
-    },
-    {
-      id: "7", 
-      name: "Ceramic Coating (250ml)", 
-      category: "Protection", 
-      stockIn: 15, 
-      stockOut: 9, 
-      dateAdded: "2023-03-10", 
-      lastUpdated: "2023-05-05",
-      supplier: "ProCoat Systems",
-      reorderPoint: 5
-    },
-    {
-      id: "8", 
-      name: "Pressure Washer Attachments", 
-      category: "Equipment", 
-      stockIn: 10, 
-      stockOut: 4, 
-      dateAdded: "2023-02-15", 
-      lastUpdated: "2023-04-20",
-      supplier: "WashTech Supplies",
-      reorderPoint: 3
-    },
-  ]);
-
+  const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("all");
+
+  useEffect(() => {
+    // Try to load inventory from localStorage
+    const savedInventory = localStorage.getItem('warehouseInventory');
+    if (savedInventory) {
+      try {
+        const parsedInventory = JSON.parse(savedInventory);
+        setInventory(parsedInventory);
+      } catch (error) {
+        console.error('Error parsing warehouse inventory:', error);
+        // Set default data if error
+        setInventory(getDefaultInventory());
+      }
+    } else {
+      // Set default data if none exists
+      setInventory(getDefaultInventory());
+      // Save to localStorage for future
+      localStorage.setItem('warehouseInventory', JSON.stringify(getDefaultInventory()));
+    }
+  }, []);
+
+  // Save to localStorage whenever inventory changes
+  useEffect(() => {
+    localStorage.setItem('warehouseInventory', JSON.stringify(inventory));
+  }, [inventory]);
+
+  const getDefaultInventory = (): InventoryItem[] => {
+    return [
+      {
+        id: "1", 
+        name: "Microfiber Cloths (Pack of 50)", 
+        category: "Cleaning", 
+        stockIn: 100, 
+        stockOut: 35, 
+        dateAdded: "2023-03-15", 
+        lastUpdated: "2023-05-20",
+        supplier: "CleanSupplies Inc.",
+        reorderPoint: 20
+      },
+      {
+        id: "2", 
+        name: "Premium Car Shampoo (5L)", 
+        category: "Chemicals", 
+        stockIn: 30, 
+        stockOut: 12, 
+        dateAdded: "2023-04-10", 
+        lastUpdated: "2023-05-18",
+        supplier: "AutoChem Ltd.",
+        reorderPoint: 10
+      },
+      {
+        id: "3", 
+        name: "Interior Cleaner (1L)", 
+        category: "Chemicals", 
+        stockIn: 45, 
+        stockOut: 28, 
+        dateAdded: "2023-03-22", 
+        lastUpdated: "2023-05-19",
+        supplier: "AutoChem Ltd.",
+        reorderPoint: 15
+      },
+      {
+        id: "4", 
+        name: "Tire Shine (500ml)", 
+        category: "Chemicals", 
+        stockIn: 50, 
+        stockOut: 22, 
+        dateAdded: "2023-04-05", 
+        lastUpdated: "2023-05-15",
+        supplier: "WheelGloss Co.",
+        reorderPoint: 15
+      },
+      {
+        id: "5", 
+        name: "Detailing Brushes Set", 
+        category: "Tools", 
+        stockIn: 25, 
+        stockOut: 18, 
+        dateAdded: "2023-02-28", 
+        lastUpdated: "2023-05-10",
+        supplier: "DetailPro Tools",
+        reorderPoint: 8
+      },
+      {
+        id: "6", 
+        name: "Clay Bar Kit", 
+        category: "Detailing", 
+        stockIn: 20, 
+        stockOut: 15, 
+        dateAdded: "2023-04-15", 
+        lastUpdated: "2023-05-12",
+        supplier: "SmoothSurface Inc.",
+        reorderPoint: 5
+      },
+      {
+        id: "7", 
+        name: "Ceramic Coating (250ml)", 
+        category: "Protection", 
+        stockIn: 15, 
+        stockOut: 9, 
+        dateAdded: "2023-03-10", 
+        lastUpdated: "2023-05-05",
+        supplier: "ProCoat Systems",
+        reorderPoint: 5
+      },
+      {
+        id: "8", 
+        name: "Pressure Washer Attachments", 
+        category: "Equipment", 
+        stockIn: 10, 
+        stockOut: 4, 
+        dateAdded: "2023-02-15", 
+        lastUpdated: "2023-04-20",
+        supplier: "WashTech Supplies",
+        reorderPoint: 3
+      },
+    ];
+  };
 
   // Filter items based on search term and active tab
   const filteredItems = inventory.filter(item => {
@@ -133,6 +161,30 @@ const WarehouseInventory = () => {
 
   // Calculate current stock
   const currentStock = (stockIn: number, stockOut: number) => Math.max(0, stockIn - stockOut);
+
+  const handleAddNewItem = () => {
+    toast.info("Opening add item form", {
+      description: "This feature would open a detailed form in a modal"
+    });
+  };
+
+  const handleExportInventory = () => {
+    toast.success("Inventory exported", {
+      description: "The inventory report has been generated"
+    });
+  };
+
+  const handleCheckLowStock = () => {
+    const lowStockItems = inventory.filter(
+      item => currentStock(item.stockIn, item.stockOut) <= item.reorderPoint
+    );
+    
+    toast.info(`${lowStockItems.length} items with low stock found`, {
+      description: "Check the Low Stock tab for details"
+    });
+    
+    setActiveTab("low");
+  };
 
   return (
     <motion.div
@@ -186,17 +238,17 @@ const WarehouseInventory = () => {
               <CardTitle className="text-white">Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Button className="w-full gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg">
+              <Button className="w-full gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg" onClick={handleAddNewItem}>
                 <Plus size={16} className="mr-2" />
                 Add New Item
               </Button>
               
-              <Button variant="outline" className="w-full border-gold/30 text-white hover:bg-gold/20">
+              <Button variant="outline" className="w-full border-gold/30 text-white hover:bg-gold/20" onClick={handleExportInventory}>
                 <FileDown size={16} className="mr-2" />
                 Export Inventory
               </Button>
               
-              <Button variant="outline" className="w-full border-gold/30 text-white hover:bg-gold/20">
+              <Button variant="outline" className="w-full border-gold/30 text-white hover:bg-gold/20" onClick={handleCheckLowStock}>
                 <AlertTriangle size={16} className="mr-2" />
                 Check Low Stock
               </Button>

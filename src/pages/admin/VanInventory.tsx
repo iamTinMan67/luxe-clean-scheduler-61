@@ -1,11 +1,11 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { SearchIcon, Plus, Minus, RefreshCw } from "lucide-react";
+import { toast } from "sonner";
 
 // Example inventory item type
 type InventoryItem = {
@@ -19,18 +19,46 @@ type InventoryItem = {
 
 const VanInventory = () => {
   // Sample inventory data
-  const [inventory, setInventory] = useState<InventoryItem[]>([
-    { id: "1", name: "Microfiber Cloths", category: "Cleaning", quantity: 24, minLevel: 10, lastRestocked: "2023-05-15" },
-    { id: "2", name: "Interior Cleaner", category: "Chemicals", quantity: 3, minLevel: 2, lastRestocked: "2023-05-10" },
-    { id: "3", name: "Glass Cleaner", category: "Chemicals", quantity: 2, minLevel: 2, lastRestocked: "2023-05-10" },
-    { id: "4", name: "Tire Shine", category: "Chemicals", quantity: 1, minLevel: 1, lastRestocked: "2023-05-01" },
-    { id: "5", name: "Detailing Brushes", category: "Tools", quantity: 8, minLevel: 5, lastRestocked: "2023-04-28" },
-    { id: "6", name: "Pressure Washer", category: "Equipment", quantity: 1, minLevel: 1, lastRestocked: "2023-03-15" },
-    { id: "7", name: "Vacuum Cleaner", category: "Equipment", quantity: 1, minLevel: 1, lastRestocked: "2023-03-15" },
-    { id: "8", name: "Wax", category: "Chemicals", quantity: 2, minLevel: 1, lastRestocked: "2023-05-05" },
-  ]);
-
+  const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    // Try to load inventory from localStorage
+    const savedInventory = localStorage.getItem('vanInventory');
+    if (savedInventory) {
+      try {
+        const parsedInventory = JSON.parse(savedInventory);
+        setInventory(parsedInventory);
+      } catch (error) {
+        console.error('Error parsing van inventory:', error);
+        // Set default data if error
+        setInventory(getDefaultInventory());
+      }
+    } else {
+      // Set default data if none exists
+      setInventory(getDefaultInventory());
+      // Save to localStorage for future
+      localStorage.setItem('vanInventory', JSON.stringify(getDefaultInventory()));
+    }
+  }, []);
+
+  // Save to localStorage whenever inventory changes
+  useEffect(() => {
+    localStorage.setItem('vanInventory', JSON.stringify(inventory));
+  }, [inventory]);
+
+  const getDefaultInventory = (): InventoryItem[] => {
+    return [
+      { id: "1", name: "Microfiber Cloths", category: "Cleaning", quantity: 24, minLevel: 10, lastRestocked: "2023-05-15" },
+      { id: "2", name: "Interior Cleaner", category: "Chemicals", quantity: 3, minLevel: 2, lastRestocked: "2023-05-10" },
+      { id: "3", name: "Glass Cleaner", category: "Chemicals", quantity: 2, minLevel: 2, lastRestocked: "2023-05-10" },
+      { id: "4", name: "Tire Shine", category: "Chemicals", quantity: 1, minLevel: 1, lastRestocked: "2023-05-01" },
+      { id: "5", name: "Detailing Brushes", category: "Tools", quantity: 8, minLevel: 5, lastRestocked: "2023-04-28" },
+      { id: "6", name: "Pressure Washer", category: "Equipment", quantity: 1, minLevel: 1, lastRestocked: "2023-03-15" },
+      { id: "7", name: "Vacuum Cleaner", category: "Equipment", quantity: 1, minLevel: 1, lastRestocked: "2023-03-15" },
+      { id: "8", name: "Wax", category: "Chemicals", quantity: 2, minLevel: 1, lastRestocked: "2023-05-05" },
+    ];
+  };
 
   // Filter items based on search term
   const filteredItems = inventory.filter(item => 
@@ -43,6 +71,23 @@ const VanInventory = () => {
     setInventory(prev => prev.map(item => 
       item.id === id ? { ...item, quantity: Math.max(0, item.quantity + amount) } : item
     ));
+    
+    toast.success(`Inventory quantity updated`, {
+      description: amount > 0 ? "Item quantity increased" : "Item quantity decreased"
+    });
+  };
+
+  const handleRestockRequest = () => {
+    // Find low stock items
+    const lowStockItems = inventory.filter(item => item.quantity <= item.minLevel);
+    
+    if (lowStockItems.length > 0) {
+      toast.success(`Restock request sent for ${lowStockItems.length} items`, {
+        description: "The warehouse will process your request soon"
+      });
+    } else {
+      toast.info("No items need restocking at this time");
+    }
   };
 
   return (
@@ -86,7 +131,7 @@ const VanInventory = () => {
               </div>
               
               <div className="mt-6">
-                <Button className="w-full gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg">
+                <Button className="w-full gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg" onClick={handleRestockRequest}>
                   <RefreshCw size={16} className="mr-2" />
                   Restock Request
                 </Button>
@@ -99,29 +144,46 @@ const VanInventory = () => {
               <CardTitle className="text-white">Quick Add</CardTitle>
             </CardHeader>
             <CardContent>
-              <form className="space-y-4">
+              <form className="space-y-4" onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                const newItem: InventoryItem = {
+                  id: Date.now().toString(),
+                  name: formData.get('itemName') as string,
+                  category: formData.get('category') as string,
+                  quantity: Number(formData.get('quantity')),
+                  minLevel: Math.ceil(Number(formData.get('quantity')) * 0.3), // Default min level as 30% of quantity
+                  lastRestocked: new Date().toISOString().split('T')[0]
+                };
+                
+                if (newItem.name && newItem.category && newItem.quantity > 0) {
+                  setInventory(prev => [...prev, newItem]);
+                  (e.target as HTMLFormElement).reset();
+                  toast.success("New item added to van inventory");
+                }
+              }}>
                 <div>
                   <label htmlFor="itemName" className="text-white text-sm font-medium block mb-1">
                     Item Name
                   </label>
-                  <Input id="itemName" className="bg-black/40 border-gold/30 text-white" placeholder="Enter item name" />
+                  <Input name="itemName" id="itemName" className="bg-black/40 border-gold/30 text-white" placeholder="Enter item name" required />
                 </div>
                 
                 <div>
                   <label htmlFor="category" className="text-white text-sm font-medium block mb-1">
                     Category
                   </label>
-                  <Input id="category" className="bg-black/40 border-gold/30 text-white" placeholder="Enter category" />
+                  <Input name="category" id="category" className="bg-black/40 border-gold/30 text-white" placeholder="Enter category" required />
                 </div>
                 
                 <div>
                   <label htmlFor="quantity" className="text-white text-sm font-medium block mb-1">
                     Quantity
                   </label>
-                  <Input id="quantity" type="number" min="1" className="bg-black/40 border-gold/30 text-white" placeholder="Enter quantity" />
+                  <Input name="quantity" id="quantity" type="number" min="1" className="bg-black/40 border-gold/30 text-white" placeholder="Enter quantity" required />
                 </div>
                 
-                <Button className="w-full gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg">
+                <Button type="submit" className="w-full gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg">
                   <Plus size={16} className="mr-2" />
                   Add Item
                 </Button>
