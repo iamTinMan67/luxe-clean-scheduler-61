@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -6,9 +7,9 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 interface GalleryItem {
   id: number;
   category: string;
-  image: string;
-  title: string;
-  description: string;
+  images: string[];
+  title?: string;
+  description?: string;
 }
 
 const Gallery = () => {
@@ -19,76 +20,96 @@ const Gallery = () => {
   useEffect(() => {
     const savedItems = localStorage.getItem("galleryItems");
     if (savedItems) {
-      setGalleryItems(JSON.parse(savedItems));
+      try {
+        const parsedItems = JSON.parse(savedItems);
+        // Convert old format to new format if necessary
+        const convertedItems = parsedItems.map((item: any) => {
+          if (!Array.isArray(item.images) && item.image) {
+            return {
+              ...item,
+              images: [item.image],
+              category: item.category || "exterior"
+            };
+          }
+          return item;
+        });
+        setGalleryItems(convertedItems);
+      } catch (error) {
+        console.error("Error parsing gallery items:", error);
+        setGalleryItems(getDefaultItems());
+      }
     } else {
-      // Default items if nothing is in localStorage
-      setGalleryItems([
-        {
-          id: 1,
-          category: "exterior",
-          image: "https://images.unsplash.com/photo-1635774855317-edf3ee4463db?q=80&w=1932&auto=format&fit=crop",
-          title: "Outside1",
-          description: "Complete exterior detail with ceramic coating"
-        },
-        {
-          id: 2,
-          category: "interior",
-          image: "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?q=80&w=1887&auto=format&fit=crop",
-          title: "Inside1",
-          description: "Full interior detailing with leather conditioning"
-        },
-        {
-          id: 3,
-          category: "exterior",
-          image: "https://images.unsplash.com/photo-1605515298946-d0573c9b2fdc?q=80&w=1915&auto=format&fit=crop",
-          title: "Outside2",
-          description: "Full paint correction and ceramic coating"
-        },
-        {
-          id: 4,
-          category: "wheels",
-          image: "https://images.unsplash.com/photo-1626063438347-5a9878b3e58b?q=80&w=1965&auto=format&fit=crop",
-          title: "Wheel Detail1",
-          description: "Complete wheel cleaning and ceramic protection"
-        },
-        {
-          id: 5,
-          category: "commercial",
-          image: "https://images.unsplash.com/photo-1600661653561-629509216228?q=80&w=1170&auto=format&fit=crop",
-          title: "Commercial Fleet Detailing",
-          description: "Regular maintenance cleaning for a delivery fleet"
-        },
-        {
-          id: 6,
-          category: "interior",
-          image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1170&auto=format&fit=crop",
-          title: "Inside2",
-          description: "Premium interior detailing with leather treatment"
-        },
-        {
-          id: 7,
-          category: "exterior",
-          image: "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?q=80&w=1974&auto=format&fit=crop",
-          title: "Outside3",
-          description: "Complete exterior detailing with paint correction"
-        },
-        {
-          id: 8,
-          category: "commercial",
-          image: "https://images.unsplash.com/photo-1583267746897-2cf415887172?q=80&w=1780&auto=format&fit=crop",
-          title: "Pickup Truck Detailing",
-          description: "Full detail for a commercial pickup truck"
-        },
-        {
-          id: 9,
-          category: "wheels",
-          image: "https://images.unsplash.com/photo-1595171412833-4b6427b31c3f?q=80&w=1074&auto=format&fit=crop",
-          title: "Wheel Detail2",
-          description: "Deep cleaning and protection for luxury wheels"
-        }
-      ]);
+      setGalleryItems(getDefaultItems());
     }
   }, []);
+  
+  const getDefaultItems = (): GalleryItem[] => {
+    return [
+      {
+        id: 1,
+        category: "exterior",
+        images: ["https://images.unsplash.com/photo-1635774855317-edf3ee4463db?q=80&w=1932&auto=format&fit=crop"],
+        title: "Outside1",
+        description: "Complete exterior detail with ceramic coating"
+      },
+      {
+        id: 2,
+        category: "interior",
+        images: ["https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?q=80&w=1887&auto=format&fit=crop"],
+        title: "Inside1",
+        description: "Full interior detailing with leather conditioning"
+      },
+      {
+        id: 3,
+        category: "exterior",
+        images: ["https://images.unsplash.com/photo-1605515298946-d0573c9b2fdc?q=80&w=1915&auto=format&fit=crop"],
+        title: "Outside2",
+        description: "Full paint correction and ceramic coating"
+      },
+      {
+        id: 4,
+        category: "wheels",
+        images: ["https://images.unsplash.com/photo-1626063438347-5a9878b3e58b?q=80&w=1965&auto=format&fit=crop"],
+        title: "Wheel Detail1",
+        description: "Complete wheel cleaning and ceramic protection"
+      },
+      {
+        id: 5,
+        category: "commercial",
+        images: ["https://images.unsplash.com/photo-1600661653561-629509216228?q=80&w=1170&auto=format&fit=crop"],
+        title: "Commercial Fleet Detailing",
+        description: "Regular maintenance cleaning for a delivery fleet"
+      },
+      {
+        id: 6,
+        category: "interior",
+        images: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1170&auto=format&fit=crop"],
+        title: "Inside2",
+        description: "Premium interior detailing with leather treatment"
+      },
+      {
+        id: 7,
+        category: "exterior",
+        images: ["https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?q=80&w=1974&auto=format&fit=crop"],
+        title: "Outside3",
+        description: "Complete exterior detailing with paint correction"
+      },
+      {
+        id: 8,
+        category: "commercial",
+        images: ["https://images.unsplash.com/photo-1583267746897-2cf415887172?q=80&w=1780&auto=format&fit=crop"],
+        title: "Pickup Truck Detailing",
+        description: "Full detail for a commercial pickup truck"
+      },
+      {
+        id: 9,
+        category: "wheels",
+        images: ["https://images.unsplash.com/photo-1595171412833-4b6427b31c3f?q=80&w=1074&auto=format&fit=crop"],
+        title: "Wheel Detail2",
+        description: "Deep cleaning and protection for luxury wheels"
+      }
+    ];
+  };
   
   const testimonials = [
     {
@@ -202,8 +223,8 @@ const Gallery = () => {
                       <div className="relative">
                         <AspectRatio ratio={16 / 9}>
                           <img 
-                            src={item.image} 
-                            alt={item.title}
+                            src={item.images && item.images.length > 0 ? item.images[0] : "/placeholder.svg"} 
+                            alt={item.title || "Gallery image"}
                             className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
                             onError={(e) => {
                               e.currentTarget.src = "/placeholder.svg";
@@ -213,10 +234,12 @@ const Gallery = () => {
                         <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
                       </div>
                       
-                      <div className="p-4">
-                        <h3 className="text-lg font-semibold text-white mb-1">{item.title}</h3>
-                        <p className="text-gray-400 text-sm">{item.description}</p>
-                      </div>
+                      {(item.title || item.description) && (
+                        <div className="p-4">
+                          {item.title && <h3 className="text-lg font-semibold text-white mb-1">{item.title}</h3>}
+                          {item.description && <p className="text-gray-400 text-sm">{item.description}</p>}
+                        </div>
+                      )}
                     </motion.div>
                   ))}
                 </div>
