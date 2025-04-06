@@ -64,7 +64,7 @@ export const useBookingState = () => {
       {
         id: "PB-001",
         customer: "C001",
-        vehicles: [
+        vehicle: [
           {
             id: "V001",
             type: "car",
@@ -83,7 +83,7 @@ export const useBookingState = () => {
       {
         id: "PB-002",
         customer: "C002",
-        vehicles: [
+        vehicle: [
           {
             id: "V002",
             type: "van",
@@ -112,7 +112,7 @@ export const useBookingState = () => {
       {
         id: "CB-001",
         customer: "C003",
-        vehicles: [
+        vehicle: [
           {
             id: "V003",
             type: "car",
@@ -134,7 +134,7 @@ export const useBookingState = () => {
       {
         id: "CB-002",
         customer: "C004",
-        vehicles: [
+        vehicle: [
           {
             id: "V004",
             type: "car",
