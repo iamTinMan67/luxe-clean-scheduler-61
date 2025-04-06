@@ -45,7 +45,7 @@ const HeroSection = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.7, delay: 0.4 }}
         >
-          Professional cleaning and detailing services for high-end results. From cars, boats even airoplanes, we do the lot!!
+          Professional cleaning and detailing services for high-end results. From cars, boats even airoplanes, we do the lot!
         </motion.p>
         
         <motion.div
