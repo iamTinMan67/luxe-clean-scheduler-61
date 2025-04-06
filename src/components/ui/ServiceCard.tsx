@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Check, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PackageOption, PackageType, VehicleType } from "@/lib/types";
+import { calculateTotalTime } from "@/utils/priceCalculator";
 
 interface ServiceCardProps {
   packageOption: PackageOption;
@@ -26,8 +27,11 @@ const ServiceCard = ({
     onSelect(packageOption.type);
   };
   
-  // Since we're removing size, we'll use 'medium' as the default size for pricing
-  const price = packageOption.basePrice[vehicleType].medium;
+  // Calculate total duration in hours and minutes
+  const totalMinutes = calculateTotalTime(packageOption.tasks);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  const timeDisplay = `${hours}h ${minutes > 0 ? `${minutes}m` : ''}`;
   
   return (
     <div 
@@ -52,7 +56,7 @@ const ServiceCard = ({
               {packageOption.name}
             </h3>
             <div className="text-2xl font-bold mb-4">
-              <span className="text-gold">£{price}</span>
+              <span className="text-gold">£{packageOption.basePrice}</span>
             </div>
           </div>
           
@@ -63,7 +67,12 @@ const ServiceCard = ({
           )}
         </div>
         
-        <p className="text-gray-300 mb-4 text-sm">{packageOption.description}</p>
+        <p className="text-gray-300 mb-2 text-sm">{packageOption.description}</p>
+        
+        <div className="text-sm text-gray-400 mb-4">
+          <span className="mr-2">Estimated time:</span>
+          <span className="text-gold font-medium">{timeDisplay}</span>
+        </div>
         
         <div className="mt-auto">
           <button

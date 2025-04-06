@@ -1,13 +1,15 @@
 
-import { Vehicle, PackageOption } from "@/lib/types";
+import { Vehicle, PackageOption, ServiceTask } from "@/lib/types";
 
 export const calculateTotalPrice = (vehicles: Vehicle[], packageOptions: PackageOption[]): number => {
   return vehicles.reduce((total, vehicle) => {
-    // Get base package price
+    // Get package option
     const packageOption = packageOptions.find(p => p.type === vehicle.package);
     
-    // Since we're now using 'medium' as the default size, get the price for medium
-    const basePrice = packageOption?.basePrice[vehicle.type].medium || 0;
+    if (!packageOption) return total;
+    
+    // Start with base price
+    let vehicleTotal = packageOption.basePrice;
     
     // Add additional services
     const additionalPrice = vehicle.additionalServices.reduce(
@@ -15,6 +17,19 @@ export const calculateTotalPrice = (vehicles: Vehicle[], packageOptions: Package
       0
     );
     
-    return total + basePrice + additionalPrice;
+    return total + vehicleTotal + additionalPrice;
   }, 0);
+};
+
+// New function to calculate task-based price
+export const calculateTaskBasedPrice = (tasks: ServiceTask[]): number => {
+  return tasks.reduce((total, task) => {
+    if (task.included) return total; // Don't add price for included tasks
+    return total + task.price;
+  }, 0);
+};
+
+// Calculate total time for a package
+export const calculateTotalTime = (tasks: ServiceTask[]): number => {
+  return tasks.reduce((total, task) => total + task.duration, 0);
 };

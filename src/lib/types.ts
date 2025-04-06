@@ -1,3 +1,4 @@
+
 export type PackageType = "main" | "medium" | "elite";
 
 export type VehicleType = "car" | "van";
@@ -16,24 +17,29 @@ export interface PackageOption {
   type: PackageType;
   description: string;
   features: string[];
-  basePrice: {
-    car: { small: number; medium: number; large: number };
-    suv: { small: number; medium: number; large: number };
-    van: { small: number; medium: number; large: number };
-  }
+  basePrice: number; // Changed from size-based to flat base price
+  tasks: ServiceTask[]; // Added tasks
+}
+
+// New type for service tasks
+export interface ServiceTask {
+  id: string;
+  name: string;
+  price: number;
+  duration: number; // in minutes
+  included: boolean; // Whether this task is included in the base package price
 }
 
 export interface Vehicle {
   id: string;
   type: VehicleType;
-  size: VehicleSize;
   condition: number;
   package: PackageType;
   additionalServices: AdditionalService[];
+  // Removed size property
 }
 
-// Keep the VehicleSize type since it's still used in other places
-export type VehicleSize = "small" | "medium" | "large";
+export type VehicleSize = "small" | "medium" | "large"; // Keep for backward compatibility
 
 export interface Customer {
   id: string;

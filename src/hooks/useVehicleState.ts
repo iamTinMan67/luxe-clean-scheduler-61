@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Vehicle, VehicleType, VehicleSize, PackageType, AdditionalService } from "@/lib/types";
+import { Vehicle, VehicleType, PackageType, AdditionalService } from "@/lib/types";
 import { toast } from "sonner";
 
 export const useVehicleState = (additionalServices: AdditionalService[]) => {
@@ -9,7 +9,6 @@ export const useVehicleState = (additionalServices: AdditionalService[]) => {
     {
       id: "1",
       type: "car",
-      size: "medium",
       condition: 5,
       package: "medium" as PackageType,
       additionalServices: []
@@ -26,18 +25,6 @@ export const useVehicleState = (additionalServices: AdditionalService[]) => {
       updated[currentVehicleIndex] = {
         ...updated[currentVehicleIndex],
         type
-      };
-      return updated;
-    });
-  };
-  
-  // Update vehicle size
-  const handleVehicleSizeChange = (size: VehicleSize) => {
-    setVehicles(prev => {
-      const updated = [...prev];
-      updated[currentVehicleIndex] = {
-        ...updated[currentVehicleIndex],
-        size
       };
       return updated;
     });
@@ -100,7 +87,6 @@ export const useVehicleState = (additionalServices: AdditionalService[]) => {
     const newVehicle: Vehicle = {
       id: `${vehicles.length + 1}`,
       type: "car",
-      size: "medium",
       condition: 5,
       package: "medium" as PackageType,
       additionalServices: []
@@ -144,7 +130,6 @@ export const useVehicleState = (additionalServices: AdditionalService[]) => {
     setCurrentVehicleIndex,
     currentVehicle,
     handleVehicleTypeChange,
-    handleVehicleSizeChange,
     handleConditionChange,
     handlePackageSelect,
     handleAdditionalServiceToggle,

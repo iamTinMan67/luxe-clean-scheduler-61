@@ -30,7 +30,7 @@ const PriceSummary: React.FC<PriceSummaryProps> = ({
         <div className="space-y-3 mb-6">
           {vehicles.map((vehicle, index) => {
             const packageOption = packageOptions.find(p => p.type === vehicle.package);
-            const basePrice = packageOption?.basePrice[vehicle.type][vehicle.size] || 0;
+            const basePrice = packageOption?.basePrice || 0;
             
             const additionalPrice = vehicle.additionalServices.reduce(
               (sum, service) => sum + service.price, 
@@ -44,7 +44,7 @@ const PriceSummary: React.FC<PriceSummaryProps> = ({
                 <div>
                   <span className="text-white">Vehicle {index + 1}: </span>
                   <span className="text-gray-400">
-                    {vehicle.type.charAt(0).toUpperCase() + vehicle.type.slice(1)} ({vehicle.size}) - 
+                    {vehicle.type.charAt(0).toUpperCase() + vehicle.type.slice(1)} - 
                     {packageOption?.name}
                   </span>
                   
