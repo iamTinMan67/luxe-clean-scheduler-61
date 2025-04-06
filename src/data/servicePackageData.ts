@@ -141,17 +141,35 @@ export const serviceTasks: ServiceTask[] = [
 // Default package options - Updated to use task-based pricing
 export const packageOptions: PackageOption[] = [
   {
-    id: "medium",
+    id: "main",
     name: "Main Package",
-    type: "medium",
-    description: "Comprehensive cleaning with added protection for vehicles needing extra care.",
+    type: "main",
+    description: "Essential cleaning services for your vehicle.",
     features: [
       "Handwash: Body & Wheels",
       "Hand Dried",
       "Windows and mirrors cleaning",
       "Full Interior vacuum",
       "Dashboard and console wipe down",
-      "Doors & Sills cleaning",
+      "Doors & Sills cleaning"
+    ],
+    basePrice: 79, // Flat base price for the package
+    tasks: [
+      serviceTasks.find(task => task.id === "handwash")!,
+      serviceTasks.find(task => task.id === "hand-dry")!,
+      serviceTasks.find(task => task.id === "windows")!,
+      serviceTasks.find(task => task.id === "vacuum")!,
+      serviceTasks.find(task => task.id === "dashboard")!,
+      serviceTasks.find(task => task.id === "doors")!
+    ]
+  },
+  {
+    id: "medium",
+    name: "Medium Package",
+    type: "medium",
+    description: "Comprehensive cleaning with added protection for vehicles needing extra care.",
+    features: [
+      "All Main Package services",
       "Clay bar treatment",
       "Wax protection",
       "Tire dressing",
@@ -159,7 +177,7 @@ export const packageOptions: PackageOption[] = [
       "Leather/upholstery treatment",
       "Air freshening"
     ],
-    basePrice: 99, // Base price for the package
+    basePrice: 99, // Flat base price for the package
     tasks: [
       serviceTasks.find(task => task.id === "handwash")!,
       serviceTasks.find(task => task.id === "hand-dry")!,
@@ -181,7 +199,7 @@ export const packageOptions: PackageOption[] = [
     type: "elite",
     description: "Premium detailing with long-lasting protection for discerning vehicle owners.",
     features: [
-      "All Main Package services",
+      "All Medium Package services",
       "Paint correction",
       "Ceramic coating application",
       "Engine bay detailing",
@@ -190,7 +208,7 @@ export const packageOptions: PackageOption[] = [
       "Paint sealant",
       "Carpet shampooing"
     ],
-    basePrice: 199, // Base price for the package
+    basePrice: 199, // Flat base price for the package
     tasks: [
       serviceTasks.find(task => task.id === "handwash")!,
       serviceTasks.find(task => task.id === "hand-dry")!,

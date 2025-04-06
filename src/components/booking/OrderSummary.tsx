@@ -15,7 +15,7 @@ const OrderSummary = ({ vehicleDetails, totalPrice }: OrderSummaryProps) => {
             <div key={index} className="flex justify-between pb-2 border-b border-gray-800">
               <div className="text-gray-300">
                 <div className="font-medium text-white">Vehicle {index + 1}</div>
-                <div className="text-sm capitalize">{vehicle.type} ({vehicle.size})</div>
+                <div className="text-sm capitalize">{vehicle.type}</div>
                 <div className="text-sm">{vehicle.package.toUpperCase()} package</div>
               </div>
             </div>
