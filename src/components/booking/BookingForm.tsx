@@ -25,7 +25,7 @@ const BookingForm = ({ onSubmit }: BookingFormProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!yourName || !postcode || !phone) {
+    if (!yourName || !postcode || !phone || !notes) {
       toast.error("Oops! Check Again");
       return;
     }
