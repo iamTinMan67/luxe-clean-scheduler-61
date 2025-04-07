@@ -1,18 +1,15 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { SearchIcon, Plus, Minus, RefreshCw, Edit, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { z } from "zod";
+
+// Import refactored components
+import VanSelector from "@/components/van-inventory/VanSelector";
+import VanOverview from "@/components/van-inventory/VanOverview";
+import InventoryList from "@/components/van-inventory/InventoryList";
+import ItemFormDialog from "@/components/van-inventory/ItemFormDialog";
+import VanFormDialog from "@/components/van-inventory/VanFormDialog";
 
 // Types
 type InventoryItem = {
@@ -56,25 +53,6 @@ const VanInventory = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isVanDialogOpen, setIsVanDialogOpen] = useState(false);
   const [editVan, setEditVan] = useState<Van | null>(null);
-
-  const form = useForm<z.infer<typeof inventoryItemSchema>>({
-    resolver: zodResolver(inventoryItemSchema),
-    defaultValues: {
-      name: "",
-      category: "",
-      quantity: 0,
-      minLevel: 0,
-      vanId: "",
-    },
-  });
-
-  const vanForm = useForm<z.infer<typeof vanSchema>>({
-    resolver: zodResolver(vanSchema),
-    defaultValues: {
-      registration: "",
-      name: "",
-    },
-  });
 
   useEffect(() => {
     // Try to load inventory from localStorage
@@ -144,42 +122,6 @@ const VanInventory = () => {
     localStorage.setItem('vans', JSON.stringify(vans));
   }, [vans]);
 
-  // Reset form when edit item changes
-  useEffect(() => {
-    if (editItem) {
-      form.reset({
-        name: editItem.name,
-        category: editItem.category,
-        quantity: editItem.quantity,
-        minLevel: editItem.minLevel,
-        vanId: editItem.vanId,
-      });
-    } else {
-      form.reset({
-        name: "",
-        category: "",
-        quantity: 0,
-        minLevel: 0,
-        vanId: activeVanId,
-      });
-    }
-  }, [editItem, form, activeVanId]);
-
-  // Reset van form when edit van changes
-  useEffect(() => {
-    if (editVan) {
-      vanForm.reset({
-        registration: editVan.registration,
-        name: editVan.name,
-      });
-    } else {
-      vanForm.reset({
-        registration: "",
-        name: "",
-      });
-    }
-  }, [editVan, vanForm]);
-
   const getDefaultInventory = (): InventoryItem[] => {
     return [
       { id: "1", name: "Microfiber Cloths", category: "Cleaning", quantity: 24, minLevel: 10, lastRestocked: "2023-05-15", vanId: "1" },
@@ -216,12 +158,6 @@ const VanInventory = () => {
     setInventory(prev => prev.map(item => {
       if (item.id === id) {
         const newQuantity = Math.max(0, item.quantity + amount);
-        
-        // If item from warehouse allocation is consumed, update warehouse inventory
-        if (amount < 0) {
-          // TODO: Implement warehouse stock sync if needed
-          // Currently handled by setting allocated stock to 0 in warehouse when van updates
-        }
         
         return { 
           ...item, 
@@ -284,13 +220,6 @@ const VanInventory = () => {
 
   const handleAddItem = () => {
     setEditItem(null);
-    form.reset({
-      name: "",
-      category: "",
-      quantity: 0,
-      minLevel: 0,
-      vanId: activeVanId,
-    });
     setIsEditDialogOpen(true);
   };
 
@@ -427,361 +356,56 @@ const VanInventory = () => {
       </div>
 
       {/* Van selection tabs */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="text-xl font-bold text-white">Select Van</h2>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="border-gold/30 text-white hover:bg-gold/20"
-            onClick={handleAddVan}
-          >
-            <Plus size={14} className="mr-1" /> Add Van
-          </Button>
-        </div>
-        <Tabs value={activeVanId} onValueChange={setActiveVanId} className="mb-6">
-          <TabsList className="bg-black/60">
-            {vans.map((van) => (
-              <TabsTrigger key={van.id} value={van.id} className="flex items-center gap-2">
-                {van.registration}
-                <div className="hidden sm:flex items-center gap-1">
-                  <span className="text-xs text-white/70">({van.name})</span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6 rounded-full hover:bg-gold/20"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleEditVan(van);
-                    }}
-                  >
-                    <Edit size={10} />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6 rounded-full hover:bg-red-500/20"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteVan(van.id);
-                    }}
-                  >
-                    <Trash2 size={10} />
-                  </Button>
-                </div>
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
-      </div>
+      <VanSelector
+        vans={vans}
+        activeVanId={activeVanId}
+        onVanChange={setActiveVanId}
+        onAddVan={handleAddVan}
+        onEditVan={handleEditVan}
+        onDeleteVan={handleDeleteVan}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="lg:col-span-1 space-y-6">
-          <Card className="bg-black/60 border-gold/30">
-            <CardHeader>
-              <CardTitle className="text-white flex justify-between items-center">
-                <span>Van Inventory</span>
-                <span className="text-sm font-normal text-gold">{currentVan.registration}</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="p-3 border border-gold/20 rounded-md">
-                  <p className="text-white/70 text-sm">Total Items</p>
-                  <p className="text-white text-2xl font-bold">
-                    {inventory.filter(item => item.vanId === activeVanId).length}
-                  </p>
-                </div>
-                
-                <div className="p-3 border border-gold/20 rounded-md">
-                  <p className="text-white/70 text-sm">Low Stock Items</p>
-                  <p className="text-red-500 text-2xl font-bold">
-                    {inventory.filter(item => item.vanId === activeVanId && item.quantity <= item.minLevel).length}
-                  </p>
-                </div>
-                
-                <div className="p-3 border border-gold/20 rounded-md">
-                  <p className="text-white/70 text-sm">Categories</p>
-                  <p className="text-white text-2xl font-bold">
-                    {new Set(inventory.filter(item => item.vanId === activeVanId).map(item => item.category)).size}
-                  </p>
-                </div>
-              </div>
-              
-              <div className="mt-6">
-                <Button className="w-full gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg" onClick={handleRestockRequest}>
-                  <RefreshCw size={16} className="mr-2" />
-                  Restock Request
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-black/60 border-gold/30">
-            <CardHeader>
-              <CardTitle className="text-white">Quick Add</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Button onClick={handleAddItem} className="w-full gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg">
-                <Plus size={16} className="mr-2" />
-                Add New Item
-              </Button>
-            </CardContent>
-          </Card>
+          <VanOverview
+            vanRegistration={currentVan.registration}
+            inventory={inventory}
+            activeVanId={activeVanId}
+            onRestockRequest={handleRestockRequest}
+            onAddItem={handleAddItem}
+          />
         </div>
         
         <div className="lg:col-span-3">
-          <Card className="bg-black/60 border-gold/30">
-            <CardHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <CardTitle className="text-white">Current Inventory - {currentVan.name}</CardTitle>
-              
-              <div className="relative w-full sm:w-64">
-                <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/50" size={16} />
-                <Input 
-                  placeholder="Search inventory..." 
-                  className="pl-9 bg-black/40 border-gold/30 text-white"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader className="bg-black/40">
-                    <TableRow>
-                      <TableHead className="text-gold">Item Name</TableHead>
-                      <TableHead className="text-gold">Category</TableHead>
-                      <TableHead className="text-gold text-center">Stock Level</TableHead>
-                      <TableHead className="text-gold text-center">Quantity</TableHead>
-                      <TableHead className="text-gold">Last Restocked</TableHead>
-                      <TableHead className="text-gold text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredItems.map((item) => (
-                      <TableRow key={item.id} className="border-gold/10 hover:bg-white/5">
-                        <TableCell className="text-white font-medium">{item.name}</TableCell>
-                        <TableCell className="text-white/70">{item.category}</TableCell>
-                        <TableCell className="text-center">
-                          <div className="flex justify-center">
-                            <span className={`px-2 py-1 rounded text-xs font-medium ${
-                              item.quantity <= item.minLevel 
-                                ? "bg-red-500/20 text-red-400" 
-                                : "bg-green-500/20 text-green-400"
-                            }`}>
-                              {item.quantity <= item.minLevel ? "Low" : "OK"}
-                            </span>
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-white text-center">{item.quantity}</TableCell>
-                        <TableCell className="text-white/70">{item.lastRestocked}</TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex items-center justify-end space-x-2">
-                            <Button 
-                              variant="outline" 
-                              size="icon" 
-                              className="h-8 w-8 border-gold/30 text-white hover:bg-gold/20"
-                              onClick={() => adjustQuantity(item.id, -1)}
-                              disabled={item.quantity <= 0}
-                            >
-                              <Minus size={14} />
-                            </Button>
-                            <Button 
-                              variant="outline" 
-                              size="icon" 
-                              className="h-8 w-8 border-gold/30 text-white hover:bg-gold/20"
-                              onClick={() => adjustQuantity(item.id, 1)}
-                            >
-                              <Plus size={14} />
-                            </Button>
-                            <Button 
-                              variant="outline" 
-                              size="icon" 
-                              className="h-8 w-8 border-gold/30 text-white hover:bg-gold/20"
-                              onClick={() => handleEditItem(item)}
-                            >
-                              <Edit size={14} />
-                            </Button>
-                            <Button 
-                              variant="outline" 
-                              size="icon" 
-                              className="h-8 w-8 border-gold/30 text-white hover:bg-gold/20"
-                              onClick={() => handleDeleteItem(item.id)}
-                            >
-                              <Trash2 size={14} />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                    
-                    {filteredItems.length === 0 && (
-                      <TableRow>
-                        <TableCell colSpan={6} className="text-center py-8 text-white/60">
-                          No inventory items found for this van
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            </CardContent>
-          </Card>
+          <InventoryList
+            items={filteredItems}
+            vanName={currentVan.name}
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            onAdjustQuantity={adjustQuantity}
+            onEditItem={handleEditItem}
+            onDeleteItem={handleDeleteItem}
+          />
         </div>
       </div>
 
       {/* Dialog for adding/editing items */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="bg-black/90 border-gold/30 text-white">
-          <DialogHeader>
-            <DialogTitle>{editItem ? "Edit Inventory Item" : "Add New Inventory Item"}</DialogTitle>
-          </DialogHeader>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSaveItem)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-white">Item Name</FormLabel>
-                    <FormControl>
-                      <Input className="bg-black/40 border-gold/30 text-white" {...field} />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="category"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-white">Category</FormLabel>
-                    <FormControl>
-                      <Input className="bg-black/40 border-gold/30 text-white" {...field} />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="quantity"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-white">Quantity</FormLabel>
-                      <FormControl>
-                        <Input type="number" className="bg-black/40 border-gold/30 text-white" {...field} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="minLevel"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-white">Minimum Level</FormLabel>
-                      <FormControl>
-                        <Input type="number" className="bg-black/40 border-gold/30 text-white" {...field} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <FormField
-                control={form.control}
-                name="vanId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-white">Assign to Van</FormLabel>
-                    <Select 
-                      onValueChange={field.onChange} 
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="bg-black/40 border-gold/30 text-white">
-                          <SelectValue placeholder="Select a van" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="bg-black/90 border-gold/30 text-white">
-                        {vans.map((van) => (
-                          <SelectItem key={van.id} value={van.id} className="hover:bg-gold/20">
-                            {van.registration} - {van.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormItem>
-                )}
-              />
-              <DialogFooter>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  className="border-gold/30 text-white hover:bg-gold/20"
-                  onClick={() => setIsEditDialogOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <Button type="submit" className="gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg">
-                  {editItem ? "Update Item" : "Add Item"}
-                </Button>
-              </DialogFooter>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
+      <ItemFormDialog
+        isOpen={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        onSave={handleSaveItem}
+        editItem={editItem}
+        vans={vans}
+        activeVanId={activeVanId}
+      />
 
       {/* Dialog for adding/editing vans */}
-      <Dialog open={isVanDialogOpen} onOpenChange={setIsVanDialogOpen}>
-        <DialogContent className="bg-black/90 border-gold/30 text-white">
-          <DialogHeader>
-            <DialogTitle>{editVan ? "Edit Van" : "Add New Van"}</DialogTitle>
-          </DialogHeader>
-          <Form {...vanForm}>
-            <form onSubmit={vanForm.handleSubmit(handleSaveVan)} className="space-y-4">
-              <FormField
-                control={vanForm.control}
-                name="registration"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-white">Registration Number</FormLabel>
-                    <FormControl>
-                      <Input className="bg-black/40 border-gold/30 text-white" {...field} />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={vanForm.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-white">Van Name</FormLabel>
-                    <FormControl>
-                      <Input className="bg-black/40 border-gold/30 text-white" {...field} />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <DialogFooter>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  className="border-gold/30 text-white hover:bg-gold/20"
-                  onClick={() => setIsVanDialogOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <Button type="submit" className="gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg">
-                  {editVan ? "Update Van" : "Add Van"}
-                </Button>
-              </DialogFooter>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
+      <VanFormDialog
+        isOpen={isVanDialogOpen}
+        onOpenChange={setIsVanDialogOpen}
+        onSave={handleSaveVan}
+        editVan={editVan}
+      />
     </motion.div>
   );
 };
