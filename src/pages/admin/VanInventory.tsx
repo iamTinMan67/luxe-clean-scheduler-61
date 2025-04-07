@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -325,10 +324,14 @@ const VanInventory = () => {
         description: "The inventory item has been updated"
       });
     } else {
-      // Add new item
+      // Add new item - FIX: Ensure all required properties are provided
       const newItem: InventoryItem = {
         id: Date.now().toString(),
-        ...values,
+        name: values.name,
+        category: values.category,
+        quantity: values.quantity,
+        minLevel: values.minLevel,
+        vanId: values.vanId,
         lastRestocked: new Date().toISOString().split('T')[0]
       };
       setInventory(prev => [...prev, newItem]);
@@ -387,10 +390,11 @@ const VanInventory = () => {
         description: "The van details have been updated"
       });
     } else {
-      // Add new van
+      // Add new van - FIX: Ensure all required properties are provided
       const newVan: Van = {
         id: Date.now().toString(),
-        ...values
+        registration: values.registration,
+        name: values.name
       };
       setVans(prev => [...prev, newVan]);
       

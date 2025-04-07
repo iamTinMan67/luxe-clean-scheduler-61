@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -53,7 +52,6 @@ const allocateStockSchema = z.object({
 });
 
 const WarehouseInventory = () => {
-  // Sample inventory data
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [vans, setVans] = useState<Van[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -325,10 +323,15 @@ const WarehouseInventory = () => {
         description: "The inventory item has been updated"
       });
     } else {
-      // Add new item
+      // Add new item - FIX: Ensure all required properties are provided
       const newItem: InventoryItem = {
         id: Date.now().toString(),
-        ...values,
+        name: values.name,
+        category: values.category,
+        stockIn: values.stockIn,
+        stockOut: values.stockOut,
+        supplier: values.supplier,
+        reorderPoint: values.reorderPoint,
         dateAdded: now,
         lastUpdated: now,
         allocatedStock: {}
