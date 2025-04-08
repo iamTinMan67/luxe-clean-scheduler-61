@@ -104,7 +104,7 @@ export const useVehicleState = (additionalServices: AdditionalService[]) => {
   const handleRemoveVehicle = (index: number) => {
     if (vehicles.length <= 1) {
       toast.error("Cannot remove", {
-        description: "You must have at least one vehicle."
+        description: "None to delete."
       });
       return;
     }

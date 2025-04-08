@@ -71,7 +71,7 @@ export const useBookingState = () => {
         location: "Customer's Location",
         status: "pending",
         totalPrice: 199,
-        notes: "Customer prefers contactless service",
+        notes: "Customer prefers payment by cash",
         condition: 7
       },
       {

@@ -19,7 +19,7 @@ export const useBookingActions = (
       endTime: booking.time 
         ? `${parseInt(booking.time.split(':')[0]) + 2}:${booking.time.split(':')[1]}` 
         : "12:00",
-      staff: ["James Carter", "Michael Scott"]
+      staff: ["Karl", "Salleah"]
     };
     
     // Ensure date is a Date object
@@ -27,7 +27,7 @@ export const useBookingActions = (
       confirmedBooking.date = new Date(confirmedBooking.date);
     }
     
-    // Add to confirmed bookings
+    // Add to schedule
     const updatedConfirmedBookings = [...confirmedBookings, confirmedBooking];
     setConfirmedBookings(updatedConfirmedBookings);
     localStorage.setItem('confirmedBookings', JSON.stringify(updatedConfirmedBookings));
@@ -52,7 +52,7 @@ export const useBookingActions = (
     }
     
     toast.success("Booking confirmed", {
-      description: `Booking for ${booking.customer} has been confirmed and added to the calendar.`
+      description: `Booking for ${booking.customer} has now been accepted. Please check your email and find our link.`
     });
   };
   

@@ -92,8 +92,8 @@ const Booking = () => {
         <div className="max-w-3xl mx-auto mb-12 text-center">
           <h1 className="text-4xl font-bold mb-4">Book Your Valeting Service</h1>
           <p className="text-gray-300">
-            Please use our simple booking form. We will confirm
-            availability and get back to you as soon as possible.
+            Please use our simplified booking form. We will confirm
+            availability to your preferred option.
           </p>
         </div>
         
@@ -102,7 +102,7 @@ const Booking = () => {
             {/* Calendar and Time Selection */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6" ref={datePickerRef} id="date-picker-section">
               <div>
-                <Label className="text-white">Select Date</Label>
+                <Label className="text-white">Choose your preferred slot</Label>
                 <DatePicker 
                   date={selectedDate} 
                   onDateChange={setSelectedDate} 
@@ -123,19 +123,6 @@ const Booking = () => {
                   ))}
                 </select>
               </div>
-            </div>
-            
-            {/* Vehicle Registration */}
-            <div>
-              <Label htmlFor="vehicleReg" className="text-white">Vehicle Registration</Label>
-              <input
-                type="text"
-                id="vehicleReg"
-                placeholder="Enter vehicle registration"
-                value={vehicleReg}
-                onChange={(e) => setVehicleReg(e.target.value)}
-                className="w-full bg-gray-800 border-gray-700 rounded px-4 py-2 text-white"
-              />
             </div>
             
             {/* Vehicle Condition Slider */}
