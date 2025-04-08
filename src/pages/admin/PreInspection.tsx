@@ -135,7 +135,7 @@ const PreInspection = () => {
                 <Textarea 
                   id="exteriorNotes" 
                   className="bg-black/40 border-gold/30 text-white min-h-[100px]" 
-                  placeholder="Document any existing damage, scratches, dents, etc."
+                  placeholder="Note any existing damage, scratches, dents, etc."
                 />
               </div>
               
@@ -146,7 +146,7 @@ const PreInspection = () => {
                 <Textarea 
                   id="interiorNotes" 
                   className="bg-black/40 border-gold/30 text-white min-h-[100px]" 
-                  placeholder="Document interior condition, stains, wear, etc."
+                  placeholder="Note any dog hairs, stains, wear, etc."
                 />
               </div>
             </CardContent>
@@ -182,7 +182,7 @@ const PreInspection = () => {
                   <div className="col-span-full flex flex-col items-center justify-center text-white/60 p-8 border border-dashed border-gold/20 rounded-md">
                     <ImageIcon size={48} className="mb-2 opacity-50" />
                     <p>No images uploaded yet</p>
-                    <p className="text-sm">Take photos of the vehicle from multiple angles</p>
+                    <p className="text-sm">Snap anything noted</p>
                   </div>
                 )}
               </div>
@@ -202,8 +202,6 @@ const PreInspection = () => {
                   "Interior condition documented",
                   "Existing damage photographed",
                   "Personal items noted and secured",
-                  "Fuel level recorded",
-                  "Mileage recorded",
                   "Customer signature obtained",
                   "Staff signature provided"
                 ].map((item, index) => (
