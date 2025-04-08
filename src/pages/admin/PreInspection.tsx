@@ -154,7 +154,7 @@ const PreInspection = () => {
           
           <Card className="bg-black/60 border-gold/30">
             <CardHeader>
-              <CardTitle className="text-white">Photo Documentation</CardTitle>
+              <CardTitle className="text-white">Snapshot Anything Noted</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="mb-4">
