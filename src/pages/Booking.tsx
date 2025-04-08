@@ -1,4 +1,5 @@
-import { useState, useRef } from "react";
+
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,16 @@ const Booking = () => {
   const timeOptions = [
     "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"
   ];
+
+  // Add useEffect to scroll to date picker when component mounts
+  useEffect(() => {
+    if (datePickerRef.current) {
+      datePickerRef.current.scrollIntoView({ 
+        behavior: 'auto', // Using 'auto' for initial load to avoid animation issues
+        block: 'start'
+      });
+    }
+  }, []);
 
   const handleDateFocus = () => {
     // Scroll to the date picker when it receives focus
