@@ -1,14 +1,38 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Check, Image as ImageIcon, Upload } from "lucide-react";
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useScheduledAppointments } from "@/hooks/useScheduledAppointments";
+import { Booking } from "@/types/booking";
 
 const PreInspection = () => {
   const [images, setImages] = useState<string[]>([]);
+  const [selectedBooking, setSelectedBooking] = useState<string>("");
+  const [bookingDetails, setBookingDetails] = useState<Booking | null>(null);
+  const { appointments, loading } = useScheduledAppointments();
+  
+  // Update booking details when a booking is selected
+  useEffect(() => {
+    if (selectedBooking) {
+      const selected = appointments.find(booking => booking.id === selectedBooking);
+      if (selected) {
+        setBookingDetails(selected);
+      }
+    } else {
+      setBookingDetails(null);
+    }
+  }, [selectedBooking, appointments]);
   
   // Placeholder function for image upload
   const handleImageUpload = () => {
@@ -41,13 +65,39 @@ const PreInspection = () => {
                   <label htmlFor="customer" className="text-white text-sm font-medium block mb-1">
                     Customer Name
                   </label>
-                  <Input id="customer" className="bg-black/40 border-gold/30 text-white" placeholder="Enter customer name" />
+                  <Select
+                    value={selectedBooking}
+                    onValueChange={(value) => setSelectedBooking(value)}
+                  >
+                    <SelectTrigger className="bg-black/40 border-gold/30 text-white">
+                      <SelectValue placeholder="Select a scheduled appointment" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-900 border-gold/30 text-white">
+                      {loading ? (
+                        <SelectItem value="loading" disabled>Loading appointments...</SelectItem>
+                      ) : appointments.length > 0 ? (
+                        appointments.map((booking) => (
+                          <SelectItem key={booking.id} value={booking.id}>
+                            {booking.customer} - {new Date(booking.date).toLocaleDateString()}
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <SelectItem value="none" disabled>No scheduled appointments found</SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
                   <label htmlFor="bookingId" className="text-white text-sm font-medium block mb-1">
                     Booking ID
                   </label>
-                  <Input id="bookingId" className="bg-black/40 border-gold/30 text-white" placeholder="Enter booking ID" />
+                  <Input 
+                    id="bookingId" 
+                    className="bg-black/40 border-gold/30 text-white" 
+                    placeholder="Enter booking ID" 
+                    value={bookingDetails?.id || ""}
+                    readOnly={!!bookingDetails}
+                  />
                 </div>
               </div>
               
@@ -68,7 +118,13 @@ const PreInspection = () => {
                   <label htmlFor="regNumber" className="text-white text-sm font-medium block mb-1">
                     Registration
                   </label>
-                  <Input id="regNumber" className="bg-black/40 border-gold/30 text-white" placeholder="Reg. number" />
+                  <Input 
+                    id="regNumber" 
+                    className="bg-black/40 border-gold/30 text-white" 
+                    placeholder="Reg. number" 
+                    value={bookingDetails?.vehicleReg || ""}
+                    readOnly={!!bookingDetails?.vehicleReg}
+                  />
                 </div>
               </div>
               
