@@ -15,9 +15,10 @@ import {
 interface DatePickerProps {
   date?: Date
   onDateChange: (date: Date | undefined) => void
+  onFocus?: () => void
 }
 
-export function DatePicker({ date, onDateChange }: DatePickerProps) {
+export function DatePicker({ date, onDateChange, onFocus }: DatePickerProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -28,6 +29,7 @@ export function DatePicker({ date, onDateChange }: DatePickerProps) {
             !date && "text-muted-foreground",
             "bg-gray-800 border-gray-700 text-white hover:bg-gray-700 hover:text-white"
           )}
+          onFocus={onFocus}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {date ? format(date, "PPP") : <span>Pick a date</span>}

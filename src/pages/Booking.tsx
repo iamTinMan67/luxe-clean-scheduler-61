@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -11,6 +10,7 @@ import ConditionSlider from "@/components/ui/ConditionSlider";
 
 const Booking = () => {
   const navigate = useNavigate();
+  const datePickerRef = useRef<HTMLDivElement>(null);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedTime, setSelectedTime] = useState("");
   const [vehicleCondition, setVehicleCondition] = useState<number>(5);
@@ -19,8 +19,19 @@ const Booking = () => {
   const timeOptions = [
     "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"
   ];
+
+  const handleDateFocus = () => {
+    // Scroll to the date picker when it receives focus
+    if (datePickerRef.current) {
+      datePickerRef.current.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
   
   const handleFormSubmit = (formData: any) => {
+    
     const bookingData = {
       ...formData,
       date: selectedDate,
@@ -78,10 +89,14 @@ const Booking = () => {
         <div className="max-w-3xl mx-auto bg-gray-900/50 backdrop-blur-sm rounded-lg p-8 border border-gray-800">
           <div className="space-y-6">
             {/* Calendar and Time Selection */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6" ref={datePickerRef} id="date-picker-section">
               <div>
                 <Label className="text-white">Select Date</Label>
-                <DatePicker date={selectedDate} onDateChange={setSelectedDate} />
+                <DatePicker 
+                  date={selectedDate} 
+                  onDateChange={setSelectedDate} 
+                  onFocus={handleDateFocus}
+                />
               </div>
               
               <div>
