@@ -40,9 +40,11 @@ const Navbar = () => {
     { path: "/admin/pre-inspection", label: "Pre-Inspection" },
     { path: "/admin/van-inventory", label: "Van Stock" },
     { path: "/admin/warehouse-inventory", label: "Warehouse Inventory" },
+    { path: "/admin/manage-packages", label: "Manage Packages" },
     { path: "/admin/todo-list", label: "To-do List" },
     { path: "/admin/invoices", label: "Invoices" },
     { path: "/admin/gallery", label: "Gallery Manager" },
+    { path: "/admin/brochure", label: "Brochure" },
     { path: "/progress", label: "Track Progress" },
   ];
 
