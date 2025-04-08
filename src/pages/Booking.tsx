@@ -1,20 +1,20 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { DatePicker } from "@/components/ui/date-picker";
 import BookingForm from "@/components/booking/BookingForm";
+import DateTimeSelector from "@/components/booking/DateTimeSelector";
+import ConditionSlider from "@/components/ui/ConditionSlider";
 
 const Booking = () => {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedTime, setSelectedTime] = useState("");
-  const [vehicleCondition, setVehicleCondition] = useState<number | undefined>(10);
+  const [vehicleCondition, setVehicleCondition] = useState<number>(5);
+  const [vehicleReg, setVehicleReg] = useState("");
   
   const timeOptions = [
     "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"
@@ -25,7 +25,8 @@ const Booking = () => {
       ...formData,
       date: selectedDate,
       time: selectedTime,
-      vehicleCondition: vehicleCondition
+      vehicleCondition: vehicleCondition,
+      vehicleReg: vehicleReg
     };
     
     // Retrieve existing bookings from localStorage
@@ -40,10 +41,10 @@ const Booking = () => {
       id: bookingId,
       ...bookingData,
       status: "pending",
-      customer: `${formData.firstName} ${formData.lastName}`,
-      vehicle: "TBC",
+      customer: `${formData.yourName}`,
+      vehicle: vehicleReg || "TBC",
       packageType: "TBC",
-      location: "TBC",
+      location: formData.postcode || "TBC",
       contact: formData.phone,
       email: formData.email,
       notes: formData.notes,
@@ -98,20 +99,24 @@ const Booking = () => {
               </div>
             </div>
             
-            {/* Vehicle Condition */}
+            {/* Vehicle Registration */}
             <div>
-              <Label htmlFor="vehicleCondition" className="text-white">Vehicle Condition (1-10)</Label>
+              <Label htmlFor="vehicleReg" className="text-white">Vehicle Registration</Label>
               <input
-                type="number"
-                id="vehicleCondition"
-                placeholder="Enter vehicle condition (1-10)"
-                value={vehicleCondition}
-                onChange={(e) => setVehicleCondition(Number(e.target.value))}
+                type="text"
+                id="vehicleReg"
+                placeholder="Enter vehicle registration"
+                value={vehicleReg}
+                onChange={(e) => setVehicleReg(e.target.value)}
                 className="w-full bg-gray-800 border-gray-700 rounded px-4 py-2 text-white"
-                min="1"
-                max="10"
               />
             </div>
+            
+            {/* Vehicle Condition Slider */}
+            <ConditionSlider 
+              value={vehicleCondition} 
+              onChange={setVehicleCondition} 
+            />
             
             <BookingForm onSubmit={handleFormSubmit} />
           </div>

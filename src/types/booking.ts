@@ -1,8 +1,10 @@
+
 // Define the booking type with a specific status type
 export interface Booking {
   id: string;
   customer: string;
   vehicle: string;
+  vehicleReg?: string;
   packageType: string;
   date: Date | string;
   time?: string;

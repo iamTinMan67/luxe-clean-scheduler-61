@@ -33,7 +33,11 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
       <div className="space-y-2 mb-4">
         <div className="flex items-center text-gray-300">
           <Car className="w-4 h-4 mr-2 text-gold" />
-          <span>{booking.vehicle} - {booking.packageType} Package</span>
+          <span>
+            {booking.vehicle} 
+            {booking.vehicleReg && ` (${booking.vehicleReg})`} - 
+            {booking.packageType} Package
+          </span>
         </div>
         
         <div className="flex items-center text-gray-300">
