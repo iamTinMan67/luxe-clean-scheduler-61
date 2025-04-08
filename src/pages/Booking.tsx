@@ -102,7 +102,7 @@ const Booking = () => {
             {/* Calendar and Time Selection */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6" ref={datePickerRef} id="date-picker-section">
               <div>
-                <Label className="text-white">Choose your preferred slot</Label>
+                <Label className="text-white">Check Our Availability</Label>
                 <DatePicker 
                   date={selectedDate} 
                   onDateChange={setSelectedDate} 
@@ -111,7 +111,7 @@ const Booking = () => {
               </div>
               
               <div>
-                <Label className="text-white">Pick a time</Label>
+                <Label className="text-white">Pick a Time Slot</Label>
                 <select
                   value={selectedTime}
                   onChange={(e) => setSelectedTime(e.target.value)}

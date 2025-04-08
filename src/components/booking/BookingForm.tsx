@@ -11,6 +11,7 @@ interface BookingFormProps {
     yourName: string;
     postcode: string;
     phone: string;
+    email: string;
     notes: string;
   }) => void;
 }
@@ -19,6 +20,7 @@ const BookingForm = ({ onSubmit }: BookingFormProps) => {
   const [yourName, setYourName] = useState("");
   const [postcode, setPostcode] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [notes, setNotes] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -33,6 +35,7 @@ const BookingForm = ({ onSubmit }: BookingFormProps) => {
       yourName,
       postcode,
       phone,
+      email,
       notes,
     });
   };
@@ -76,7 +79,17 @@ const BookingForm = ({ onSubmit }: BookingFormProps) => {
           />
         </div>
         
-       
+        <div>
+          <Label htmlFor="email" className="text-white">Email</Label>
+          <Input 
+            id="email" 
+            placeholder="Enter your email"
+            value={phone}
+            onChange={(e) => setEmail(e.target.value)}
+            className="bg-gray-800 border-gray-700 text-white"
+            required
+          />
+        </div>       
         <div>
           <Label htmlFor="notes" className="text-white">Any Notes</Label>
           <Textarea 
