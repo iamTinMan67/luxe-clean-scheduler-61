@@ -5,6 +5,8 @@ import { usePlannerCalendar } from "@/hooks/usePlannerCalendar";
 import CalendarHeader from "@/components/planner/CalendarHeader";
 import PendingBookingsList from "@/components/planner/PendingBookingsList";
 import ScheduleCalendar from "@/components/planner/ScheduleCalendar";
+import DailyPlanner from "@/components/planner/DailyPlanner";
+import StaffPlanner from "@/pages/admin/StaffPlanner";
 
 const PlannerCalendar = () => {
   // Force re-render on mount to ensure latest data is loaded
@@ -22,6 +24,7 @@ const PlannerCalendar = () => {
     view,
     setView,
     pendingBookings,
+    confirmedBookings,
     schedule,
     navigatePrevious,
     navigateNext,
@@ -61,6 +64,20 @@ const PlannerCalendar = () => {
             schedule={schedule}
             getBookingBackground={getBookingBackground}
           />
+          
+          {/* Daily Planner */}
+          <DailyPlanner
+            date={date}
+            setDate={setDate}
+            schedule={schedule}
+            getBookingBackground={getBookingBackground}
+          />
+          
+          {/* Staff Planner embedded directly */}
+          <div className="mt-8">
+            <h2 className="text-2xl font-bold text-white mb-4">Staff Planner</h2>
+            <StaffPlanner />
+          </div>
         </div>
       </section>
     </div>
