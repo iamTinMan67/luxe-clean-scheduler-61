@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -81,7 +82,7 @@ const DailyPlanner: React.FC<DailyPlannerProps> = ({
                       <div className="flex justify-between items-start">
                         <div>
                           <h4 className="text-white font-medium">{booking.customer}</h4>
-                          <p className="text-gray-400 text-sm">{booking.packageName}</p>
+                          <p className="text-gray-400 text-sm">{booking.packageType}</p>
                           {booking.vehicleReg && (
                             <Badge variant="outline" className="mt-1 bg-black/30">
                               {booking.vehicleReg}
