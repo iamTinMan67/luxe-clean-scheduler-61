@@ -92,6 +92,35 @@ const ManagePackages = () => {
     setPackages(updatedPackages);
     toast.success(`Task moved ${direction}`);
   };
+
+  const handleMoveToPackage = (taskId: string, targetPackageType: string) => {
+    if (!selectedPackage) return;
+    
+    // Find the task in the current package
+    const taskToMove = selectedPackage.tasks.find(task => task.id === taskId);
+    if (!taskToMove) return;
+    
+    // Remove task from current package and add to target package
+    const updatedPackages = packages.map(pkg => {
+      if (pkg.type === selectedPackage.type) {
+        // Remove from current package
+        return {
+          ...pkg,
+          tasks: pkg.tasks.filter(task => task.id !== taskId)
+        };
+      } else if (pkg.type === targetPackageType) {
+        // Add to target package
+        return {
+          ...pkg,
+          tasks: [...pkg.tasks, taskToMove]
+        };
+      }
+      return pkg;
+    });
+    
+    setPackages(updatedPackages);
+    toast.success(`Task moved to ${packages.find(p => p.type === targetPackageType)?.name}`);
+  };
   
   const handleSaveTask = (task: ServiceTask) => {
     if (!selectedPackage) return;
@@ -174,11 +203,13 @@ const ManagePackages = () => {
                 <CardContent>
                   <PackageTaskList 
                     packageOption={selectedPackage}
+                    allPackages={packages}
                     onAddTask={handleAddTask}
                     onEditTask={handleEditTask}
                     onDeleteTask={handleDeleteTask}
                     onMoveTask={handleMoveTask}
                     onUpdateTaskDuration={handleUpdateTaskDuration}
+                    onMoveToPackage={handleMoveToPackage}
                   />
                 </CardContent>
               </Card>

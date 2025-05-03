@@ -21,7 +21,6 @@ import GalleryManager from "@/pages/admin/GalleryManager";
 import ManagePackages from "@/pages/admin/ManagePackages";
 import Brochure from "@/pages/admin/Brochure";
 import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 import BubbleEffect from "@/components/effects/BubbleEffect";
 
 function App() {
@@ -54,7 +53,6 @@ function App() {
           
           <Route path="*" element={<NotFound />} />
         </Routes>
-        <Footer />
       </BrowserRouter>
       <Toaster />
     </div>

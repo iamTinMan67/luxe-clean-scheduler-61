@@ -10,28 +10,40 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Edit, Clock, Trash2, Move } from "lucide-react";
+import { 
+  Plus, 
+  Edit, 
+  Clock, 
+  Trash2, 
+  Move,
+  Package 
+} from "lucide-react";
 import { ServiceTask, PackageOption } from "@/lib/types";
 
 interface PackageTaskListProps {
   packageOption: PackageOption;
+  allPackages: PackageOption[];
   onAddTask: () => void;
   onEditTask: (task: ServiceTask) => void;
   onDeleteTask: (taskId: string) => void;
   onMoveTask: (taskId: string, direction: "up" | "down") => void;
   onUpdateTaskDuration: (taskId: string, duration: number) => void;
+  onMoveToPackage: (taskId: string, targetPackageId: string) => void;
 }
 
 const PackageTaskList = ({
   packageOption,
+  allPackages,
   onAddTask,
   onEditTask,
   onDeleteTask,
   onMoveTask,
-  onUpdateTaskDuration
+  onUpdateTaskDuration,
+  onMoveToPackage
 }: PackageTaskListProps) => {
   const [editingDuration, setEditingDuration] = useState<{[key: string]: boolean}>({});
   const [durationValues, setDurationValues] = useState<{[key: string]: number}>({});
+  const [showMoveOptions, setShowMoveOptions] = useState<{[key: string]: boolean}>({});
 
   const handleEditDuration = (taskId: string, currentDuration: number) => {
     setEditingDuration({...editingDuration, [taskId]: true});
@@ -41,6 +53,13 @@ const PackageTaskList = ({
   const handleSaveDuration = (taskId: string) => {
     onUpdateTaskDuration(taskId, durationValues[taskId]);
     setEditingDuration({...editingDuration, [taskId]: false});
+  };
+
+  const toggleMoveOptions = (taskId: string) => {
+    setShowMoveOptions({
+      ...showMoveOptions,
+      [taskId]: !showMoveOptions[taskId]
+    });
   };
 
   return (
@@ -60,7 +79,7 @@ const PackageTaskList = ({
             <TableHead className="text-gold/80 text-right">Price (£)</TableHead>
             <TableHead className="text-gold/80 text-right">Duration (min)</TableHead>
             <TableHead className="text-gold/80 text-center">Included</TableHead>
-            <TableHead className="text-gold/80 text-right w-32">Actions</TableHead>
+            <TableHead className="text-gold/80 text-right w-40">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -140,6 +159,37 @@ const PackageTaskList = ({
                   >
                     <Edit size={14} />
                   </Button>
+                  <div className="relative">
+                    <Button 
+                      size="icon" 
+                      variant="ghost" 
+                      className="h-8 w-8 text-white hover:text-gold hover:bg-gold/10"
+                      onClick={() => toggleMoveOptions(task.id)}
+                    >
+                      <Package size={14} />
+                    </Button>
+                    {showMoveOptions[task.id] && (
+                      <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-black border border-gold/30 z-10">
+                        <div className="py-1">
+                          <p className="px-4 py-2 text-xs text-gold/70 border-b border-gold/20">Move to package:</p>
+                          {allPackages
+                            .filter(pkg => pkg.type !== packageOption.type)
+                            .map(pkg => (
+                              <button
+                                key={pkg.type}
+                                className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gold/10"
+                                onClick={() => {
+                                  onMoveToPackage(task.id, pkg.type);
+                                  setShowMoveOptions({});
+                                }}
+                              >
+                                {pkg.name}
+                              </button>
+                            ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                   <Button 
                     size="icon" 
                     variant="ghost" 
