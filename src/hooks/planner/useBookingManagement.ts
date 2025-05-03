@@ -10,20 +10,43 @@ export const useBookingManagement = (
   setConfirmedBookings: React.Dispatch<React.SetStateAction<Booking[]>>
 ) => {
   // Handle booking confirmation
-  const handleConfirmBooking = (bookingId: string) => {
+  const handleConfirmBooking = (bookingId: string, selectedStaff: string[] = [], travelMinutes: number = 0) => {
     // Find the booking to confirm
     const bookingToConfirm = pendingBookings.find(booking => booking.id === bookingId);
     if (!bookingToConfirm) return;
+    
+    // Calculate end time based on service duration + travel time
+    const startTime = bookingToConfirm.time || "09:00";
+    const startHour = parseInt(startTime.split(':')[0]);
+    const startMinute = parseInt(startTime.split(':')[1]);
+    
+    // Default service duration is 2 hours
+    const serviceDuration = 2; 
+    
+    // Calculate total duration including travel time (in minutes)
+    const totalMinutes = (serviceDuration * 60) + travelMinutes;
+    
+    // Calculate end hour and minute
+    let endHour = startHour + Math.floor(totalMinutes / 60);
+    let endMinute = startMinute + (totalMinutes % 60);
+    
+    // Handle minute overflow
+    if (endMinute >= 60) {
+      endHour += 1;
+      endMinute -= 60;
+    }
+    
+    // Format end time
+    const endTime = `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
     
     // Create a confirmed booking from the pending booking
     const confirmedBooking: Booking = {
       ...bookingToConfirm,
       status: "confirmed",
-      startTime: bookingToConfirm.time,
-      endTime: bookingToConfirm.time ? 
-        `${parseInt(bookingToConfirm.time.split(':')[0]) + 2}:${bookingToConfirm.time.split(':')[1]}` : 
-        "12:00", // Default 2 hours later
-      staff: ["James Carter", "Michael Scott"] // Default staff assignment
+      startTime: startTime,
+      endTime: endTime,
+      staff: selectedStaff.length > 0 ? selectedStaff : ["Default Staff"],
+      travelMinutes: travelMinutes
     };
     
     // Ensure the date is a proper Date object
@@ -61,7 +84,7 @@ export const useBookingManagement = (
     
     // Show success message
     toast.success(`Booking ${bookingId} confirmed successfully!`, {
-      description: "The booking has been added to your schedule."
+      description: `Assigned to ${selectedStaff.join(', ')} with ${travelMinutes} min travel time.`
     });
   };
   

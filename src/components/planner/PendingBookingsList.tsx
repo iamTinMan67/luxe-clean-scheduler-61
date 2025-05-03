@@ -7,7 +7,7 @@ import PendingBookingItem from './PendingBookingItem';
 
 interface PendingBookingsListProps {
   pendingBookings: Booking[];
-  handleConfirmBooking: (bookingId: string) => void;
+  handleConfirmBooking: (bookingId: string, selectedStaff: string[], travelMinutes: number) => void;
   handleCancelBooking: (bookingId: string) => void;
   getBookingBackground: (booking: Booking) => string;
 }

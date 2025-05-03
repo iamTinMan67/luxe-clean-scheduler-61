@@ -19,6 +19,7 @@ export interface Booking {
   staff?: string[];
   createdAt?: string;
   totalPrice?: number;
+  travelMinutes?: number;
 }
 
 // Helper function to validate booking status

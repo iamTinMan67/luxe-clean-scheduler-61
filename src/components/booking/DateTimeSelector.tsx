@@ -40,17 +40,31 @@ const DateTimeSelector = ({
         
       if (!datesMatch) return false;
       
-      // Check if time matches
+      // Check if time matches directly
       const bookingTime = booking.time || booking.startTime;
       if (bookingTime === timeSlot) return true;
       
       // Check if time is within a range (for bookings with start and end times)
       if (booking.startTime && booking.endTime) {
-        const bookingStartHour = parseInt(booking.startTime.split(':')[0]);
-        const bookingEndHour = parseInt(booking.endTime.split(':')[0]);
+        // Parse time slot hour
         const timeSlotHour = parseInt(timeSlot.split(':')[0]);
+        const timeSlotMinute = parseInt(timeSlot.split(':')[1]);
         
-        return timeSlotHour >= bookingStartHour && timeSlotHour < bookingEndHour;
+        // Parse booking start time
+        const startHour = parseInt(booking.startTime.split(':')[0]);
+        const startMinute = parseInt(booking.startTime.split(':')[1]);
+        
+        // Parse booking end time
+        const endHour = parseInt(booking.endTime.split(':')[0]);
+        const endMinute = parseInt(booking.endTime.split(':')[1]);
+        
+        // Convert everything to minutes for easier comparison
+        const timeSlotTotalMinutes = (timeSlotHour * 60) + timeSlotMinute;
+        const startTotalMinutes = (startHour * 60) + startMinute;
+        const endTotalMinutes = (endHour * 60) + endMinute;
+        
+        // Check if time slot falls within the booking's time range
+        return timeSlotTotalMinutes >= startTotalMinutes && timeSlotTotalMinutes < endTotalMinutes;
       }
       
       return false;

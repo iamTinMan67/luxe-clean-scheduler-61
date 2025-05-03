@@ -1,15 +1,16 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { format } from "date-fns";
 import { Booking } from '@/types/booking';
 import { Button } from "@/components/ui/button";
 import { 
   Car, Clock, MapPin, User, CheckCircle2, AlertCircle 
 } from "lucide-react";
+import StaffAllocationDialog from './StaffAllocationDialog';
 
 interface PendingBookingItemProps {
   booking: Booking;
-  onConfirm: (bookingId: string) => void;
+  onConfirm: (bookingId: string, selectedStaff: string[], travelMinutes: number) => void;
   onCancel: (bookingId: string) => void;
   getBookingBackground: (booking: Booking) => string;
 }
@@ -20,6 +21,16 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
   onCancel,
   getBookingBackground
 }) => {
+  const [showStaffDialog, setShowStaffDialog] = useState(false);
+
+  const handleConfirmClick = () => {
+    setShowStaffDialog(true);
+  };
+
+  const handleStaffConfirm = (booking: Booking, selectedStaff: string[], travelMinutes: number) => {
+    onConfirm(booking.id, selectedStaff, travelMinutes);
+  };
+
   return (
     <div 
       key={booking.id}
@@ -72,7 +83,7 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
       
       <div className="flex gap-2">
         <Button 
-          onClick={() => onConfirm(booking.id)}
+          onClick={handleConfirmClick}
           className="flex-1 bg-green-600 hover:bg-green-700 text-white"
           size="sm"
         >
@@ -88,6 +99,13 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
           <AlertCircle className="w-4 h-4 mr-1" /> Cancel
         </Button>
       </div>
+
+      <StaffAllocationDialog
+        open={showStaffDialog}
+        onClose={() => setShowStaffDialog(false)}
+        booking={booking}
+        onConfirm={handleStaffConfirm}
+      />
     </div>
   );
 };
