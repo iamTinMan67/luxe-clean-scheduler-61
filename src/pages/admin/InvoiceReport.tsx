@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -270,9 +271,11 @@ const InvoiceReport = () => {
                   <TabsTrigger value="pending">Pending</TabsTrigger>
                   <TabsTrigger value="overdue">Overdue</TabsTrigger>
                 </TabsList>
-              
+              </Tabs>
+            </CardHeader>
+            <CardContent>
+              <Tabs value={activeTab} defaultValue="all">
                 <TabsContent value="all">
-                  {/* This was previously missing proper Tabs wrapping */}
                   <div className="overflow-x-auto">
                     <Table>
                       <TableHeader className="bg-black/40">
