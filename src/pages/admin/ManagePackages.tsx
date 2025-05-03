@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { packageOptions } from "@/data/servicePackageData";
 import { ServiceTask } from "@/lib/types";
@@ -21,33 +20,12 @@ const ManagePackages = () => {
     handleUpdateTaskDuration
   } = usePackageManager(packageOptions);
 
-  // State for task operations
-  const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [editingTask, setEditingTask] = useState<ServiceTask | undefined>(undefined);
-  const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
-  
   const handleAddTask = () => {
-    setEditingTask(undefined);
-    setIsTaskFormOpen(true);
+    document.getElementById("add-task-button")?.click();
   };
   
   const handleEditTask = (task: ServiceTask) => {
-    setEditingTask(task);
-    setIsTaskFormOpen(true);
-  };
-  
-  const handleInitiateDeleteTask = (taskId: string) => {
-    setTaskToDelete(taskId);
-    setIsDeleteDialogOpen(true);
-  };
-  
-  const confirmDeleteTask = () => {
-    if (!taskToDelete) return;
-    
-    handleDeleteTask(taskToDelete);
-    setIsDeleteDialogOpen(false);
-    setTaskToDelete(null);
+    document.getElementById("edit-task-button")?.click();
   };
 
   return (
@@ -86,7 +64,7 @@ const ManagePackages = () => {
                     allPackages={packages}
                     onAddTask={handleAddTask}
                     onEditTask={handleEditTask}
-                    onDeleteTask={handleInitiateDeleteTask}
+                    onDeleteTask={handleDeleteTask}
                     onMoveTask={handleMoveTask}
                     onUpdateTaskDuration={handleUpdateTaskDuration}
                     onMoveToPackage={handleMoveToPackage}
@@ -106,7 +84,7 @@ const ManagePackages = () => {
         </div>
       </div>
       
-      {/* Task Form Dialog and Delete Confirmation Dialog are now imported via TaskOperations */}
+      {/* Task Operations Dialog Handlers */}
       <TaskOperations 
         selectedPackage={selectedPackage}
         onSaveTask={handleSaveTask}

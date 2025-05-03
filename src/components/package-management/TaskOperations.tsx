@@ -68,15 +68,62 @@ const TaskOperations = ({
         title="Delete Task"
         description="Are you sure you want to delete this task? This action cannot be undone."
       />
-      
-      {/* Return helper functions for external components to use */}
-      {({ 
-        handleAddTask,
-        handleEditTask,
-        handleDeleteTask
-      })}
     </>
   );
 };
 
+// Export both the component and the helper functions
 export default TaskOperations;
+
+// Export helper functions for external use
+export const useTaskOperations = (
+  onSaveTask: (task: ServiceTask) => void,
+  onDeleteTask: (taskId: string) => void
+) => {
+  const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState<ServiceTask | undefined>(undefined);
+  const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
+
+  const handleAddTask = () => {
+    setEditingTask(undefined);
+    setIsTaskFormOpen(true);
+  };
+  
+  const handleEditTask = (task: ServiceTask) => {
+    setEditingTask(task);
+    setIsTaskFormOpen(true);
+  };
+  
+  const handleDeleteTask = (taskId: string) => {
+    setTaskToDelete(taskId);
+    setIsDeleteDialogOpen(true);
+  };
+  
+  const confirmDeleteTask = () => {
+    if (!taskToDelete) return;
+    
+    onDeleteTask(taskToDelete);
+    setIsDeleteDialogOpen(false);
+    setTaskToDelete(null);
+  };
+  
+  const handleSaveTask = (task: ServiceTask) => {
+    onSaveTask(task);
+    setIsTaskFormOpen(false);
+    setEditingTask(undefined);
+  };
+
+  return {
+    isTaskFormOpen,
+    isDeleteDialogOpen,
+    editingTask,
+    handleAddTask,
+    handleEditTask,
+    handleDeleteTask,
+    handleSaveTask,
+    setIsTaskFormOpen,
+    setIsDeleteDialogOpen,
+    confirmDeleteTask
+  };
+};
