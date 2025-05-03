@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -151,12 +150,14 @@ const InvoiceReport = () => {
               <CardTitle className="text-white">Financial Summary</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <TabsContent value="all" className="m-0">
-                <div className="bg-black/40 p-4 rounded-md border border-gold/20">
-                  <p className="text-white/70 text-sm mb-1">Total Revenue</p>
-                  <p className="text-white text-2xl font-bold">{formatCurrency(totals.all)}</p>
-                </div>
-              </TabsContent>
+              <Tabs defaultValue="all">
+                <TabsContent value="all" className="m-0">
+                  <div className="bg-black/40 p-4 rounded-md border border-gold/20">
+                    <p className="text-white/70 text-sm mb-1">Total Revenue</p>
+                    <p className="text-white text-2xl font-bold">{formatCurrency(totals.all)}</p>
+                  </div>
+                </TabsContent>
+              </Tabs>
               
               <div className="grid grid-cols-1 gap-4">
                 <div className="bg-black/40 p-4 rounded-md border border-gold/20">
@@ -269,77 +270,96 @@ const InvoiceReport = () => {
                   <TabsTrigger value="pending">Pending</TabsTrigger>
                   <TabsTrigger value="overdue">Overdue</TabsTrigger>
                 </TabsList>
+              
+                <TabsContent value="all">
+                  {/* This was previously missing proper Tabs wrapping */}
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader className="bg-black/40">
+                        <TableRow>
+                          <TableHead className="text-gold">Invoice ID</TableHead>
+                          <TableHead className="text-gold">Customer</TableHead>
+                          <TableHead className="text-gold">Service Package</TableHead>
+                          <TableHead className="text-gold text-right">Amount</TableHead>
+                          <TableHead className="text-gold">Due Date</TableHead>
+                          <TableHead className="text-gold">Status</TableHead>
+                          <TableHead className="text-gold text-right">Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredInvoices.map((invoice) => (
+                          <TableRow key={invoice.id} className="border-gold/10 hover:bg-white/5">
+                            <TableCell className="font-medium text-white">{invoice.id}</TableCell>
+                            <TableCell>
+                              <div>
+                                <p className="text-white">{invoice.customerName}</p>
+                                <p className="text-white/50 text-sm">{invoice.customerEmail}</p>
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-white">{invoice.servicePackage}</TableCell>
+                            <TableCell className="text-right text-white font-medium">
+                              {formatCurrency(invoice.amount)}
+                            </TableCell>
+                            <TableCell className="text-white/70">{invoice.dueDate}</TableCell>
+                            <TableCell>
+                              <Badge
+                                variant={
+                                  invoice.status === "paid" ? "outline" :
+                                  invoice.status === "pending" ? "outline" :
+                                  "destructive"
+                                }
+                                className={
+                                  invoice.status === "paid" ? "bg-green-500/20 text-green-400 border-green-500/30" :
+                                  invoice.status === "pending" ? "bg-amber-500/20 text-amber-400 border-amber-500/30" :
+                                  "bg-red-500/20 text-red-400"
+                                }
+                              >
+                                {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <div className="flex justify-end gap-2">
+                                <Button variant="ghost" size="icon" className="text-white hover:bg-gold/20 h-8 w-8">
+                                  <Eye size={16} />
+                                </Button>
+                                <Button variant="ghost" size="icon" className="text-white hover:bg-gold/20 h-8 w-8">
+                                  <Send size={16} />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                        
+                        {filteredInvoices.length === 0 && (
+                          <TableRow>
+                            <TableCell colSpan={7} className="text-center py-8 text-white/60">
+                              No invoices found
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="paid">
+                  <div className="text-center py-8 text-white/60">
+                    Showing only paid invoices
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="pending">
+                  <div className="text-center py-8 text-white/60">
+                    Showing only pending invoices
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="overdue">
+                  <div className="text-center py-8 text-white/60">
+                    Showing only overdue invoices
+                  </div>
+                </TabsContent>
               </Tabs>
-            </CardHeader>
-            
-            <CardContent>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader className="bg-black/40">
-                    <TableRow>
-                      <TableHead className="text-gold">Invoice ID</TableHead>
-                      <TableHead className="text-gold">Customer</TableHead>
-                      <TableHead className="text-gold">Service Package</TableHead>
-                      <TableHead className="text-gold text-right">Amount</TableHead>
-                      <TableHead className="text-gold">Due Date</TableHead>
-                      <TableHead className="text-gold">Status</TableHead>
-                      <TableHead className="text-gold text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredInvoices.map((invoice) => (
-                      <TableRow key={invoice.id} className="border-gold/10 hover:bg-white/5">
-                        <TableCell className="font-medium text-white">{invoice.id}</TableCell>
-                        <TableCell>
-                          <div>
-                            <p className="text-white">{invoice.customerName}</p>
-                            <p className="text-white/50 text-sm">{invoice.customerEmail}</p>
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-white">{invoice.servicePackage}</TableCell>
-                        <TableCell className="text-right text-white font-medium">
-                          {formatCurrency(invoice.amount)}
-                        </TableCell>
-                        <TableCell className="text-white/70">{invoice.dueDate}</TableCell>
-                        <TableCell>
-                          <Badge
-                            variant={
-                              invoice.status === "paid" ? "outline" :
-                              invoice.status === "pending" ? "outline" :
-                              "destructive"
-                            }
-                            className={
-                              invoice.status === "paid" ? "bg-green-500/20 text-green-400 border-green-500/30" :
-                              invoice.status === "pending" ? "bg-amber-500/20 text-amber-400 border-amber-500/30" :
-                              "bg-red-500/20 text-red-400"
-                            }
-                          >
-                            {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Button variant="ghost" size="icon" className="text-white hover:bg-gold/20 h-8 w-8">
-                              <Eye size={16} />
-                            </Button>
-                            <Button variant="ghost" size="icon" className="text-white hover:bg-gold/20 h-8 w-8">
-                              <Send size={16} />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                    
-                    {filteredInvoices.length === 0 && (
-                      <TableRow>
-                        <TableCell colSpan={7} className="text-center py-8 text-white/60">
-                          No invoices found
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
             </CardContent>
           </Card>
         </div>
