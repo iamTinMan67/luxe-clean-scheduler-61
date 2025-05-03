@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -101,27 +100,14 @@ const Booking = () => {
           <div className="space-y-6">
             {/* Calendar and Time Selection */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6" ref={datePickerRef} id="date-picker-section">
-              <div>
-                <Label className="text-white">Check Our Availability</Label>
-                <DatePicker 
-                  date={selectedDate} 
-                  onDateChange={setSelectedDate} 
-                  onFocus={handleDateFocus}
+              <div className="md:col-span-2">
+                <Label className="text-white mb-2 block">Select Date & Available Time</Label>
+                <DateTimeSelector 
+                  date={selectedDate}
+                  time={selectedTime}
+                  onDateChange={setSelectedDate}
+                  onTimeChange={setSelectedTime}
                 />
-              </div>
-              
-              <div>
-                <Label className="text-white">Pick a Time Slot</Label>
-                <select
-                  value={selectedTime}
-                  onChange={(e) => setSelectedTime(e.target.value)}
-                  className="w-full bg-gray-800 border-gray-700 rounded px-4 py-2 text-white"
-                >
-                  <option value="" disabled>Pick a time</option>
-                  {timeOptions.map((time) => (
-                    <option key={time} value={time}>{time}</option>
-                  ))}
-                </select>
               </div>
             </div>
             
