@@ -65,6 +65,11 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
           <MapPin className="w-4 h-4 mr-2 text-gold" />
           <span>{booking.location}</span>
         </div>
+
+        <div className="flex items-center text-gray-300">
+          <MapPin className="w-4 h-4 mr-2 text-gold" />
+          <span>{booking.notes}</span>
+        </div>
         
         <div className="flex items-center text-gray-300">
           <User className="w-4 h-4 mr-2 text-gold" />
