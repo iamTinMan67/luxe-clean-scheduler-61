@@ -1,7 +1,7 @@
-
 import { Booking } from '@/types/booking';
 import { generateInvoice, sendNotification } from '@/utils/bookingUtils';
 import { toast } from 'sonner';
+import { getStaffNames } from '@/data/staffData';
 
 export const useBookingActions = (
   pendingBookings: Booking[], 
@@ -19,7 +19,7 @@ export const useBookingActions = (
       endTime: booking.time 
         ? `${parseInt(booking.time.split(':')[0]) + 2}:${booking.time.split(':')[1]}` 
         : "12:00",
-      staff: ["Karl", "Salleah"]
+      staff: ["Karl", "Salleah"] // Default assigned staff (we could change this to use staff allocation dialog)
     };
     
     // Ensure date is a Date object
@@ -55,7 +55,7 @@ export const useBookingActions = (
       description: `Booking for ${booking.customer} has now been accepted. Please check your email and find our link.`
     });
   };
-  
+
   // Handle booking deletion
   const handleDeleteBooking = (booking: Booking) => {
     if (booking.status === "pending") {

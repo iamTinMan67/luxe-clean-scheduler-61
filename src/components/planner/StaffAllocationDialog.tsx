@@ -12,11 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Booking } from '@/types/booking';
-
-interface StaffMember {
-  id: string;
-  name: string;
-}
+import { staffMembers } from '@/data/staffData';
 
 interface StaffAllocationDialogProps {
   open: boolean;
@@ -31,14 +27,6 @@ const StaffAllocationDialog: React.FC<StaffAllocationDialogProps> = ({
   booking, 
   onConfirm 
 }) => {
-  const staffMembers: StaffMember[] = [
-    { id: "1", name: "John Smith" },
-    { id: "2", name: "Sarah Johnson" },
-    { id: "3", name: "Michael Brown" },
-    { id: "4", name: "Emma Wilson" },
-    { id: "5", name: "David Lee" }
-  ];
-  
   const [selectedStaff, setSelectedStaff] = useState<string[]>([]);
   const [travelMinutes, setTravelMinutes] = useState<number>(15);
   
@@ -94,6 +82,11 @@ const StaffAllocationDialog: React.FC<StaffAllocationDialogProps> = ({
                     className="text-white cursor-pointer flex-grow"
                   >
                     {staff.name}
+                    {staff.specialty && (
+                      <span className="text-xs text-gray-400 block">
+                        {staff.specialty}
+                      </span>
+                    )}
                   </label>
                 </div>
               ))}

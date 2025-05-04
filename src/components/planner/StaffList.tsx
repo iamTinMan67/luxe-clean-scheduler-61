@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { staffMembers } from '@/data/staffData';
 
 const StaffList = () => {
   return (
@@ -13,10 +14,17 @@ const StaffList = () => {
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
-          {["John Smith", "Sarah Johnson", "Michael Brown", "Emma Wilson", "David Lee"].map((staff) => (
-            <div key={staff} className="flex items-center space-x-2 p-2 hover:bg-white/5 rounded">
-              <input type="checkbox" id={staff} className="rounded text-gold" />
-              <label htmlFor={staff} className="text-white cursor-pointer">{staff}</label>
+          {staffMembers.map((staff) => (
+            <div key={staff.id} className="flex items-center space-x-2 p-2 hover:bg-white/5 rounded">
+              <input type="checkbox" id={staff.name} className="rounded text-gold" />
+              <label htmlFor={staff.name} className="text-white cursor-pointer">
+                {staff.name}
+                {staff.position && (
+                  <span className="text-xs text-gray-400 block">
+                    {staff.position}
+                  </span>
+                )}
+              </label>
             </div>
           ))}
         </div>
