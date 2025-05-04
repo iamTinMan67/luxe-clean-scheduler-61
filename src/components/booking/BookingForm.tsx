@@ -26,7 +26,7 @@ const BookingForm = ({ onSubmit }: BookingFormProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!yourName || !postcode || !phone || !notes) {
+    if (!yourName || !postcode || !phone || !email || !notes) {
       toast.error("Oops! Check Again");
       return;
     }
@@ -83,8 +83,8 @@ const BookingForm = ({ onSubmit }: BookingFormProps) => {
           <Label htmlFor="email" className="text-white">Email</Label>
           <Input 
             id="email" 
-            placeholder="Enter your email"
-            value={phone}
+            placeholder="Enter your Email"
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="bg-gray-800 border-gray-700 text-white"
             required
