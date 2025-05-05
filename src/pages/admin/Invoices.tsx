@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
@@ -5,10 +6,11 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Download, Mail, MessageSquare, Star } from "lucide-react";
+import { Download, Mail, MessageSquare, Star, Send } from "lucide-react";
 import { toast } from "sonner";
 import { Invoice } from "@/lib/types";
 import { Link } from "react-router-dom";
+import { sendTrackingInfo } from "@/utils/emailUtils";
 
 const Invoices = () => {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -93,6 +95,36 @@ const Invoices = () => {
     toast.success("Invoice marked as paid", {
       description: `Invoice #${invoiceId} has been marked as paid.`
     });
+  };
+
+  // Function to send tracking link to customer
+  const sendTrackingLink = async (invoice: Invoice) => {
+    // Find the corresponding booking
+    const confirmedBookingsStr = localStorage.getItem('confirmedBookings');
+    if (!confirmedBookingsStr) {
+      toast.error("Booking not found");
+      return;
+    }
+    
+    try {
+      const confirmedBookings = JSON.parse(confirmedBookingsStr);
+      const booking = confirmedBookings.find((b: any) => b.id === invoice.id);
+      
+      if (!booking) {
+        toast.error("Booking not found");
+        return;
+      }
+      
+      // Send tracking info email
+      await sendTrackingInfo(booking);
+      
+      toast.success("Tracking link sent", {
+        description: `Tracking information has been sent to the customer.`
+      });
+    } catch (error) {
+      console.error("Error sending tracking link:", error);
+      toast.error("Failed to send tracking link");
+    }
   };
 
   return (
@@ -204,6 +236,15 @@ const Invoices = () => {
                                 title="Request Feedback"
                               >
                                 <Star className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="text-blue-400 hover:text-blue-300"
+                                onClick={() => sendTrackingLink(invoice)}
+                                title="Send Tracking Link"
+                              >
+                                <Send className="h-4 w-4" />
                               </Button>
                               {!invoice.paid && (
                                 <Button

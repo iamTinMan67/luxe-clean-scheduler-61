@@ -1,57 +1,61 @@
 
-import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import { Link } from "react-router-dom";
+import { Button } from "../ui/button";
+import { ArrowRight, Calendar, BarChart3, Search } from "lucide-react";
 
 const CTASection = () => {
-  const navigate = useNavigate();
-  
-  const handleBooking = () => {
-    navigate("/services");
-  };
-  
   return (
-    <section className="py-20 relative">
-      <div 
-        className="absolute inset-0 bg-black z-0 bg-cover bg-center bg-no-repeat brightness-30"
-        style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1550355291-bbee04a92027?q=80&w=1936&auto=format&fit=crop')",
-        }}
-      ></div>
-      
-      <div className="absolute inset-0 bg-black/70 z-0"></div>
-      
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-3xl mx-auto text-center">
-          <motion.h2 
-            className="text-3xl md:text-5xl font-bold mb-6 text-white"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            Ready to Experience the <span className="text-gold">Difference</span>?
-          </motion.h2>
+    <section className="bg-black py-16">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Book Now Card */}
+          <div className="bg-gray-900/50 backdrop-blur-sm rounded-lg p-6 border border-gray-800 flex flex-col">
+            <div className="mb-4 bg-gold/10 p-3 rounded-full w-fit">
+              <Calendar className="w-6 h-6 text-gold" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">Book Your Valet</h3>
+            <p className="text-gray-400 mb-6 flex-grow">
+              Schedule a premium valeting service for your vehicle at your convenience.
+            </p>
+            <Link to="/booking">
+              <Button className="w-full gold-gradient text-black hover:shadow-xl hover:shadow-gold/20 transition-all">
+                Book Now <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </Link>
+          </div>
           
-          <motion.p 
-            className="text-xl text-gray-200 mb-8"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            Book our services and give your vehicle the care that <span className="text-gold">You</span> deserve.
-          </motion.p>
+          {/* View Packages Card */}
+          <div className="bg-gray-900/50 backdrop-blur-sm rounded-lg p-6 border border-gray-800 flex flex-col">
+            <div className="mb-4 bg-gold/10 p-3 rounded-full w-fit">
+              <BarChart3 className="w-6 h-6 text-gold" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">Our Packages</h3>
+            <p className="text-gray-400 mb-6 flex-grow">
+              Explore our range of premium valeting packages tailored to your vehicle's needs.
+            </p>
+            <Link to="/services">
+              <Button className="w-full gold-gradient text-black hover:shadow-xl hover:shadow-gold/20 transition-all">
+                View Packages <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </Link>
+          </div>
           
-          <motion.button 
-            onClick={handleBooking}
-            className="gold-gradient text-black px-10 py-4 rounded-md font-medium text-lg hover:shadow-xl hover:shadow-gold/20 transition-all"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
-            Book Me In
-          </motion.button>
+          {/* Track Your Valet Card */}
+          <div className="bg-gray-900/50 backdrop-blur-sm rounded-lg p-6 border border-gray-800 flex flex-col">
+            <div className="mb-4 bg-gold/10 p-3 rounded-full w-fit">
+              <Search className="w-6 h-6 text-gold" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">Track Your Valet</h3>
+            <p className="text-gray-400 mb-6 flex-grow">
+              Enter your booking reference to track the real-time progress of your valet service.
+            </p>
+            <Link to="/track">
+              <Button className="w-full gold-gradient text-black hover:shadow-xl hover:shadow-gold/20 transition-all">
+                Track Now <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     </section>

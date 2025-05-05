@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { Booking } from '@/types/booking';
 import { Button } from "@/components/ui/button";
 import { 
-  Car, Clock, MapPin, User, CheckCircle2, AlertCircle 
+  Car, Clock, MapPin, User, CheckCircle2, AlertCircle, Mail, Phone
 } from "lucide-react";
 import StaffAllocationDialog from './StaffAllocationDialog';
 
@@ -67,13 +67,18 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
         </div>
 
         <div className="flex items-center text-gray-300">
-          <MapPin className="w-4 h-4 mr-2 text-gold" />
-          <span>{booking.notes}</span>
+          <User className="w-4 h-4 mr-2 text-gold" />
+          <span>{booking.notes || "No notes provided"}</span>
         </div>
         
         <div className="flex items-center text-gray-300">
-          <User className="w-4 h-4 mr-2 text-gold" />
-          <span>{booking.contact || booking.email || "No contact provided"}</span>
+          <Mail className="w-4 h-4 mr-2 text-gold" />
+          <span>{booking.email || "No email provided"}</span>
+        </div>
+        
+        <div className="flex items-center text-gray-300">
+          <Phone className="w-4 h-4 mr-2 text-gold" />
+          <span>{booking.contact || "No phone provided"}</span>
         </div>
         
         {/* Add vehicle condition indicator */}

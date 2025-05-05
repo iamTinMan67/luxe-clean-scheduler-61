@@ -9,6 +9,7 @@ interface BookingDetailsProps {
 const BookingDetails: React.FC<BookingDetailsProps> = ({ booking }) => {
   return (
     <div className="space-y-1 text-sm">
+      <p className="text-gray-300">Reference: <span className="text-white font-semibold">{booking.id}</span></p>
       <p className="text-gray-300">Vehicle: <span className="text-white">{booking.vehicle}</span></p>
       <p className="text-gray-300">Package: <span className="text-white">{booking.packageType}</span></p>
       <p className="text-gray-300">Location: <span className="text-white">{booking.location}</span></p>

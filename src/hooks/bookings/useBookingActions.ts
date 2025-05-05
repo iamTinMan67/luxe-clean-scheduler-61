@@ -1,5 +1,7 @@
+
 import { Booking } from '@/types/booking';
 import { generateInvoice, sendNotification } from '@/utils/bookingUtils';
+import { sendTrackingInfo } from '@/utils/emailUtils';
 import { toast } from 'sonner';
 import { getStaffNames } from '@/data/staffData';
 
@@ -49,6 +51,14 @@ export const useBookingActions = (
     } catch (e) {
       console.error('Error updating planner calendar:', e);
       localStorage.setItem('plannerCalendarBookings', JSON.stringify([confirmedBooking]));
+    }
+    
+    // Send tracking information to the customer if email is available
+    if (confirmedBooking.email) {
+      sendTrackingInfo(confirmedBooking)
+        .catch(error => {
+          console.error("Error sending tracking info:", error);
+        });
     }
     
     toast.success("Booking confirmed", {

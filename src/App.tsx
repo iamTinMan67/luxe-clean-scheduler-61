@@ -5,6 +5,7 @@ import Index from "@/pages/Index";
 import ServicePackage from "@/pages/ServicePackage";
 import Booking from "@/pages/Booking";
 import Progress from "@/pages/Progress";
+import TrackBooking from "@/pages/TrackBooking";
 import Gallery from "@/pages/Gallery";
 import Feedback from "@/pages/Feedback";
 import NotFound from "@/pages/NotFound";
@@ -34,6 +35,7 @@ function App() {
           <Route path="/services" element={<ServicePackage />} />
           <Route path="/booking" element={<Booking />} />
           <Route path="/progress" element={<Progress />} />
+          <Route path="/track" element={<TrackBooking />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/feedback/:invoiceId" element={<Feedback />} />
           
