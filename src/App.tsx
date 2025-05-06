@@ -1,12 +1,14 @@
 
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/context/AuthContext";
 import Index from "@/pages/Index";
 import ServicePackage from "@/pages/ServicePackage";
 import Booking from "@/pages/Booking";
 import Progress from "@/pages/Progress";
 import TrackBooking from "@/pages/TrackBooking";
 import Gallery from "@/pages/Gallery";
+import Login from "@/pages/Login";
 import Feedback from "@/pages/Feedback";
 import NotFound from "@/pages/NotFound";
 import PlannerCalendar from "@/pages/admin/PlannerCalendar";
@@ -26,7 +28,7 @@ import BubbleEffect from "@/components/effects/BubbleEffect";
 
 function App() {
   return (
-    <div>
+    <AuthProvider>
       <BrowserRouter>
         <BubbleEffect /> {/* Added BubbleEffect here so it appears on all pages */}
         <Navbar />
@@ -37,6 +39,7 @@ function App() {
           <Route path="/progress" element={<Progress />} />
           <Route path="/track" element={<TrackBooking />} />
           <Route path="/gallery" element={<Gallery />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/feedback/:invoiceId" element={<Feedback />} />
           
           {/* Admin Routes */}
@@ -57,7 +60,7 @@ function App() {
         </Routes>
       </BrowserRouter>
       <Toaster />
-    </div>
+    </AuthProvider>
   );
 }
 
