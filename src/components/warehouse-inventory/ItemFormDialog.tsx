@@ -6,6 +6,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useEffect } from "react";
 
 type InventoryItem = {
   id: string;
@@ -46,14 +47,37 @@ const ItemFormDialog = ({
   const form = useForm<z.infer<typeof inventoryItemSchema>>({
     resolver: zodResolver(inventoryItemSchema),
     defaultValues: {
-      name: editItem?.name || "",
-      category: editItem?.category || "",
-      stockIn: editItem?.stockIn || 0,
-      stockOut: editItem?.stockOut || 0,
-      supplier: editItem?.supplier || "",
-      reorderPoint: editItem?.reorderPoint || 0,
+      name: "",
+      category: "",
+      stockIn: 0,
+      stockOut: 0,
+      supplier: "",
+      reorderPoint: 0,
     },
   });
+
+  // Reset form when edit item changes - Added this effect to fix the issue
+  useEffect(() => {
+    if (editItem) {
+      form.reset({
+        name: editItem.name,
+        category: editItem.category,
+        stockIn: editItem.stockIn,
+        stockOut: editItem.stockOut,
+        supplier: editItem.supplier,
+        reorderPoint: editItem.reorderPoint,
+      });
+    } else {
+      form.reset({
+        name: "",
+        category: "",
+        stockIn: 0,
+        stockOut: 0,
+        supplier: "",
+        reorderPoint: 0,
+      });
+    }
+  }, [editItem, form]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
