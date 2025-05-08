@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { WarehouseItem } from "./useWarehouseInventory";
+import { WarehouseItem } from "@/types/warehouseInventory";
 import { Van } from "@/types/vanInventory";
 
 export default function useAllocationManager(inventory: WarehouseItem[], setInventory: React.Dispatch<React.SetStateAction<WarehouseItem[]>>) {
