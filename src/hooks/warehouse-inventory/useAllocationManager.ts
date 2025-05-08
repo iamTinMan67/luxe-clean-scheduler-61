@@ -28,6 +28,7 @@ export default function useAllocationManager(inventory: WarehouseItem[], setInve
       return;
     }
     
+    // Update warehouse inventory allocated stock
     setInventory(prev => prev.map(item => {
       if (item.id === selectedItemForAllocation.id) {
         const updatedAllocatedStock = { ...item.allocatedStock };
@@ -41,6 +42,47 @@ export default function useAllocationManager(inventory: WarehouseItem[], setInve
       }
       return item;
     }));
+    
+    // Update van inventory
+    try {
+      const vanInventory = localStorage.getItem('vanInventory');
+      
+      if (vanInventory) {
+        const parsedInventory = JSON.parse(vanInventory);
+        
+        // Find if the item already exists in the van's inventory
+        const existingItemIndex = parsedInventory.findIndex((item: any) => 
+          item.name === selectedItemForAllocation.name && item.vanId === values.vanId
+        );
+        
+        if (existingItemIndex !== -1) {
+          // Update existing item quantity
+          parsedInventory[existingItemIndex].quantity += values.quantity;
+          parsedInventory[existingItemIndex].lastRestocked = new Date().toISOString().split('T')[0];
+        } else {
+          // Add new item to van inventory
+          const newItem = {
+            id: Date.now().toString(),
+            name: selectedItemForAllocation.name,
+            category: selectedItemForAllocation.category,
+            quantity: values.quantity,
+            minLevel: Math.max(1, Math.floor(values.quantity / 4)), // Set a reasonable min level
+            vanId: values.vanId,
+            lastRestocked: new Date().toISOString().split('T')[0]
+          };
+          
+          parsedInventory.push(newItem);
+        }
+        
+        // Save updated van inventory
+        localStorage.setItem('vanInventory', JSON.stringify(parsedInventory));
+      }
+    } catch (error) {
+      console.error('Error updating van inventory:', error);
+      toast.error("Failed to update van inventory", {
+        description: "The allocation was recorded but van inventory wasn't updated"
+      });
+    }
     
     toast.success("Stock allocated", {
       description: `${values.quantity} units allocated to ${selectedVan.registration}`

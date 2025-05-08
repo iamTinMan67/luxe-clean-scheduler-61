@@ -19,6 +19,7 @@ const WarehouseInventory = () => {
   // Use our custom hooks for state management
   const {
     inventory,
+    setInventory,
     editItem,
     isEditDialogOpen,
     setIsEditDialogOpen,

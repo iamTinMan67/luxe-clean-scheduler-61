@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -254,6 +253,7 @@ export default function useWarehouseInventory() {
 
   return {
     inventory,
+    setInventory, // Now exposing setInventory
     editItem,
     isEditDialogOpen,
     setIsEditDialogOpen,

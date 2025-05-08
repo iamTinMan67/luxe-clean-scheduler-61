@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -66,54 +65,75 @@ export default function useInventoryItems(activeVanId: string) {
 
   // Handle quantity change
   const adjustQuantity = (id: string, amount: number, vans: Van[]) => {
+    let updatedItem: InventoryItem | null = null;
+    
     setInventory(prev => prev.map(item => {
       if (item.id === id) {
         const newQuantity = Math.max(0, item.quantity + amount);
         
-        return { 
+        updatedItem = { 
           ...item, 
           quantity: newQuantity,
           lastRestocked: amount > 0 ? new Date().toISOString().split('T')[0] : item.lastRestocked 
         };
+        
+        return updatedItem;
       }
       return item;
     }));
     
-    // Update warehouse allocated stock when van inventory changes
-    if (amount !== 0) {
-      // Try to clear allocations from the updated van
-      try {
-        const warehouseInventory = localStorage.getItem('warehouseInventory');
-        if (warehouseInventory) {
-          const parsedInventory = JSON.parse(warehouseInventory);
-          const currentVan = vans.find(van => van.id === activeVanId);
-          
-          if (currentVan) {
-            const updatedWarehouseInventory = parsedInventory.map((item: any) => {
-              if (item.allocatedStock && item.allocatedStock[currentVan.registration]) {
-                const updatedAllocatedStock = { ...item.allocatedStock };
-                // Clear the allocation for this van
-                updatedAllocatedStock[currentVan.registration] = 0;
-                return {
-                  ...item,
-                  allocatedStock: updatedAllocatedStock,
-                  lastUpdated: new Date().toISOString().split('T')[0]
-                };
-              }
-              return item;
-            });
-            
-            localStorage.setItem('warehouseInventory', JSON.stringify(updatedWarehouseInventory));
-          }
-        }
-      } catch (error) {
-        console.error('Error updating warehouse allocations:', error);
-      }
+    // If quantity was changed and we have item details, clear allocations in warehouse
+    if (amount !== 0 && updatedItem) {
+      clearWarehouseAllocation(updatedItem, vans);
     }
     
     toast.success(`Inventory quantity updated`, {
       description: amount > 0 ? "Item quantity increased" : "Item quantity decreased"
     });
+  };
+
+  // Clear allocation in warehouse inventory when van stock changes
+  const clearWarehouseAllocation = (item: InventoryItem, vans: Van[]) => {
+    try {
+      const warehouseInventory = localStorage.getItem('warehouseInventory');
+      if (warehouseInventory) {
+        const parsedInventory = JSON.parse(warehouseInventory);
+        const currentVan = vans.find(van => van.id === item.vanId);
+        
+        if (currentVan) {
+          let updated = false;
+          
+          // Find matching warehouse items by name
+          const updatedWarehouseInventory = parsedInventory.map((warehouseItem: any) => {
+            // Only clear allocation if the names match and there's an allocation for this van
+            if (warehouseItem.name === item.name && 
+                warehouseItem.allocatedStock && 
+                warehouseItem.allocatedStock[currentVan.registration]) {
+              
+              updated = true;
+              const updatedAllocatedStock = { ...warehouseItem.allocatedStock };
+              // Clear the allocation for this van
+              updatedAllocatedStock[currentVan.registration] = 0;
+              
+              return {
+                ...warehouseItem,
+                allocatedStock: updatedAllocatedStock,
+                lastUpdated: new Date().toISOString().split('T')[0]
+              };
+            }
+            return warehouseItem;
+          });
+          
+          if (updated) {
+            localStorage.setItem('warehouseInventory', JSON.stringify(updatedWarehouseInventory));
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error clearing warehouse allocations:', error);
+      // We don't show a toast here to avoid confusing the user
+      // This is a background operation that shouldn't interrupt their flow
+    }
   };
 
   const handleAddItem = () => {
@@ -133,8 +153,12 @@ export default function useInventoryItems(activeVanId: string) {
     });
   };
 
+  // Update the handleSaveItem function to clear allocations when item quantity changes
   const handleSaveItem = (values: z.infer<typeof inventoryItemSchema>) => {
     if (editItem) {
+      // Check if quantity changed
+      const quantityChanged = values.quantity !== editItem.quantity;
+      
       // Update existing item
       setInventory(prev => prev.map(item => 
         item.id === editItem.id 
@@ -147,6 +171,21 @@ export default function useInventoryItems(activeVanId: string) {
             }
           : item
       ));
+
+      // If quantity changed, clear allocations in warehouse
+      if (quantityChanged) {
+        // We need to load vans to get the registration
+        try {
+          const savedVans = localStorage.getItem('vans');
+          if (savedVans) {
+            const vans = JSON.parse(savedVans);
+            clearWarehouseAllocation({...editItem, ...values}, vans);
+          }
+        } catch (error) {
+          console.error('Error loading vans:', error);
+        }
+      }
+      
       toast.success("Item updated", {
         description: "The inventory item has been updated"
       });
