@@ -7,35 +7,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useEffect } from "react";
-
-type InventoryItem = {
-  id: string;
-  name: string;
-  category: string;
-  stockIn: number;
-  stockOut: number;
-  dateAdded: string;
-  lastUpdated: string;
-  supplier: string;
-  reorderPoint: number;
-  allocatedStock: { [vanReg: string]: number };
-};
-
-// Form schema for inventory item
-const inventoryItemSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  category: z.string().min(1, "Category is required"),
-  stockIn: z.coerce.number().min(0, "Stock in must be at least 0"),
-  stockOut: z.coerce.number().min(0, "Stock out must be at least 0"),
-  supplier: z.string().min(1, "Supplier is required"),
-  reorderPoint: z.coerce.number().min(0, "Reorder point must be at least 0"),
-});
+import { WarehouseItem, warehouseItemSchema } from "@/hooks/warehouse-inventory/useWarehouseInventory";
 
 interface ItemFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  editItem: InventoryItem | null;
-  onSave: (values: z.infer<typeof inventoryItemSchema>) => void;
+  editItem: WarehouseItem | null;
+  onSave: (values: z.infer<typeof warehouseItemSchema>) => void;
 }
 
 const ItemFormDialog = ({
@@ -44,8 +22,8 @@ const ItemFormDialog = ({
   editItem,
   onSave
 }: ItemFormDialogProps) => {
-  const form = useForm<z.infer<typeof inventoryItemSchema>>({
-    resolver: zodResolver(inventoryItemSchema),
+  const form = useForm<z.infer<typeof warehouseItemSchema>>({
+    resolver: zodResolver(warehouseItemSchema),
     defaultValues: {
       name: "",
       category: "",
@@ -56,7 +34,7 @@ const ItemFormDialog = ({
     },
   });
 
-  // Reset form when edit item changes - Added this effect to fix the issue
+  // Reset form when edit item changes
   useEffect(() => {
     if (editItem) {
       form.reset({
@@ -77,7 +55,7 @@ const ItemFormDialog = ({
         reorderPoint: 0,
       });
     }
-  }, [editItem, form]);
+  }, [editItem, form, open]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
