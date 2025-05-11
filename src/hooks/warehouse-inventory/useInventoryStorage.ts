@@ -36,7 +36,7 @@ export default function useInventoryStorage() {
             lastUpdated: new Date(item.updated_at).toISOString().split('T')[0],
             supplier: item.supplier,
             reorderPoint: item.reorder_point,
-            allocatedStock: item.allocated_stock || {}
+            allocatedStock: item.allocated_stock ? (typeof item.allocated_stock === 'object' ? item.allocated_stock : {}) : {}
           }));
           
           setInventory(transformedItems);
