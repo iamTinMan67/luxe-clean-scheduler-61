@@ -32,35 +32,35 @@ import ProtectedRoute from '@/components/auth/ProtectedRoute';
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <ProtectedRoute element={<Index />} public />,
+    element: <Index />,
   },
   {
     path: '/services',
-    element: <ProtectedRoute element={<ServicePackage />} public />,
+    element: <ServicePackage />,
   },
   {
     path: '/gallery',
-    element: <ProtectedRoute element={<Gallery />} public />,
+    element: <Gallery />,
   },
   {
     path: '/booking',
-    element: <ProtectedRoute element={<Booking />} public />,
+    element: <Booking />,
   },
   {
     path: '/login',
-    element: <ProtectedRoute element={<Login />} public />,
+    element: <Login />,
   },
   {
     path: '/track/:bookingId',
-    element: <ProtectedRoute element={<TrackBooking />} public />,
+    element: <TrackBooking />,
   },
   {
     path: '/feedback/:bookingId',
-    element: <ProtectedRoute element={<Feedback />} public />,
+    element: <Feedback />,
   },
   {
     path: '/progress/:bookingId',
-    element: <ProtectedRoute element={<Progress />} public />,
+    element: <Progress />,
   },
   {
     path: '/admin',

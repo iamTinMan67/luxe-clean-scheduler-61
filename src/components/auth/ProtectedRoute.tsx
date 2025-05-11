@@ -8,7 +8,7 @@ interface ProtectedRouteProps {
   requireAdmin?: boolean;
   requireStaff?: boolean;
   requiredRole?: string;
-  public?: boolean; // New prop to indicate if route is public
+  public?: boolean;
 }
 
 const ProtectedRoute = ({ 
@@ -17,12 +17,17 @@ const ProtectedRoute = ({
   requireAdmin = false,
   requireStaff = false,
   requiredRole,
-  public: isPublic = false // Default to false
+  public: isPublic = false
 }: ProtectedRouteProps) => {
   const { user, isAdmin, isStaff, isLoading } = useAuth();
   
-  // If route is public, render it regardless of auth state
+  // Return the element or children without any auth checks if route is public
   if (isPublic) {
+    return <>{element || children}</>;
+  }
+  
+  // Always return the element for non-protected routes
+  if (!requireAdmin && !requireStaff && !requiredRole) {
     return <>{element || children}</>;
   }
   
@@ -34,7 +39,7 @@ const ProtectedRoute = ({
   }
   
   // Redirect to login if not authenticated and route is protected
-  if (!user && !isPublic) {
+  if (!user && (requireAdmin || requireStaff || requiredRole)) {
     return <Navigate to="/login" replace />;
   }
   

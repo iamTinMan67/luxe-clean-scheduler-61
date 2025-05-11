@@ -5,6 +5,7 @@ import DataMigration from "@/components/DataMigration";
 import { AuthProvider } from "@/context/AuthContext";
 
 const App = () => {
+  console.log("App component rendering");
   return (
     <AuthProvider>
       <DataMigration />
@@ -13,4 +14,4 @@ const App = () => {
   );
 };
 
-export default App
+export default App;
