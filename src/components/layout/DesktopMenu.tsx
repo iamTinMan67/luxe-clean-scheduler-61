@@ -18,7 +18,9 @@ const DesktopMenu = ({ adminRoutes }: DesktopMenuProps) => {
   return (
     <nav className="hidden md:flex items-center space-x-1">
       <NavLink to="/">Home</NavLink>
+      <NavLink to="/services">Services</NavLink>
       <NavLink to="/gallery">Gallery</NavLink>
+      <NavLink to="/booking">Book Now</NavLink>
       
       {(isAdmin || isStaff) && (
         <AdminDropdown 

@@ -68,51 +68,51 @@ export const router = createBrowserRouter([
   },
   {
     path: '/admin/dashboard',
-    element: <ProtectedRoute requiredRole="admin" element={<Dashboard />} />,
+    element: <ProtectedRoute requireAdmin element={<Dashboard />} />,
   },
   {
     path: '/admin/planner',
-    element: <ProtectedRoute requiredRole="admin" element={<PlannerCalendar />} />,
+    element: <ProtectedRoute requireAdmin element={<PlannerCalendar />} />,
   },
   {
     path: '/admin/staff-planner',
-    element: <ProtectedRoute requiredRole="admin" element={<StaffPlanner />} />,
+    element: <ProtectedRoute requireAdmin element={<StaffPlanner />} />,
   },
   {
     path: '/admin/brochure',
-    element: <ProtectedRoute requiredRole="admin" element={<Brochure />} />,
+    element: <ProtectedRoute requireAdmin element={<Brochure />} />,
   },
   {
     path: '/admin/gallery',
-    element: <ProtectedRoute requiredRole="admin" element={<GalleryManager />} />,
+    element: <ProtectedRoute requireAdmin element={<GalleryManager />} />,
   },
   {
     path: '/admin/todo',
-    element: <ProtectedRoute requiredRole="admin" element={<TodoList />} />,
+    element: <ProtectedRoute requireAdmin element={<TodoList />} />,
   },
   {
     path: '/admin/invoices',
-    element: <ProtectedRoute requiredRole="admin" element={<Invoices />} />,
+    element: <ProtectedRoute requireAdmin element={<Invoices />} />,
   },
   {
     path: '/admin/invoice-report',
-    element: <ProtectedRoute requiredRole="admin" element={<InvoiceReport />} />,
+    element: <ProtectedRoute requireAdmin element={<InvoiceReport />} />,
   },
   {
     path: '/admin/warehouse-inventory',
-    element: <ProtectedRoute requiredRole="admin" element={<WarehouseInventory />} />,
+    element: <ProtectedRoute requireAdmin element={<WarehouseInventory />} />,
   },
   {
     path: '/admin/van-inventory',
-    element: <ProtectedRoute requiredRole="admin" element={<VanInventory />} />,
+    element: <ProtectedRoute requireAdmin element={<VanInventory />} />,
   },
   {
     path: '/admin/pre-inspection',
-    element: <ProtectedRoute requiredRole="admin" element={<PreInspection />} />,
+    element: <ProtectedRoute requireAdmin element={<PreInspection />} />,
   },
   {
     path: '/admin/manage-packages',
-    element: <ProtectedRoute requiredRole="admin" element={<ManagePackages />} />,
+    element: <ProtectedRoute requireAdmin element={<ManagePackages />} />,
   },
   {
     path: '*',
