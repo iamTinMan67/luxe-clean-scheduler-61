@@ -1,6 +1,9 @@
 
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
+// Import layout
+import Layout from '@/components/layout/Layout';
+
 // Import pages
 import Index from '@/pages/Index';
 import NotFound from '@/pages/NotFound';
@@ -31,91 +34,96 @@ import ProtectedRoute from '@/components/auth/ProtectedRoute';
 
 export const router = createBrowserRouter([
   {
-    path: '/',
-    element: <Index />,
-  },
-  {
-    path: '/services',
-    element: <ServicePackage />,
-  },
-  {
-    path: '/gallery',
-    element: <Gallery />,
-  },
-  {
-    path: '/booking',
-    element: <Booking />,
-  },
-  {
-    path: '/login',
-    element: <Login />,
-  },
-  {
-    path: '/track/:bookingId',
-    element: <TrackBooking />,
-  },
-  {
-    path: '/feedback/:bookingId',
-    element: <Feedback />,
-  },
-  {
-    path: '/progress/:bookingId',
-    element: <Progress />,
-  },
-  {
-    path: '/admin',
-    element: <Navigate to="/admin/dashboard" replace />,
-  },
-  {
-    path: '/admin/dashboard',
-    element: <ProtectedRoute requireAdmin element={<Dashboard />} />,
-  },
-  {
-    path: '/admin/planner',
-    element: <ProtectedRoute requireAdmin element={<PlannerCalendar />} />,
-  },
-  {
-    path: '/admin/staff-planner',
-    element: <ProtectedRoute requireAdmin element={<StaffPlanner />} />,
-  },
-  {
-    path: '/admin/brochure',
-    element: <ProtectedRoute requireAdmin element={<Brochure />} />,
-  },
-  {
-    path: '/admin/gallery',
-    element: <ProtectedRoute requireAdmin element={<GalleryManager />} />,
-  },
-  {
-    path: '/admin/todo',
-    element: <ProtectedRoute requireAdmin element={<TodoList />} />,
-  },
-  {
-    path: '/admin/invoices',
-    element: <ProtectedRoute requireAdmin element={<Invoices />} />,
-  },
-  {
-    path: '/admin/invoice-report',
-    element: <ProtectedRoute requireAdmin element={<InvoiceReport />} />,
-  },
-  {
-    path: '/admin/warehouse-inventory',
-    element: <ProtectedRoute requireAdmin element={<WarehouseInventory />} />,
-  },
-  {
-    path: '/admin/van-inventory',
-    element: <ProtectedRoute requireAdmin element={<VanInventory />} />,
-  },
-  {
-    path: '/admin/pre-inspection',
-    element: <ProtectedRoute requireAdmin element={<PreInspection />} />,
-  },
-  {
-    path: '/admin/manage-packages',
-    element: <ProtectedRoute requireAdmin element={<ManagePackages />} />,
-  },
-  {
-    path: '*',
-    element: <NotFound />,
-  },
+    element: <Layout />,
+    children: [
+      {
+        path: '/',
+        element: <Index />,
+      },
+      {
+        path: '/services',
+        element: <ServicePackage />,
+      },
+      {
+        path: '/gallery',
+        element: <Gallery />,
+      },
+      {
+        path: '/booking',
+        element: <Booking />,
+      },
+      {
+        path: '/login',
+        element: <Login />,
+      },
+      {
+        path: '/track/:bookingId',
+        element: <TrackBooking />,
+      },
+      {
+        path: '/feedback/:bookingId',
+        element: <Feedback />,
+      },
+      {
+        path: '/progress/:bookingId',
+        element: <Progress />,
+      },
+      {
+        path: '/admin',
+        element: <Navigate to="/admin/dashboard" replace />,
+      },
+      {
+        path: '/admin/dashboard',
+        element: <ProtectedRoute requireAdmin element={<Dashboard />} />,
+      },
+      {
+        path: '/admin/planner',
+        element: <ProtectedRoute requireAdmin element={<PlannerCalendar />} />,
+      },
+      {
+        path: '/admin/staff-planner',
+        element: <ProtectedRoute requireAdmin element={<StaffPlanner />} />,
+      },
+      {
+        path: '/admin/brochure',
+        element: <ProtectedRoute requireAdmin element={<Brochure />} />,
+      },
+      {
+        path: '/admin/gallery',
+        element: <ProtectedRoute requireAdmin element={<GalleryManager />} />,
+      },
+      {
+        path: '/admin/todo',
+        element: <ProtectedRoute requireAdmin element={<TodoList />} />,
+      },
+      {
+        path: '/admin/invoices',
+        element: <ProtectedRoute requireAdmin element={<Invoices />} />,
+      },
+      {
+        path: '/admin/invoice-report',
+        element: <ProtectedRoute requireAdmin element={<InvoiceReport />} />,
+      },
+      {
+        path: '/admin/warehouse-inventory',
+        element: <ProtectedRoute requireAdmin element={<WarehouseInventory />} />,
+      },
+      {
+        path: '/admin/van-inventory',
+        element: <ProtectedRoute requireAdmin element={<VanInventory />} />,
+      },
+      {
+        path: '/admin/pre-inspection',
+        element: <ProtectedRoute requireAdmin element={<PreInspection />} />,
+      },
+      {
+        path: '/admin/manage-packages',
+        element: <ProtectedRoute requireAdmin element={<ManagePackages />} />,
+      },
+      {
+        path: '*',
+        element: <NotFound />,
+      }
+    ]
+  }
 ]);

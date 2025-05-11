@@ -23,11 +23,13 @@ const ProtectedRoute = ({
   
   // Return the element or children without any auth checks if route is public
   if (isPublic) {
+    console.log("Rendering public route");
     return <>{element || children}</>;
   }
   
   // Always return the element for non-protected routes
   if (!requireAdmin && !requireStaff && !requiredRole) {
+    console.log("Rendering non-protected route");
     return <>{element || children}</>;
   }
   
@@ -40,23 +42,28 @@ const ProtectedRoute = ({
   
   // Redirect to login if not authenticated and route is protected
   if (!user && (requireAdmin || requireStaff || requiredRole)) {
+    console.log("Redirecting to login - user not authenticated");
     return <Navigate to="/login" replace />;
   }
   
   // Check role requirements
   if (requiredRole === "admin" && !isAdmin) {
+    console.log("Redirecting to home - user not admin");
     return <Navigate to="/" replace />;
   }
   
   if (requireAdmin && !isAdmin) {
+    console.log("Redirecting to home - user not admin");
     return <Navigate to="/" replace />;
   }
   
   if (requireStaff && !(isAdmin || isStaff)) {
+    console.log("Redirecting to home - user not staff");
     return <Navigate to="/" replace />;
   }
   
   // User is authenticated and meets role requirements
+  console.log("User authenticated and meets role requirements");
   return <>{element || children}</>;
 };
 
