@@ -116,6 +116,35 @@ export type Database = {
           },
         ]
       }
+      booking_staff_assignments: {
+        Row: {
+          booking_id: string | null
+          created_at: string | null
+          id: string
+          staff_name: string
+        }
+        Insert: {
+          booking_id?: string | null
+          created_at?: string | null
+          id?: string
+          staff_name: string
+        }
+        Update: {
+          booking_id?: string | null
+          created_at?: string | null
+          id?: string
+          staff_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_staff_assignments_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       booking_steps: {
         Row: {
           booking_id: string
@@ -288,6 +317,44 @@ export type Database = {
           van_id?: string | null
         }
         Relationships: []
+      }
+      invoice_items: {
+        Row: {
+          created_at: string | null
+          description: string
+          id: string
+          invoice_id: string | null
+          quantity: number
+          total: number
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          id?: string
+          invoice_id?: string | null
+          quantity: number
+          total: number
+          unit_price: number
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          id?: string
+          invoice_id?: string | null
+          quantity?: number
+          total?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_items_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       invoices: {
         Row: {
