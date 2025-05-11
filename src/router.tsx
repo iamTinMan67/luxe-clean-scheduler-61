@@ -75,7 +75,7 @@ export const router = createBrowserRouter([
     element: <ProtectedRoute requiredRole="admin" element={<PlannerCalendar />} />,
   },
   {
-    path: '/admin/staff',
+    path: '/admin/staff-planner',
     element: <ProtectedRoute requiredRole="admin" element={<StaffPlanner />} />,
   },
   {
