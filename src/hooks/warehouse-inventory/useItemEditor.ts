@@ -1,9 +1,14 @@
 
 import { useState } from "react";
-import { WarehouseItem } from "@/types/warehouseInventory";
+import { WarehouseItem, warehouseItemSchema } from "@/types/warehouseInventory";
 import { toast } from "sonner";
+import { z } from "zod";
+import { supabase } from "@/integrations/supabase/client";
 
-export default function useItemEditor(inventory: WarehouseItem[], setInventory: React.Dispatch<React.SetStateAction<WarehouseItem[]>>) {
+export default function useItemEditor(
+  inventory: WarehouseItem[],
+  setInventory: React.Dispatch<React.SetStateAction<WarehouseItem[]>>
+) {
   const [editItem, setEditItem] = useState<WarehouseItem | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
@@ -12,63 +17,123 @@ export default function useItemEditor(inventory: WarehouseItem[], setInventory: 
     setIsEditDialogOpen(true);
   };
 
-  const handleEditItem = (item: WarehouseItem) => {
-    setEditItem(item);
-    setIsEditDialogOpen(true);
-  };
-
-  const handleDeleteItem = (id: string) => {
-    setInventory(prev => prev.filter(item => item.id !== id));
-    toast.success("Item deleted", {
-      description: "The inventory item has been removed"
-    });
-  };
-
-  const handleSaveItem = (values: {
-    name: string;
-    category: string;
-    stockIn: number;
-    stockOut: number;
-    supplier: string;
-    reorderPoint: number;
-  }) => {
-    const now = new Date().toISOString().split('T')[0];
-    
-    if (editItem) {
-      // Update existing item
-      setInventory(prev => prev.map(item => 
-        item.id === editItem.id 
-          ? { 
-              ...item, 
-              ...values, 
-              lastUpdated: now 
-            }
-          : item
-      ));
-      toast.success("Item updated", {
-        description: "The inventory item has been updated"
-      });
-    } else {
-      // Add new item
-      const newItem: WarehouseItem = {
-        id: Date.now().toString(),
-        name: values.name,
-        category: values.category,
-        stockIn: values.stockIn,
-        stockOut: values.stockOut,
-        supplier: values.supplier,
-        reorderPoint: values.reorderPoint,
-        dateAdded: now,
-        lastUpdated: now,
-        allocatedStock: {}
-      };
-      setInventory(prev => [...prev, newItem]);
-      toast.success("Item added", {
-        description: "New item added to inventory"
-      });
+  const handleEditItem = (itemId: string) => {
+    const item = inventory.find((i) => i.id === itemId);
+    if (item) {
+      setEditItem(item);
+      setIsEditDialogOpen(true);
     }
-    
-    setIsEditDialogOpen(false);
+  };
+
+  const handleDeleteItem = async (itemId: string) => {
+    try {
+      // First delete from Supabase
+      const { error } = await supabase
+        .from("inventory_items")
+        .delete()
+        .eq("id", itemId);
+      
+      if (error) {
+        throw error;
+      }
+      
+      // Then update local state
+      setInventory(inventory.filter((item) => item.id !== itemId));
+      toast.success("Item deleted successfully");
+    } catch (error) {
+      console.error("Error deleting item:", error);
+      toast.error("Failed to delete item");
+      
+      // Fallback to just updating local state
+      setInventory(inventory.filter((item) => item.id !== itemId));
+    }
+  };
+
+  const handleSaveItem = async (values: z.infer<typeof warehouseItemSchema>) => {
+    try {
+      const now = new Date().toISOString().split('T')[0];
+      let updatedItem: WarehouseItem;
+
+      // Insert or update in Supabase first
+      if (editItem) {
+        // Updating existing item
+        updatedItem = {
+          ...editItem,
+          ...values,
+          lastUpdated: now,
+        };
+
+        const { error } = await supabase
+          .from("inventory_items")
+          .update({
+            name: values.name,
+            category: values.category,
+            stock_in: values.stockIn,
+            stock_out: values.stockOut,
+            supplier: values.supplier,
+            reorder_point: values.reorderPoint,
+            updated_at: new Date().toISOString()
+          })
+          .eq("id", editItem.id);
+
+        if (error) throw error;
+      } else {
+        // Creating new item
+        const newItemId = `item-${Date.now()}`;
+        updatedItem = {
+          id: newItemId,
+          name: values.name,
+          category: values.category,
+          stockIn: values.stockIn,
+          stockOut: values.stockOut,
+          dateAdded: now,
+          lastUpdated: now,
+          supplier: values.supplier,
+          reorderPoint: values.reorderPoint,
+          allocatedStock: {},
+        };
+
+        const { data, error } = await supabase
+          .from("inventory_items")
+          .insert({
+            name: values.name,
+            category: values.category,
+            stock_in: values.stockIn,
+            stock_out: values.stockOut,
+            supplier: values.supplier,
+            reorder_point: values.reorderPoint,
+            location: "Warehouse",
+            allocated_stock: {}
+          })
+          .select();
+
+        if (error) throw error;
+        
+        // Use the ID generated by Supabase
+        if (data && data[0]) {
+          updatedItem.id = data[0].id;
+        }
+      }
+
+      // Update local state
+      setInventory((prevInventory) => {
+        if (editItem) {
+          return prevInventory.map((item) =>
+            item.id === editItem.id ? updatedItem : item
+          );
+        } else {
+          return [...prevInventory, updatedItem];
+        }
+      });
+
+      setIsEditDialogOpen(false);
+      toast.success(
+        editItem ? "Item updated successfully" : "Item added successfully"
+      );
+    } catch (error) {
+      console.error("Error saving item:", error);
+      toast.error("Failed to save item");
+    }
   };
 
   return {
@@ -78,6 +143,6 @@ export default function useItemEditor(inventory: WarehouseItem[], setInventory: 
     handleAddNewItem,
     handleEditItem,
     handleDeleteItem,
-    handleSaveItem
+    handleSaveItem,
   };
 }

@@ -1,5 +1,6 @@
 
 import { WarehouseItem } from "@/types/warehouseInventory";
+import { supabase } from "@/integrations/supabase/client";
 
 // Calculate total allocated stock for an item
 export const getTotalAllocated = (item: WarehouseItem): number => {
@@ -120,4 +121,58 @@ export const checkLowStock = (inventory: WarehouseItem[], currentStockFn: (item:
   );
   
   return lowStockItems.length;
+};
+
+// Sync a single inventory item with Supabase
+export const syncInventoryItem = async (item: WarehouseItem): Promise<boolean> => {
+  try {
+    const { error } = await supabase
+      .from("inventory_items")
+      .upsert({
+        id: item.id,
+        name: item.name,
+        category: item.category,
+        stock_in: item.stockIn,
+        stock_out: item.stockOut,
+        supplier: item.supplier,
+        reorder_point: item.reorderPoint,
+        allocated_stock: item.allocatedStock || {},
+        location: "Warehouse",
+        updated_at: new Date().toISOString()
+      }, 
+      { onConflict: 'id' });
+      
+    return !error;
+  } catch (error) {
+    console.error("Error syncing inventory item:", error);
+    return false;
+  }
+};
+
+// Sync all inventory items with Supabase
+export const syncAllInventory = async (inventory: WarehouseItem[]): Promise<boolean> => {
+  try {
+    const items = inventory.map(item => ({
+      id: item.id,
+      name: item.name,
+      category: item.category,
+      stock_in: item.stockIn,
+      stock_out: item.stockOut,
+      supplier: item.supplier,
+      reorder_point: item.reorderPoint,
+      allocated_stock: item.allocatedStock || {},
+      location: "Warehouse",
+      updated_at: new Date().toISOString(),
+      created_at: new Date(item.dateAdded).toISOString()
+    }));
+    
+    const { error } = await supabase
+      .from("inventory_items")
+      .upsert(items, { onConflict: 'id' });
+      
+    return !error;
+  } catch (error) {
+    console.error("Error syncing all inventory:", error);
+    return false;
+  }
 };

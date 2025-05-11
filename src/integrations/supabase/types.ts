@@ -9,6 +9,42 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      appointment_tasks: {
+        Row: {
+          appointment_name: string
+          completed: boolean | null
+          created_at: string | null
+          customer: string
+          date_scheduled: string
+          id: string
+          time_slot: string
+          updated_at: string | null
+          vehicle: string
+        }
+        Insert: {
+          appointment_name: string
+          completed?: boolean | null
+          created_at?: string | null
+          customer: string
+          date_scheduled: string
+          id?: string
+          time_slot: string
+          updated_at?: string | null
+          vehicle: string
+        }
+        Update: {
+          appointment_name?: string
+          completed?: boolean | null
+          created_at?: string | null
+          customer?: string
+          date_scheduled?: string
+          id?: string
+          time_slot?: string
+          updated_at?: string | null
+          vehicle?: string
+        }
+        Relationships: []
+      }
       assignments: {
         Row: {
           booking_id: string
@@ -44,6 +80,38 @@ export type Database = {
             columns: ["staff_id"]
             isOneToOne: false
             referencedRelation: "staff"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      booking_additional_services: {
+        Row: {
+          booking_id: string | null
+          created_at: string | null
+          id: string
+          service_name: string
+          service_price: number
+        }
+        Insert: {
+          booking_id?: string | null
+          created_at?: string | null
+          id?: string
+          service_name: string
+          service_price: number
+        }
+        Update: {
+          booking_id?: string | null
+          created_at?: string | null
+          id?: string
+          service_name?: string
+          service_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_additional_services_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
             referencedColumns: ["id"]
           },
         ]
@@ -146,8 +214,39 @@ export type Database = {
         }
         Relationships: []
       }
+      gallery_items: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string | null
+          id: string
+          images: string[]
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          images: string[]
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          images?: string[]
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       inventory_items: {
         Row: {
+          allocated_stock: Json | null
           category: string
           created_at: string | null
           id: string
@@ -161,6 +260,7 @@ export type Database = {
           van_id: string | null
         }
         Insert: {
+          allocated_stock?: Json | null
           category: string
           created_at?: string | null
           id?: string
@@ -174,6 +274,7 @@ export type Database = {
           van_id?: string | null
         }
         Update: {
+          allocated_stock?: Json | null
           category?: string
           created_at?: string | null
           id?: string
@@ -258,6 +359,47 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      service_tasks: {
+        Row: {
+          allocated_time: number
+          appointment_id: string | null
+          completed: boolean | null
+          created_at: string | null
+          id: string
+          name: string
+          time_spent: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          allocated_time: number
+          appointment_id?: string | null
+          completed?: boolean | null
+          created_at?: string | null
+          id?: string
+          name: string
+          time_spent?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          allocated_time?: number
+          appointment_id?: string | null
+          completed?: boolean | null
+          created_at?: string | null
+          id?: string
+          name?: string
+          time_spent?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_tasks_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointment_tasks"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       staff: {
         Row: {
