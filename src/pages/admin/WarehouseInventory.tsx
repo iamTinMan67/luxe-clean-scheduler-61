@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 
 // Import our custom hooks
-import useWarehouseInventory from "@/hooks/warehouse-inventory/useWarehouseInventory";
+import useWarehouseInventory, { WarehouseItem } from "@/hooks/warehouse-inventory/useWarehouseInventory";
 import useAllocationManager from "@/hooks/warehouse-inventory/useAllocationManager";
 import useWarehouseFilter from "@/hooks/warehouse-inventory/useWarehouseFilter";
 import useVansLoader from "@/hooks/warehouse-inventory/useVansLoader";

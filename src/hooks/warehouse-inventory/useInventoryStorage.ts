@@ -26,18 +26,32 @@ export default function useInventoryStorage() {
 
         if (data && data.length > 0) {
           // Transform data to match our WarehouseItem type
-          const transformedItems: WarehouseItem[] = data.map(item => ({
-            id: item.id,
-            name: item.name,
-            category: item.category,
-            stockIn: item.stock_in,
-            stockOut: item.stock_out,
-            dateAdded: new Date(item.created_at).toISOString().split('T')[0],
-            lastUpdated: new Date(item.updated_at).toISOString().split('T')[0],
-            supplier: item.supplier,
-            reorderPoint: item.reorder_point,
-            allocatedStock: item.allocated_stock ? (typeof item.allocated_stock === 'object' ? item.allocated_stock : {}) : {}
-          }));
+          const transformedItems: WarehouseItem[] = data.map(item => {
+            // Handle allocated_stock, ensuring it's a proper Record<string, number>
+            let allocatedStock: Record<string, number> = {};
+            
+            if (item.allocated_stock) {
+              if (typeof item.allocated_stock === 'object' && !Array.isArray(item.allocated_stock)) {
+                // Convert each value to a number
+                Object.entries(item.allocated_stock).forEach(([key, value]) => {
+                  allocatedStock[key] = typeof value === 'number' ? value : Number(value) || 0;
+                });
+              }
+            }
+            
+            return {
+              id: item.id,
+              name: item.name,
+              category: item.category,
+              stockIn: item.stock_in,
+              stockOut: item.stock_out,
+              dateAdded: new Date(item.created_at).toISOString().split('T')[0],
+              lastUpdated: new Date(item.updated_at).toISOString().split('T')[0],
+              supplier: item.supplier,
+              reorderPoint: item.reorder_point,
+              allocatedStock: allocatedStock
+            };
+          });
           
           setInventory(transformedItems);
         } else {

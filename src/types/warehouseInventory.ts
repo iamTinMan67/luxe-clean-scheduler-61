@@ -21,5 +21,5 @@ export type WarehouseItem = {
   lastUpdated: string;
   supplier: string;
   reorderPoint: number;
-  allocatedStock: { [vanReg: string]: number };
+  allocatedStock: Record<string, number>;
 };

@@ -3,25 +3,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2, TruckIcon } from "lucide-react";
-
-type InventoryItem = {
-  id: string;
-  name: string;
-  category: string;
-  stockIn: number;
-  stockOut: number;
-  dateAdded: string;
-  lastUpdated: string;
-  supplier: string;
-  reorderPoint: number;
-  allocatedStock: { [vanReg: string]: number };
-};
+import { WarehouseItem } from "@/types/warehouseInventory";
 
 interface InventoryTableProps {
-  items: InventoryItem[];
-  onEditItem: (item: InventoryItem) => void;
+  items: WarehouseItem[];
+  onEditItem: (item: WarehouseItem) => void;
   onDeleteItem: (id: string) => void;
-  onAllocateStock: (item: InventoryItem) => void;
+  onAllocateStock: (item: WarehouseItem) => void;
 }
 
 const InventoryTable = ({
@@ -31,12 +19,12 @@ const InventoryTable = ({
   onAllocateStock
 }: InventoryTableProps) => {
   // Calculate total allocated stock for an item
-  const getTotalAllocated = (item: InventoryItem): number => {
+  const getTotalAllocated = (item: WarehouseItem): number => {
     return Object.values(item.allocatedStock).reduce((sum, qty) => sum + qty, 0);
   };
 
   // Calculate current stock
-  const currentStock = (item: InventoryItem) => Math.max(0, item.stockIn - item.stockOut - getTotalAllocated(item));
+  const currentStock = (item: WarehouseItem) => Math.max(0, item.stockIn - item.stockOut - getTotalAllocated(item));
 
   return (
     <div className="overflow-x-auto">

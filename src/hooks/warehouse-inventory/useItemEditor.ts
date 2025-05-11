@@ -17,10 +17,14 @@ export default function useItemEditor(
     setIsEditDialogOpen(true);
   };
 
-  const handleEditItem = (itemId: string) => {
-    const item = inventory.find((i) => i.id === itemId);
-    if (item) {
-      setEditItem(item);
+  const handleEditItem = (item: WarehouseItem | string) => {
+    // Handle both item object and item id string for flexibility
+    const itemToEdit = typeof item === 'string' 
+      ? inventory.find((i) => i.id === item)
+      : item;
+      
+    if (itemToEdit) {
+      setEditItem(itemToEdit);
       setIsEditDialogOpen(true);
     }
   };
