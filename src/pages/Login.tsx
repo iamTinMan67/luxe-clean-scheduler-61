@@ -7,13 +7,24 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Mail, Lock, UserPlus } from "lucide-react";
+import { Mail, Lock, UserPlus, ArrowRight } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
+  const [isResetOpen, setIsResetOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [isResetting, setIsResetting] = useState(false);
   const navigate = useNavigate();
 
   const handleAuth = async (e: React.FormEvent) => {
@@ -51,6 +62,30 @@ const Login = () => {
       toast.error(error.message || "Authentication failed");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsResetting(true);
+    
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/login`,
+      });
+      
+      if (error) throw error;
+      
+      toast.success("Password reset link sent!", {
+        description: "Please check your email for instructions."
+      });
+      setIsResetOpen(false);
+      setResetEmail("");
+    } catch (error: any) {
+      console.error("Password reset error:", error);
+      toast.error(error.message || "Failed to send reset link");
+    } finally {
+      setIsResetting(false);
     }
   };
 
@@ -121,6 +156,18 @@ const Login = () => {
               </div>
             </div>
             
+            {!isSignUp && (
+              <div className="text-right">
+                <button
+                  type="button"
+                  onClick={() => setIsResetOpen(true)}
+                  className="text-sm text-gold hover:underline focus:outline-none"
+                >
+                  Forgot password?
+                </button>
+              </div>
+            )}
+            
             <Button 
               type="submit" 
               className="w-full gold-gradient text-black hover:shadow-xl hover:shadow-gold/20 transition-all"
@@ -147,6 +194,48 @@ const Login = () => {
           </div>
         </motion.div>
       </div>
+      
+      {/* Password Reset Dialog */}
+      <Dialog open={isResetOpen} onOpenChange={setIsResetOpen}>
+        <DialogContent className="bg-gray-900 border-gray-800 text-white">
+          <DialogHeader>
+            <DialogTitle>Reset your password</DialogTitle>
+            <DialogDescription className="text-gray-400">
+              Enter your email address and we'll send you a link to reset your password.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <form onSubmit={handleResetPassword} className="space-y-4 mt-4">
+            <div className="space-y-2">
+              <Label htmlFor="reset-email">Email address</Label>
+              <div className="relative">
+                <Input
+                  id="reset-email"
+                  type="email"
+                  value={resetEmail}
+                  onChange={(e) => setResetEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  required
+                  className="bg-gray-800 border-gray-700 text-white pl-10"
+                  disabled={isResetting}
+                />
+                <Mail className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+              </div>
+            </div>
+            
+            <DialogFooter className="mt-4">
+              <Button
+                type="submit"
+                className="gold-gradient text-black hover:shadow-xl hover:shadow-gold/20 transition-all"
+                disabled={isResetting}
+              >
+                {isResetting ? "Sending..." : "Send Reset Link"}
+                {!isResetting && <ArrowRight className="ml-1 h-4 w-4" />}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
