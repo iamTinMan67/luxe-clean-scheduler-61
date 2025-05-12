@@ -2,6 +2,7 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface AuthContextType {
   session: Session | null;
@@ -20,7 +21,7 @@ const defaultContext: AuthContextType = {
   isAdmin: false,
   isStaff: false,
   isCustomer: false,
-  isLoading: true, // Changed to true initially
+  isLoading: true,
   signOut: async () => {},
 };
 
@@ -31,7 +32,7 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true); // Changed to true initially
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [userRole, setUserRole] = useState<string | null>(null);
 
   // Function to fetch user role
@@ -42,7 +43,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         .from('profiles')
         .select('role')
         .eq('id', userId)
-        .maybeSingle(); // Changed from single() to avoid errors
+        .maybeSingle();
 
       if (error) {
         console.error('Error fetching user role:', error);
@@ -51,6 +52,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       console.log("User role data:", data);
       setUserRole(data?.role || null);
+      
+      // Show a toast message if user is an admin
+      if (data?.role === 'admin') {
+        toast.success("Logged in as Administrator", {
+          id: "admin-login",
+          duration: 3000
+        });
+      }
     } catch (error) {
       console.error('Error in fetchUserRole:', error);
     }
@@ -93,6 +102,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }, 0);
       }
       setIsLoading(false);
+    }).catch(err => {
+      console.error("Error getting session:", err);
+      setIsLoading(false);
     });
     
     return () => {
@@ -102,7 +114,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signOut = async () => {
     try {
-      // Clean up auth state first (import from authCleanup if needed)
+      setIsLoading(true);
+      
+      // Clean up auth state first
       Object.keys(localStorage).forEach((key) => {
         if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
           localStorage.removeItem(key);
@@ -115,10 +129,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(null);
       setUserRole(null);
       
+      toast.success("Logged out successfully");
+      
       // Force page reload for a clean state
       window.location.href = '/login';
     } catch (error) {
       console.error('Error signing out:', error);
+      toast.error("Error signing out", {
+        description: "Please try again or refresh the page."
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 

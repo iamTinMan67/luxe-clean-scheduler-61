@@ -27,6 +27,8 @@ const LoginForm = ({ toggleMode, openResetDialog }: LoginFormProps) => {
     setErrorMessage(null);
 
     try {
+      console.log("Attempting login for:", email);
+      
       // Clean up existing auth state to prevent conflicts
       cleanupAuthState();
       
@@ -34,7 +36,7 @@ const LoginForm = ({ toggleMode, openResetDialog }: LoginFormProps) => {
       try {
         await supabase.auth.signOut({ scope: 'global' });
       } catch (err) {
-        // Continue even if this fails
+        console.log("Pre-signout failed, continuing anyway:", err);
       }
 
       // Sign in existing user
@@ -43,16 +45,27 @@ const LoginForm = ({ toggleMode, openResetDialog }: LoginFormProps) => {
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Login error:", error);
+        throw error;
+      }
       
-      toast.success("Logged in successfully!");
-      
-      // Use location.href for a full page refresh to ensure clean state
-      window.location.href = "/";
+      if (data && data.user) {
+        console.log("Login successful for user:", data.user.id);
+        toast.success("Logged in successfully!");
+        
+        // Use window.location for a full page reload to ensure clean state
+        window.location.href = "/";
+      } else {
+        throw new Error("No user data returned from login attempt");
+      }
     } catch (error: any) {
       console.error("Authentication error:", error);
+      // Set visible error message and show toast
       setErrorMessage(error.message || "Authentication failed");
-      toast.error(error.message || "Authentication failed");
+      toast.error("Login failed", { 
+        description: error.message || "Authentication failed"
+      });
     } finally {
       setIsLoading(false);
     }

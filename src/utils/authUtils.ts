@@ -35,6 +35,9 @@ export const createInitialAdmin = async (email: string, password: string, firstN
     });
     
     if (signUpError) {
+      if (signUpError.message === 'Signups not allowed for this instance') {
+        return { success: false, error: 'Signups not allowed for this instance' };
+      }
       throw signUpError;
     }
     
@@ -61,24 +64,57 @@ export const createInitialAdmin = async (email: string, password: string, firstN
 
 // Initialize an admin user account
 export const initializeAdminUser = async () => {
-  // Check if admin user exists in profiles table
-  const { data: adminProfiles, error: profilesError } = await supabase
-    .from('profiles')
-    .select('id')
-    .eq('role', 'admin');
+  try {
+    // Check if admin user exists in profiles table
+    const { data: adminProfiles, error: profilesError } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('role', 'admin')
+      .limit(1);
 
-  if (profilesError) {
-    console.error('Error checking admin profiles:', profilesError);
-    return;
-  }
+    if (profilesError) {
+      console.error('Error checking admin profiles:', profilesError);
+      return { success: false, error: profilesError.message };
+    }
 
-  // If no admin exists, prompt creation of a first admin account
-  if (!adminProfiles || adminProfiles.length === 0) {
-    console.log('No admin accounts found. Please create an admin account through the signup process.');
-    toast.info("No admin accounts exist yet", {
-      description: "Please create the first admin account by signing up",
-      duration: 6000
-    });
+    // If no admin exists, prompt creation of a first admin account
+    if (!adminProfiles || adminProfiles.length === 0) {
+      console.log('No admin accounts found. Please create an admin account through the signup process.');
+      toast.info("No admin accounts exist yet", {
+        description: "Please create the first admin account by signing up",
+        duration: 6000
+      });
+      
+      // Test if signups are allowed
+      try {
+        const testEmail = `test-${Date.now()}@example.com`;
+        const { error: signUpTestError } = await supabase.auth.signUp({
+          email: testEmail,
+          password: 'StrongPassword123!', // This won't create an actual account due to Supabase email confirmation
+          options: { emailRedirectTo: window.location.origin }
+        });
+        
+        if (signUpTestError) {
+          if (signUpTestError.message === 'Signups not allowed for this instance') {
+            return { success: false, error: 'Signups not allowed for this instance' };
+          }
+        }
+        
+        // Clean up test attempt
+        try {
+          await supabase.auth.signOut();
+        } catch (e) {
+          // Ignore cleanup errors
+        }
+      } catch (err) {
+        console.error('Error testing signup capability:', err);
+      }
+    }
+    
+    return { success: true, data: adminProfiles };
+  } catch (error: any) {
+    console.error('Error in initializeAdminUser:', error);
+    return { success: false, error: error.message };
   }
 };
 

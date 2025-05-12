@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Mail, ArrowRight, AlertCircle } from "lucide-react";
+import { Mail, ArrowRight, AlertCircle, Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -24,13 +24,17 @@ const PasswordResetDialog = ({ isOpen, onOpenChange }: PasswordResetDialogProps)
   const [resetEmail, setResetEmail] = useState("");
   const [isResetting, setIsResetting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsResetting(true);
     setErrorMessage(null);
+    setSuccess(false);
     
     try {
+      console.log("Attempting password reset for:", resetEmail);
+      
       // Get the current URL origin for proper redirection
       const siteUrl = window.location.origin;
       
@@ -40,18 +44,28 @@ const PasswordResetDialog = ({ isOpen, onOpenChange }: PasswordResetDialogProps)
         redirectTo: `${siteUrl}/login`,
       });
       
-      if (error) throw error;
+      if (error) {
+        console.error("Password reset API error:", error);
+        throw error;
+      }
       
+      setSuccess(true);
       toast.success("Password reset link sent!", {
         description: "Please check your email for instructions."
       });
       
-      onOpenChange(false);
-      setResetEmail("");
+      // Don't close the dialog immediately on success to let user see the success message
+      setTimeout(() => {
+        onOpenChange(false);
+        setResetEmail("");
+        setSuccess(false);
+      }, 3000);
     } catch (error: any) {
       console.error("Password reset error:", error);
       setErrorMessage(error.message || "Failed to send reset link");
-      toast.error(error.message || "Failed to send reset link");
+      toast.error("Password reset failed", {
+        description: error.message || "Failed to send reset link"
+      });
     } finally {
       setIsResetting(false);
     }
@@ -71,6 +85,13 @@ const PasswordResetDialog = ({ isOpen, onOpenChange }: PasswordResetDialogProps)
           <div className="bg-red-500/10 border border-red-500/30 rounded-md p-3 flex items-start">
             <AlertCircle className="h-5 w-5 text-red-400 mt-0.5 mr-2 flex-shrink-0" />
             <p className="text-sm text-red-400">{errorMessage}</p>
+          </div>
+        )}
+        
+        {success && (
+          <div className="bg-green-500/10 border border-green-500/30 rounded-md p-3 flex items-start">
+            <ArrowRight className="h-5 w-5 text-green-400 mt-0.5 mr-2 flex-shrink-0" />
+            <p className="text-sm text-green-400">Password reset link sent to your email!</p>
           </div>
         )}
         
@@ -95,11 +116,20 @@ const PasswordResetDialog = ({ isOpen, onOpenChange }: PasswordResetDialogProps)
           <DialogFooter className="mt-4">
             <Button
               type="submit"
-              className="gold-gradient text-black hover:shadow-xl hover:shadow-gold/20 transition-all"
+              className="gold-gradient text-black hover:shadow-xl hover:shadow-gold/20 transition-all w-full sm:w-auto"
               disabled={isResetting}
             >
-              {isResetting ? "Sending..." : "Send Reset Link"}
-              {!isResetting && <ArrowRight className="ml-1 h-4 w-4" />}
+              {isResetting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  Send Reset Link
+                  <ArrowRight className="ml-1 h-4 w-4" />
+                </>
+              )}
             </Button>
           </DialogFooter>
         </form>
