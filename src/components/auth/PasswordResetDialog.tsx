@@ -36,12 +36,15 @@ const PasswordResetDialog = ({ isOpen, onOpenChange }: PasswordResetDialogProps)
       console.log("Attempting password reset for:", resetEmail);
       
       // Get the current URL origin for proper redirection
-      const siteUrl = window.location.origin;
+      const origin = window.location.origin;
+      const redirectPath = "/login?reset=true"; // Add a query param to indicate reset flow
+      const redirectTo = `${origin}${redirectPath}`;
       
-      // We need to properly construct the redirectTo URL
-      // This ensures that after password reset, users return to the login page
+      console.log("Password reset will redirect to:", redirectTo);
+      
+      // Send password reset email with proper redirect URL
       const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-        redirectTo: `${siteUrl}/login`,
+        redirectTo: redirectTo
       });
       
       if (error) {
@@ -91,7 +94,10 @@ const PasswordResetDialog = ({ isOpen, onOpenChange }: PasswordResetDialogProps)
         {success && (
           <div className="bg-green-500/10 border border-green-500/30 rounded-md p-3 flex items-start">
             <ArrowRight className="h-5 w-5 text-green-400 mt-0.5 mr-2 flex-shrink-0" />
-            <p className="text-sm text-green-400">Password reset link sent to your email!</p>
+            <div className="text-sm text-green-400">
+              <p className="font-medium">Password reset link sent to your email!</p>
+              <p className="mt-1">Check your inbox and spam folder. The link will expire in 24 hours.</p>
+            </div>
           </div>
         )}
         
