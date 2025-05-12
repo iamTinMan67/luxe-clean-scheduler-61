@@ -6,7 +6,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Mail, Lock } from "lucide-react";
+import { Mail, Lock, AlertCircle } from "lucide-react";
+import { cleanupAuthState } from "@/utils/authCleanup";
 
 interface LoginFormProps {
   toggleMode: () => void;
@@ -17,15 +18,27 @@ const LoginForm = ({ toggleMode, openResetDialog }: LoginFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setErrorMessage(null);
 
     try {
+      // Clean up existing auth state to prevent conflicts
+      cleanupAuthState();
+      
+      // Try global sign out first to clean state
+      try {
+        await supabase.auth.signOut({ scope: 'global' });
+      } catch (err) {
+        // Continue even if this fails
+      }
+
       // Sign in existing user
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -33,9 +46,12 @@ const LoginForm = ({ toggleMode, openResetDialog }: LoginFormProps) => {
       if (error) throw error;
       
       toast.success("Logged in successfully!");
-      navigate("/");
+      
+      // Use location.href for a full page refresh to ensure clean state
+      window.location.href = "/";
     } catch (error: any) {
       console.error("Authentication error:", error);
+      setErrorMessage(error.message || "Authentication failed");
       toast.error(error.message || "Authentication failed");
     } finally {
       setIsLoading(false);
@@ -44,6 +60,13 @@ const LoginForm = ({ toggleMode, openResetDialog }: LoginFormProps) => {
 
   return (
     <form onSubmit={handleLogin} className="space-y-6">
+      {errorMessage && (
+        <div className="bg-red-500/10 border border-red-500/30 rounded-md p-3 flex items-start">
+          <AlertCircle className="h-5 w-5 text-red-400 mt-0.5 mr-2 flex-shrink-0" />
+          <p className="text-sm text-red-400">{errorMessage}</p>
+        </div>
+      )}
+    
       <div className="space-y-2">
         <Label htmlFor="email">Email address</Label>
         <div className="relative">

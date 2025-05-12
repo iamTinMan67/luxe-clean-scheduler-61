@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Mail, ArrowRight } from "lucide-react";
+import { Mail, ArrowRight, AlertCircle } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -23,10 +23,12 @@ interface PasswordResetDialogProps {
 const PasswordResetDialog = ({ isOpen, onOpenChange }: PasswordResetDialogProps) => {
   const [resetEmail, setResetEmail] = useState("");
   const [isResetting, setIsResetting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsResetting(true);
+    setErrorMessage(null);
     
     try {
       // Get the current URL origin for proper redirection
@@ -43,10 +45,12 @@ const PasswordResetDialog = ({ isOpen, onOpenChange }: PasswordResetDialogProps)
       toast.success("Password reset link sent!", {
         description: "Please check your email for instructions."
       });
+      
       onOpenChange(false);
       setResetEmail("");
     } catch (error: any) {
       console.error("Password reset error:", error);
+      setErrorMessage(error.message || "Failed to send reset link");
       toast.error(error.message || "Failed to send reset link");
     } finally {
       setIsResetting(false);
@@ -62,6 +66,13 @@ const PasswordResetDialog = ({ isOpen, onOpenChange }: PasswordResetDialogProps)
             Enter your email address and we'll send you a link to reset your password.
           </DialogDescription>
         </DialogHeader>
+        
+        {errorMessage && (
+          <div className="bg-red-500/10 border border-red-500/30 rounded-md p-3 flex items-start">
+            <AlertCircle className="h-5 w-5 text-red-400 mt-0.5 mr-2 flex-shrink-0" />
+            <p className="text-sm text-red-400">{errorMessage}</p>
+          </div>
+        )}
         
         <form onSubmit={handleResetPassword} className="space-y-4 mt-4">
           <div className="space-y-2">

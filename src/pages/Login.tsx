@@ -1,13 +1,28 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import LoginForm from "@/components/auth/LoginForm";
 import SignUpForm from "@/components/auth/SignUpForm";
 import PasswordResetDialog from "@/components/auth/PasswordResetDialog";
+import { useAuth } from "@/context/AuthContext";
+import { initializeAdminUser } from "@/utils/authUtils";
 
 const Login = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [isResetOpen, setIsResetOpen] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  // Check for admin accounts on component mount
+  useEffect(() => {
+    initializeAdminUser();
+    
+    // If already logged in, redirect to home
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   const toggleMode = () => {
     setIsSignUp(!isSignUp);
