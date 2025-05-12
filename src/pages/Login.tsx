@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -121,16 +122,27 @@ const Login = () => {
     
     checkAdminAndSupabaseStatus();
     
-    // If already logged in, redirect to home
-    if (user && !isLoading) {
+    // Modified: Only redirect if user is authenticated AND we're not in a password reset flow
+    // This prevents the page from disappearing during password reset or normal login
+    if (user && !isLoading && !isPasswordReset && !window.location.hash.includes('type=recovery')) {
       console.log('User already logged in, redirecting to home');
       navigate("/");
     }
-  }, [user, navigate, isLoading]);
+  }, [user, navigate, isLoading, isPasswordReset]);
 
   const toggleMode = () => {
     setIsSignUp(!isSignUp);
   };
+
+  // Don't render the page content until we know if we're loading or in password reset mode
+  // This prevents the flash
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-gold"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black text-white py-20">
