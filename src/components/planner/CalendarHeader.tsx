@@ -4,14 +4,15 @@ import { Button } from "@/components/ui/button";
 import { 
   ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight 
 } from "lucide-react";
+import { PlannerViewType } from "@/hooks/usePlannerCalendar";
 
 interface CalendarHeaderProps {
   date: Date;
-  view: "daily" | "weekly";
+  view: PlannerViewType; // Updated to use PlannerViewType
   navigatePrevious: () => void;
   navigateNext: () => void;
   navigateToday: () => void;
-  setView: (view: "daily" | "weekly") => void;
+  setView: (view: PlannerViewType) => void; // Updated to use PlannerViewType
   pendingBookingsCount: number;
 }
 
@@ -58,6 +59,13 @@ const CalendarHeader = ({
               onClick={() => setView('weekly')}
             >
               Weekly
+            </Button>
+            <Button
+              variant="ghost"
+              className={`text-white hover:text-gold ${view === 'monthly' ? 'bg-gray-800' : ''}`}
+              onClick={() => setView('monthly')}
+            >
+              Monthly
             </Button>
           </div>
           

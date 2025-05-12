@@ -5,12 +5,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar } from "@/components/ui/calendar";
 import BookingItem from './BookingItem';
+import { PlannerViewType } from '@/hooks/usePlannerCalendar';
 
 interface BookingsCalendarProps {
   date: Date | undefined;
   setDate: (date: Date | undefined) => void;
-  view: string;
-  setView: (view: string) => void;
+  view: PlannerViewType;  // Updated to use PlannerViewType
+  setView: (view: PlannerViewType) => void;  // Updated to use PlannerViewType
   bookingsForDate: Booking[];
   onConfirmBooking: (booking: Booking) => void;
   onCompleteBooking: (booking: Booking) => void;

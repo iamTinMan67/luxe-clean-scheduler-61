@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { navigatePrevious, navigateNext } from '@/utils/dateUtils';
 import { useBookingsStorage } from './planner/useBookingsStorage';
