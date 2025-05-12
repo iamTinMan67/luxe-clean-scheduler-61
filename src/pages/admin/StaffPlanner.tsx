@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import StaffList from "@/components/planner/StaffList";
 import BookingsCalendar from "@/components/planner/BookingsCalendar";
 import { useBookings } from "@/hooks/useBookings";
+import { Card, CardContent } from "@/components/ui/card";
 
 const StaffPlanner = () => {
   const {
@@ -34,7 +35,12 @@ const StaffPlanner = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <StaffList />
+        <Card className="bg-black/60 border-gold/30">
+          <CardContent className="pt-6">
+            <StaffList />
+          </CardContent>
+        </Card>
+        
         <BookingsCalendar 
           date={date}
           setDate={setDate}

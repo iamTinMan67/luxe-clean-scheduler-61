@@ -2,16 +2,17 @@
 import React from 'react';
 import { Booking } from '@/types/booking';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs } from "@/components/ui/tabs";
 import { Calendar } from "@/components/ui/calendar";
-import BookingItem from './BookingItem';
 import { PlannerViewType } from '@/hooks/usePlannerCalendar';
+import BookingsCalendarContent from './BookingsCalendarContent';
 
 interface BookingsCalendarProps {
   date: Date | undefined;
   setDate: (date: Date | undefined) => void;
-  view: PlannerViewType;  // Updated to use PlannerViewType
-  setView: (view: PlannerViewType) => void;  // Updated to use PlannerViewType
+  view: PlannerViewType;
+  setView: (view: PlannerViewType) => void;
   bookingsForDate: Booking[];
   onConfirmBooking: (booking: Booking) => void;
   onCompleteBooking: (booking: Booking) => void;
@@ -62,46 +63,16 @@ const BookingsCalendar: React.FC<BookingsCalendarProps> = ({
             />
           </div>
           
-          <div className="flex-1">
-            <Tabs value={view} defaultValue="daily">
-              <TabsContent value="daily" className="mt-0">
-                <h3 className="text-xl text-white font-medium mb-4">
-                  {date?.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-                </h3>
-                
-                {/* Display bookings for the selected date */}
-                <div className="space-y-4">
-                  {bookingsForDate.length > 0 ? (
-                    bookingsForDate.map((booking) => (
-                      <BookingItem 
-                        key={booking.id}
-                        booking={booking}
-                        onConfirm={onConfirmBooking}
-                        onComplete={onCompleteBooking}
-                        onDelete={onDeleteBooking}
-                        onPackageChange={onPackageChange}
-                        onReschedule={onReschedule}
-                      />
-                    ))
-                  ) : (
-                    <div className="text-center py-8 text-gray-400">
-                      No bookings scheduled for this date
-                    </div>
-                  )}
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="weekly" className="mt-0">
-                <h3 className="text-xl text-white font-medium mb-4">Week View</h3>
-                <p className="text-white/70">Weekly schedule view coming soon</p>
-              </TabsContent>
-              
-              <TabsContent value="monthly" className="mt-0">
-                <h3 className="text-xl text-white font-medium mb-4">Month View</h3>
-                <p className="text-white/70">Monthly schedule view coming soon</p>
-              </TabsContent>
-            </Tabs>
-          </div>
+          <BookingsCalendarContent
+            date={date}
+            bookingsForDate={bookingsForDate}
+            view={view}
+            onConfirmBooking={onConfirmBooking}
+            onCompleteBooking={onCompleteBooking}
+            onDeleteBooking={onDeleteBooking}
+            onPackageChange={onPackageChange}
+            onReschedule={onReschedule}
+          />
         </div>
       </CardContent>
     </Card>
