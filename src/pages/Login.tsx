@@ -121,10 +121,23 @@ const Login = () => {
     };
     
     checkAdminAndSupabaseStatus();
+  }, []);
+
+  // Handle redirecting based on auth state - in a separate useEffect
+  useEffect(() => {
+    // Only redirect if:
+    // 1. We're done loading auth state
+    // 2. User is authenticated
+    // 3. We're NOT in password reset mode
+    // 4. URL doesn't contain recovery hash
+    const isRecoveryFlow = window.location.hash.includes('type=recovery');
+    const shouldRedirect = 
+      !isLoading && 
+      user && 
+      !isPasswordReset && 
+      !isRecoveryFlow;
     
-    // Modified: Only redirect if user is authenticated AND we're not in a password reset flow
-    // This prevents the page from disappearing during password reset or normal login
-    if (user && !isLoading && !isPasswordReset && !window.location.hash.includes('type=recovery')) {
+    if (shouldRedirect) {
       console.log('User already logged in, redirecting to home');
       navigate("/");
     }
@@ -134,7 +147,7 @@ const Login = () => {
     setIsSignUp(!isSignUp);
   };
 
-  // Don't render the page content until we know if we're loading or in password reset mode
+  // Don't render the page content until we know if we're loading
   // This prevents the flash
   if (isLoading) {
     return (
