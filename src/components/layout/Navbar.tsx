@@ -59,7 +59,7 @@ const Navbar = () => {
           <Link to="/" className="flex items-center space-x-2" aria-label="Home">
             <img 
               src="/lovable-uploads/db88bc12-bb88-4318-a91c-da8a3314c406.png" 
-              alt="Mid-Cheshire Valeting" 
+              alt="Mid-Cheshire Mobile Valeting" 
               className="h-14 w-auto" 
             />
           </Link>
