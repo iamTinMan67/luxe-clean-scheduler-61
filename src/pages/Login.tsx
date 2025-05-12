@@ -70,8 +70,13 @@ const Login = () => {
     setIsResetting(true);
     
     try {
+      // Get the current URL origin for proper redirection
+      const siteUrl = window.location.origin;
+      
+      // We need to properly construct the redirectTo URL
+      // This ensures that after password reset, users return to the login page
       const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-        redirectTo: `${window.location.origin}/login`,
+        redirectTo: `${siteUrl}/login`,
       });
       
       if (error) throw error;
