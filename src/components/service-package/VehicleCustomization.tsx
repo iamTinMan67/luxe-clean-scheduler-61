@@ -1,7 +1,6 @@
 
 import { Vehicle, VehicleType } from "@/lib/types";
 import VehicleTypeSelector from "@/components/ui/VehicleTypeSelector";
-import ConditionSlider from "@/components/ui/ConditionSlider";
 import VehicleTabs from "@/components/service-package/VehicleTabs";
 
 interface VehicleCustomizationProps {
@@ -21,7 +20,6 @@ const VehicleCustomization: React.FC<VehicleCustomizationProps> = ({
   setCurrentVehicleIndex,
   currentVehicle,
   handleVehicleTypeChange,
-  handleConditionChange,
   handleAddVehicle,
   handleRemoveVehicle
 }) => {
@@ -32,14 +30,6 @@ const VehicleCustomization: React.FC<VehicleCustomizationProps> = ({
         <VehicleTypeSelector
           selectedType={currentVehicle.type}
           onTypeChange={handleVehicleTypeChange}
-        />
-      </div>
-      
-      {/* Vehicle Condition */}
-      <div className="mb-8 max-w-3xl mx-auto">
-        <ConditionSlider
-          value={currentVehicle.condition}
-          onChange={handleConditionChange}
         />
       </div>
       
