@@ -1,23 +1,41 @@
+import HeroSection from "@/components/HeroSection";
+import FeaturesSection from "@/components/FeaturesSection";
+import TestimonialsSection from "@/components/TestimonialsSection";
+import CTASection from "@/components/CTASection";
+import DataMigrationTrigger from "@/components/DataMigrationTrigger";
+import { useEffect, useState } from "react";
 
-import { useEffect } from "react";
-import HeroSection from "@/components/home/HeroSection";
-import FeaturesSection from "@/components/home/FeaturesSection";
-import TestimonialsSection from "@/components/home/TestimonialsSection";
-import CTASection from "@/components/home/CTASection";
-
-const Index = () => {
+export default function Index() {
+  const [showMigration, setShowMigration] = useState(false);
+  
   useEffect(() => {
-    window.scrollTo(0, 0);
+    // Check if we should show the migration button
+    // Only show if data hasn't been migrated yet
+    const isMigrated = localStorage.getItem("dataMigrationComplete") === "true";
+    const hasData = localStorage.getItem("pendingBookings") || 
+                   localStorage.getItem("confirmedBookings") ||
+                   localStorage.getItem("warehouseInventory") ||
+                   localStorage.getItem("galleryItems");
+                   
+    setShowMigration(!isMigrated && hasData);
   }, []);
 
   return (
-    <div className="overflow-hidden">
+    <div>
+      {/* Hero Section */}
       <HeroSection />
+      
+      {/* Migration Component - Only show if needed */}
+      {showMigration && <DataMigrationTrigger />}
+      
+      {/* Features Section */}
       <FeaturesSection />
+      
+      {/* Testimonials Section */}
       <TestimonialsSection />
+      
+      {/* Call to Action Section */}
       <CTASection />
     </div>
   );
-};
-
-export default Index;
+}
