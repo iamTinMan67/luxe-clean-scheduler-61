@@ -87,11 +87,20 @@ export const initializeAdminUser = async () => {
       
       // Test if signups are allowed
       try {
-        const testEmail = `test-${Date.now()}@example.com`;
+        // Use a more identifiable test email with timestamp
+        const timestamp = new Date().toISOString().replace(/[^0-9]/g, '').substring(0, 14);
+        const testEmail = `test-signup-check-${timestamp}@example.com`;
+        
         const { error: signUpTestError } = await supabase.auth.signUp({
           email: testEmail,
           password: 'StrongPassword123!', // This won't create an actual account due to Supabase email confirmation
-          options: { emailRedirectTo: window.location.origin }
+          options: { 
+            emailRedirectTo: window.location.origin,
+            data: {
+              first_name: 'Test',
+              last_name: 'User'
+            }
+          }
         });
         
         if (signUpTestError) {
