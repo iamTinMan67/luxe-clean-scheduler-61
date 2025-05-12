@@ -21,11 +21,6 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
   getBookingBackground,
   hasBookingsOnDate
 }) => {
-  // Function to modify day appearance based on bookings
-  const modifyDayAppearance = (date: Date) => {
-    return hasBookingsOnDate?.(date) ? "font-bold" : "";
-  };
-
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Calendar for date selection */}
@@ -44,11 +39,15 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
             classNames={{
               day_selected: "bg-gold text-black",
               day_today: "bg-gray-800 text-white",
-              day: (day) => {
-                // Add custom class for days with bookings
-                const dayDate = day.date;
-                return `text-white hover:bg-gray-800 ${hasBookingsOnDate && dayDate ? modifyDayAppearance(dayDate) : ""}`;
-              }
+              // Fix: Use a string instead of a function for basic styling
+              day: "text-white hover:bg-gray-800"
+            }}
+            modifiers={{
+              // Use modifiers instead for conditional styling
+              highlighted: hasBookingsOnDate ? (day) => !!hasBookingsOnDate(day) : undefined
+            }}
+            modifiersClassNames={{
+              highlighted: "font-bold"
             }}
           />
         </Card>

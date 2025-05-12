@@ -1,8 +1,9 @@
 
 import { addDays, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, startOfMonth, endOfMonth } from "date-fns";
+import { PlannerViewType } from "@/hooks/usePlannerCalendar";
 
 // Navigate to previous day, week or month
-export const navigatePrevious = (date: Date, view: "daily" | "weekly" | "monthly") => {
+export const navigatePrevious = (date: Date, view: PlannerViewType) => {
   if (view === "daily") return addDays(date, -1);
   if (view === "weekly") return addDays(date, -7);
   // For monthly view, go back to same date in previous month
@@ -12,7 +13,7 @@ export const navigatePrevious = (date: Date, view: "daily" | "weekly" | "monthly
 };
 
 // Navigate to next day, week or month
-export const navigateNext = (date: Date, view: "daily" | "weekly" | "monthly") => {
+export const navigateNext = (date: Date, view: PlannerViewType) => {
   if (view === "daily") return addDays(date, 1);
   if (view === "weekly") return addDays(date, 7);
   // For monthly view, go forward to same date in next month
@@ -22,7 +23,7 @@ export const navigateNext = (date: Date, view: "daily" | "weekly" | "monthly") =
 };
 
 // Get days to show based on the selected view
-export const getDaysForView = (date: Date, view: "daily" | "weekly" | "monthly") => {
+export const getDaysForView = (date: Date, view: PlannerViewType) => {
   if (view === "daily") {
     return [date];
   } else if (view === "weekly") {

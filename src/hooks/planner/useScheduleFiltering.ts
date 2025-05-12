@@ -1,10 +1,11 @@
 
 import { Booking } from '@/types/booking';
 import { isSameDayDate, getDaysForView } from '@/utils/dateUtils';
+import { PlannerViewType } from '../usePlannerCalendar';
 
 export const useScheduleFiltering = (
   date: Date, 
-  view: "daily" | "weekly" | "monthly",
+  view: PlannerViewType,
   confirmedBookings: Booking[],
   pendingBookings: Booking[]
 ) => {

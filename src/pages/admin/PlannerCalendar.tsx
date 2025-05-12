@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { usePlannerCalendar } from "@/hooks/usePlannerCalendar";
+import { usePlannerCalendar, PlannerViewType } from "@/hooks/usePlannerCalendar";
 import CalendarHeader from "@/components/planner/CalendarHeader";
 import PendingBookingsList from "@/components/planner/PendingBookingsList";
 import ScheduleCalendar from "@/components/planner/ScheduleCalendar";

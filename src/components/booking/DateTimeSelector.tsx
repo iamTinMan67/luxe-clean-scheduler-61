@@ -119,11 +119,15 @@ const DateTimeSelector = ({
           classNames={{
             day_selected: "bg-gold text-black",
             day_today: "bg-gray-800 text-white",
-            day: (day) => {
-              // Add custom class for days with bookings
-              const dayDate = day.date;
-              return `text-white hover:bg-gray-800 ${dayDate && dayHasBookings(dayDate) ? "font-bold" : ""}`;
-            }
+            // Fix: Use a string instead of a function for basic styling
+            day: "text-white hover:bg-gray-800"
+          }}
+          modifiers={{
+            // Use modifiers instead for conditional styling
+            highlighted: (day) => dayHasBookings(day)
+          }}
+          modifiersClassNames={{
+            highlighted: "font-bold"
           }}
           disabled={(date) => {
             // Disable past dates and Sundays
