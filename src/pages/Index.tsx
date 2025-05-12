@@ -1,7 +1,8 @@
-import HeroSection from "@/components/HeroSection";
-import FeaturesSection from "@/components/FeaturesSection";
-import TestimonialsSection from "@/components/TestimonialsSection";
-import CTASection from "@/components/CTASection";
+
+import HeroSection from "@/components/home/HeroSection";
+import FeaturesSection from "@/components/home/FeaturesSection";
+import TestimonialsSection from "@/components/home/TestimonialsSection";
+import CTASection from "@/components/home/CTASection";
 import DataMigrationTrigger from "@/components/DataMigrationTrigger";
 import { useEffect, useState } from "react";
 
@@ -17,7 +18,7 @@ export default function Index() {
                    localStorage.getItem("warehouseInventory") ||
                    localStorage.getItem("galleryItems");
                    
-    setShowMigration(!isMigrated && hasData);
+    setShowMigration((!isMigrated && hasData) ? true : false);
   }, []);
 
   return (
