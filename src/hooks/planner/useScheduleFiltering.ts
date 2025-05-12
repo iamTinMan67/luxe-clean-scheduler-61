@@ -4,7 +4,7 @@ import { isSameDayDate, getDaysForView } from '@/utils/dateUtils';
 
 export const useScheduleFiltering = (
   date: Date, 
-  view: "daily" | "weekly",
+  view: "daily" | "weekly" | "monthly",
   confirmedBookings: Booking[],
   pendingBookings: Booking[]
 ) => {

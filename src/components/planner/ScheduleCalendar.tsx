@@ -11,14 +11,21 @@ interface ScheduleCalendarProps {
   setDate: (date: Date | undefined) => void;
   schedule: Array<{date: Date, bookings: Booking[]}>;
   getBookingBackground: (booking: Booking) => string;
+  hasBookingsOnDate?: (date: Date) => boolean;
 }
 
 const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
   date,
   setDate,
   schedule,
-  getBookingBackground
+  getBookingBackground,
+  hasBookingsOnDate
 }) => {
+  // Function to modify day appearance based on bookings
+  const modifyDayAppearance = (date: Date) => {
+    return hasBookingsOnDate?.(date) ? "font-bold" : "";
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Calendar for date selection */}
@@ -37,7 +44,11 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
             classNames={{
               day_selected: "bg-gold text-black",
               day_today: "bg-gray-800 text-white",
-              day: "text-white hover:bg-gray-800"
+              day: (day) => {
+                // Add custom class for days with bookings
+                const dayDate = day.date;
+                return `text-white hover:bg-gray-800 ${hasBookingsOnDate && dayDate ? modifyDayAppearance(dayDate) : ""}`;
+              }
             }}
           />
         </Card>

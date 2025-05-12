@@ -6,6 +6,8 @@ import CalendarHeader from "@/components/planner/CalendarHeader";
 import PendingBookingsList from "@/components/planner/PendingBookingsList";
 import ScheduleCalendar from "@/components/planner/ScheduleCalendar";
 import DailyPlanner from "@/components/planner/DailyPlanner";
+import WeeklyPlanner from "@/components/planner/WeeklyPlanner";
+import MonthlyPlanner from "@/components/planner/MonthlyPlanner";
 import StaffPlanner from "@/pages/admin/StaffPlanner";
 
 const PlannerCalendar = () => {
@@ -31,7 +33,9 @@ const PlannerCalendar = () => {
     navigateToday,
     handleConfirmBooking,
     handleCancelBooking,
-    getBookingBackground
+    getBookingBackground,
+    hasBookingsOnDate,
+    checkTimeConflict
   } = usePlannerCalendar();
 
   return (
@@ -63,15 +67,38 @@ const PlannerCalendar = () => {
             setDate={setDate}
             schedule={schedule}
             getBookingBackground={getBookingBackground}
+            hasBookingsOnDate={hasBookingsOnDate}
           />
           
-          {/* Daily Planner */}
-          <DailyPlanner
-            date={date}
-            setDate={setDate}
-            schedule={schedule}
-            getBookingBackground={getBookingBackground}
-          />
+          {/* View Specific Planners */}
+          {view === "daily" && (
+            <DailyPlanner
+              date={date}
+              setDate={setDate}
+              schedule={schedule}
+              getBookingBackground={getBookingBackground}
+            />
+          )}
+          
+          {view === "weekly" && (
+            <WeeklyPlanner
+              date={date}
+              setDate={setDate}
+              schedule={schedule}
+              getBookingBackground={getBookingBackground}
+              checkTimeConflict={checkTimeConflict}
+            />
+          )}
+          
+          {view === "monthly" && (
+            <MonthlyPlanner
+              date={date}
+              setDate={setDate}
+              schedule={schedule}
+              getBookingBackground={getBookingBackground}
+              hasBookingsOnDate={hasBookingsOnDate}
+            />
+          )}
           
           {/* Staff Planner embedded directly */}
           <div className="mt-8">

@@ -71,6 +71,43 @@ const DateTimeSelector = ({
     });
   };
 
+  // Function to check if a day has bookings
+  const dayHasBookings = (checkDate: Date) => {
+    return appointments.some(booking => {
+      const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
+      return (
+        bookingDate.getDate() === checkDate.getDate() &&
+        bookingDate.getMonth() === checkDate.getMonth() &&
+        bookingDate.getFullYear() === checkDate.getFullYear()
+      );
+    });
+  };
+
+  // Handle selecting a reserved time slot
+  const handleReservedTimeClick = (reservedTimeSlot: string) => {
+    // Find the conflicting booking
+    const conflictingBooking = appointments.find(booking => {
+      const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
+      const datesMatch = 
+        date && 
+        bookingDate.getDate() === date.getDate() &&
+        bookingDate.getMonth() === date.getMonth() &&
+        bookingDate.getFullYear() === date.getFullYear();
+        
+      if (!datesMatch) return false;
+      
+      const bookingTime = booking.time || booking.startTime;
+      return bookingTime === reservedTimeSlot;
+    });
+    
+    // Show a prompt or modal for handling the conflict
+    // For now, we'll just log it
+    console.log("Conflict with booking:", conflictingBooking);
+    
+    // Still select the time but mark it as conflicting
+    onTimeChange(reservedTimeSlot);
+  };
+
   return (
     <>
       <div className="mb-6">
@@ -82,7 +119,11 @@ const DateTimeSelector = ({
           classNames={{
             day_selected: "bg-gold text-black",
             day_today: "bg-gray-800 text-white",
-            day: "text-white hover:bg-gray-800"
+            day: (day) => {
+              // Add custom class for days with bookings
+              const dayDate = day.date;
+              return `text-white hover:bg-gray-800 ${dayDate && dayHasBookings(dayDate) ? "font-bold" : ""}`;
+            }
           }}
           disabled={(date) => {
             // Disable past dates and Sundays
@@ -105,22 +146,32 @@ const DateTimeSelector = ({
                 <button
                   key={slot}
                   type="button"
-                  disabled={reserved}
+                  onClick={() => reserved ? handleReservedTimeClick(slot) : onTimeChange(slot)}
                   className={`py-2 px-3 rounded-md text-sm transition-colors ${
                     time === slot
-                      ? "gold-gradient text-black"
+                      ? reserved
+                        ? "bg-red-700 text-white" // Conflicting selection
+                        : "gold-gradient text-black" // Normal selection
                       : reserved 
-                        ? "bg-gray-600/40 text-gray-400 cursor-not-allowed"
-                        : "bg-gray-800 text-white hover:bg-gray-700"
+                        ? "bg-red-900/40 text-gray-300" // Reserved slot
+                        : "bg-gray-800 text-white hover:bg-gray-700" // Available slot
                   }`}
-                  onClick={() => !reserved && onTimeChange(slot)}
                 >
                   {slot}
-                  {reserved && <span className="ml-2">●</span>}
+                  {reserved && <span className="ml-2 text-red-400">●</span>}
                 </button>
               );
             })}
           </div>
+          
+          {time && isTimeSlotReserved(time) && (
+            <div className="mt-4 p-3 bg-red-900/20 border border-red-800 rounded-md text-sm">
+              <p className="text-red-300">
+                <strong>Booking Conflict:</strong> This time slot already has a confirmed booking.
+                Consider selecting another time or click "Submit" to request this slot anyway.
+              </p>
+            </div>
+          )}
         </div>
       )}
     </>
