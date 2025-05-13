@@ -1,97 +1,167 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Booking } from '@/types/booking';
+import { useBookingsStorage } from './planner/useBookingsStorage';
 import { PlannerViewType } from './usePlannerCalendar';
+import { toast } from './use-toast';
+import { useBookingManagement } from './planner/useBookingManagement';
+import { isSameDay } from 'date-fns';
 
 export const useBookings = () => {
-  const [pendingBookings, setPendingBookings] = useState<Booking[]>([]);
-  const [confirmedBookings, setConfirmedBookings] = useState<Booking[]>([]);
-  const [date, setDate] = useState<Date>(new Date());
-  const [view, setView] = useState<PlannerViewType>("daily");
+  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [view, setView] = useState<PlannerViewType>('daily');
   
-  // Get bookings for selected date
-  const getBookingsForDate = (): Booking[] => {
-    const bookingsForDate = [...confirmedBookings, ...pendingBookings].filter(booking => {
+  const { 
+    pendingBookings, 
+    setPendingBookings, 
+    confirmedBookings, 
+    setConfirmedBookings 
+  } = useBookingsStorage();
+  
+  const { 
+    handleConfirmBooking: confirmBooking, 
+    handleCancelBooking: deleteBooking,
+    getBookingBackground
+  } = useBookingManagement(pendingBookings, setPendingBookings, confirmedBookings, setConfirmedBookings);
+  
+  // Get bookings for the selected date
+  const getBookingsForDate = () => {
+    if (!date) return [];
+    
+    return [...confirmedBookings, ...pendingBookings].filter(booking => {
       const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
-      return bookingDate.getDate() === date.getDate() &&
-             bookingDate.getMonth() === date.getMonth() &&
-             bookingDate.getFullYear() === date.getFullYear();
+      return isSameDay(bookingDate, date);
+    }).sort((a, b) => {
+      // Sort by time
+      const timeA = a.startTime || a.time || '00:00';
+      const timeB = b.startTime || b.time || '00:00';
+      return timeA.localeCompare(timeB);
     });
-    
-    return bookingsForDate;
   };
   
-  // Confirm booking
+  // Handler for confirming a booking
   const handleConfirmBooking = (booking: Booking) => {
-    const updatedPending = pendingBookings.filter(b => b.id !== booking.id);
-    setPendingBookings(updatedPending);
+    // Update booking status to confirmed
+    const updatedBooking = {
+      ...booking,
+      status: 'confirmed' as const
+    };
     
-    const bookingToConfirm = { ...booking, status: "confirmed" as const };
-    setConfirmedBookings([...confirmedBookings, bookingToConfirm]);
-  };
-  
-  // Delete booking
-  const handleDeleteBooking = (booking: Booking) => {
-    if (booking.status === "pending") {
-      const updatedPending = pendingBookings.filter(b => b.id !== booking.id);
-      setPendingBookings(updatedPending);
-    } else {
-      const updatedConfirmed = confirmedBookings.filter(b => b.id !== booking.id);
-      setConfirmedBookings(updatedConfirmed);
+    // Default staff assignment if not already assigned
+    if (!updatedBooking.staff || updatedBooking.staff.length === 0) {
+      updatedBooking.staff = ['Staff1', 'Staff2'];
     }
-  };
-  
-  // Change package
-  const handlePackageChange = (booking: Booking, newPackage: string) => {
-    if (booking.status === "pending") {
-      const updatedPending = pendingBookings.map(b => {
-        if (b.id === booking.id) {
-          return { ...b, package: newPackage };
-        }
-        return b;
-      });
-      setPendingBookings(updatedPending);
-    } else {
-      const updatedConfirmed = confirmedBookings.map(b => {
-        if (b.id === booking.id) {
-          return { ...b, package: newPackage };
-        }
-        return b;
-      });
-      setConfirmedBookings(updatedConfirmed);
+    
+    // Default travel time if not set
+    if (!updatedBooking.travelMinutes) {
+      updatedBooking.travelMinutes = 15; // Default 15 min travel time
     }
-  };
-  
-  // Reschedule booking
-  const handleReschedule = (booking: Booking, newDate: Date) => {
-    if (booking.status === "pending") {
-      const updatedPending = pendingBookings.map(b => {
-        if (b.id === booking.id) {
-          return { ...b, date: newDate };
-        }
-        return b;
-      });
-      setPendingBookings(updatedPending);
-    } else {
-      const updatedConfirmed = confirmedBookings.map(b => {
-        if (b.id === booking.id) {
-          return { ...b, date: newDate };
-        }
-        return b;
-      });
-      setConfirmedBookings(updatedConfirmed);
-    }
-  };
-  
-  // Complete booking
-  const handleCompleteBooking = (booking: Booking) => {
-    const updatedConfirmed = confirmedBookings.map(b => {
-      if (b.id === booking.id) {
-        return { ...b, status: "completed" as const };
-      }
-      return b;
+    
+    // Confirm booking
+    confirmBooking(booking.id, updatedBooking.staff, updatedBooking.travelMinutes);
+    
+    toast({
+      title: "Booking Confirmed",
+      description: `${booking.customer}'s booking has been confirmed.`,
+      duration: 3000,
     });
+  };
+  
+  // Handler for completing a booking
+  const handleCompleteBooking = (booking: Booking) => {
+    // Update booking status to completed
+    const completedBooking = {
+      ...booking,
+      status: 'completed' as const
+    };
+    
+    // Update the confirmed bookings list
+    const updatedConfirmed = confirmedBookings.map(b => 
+      b.id === booking.id ? completedBooking : b
+    );
+    
     setConfirmedBookings(updatedConfirmed);
+    
+    // Save to localStorage
+    localStorage.setItem('confirmedBookings', JSON.stringify(updatedConfirmed));
+    
+    toast({
+      title: "Booking Completed",
+      description: `${booking.customer}'s booking has been marked as completed.`,
+      duration: 3000,
+    });
+  };
+  
+  // Handler for deleting a booking
+  const handleDeleteBooking = (booking: Booking) => {
+    deleteBooking(booking.id);
+    
+    toast({
+      title: "Booking Deleted",
+      description: `${booking.customer}'s booking has been deleted.`,
+      duration: 3000,
+    });
+  };
+  
+  // Handler for changing a package
+  const handlePackageChange = (booking: Booking, newPackage: string) => {
+    const isConfirmed = booking.status === 'confirmed';
+    
+    if (isConfirmed) {
+      // Update in confirmed bookings
+      const updatedConfirmed = confirmedBookings.map(b => 
+        b.id === booking.id ? { ...b, packageType: newPackage } : b
+      );
+      
+      setConfirmedBookings(updatedConfirmed);
+      localStorage.setItem('confirmedBookings', JSON.stringify(updatedConfirmed));
+    } else {
+      // Update in pending bookings
+      const updatedPending = pendingBookings.map(b => 
+        b.id === booking.id ? { ...b, packageType: newPackage } : b
+      );
+      
+      setPendingBookings(updatedPending);
+      localStorage.setItem('pendingBookings', JSON.stringify(updatedPending));
+    }
+    
+    toast({
+      title: "Package Updated",
+      description: `${booking.customer}'s package has been updated to ${newPackage}.`,
+      duration: 3000,
+    });
+  };
+  
+  // Handler for rescheduling a booking
+  const handleReschedule = (booking: Booking, newDate: Date) => {
+    const isConfirmed = booking.status === 'confirmed';
+    
+    if (isConfirmed) {
+      // Update in confirmed bookings
+      const updatedConfirmed = confirmedBookings.map(b => 
+        b.id === booking.id ? { ...b, date: newDate } : b
+      );
+      
+      setConfirmedBookings(updatedConfirmed);
+      localStorage.setItem('confirmedBookings', JSON.stringify(updatedConfirmed));
+    } else {
+      // Update in pending bookings
+      const updatedPending = pendingBookings.map(b => 
+        b.id === booking.id ? { ...b, date: newDate } : b
+      );
+      
+      setPendingBookings(updatedPending);
+      localStorage.setItem('pendingBookings', JSON.stringify(updatedPending));
+    }
+    
+    // Update the selected date to the rescheduled date
+    setDate(newDate);
+    
+    toast({
+      title: "Booking Rescheduled",
+      description: `${booking.customer}'s booking has been rescheduled to ${newDate.toLocaleDateString()}.`,
+      duration: 3000,
+    });
   };
   
   return {
@@ -106,6 +176,7 @@ export const useBookings = () => {
     handleDeleteBooking,
     handlePackageChange,
     handleReschedule,
-    handleCompleteBooking
+    handleCompleteBooking,
+    getBookingBackground
   };
 };
