@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { Booking } from "@/types/booking";
 import { format } from "date-fns";
+import { addMinutesToTime } from '@/utils/dateUtils';
 
 interface DailyPlannerProps {
   date: Date;
@@ -26,33 +27,76 @@ const DailyPlanner: React.FC<DailyPlannerProps> = ({
     day.date.getFullYear() === date.getFullYear()
   );
 
-  const timeSlots = [
-    "09:00", "10:00", "11:00", "12:00", "13:00", 
-    "14:00", "15:00", "16:00", "17:00", "18:00"
-  ];
+  // Generate 30-minute time slots from 8:00 to 18:00
+  const generateTimeSlots = () => {
+    const slots = [];
+    let hour = 8;
+    let minute = 0;
+    
+    while (hour < 19) {
+      const formattedHour = hour.toString().padStart(2, '0');
+      const formattedMinute = minute.toString().padStart(2, '0');
+      slots.push(`${formattedHour}:${formattedMinute}`);
+      
+      minute += 30;
+      if (minute >= 60) {
+        minute = 0;
+        hour += 1;
+      }
+    }
+    
+    return slots;
+  };
+  
+  const timeSlots = generateTimeSlots();
 
   // Get bookings for a specific time slot
   const getBookingsForTimeSlot = (timeSlot: string) => {
     if (!todaySchedule) return [];
     
     return todaySchedule.bookings.filter(booking => {
-      const bookingStartTime = booking.time || booking.startTime;
+      const bookingStartTime = booking.startTime || booking.time;
       const bookingEndTime = booking.endTime;
       
-      // Check if booking falls within this time slot
       if (!bookingStartTime) return false;
       
-      const bookingHour = parseInt(bookingStartTime.split(':')[0]);
-      const timeSlotHour = parseInt(timeSlot.split(':')[0]);
+      // Include travel time before booking
+      const travelMinutesBefore = booking.travelMinutes || 0;
+      let actualStartTime = bookingStartTime;
       
-      // If booking has an end time, check if it spans this slot
-      if (bookingEndTime) {
-        const endHour = parseInt(bookingEndTime.split(':')[0]);
-        return bookingHour <= timeSlotHour && endHour > timeSlotHour;
+      // Adjust start time for travel
+      if (travelMinutesBefore > 0) {
+        actualStartTime = addMinutesToTime(bookingStartTime, -travelMinutesBefore);
       }
       
-      // Otherwise just check if it starts in this slot
-      return bookingHour === timeSlotHour;
+      // Calculate end time including travel after
+      let actualEndTime;
+      if (bookingEndTime) {
+        const travelMinutesAfter = booking.travelMinutes || 0;
+        actualEndTime = travelMinutesAfter > 0 
+          ? addMinutesToTime(bookingEndTime, travelMinutesAfter) 
+          : bookingEndTime;
+      } else {
+        // Default 2-hour duration + travel time
+        const travelMinutesAfter = booking.travelMinutes || 0;
+        actualEndTime = addMinutesToTime(addMinutesToTime(bookingStartTime, 120), travelMinutesAfter);
+      }
+      
+      // Parse all times to compare numerically
+      const slotHour = parseInt(timeSlot.split(':')[0]);
+      const slotMinute = parseInt(timeSlot.split(':')[1]);
+      const startHour = parseInt(actualStartTime.split(':')[0]);
+      const startMinute = parseInt(actualStartTime.split(':')[1]);
+      const endHour = parseInt(actualEndTime.split(':')[0]);
+      const endMinute = parseInt(actualEndTime.split(':')[1]);
+      
+      // Convert to minutes for easier comparison
+      const slotTimeInMinutes = slotHour * 60 + slotMinute;
+      const startTimeInMinutes = startHour * 60 + startMinute;
+      const endTimeInMinutes = endHour * 60 + endMinute;
+      
+      // Check if this slot falls within the booking timeframe
+      return slotTimeInMinutes >= startTimeInMinutes && slotTimeInMinutes < endTimeInMinutes;
     });
   };
 
@@ -82,7 +126,15 @@ const DailyPlanner: React.FC<DailyPlannerProps> = ({
                       <div className="flex justify-between items-start">
                         <div>
                           <h4 className="text-white font-medium">{booking.customer}</h4>
-                          <p className="text-gray-400 text-sm">{booking.packageType}</p>
+                          <p className="text-gray-400 text-sm">
+                            {booking.packageType}
+                            {booking.travelMinutes && booking.travelMinutes > 0 && 
+                              ` (Travel: ${booking.travelMinutes} mins)`
+                            }
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {(booking.startTime || booking.time)} - {booking.endTime || 'N/A'}
+                          </p>
                           {booking.vehicleReg && (
                             <Badge variant="outline" className="mt-1 bg-black/30">
                               {booking.vehicleReg}

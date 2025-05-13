@@ -53,7 +53,32 @@ export const hasBookingsOnDate = (date: Date, bookings: any[]) => {
   });
 };
 
-// Check for booking time conflicts
+// Helper to add minutes to a time string (HH:MM format)
+export const addMinutesToTime = (time: string, minutes: number): string => {
+  const [hoursStr, minutesStr] = time.split(':');
+  let hours = parseInt(hoursStr);
+  let mins = parseInt(minutesStr) + minutes;
+  
+  // Handle minute overflow
+  if (mins >= 60) {
+    hours += Math.floor(mins / 60);
+    mins = mins % 60;
+  }
+  
+  // Handle hour overflow
+  if (hours >= 24) {
+    hours = hours % 24;
+  }
+  
+  return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+};
+
+// Helper to add hours to a time string (HH:MM format)
+export const addHoursToTime = (time: string, hours: number): string => {
+  return addMinutesToTime(time, hours * 60);
+};
+
+// Check for booking time conflicts including travel time
 export const hasTimeConflict = (date: Date, time: string, bookings: any[]) => {
   return bookings.some(booking => {
     // Only check confirmed bookings
@@ -64,26 +89,28 @@ export const hasTimeConflict = (date: Date, time: string, bookings: any[]) => {
     // First check if it's the same day
     if (!isSameDay(bookingDate, date)) return false;
     
-    // Check if times overlap
+    // Get booking start and end times, accounting for travel time
     const bookingStartTime = booking.startTime || booking.time;
+    const travelMinutesBefore = booking.travelMinutes || 0;
+    
+    // Adjust booking start time to include travel time before
+    const actualBookingStartTime = travelMinutesBefore > 0 
+      ? addMinutesToTime(bookingStartTime, -travelMinutesBefore) 
+      : bookingStartTime;
+    
+    // Calculate the end time including service duration and travel time after
     const bookingEndTime = booking.endTime || addHoursToTime(bookingStartTime, 2); // Default 2 hours if no end time
+    const travelMinutesAfter = booking.travelMinutes || 0;
+    
+    // Adjust booking end time to include travel time after
+    const actualBookingEndTime = travelMinutesAfter > 0 
+      ? addMinutesToTime(bookingEndTime, travelMinutesAfter) 
+      : bookingEndTime;
     
     // Calculate end time for new booking (assume 2 hours if not specified)
     const newEndTime = addHoursToTime(time, 2);
     
     // Check for overlap
-    return (time < bookingEndTime && newEndTime > bookingStartTime);
+    return (time < actualBookingEndTime && newEndTime > actualBookingStartTime);
   });
-};
-
-// Helper to add hours to a time string (HH:MM format)
-const addHoursToTime = (time: string, hours: number): string => {
-  const [hoursStr, minutes] = time.split(':');
-  let totalHours = parseInt(hoursStr) + hours;
-  
-  if (totalHours >= 24) {
-    totalHours = totalHours % 24;
-  }
-  
-  return `${totalHours.toString().padStart(2, '0')}:${minutes}`;
 };

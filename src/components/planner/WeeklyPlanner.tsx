@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Booking } from '@/types/booking';
 import { cn } from "@/lib/utils";
 import { toast } from 'sonner';
+import { addMinutesToTime } from '@/utils/dateUtils';
 
 interface WeeklyPlannerProps {
   date: Date;
@@ -23,11 +24,28 @@ const WeeklyPlanner: React.FC<WeeklyPlannerProps> = ({
   getBookingBackground,
   checkTimeConflict
 }) => {
-  // Time slots to display in the weekly view
-  const timeSlots = [
-    "08:00", "09:00", "10:00", "11:00", "12:00",
-    "13:00", "14:00", "15:00", "16:00", "17:00"
-  ];
+  // Time slots to display in the weekly view - now in 30 minute intervals
+  const generateTimeSlots = () => {
+    const slots = [];
+    let hour = 8;
+    let minute = 0;
+    
+    while (hour < 19) {
+      const formattedHour = hour.toString().padStart(2, '0');
+      const formattedMinute = minute.toString().padStart(2, '0');
+      slots.push(`${formattedHour}:${formattedMinute}`);
+      
+      minute += 30;
+      if (minute >= 60) {
+        minute = 0;
+        hour += 1;
+      }
+    }
+    
+    return slots;
+  };
+  
+  const timeSlots = generateTimeSlots();
 
   // Handle booking time slot click
   const handleTimeSlotClick = (day: Date, time: string) => {
@@ -59,8 +77,48 @@ const WeeklyPlanner: React.FC<WeeklyPlannerProps> = ({
     if (!daySchedule) return [];
     
     return daySchedule.bookings.filter(booking => {
-      const bookingTime = booking.startTime || booking.time;
-      return bookingTime === timeSlot;
+      const bookingStartTime = booking.startTime || booking.time;
+      const bookingEndTime = booking.endTime;
+      
+      if (!bookingStartTime) return false;
+      
+      // Include travel time before booking
+      const travelMinutesBefore = booking.travelMinutes || 0;
+      let actualStartTime = bookingStartTime;
+      
+      // Adjust start time for travel
+      if (travelMinutesBefore > 0) {
+        actualStartTime = addMinutesToTime(bookingStartTime, -travelMinutesBefore);
+      }
+      
+      // Calculate end time including travel after
+      let actualEndTime;
+      if (bookingEndTime) {
+        const travelMinutesAfter = booking.travelMinutes || 0;
+        actualEndTime = travelMinutesAfter > 0 
+          ? addMinutesToTime(bookingEndTime, travelMinutesAfter) 
+          : bookingEndTime;
+      } else {
+        // Default 2-hour duration + travel time
+        const travelMinutesAfter = booking.travelMinutes || 0;
+        actualEndTime = addMinutesToTime(addMinutesToTime(bookingStartTime, 120), travelMinutesAfter);
+      }
+      
+      // Parse all times to compare numerically
+      const slotHour = parseInt(timeSlot.split(':')[0]);
+      const slotMinute = parseInt(timeSlot.split(':')[1]);
+      const startHour = parseInt(actualStartTime.split(':')[0]);
+      const startMinute = parseInt(actualStartTime.split(':')[1]);
+      const endHour = parseInt(actualEndTime.split(':')[0]);
+      const endMinute = parseInt(actualEndTime.split(':')[1]);
+      
+      // Convert to minutes for easier comparison
+      const slotTimeInMinutes = slotHour * 60 + slotMinute;
+      const startTimeInMinutes = startHour * 60 + startMinute;
+      const endTimeInMinutes = endHour * 60 + endMinute;
+      
+      // Check if this slot falls within the booking timeframe
+      return slotTimeInMinutes >= startTimeInMinutes && slotTimeInMinutes < endTimeInMinutes;
     });
   };
 
@@ -114,7 +172,7 @@ const WeeklyPlanner: React.FC<WeeklyPlannerProps> = ({
                     key={`${day.date.toISOString()}-${timeSlot}`}
                     onClick={() => handleTimeSlotClick(day.date, timeSlot)}
                     className={cn(
-                      "border p-1 min-h-[50px] transition-colors cursor-pointer relative",
+                      "border p-1 min-h-[30px] transition-colors cursor-pointer relative",
                       hasConflict 
                         ? "border-red-500 bg-red-900/20 hover:bg-red-900/30" 
                         : "border-gray-700 hover:bg-gray-800/50"
@@ -129,7 +187,8 @@ const WeeklyPlanner: React.FC<WeeklyPlannerProps> = ({
                             getBookingBackground(booking)
                           )}
                         >
-                          {booking.customer} - {booking.packageType}
+                          {booking.customer.split(' ')[0]} {/* Just show first name to save space */}
+                          {booking.travelMinutes && booking.travelMinutes > 0 && " 🚗"}
                         </div>
                       ))
                     ) : (
