@@ -20,6 +20,7 @@ export interface Booking {
   createdAt?: string;
   totalPrice?: number;
   travelMinutes?: number;
+  additionalServices?: string[]; // Added to track selected additional services
 }
 
 // Helper function to validate booking status

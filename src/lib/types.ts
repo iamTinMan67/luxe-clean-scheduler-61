@@ -8,6 +8,7 @@ export interface AdditionalService {
   name: string;
   price: number;
   description: string;
+  duration?: number; // Added duration field
   selected?: boolean;
 }
 

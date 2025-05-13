@@ -1,6 +1,7 @@
 
 import React from "react";
 import { AdditionalService } from "@/lib/types";
+import { Clock } from "lucide-react";
 
 interface AdditionalServicesSelectionProps {
   additionalServices: AdditionalService[];
@@ -39,6 +40,11 @@ const AdditionalServicesSelection: React.FC<AdditionalServicesSelectionProps> = 
                   <span className="text-gold font-semibold">£{service.price}</span>
                 </div>
                 <p className="text-sm text-gray-400 mt-1">{service.description}</p>
+                
+                <div className="flex items-center text-gray-400 mt-2 text-sm">
+                  <Clock className="w-3 h-3 mr-1 text-gold/70" />
+                  <span>{service.duration || 30} mins</span>
+                </div>
               </div>
               <div className={`w-5 h-5 rounded-full flex-shrink-0 ml-3 border ${
                 isSelected
