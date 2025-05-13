@@ -1,8 +1,8 @@
 
 import React from 'react';
 import { Booking } from '@/types/booking';
-import { additionalServices } from '@/data/additionalServices';
-import { packageOptions } from '@/data/packageOptions';
+import { additionalServices } from '@/data/servicePackageData';
+import { packageOptions } from '@/data/servicePackageData';
 
 interface BookingDetailsProps {
   booking: Booking;
@@ -23,7 +23,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ booking }) => {
       <p className="text-gray-300">Vehicle: <span className="text-white">{booking.vehicle}</span></p>
       <p className="text-gray-300">Package: 
         <span className="text-white"> {booking.packageType} 
-          {packageDetail && packageDetail.price ? ` (£${packageDetail.price})` : ''}
+          {packageDetail && packageDetail.basePrice ? ` (£${packageDetail.basePrice})` : ''}
         </span>
       </p>
       <p className="text-gray-300">Location: <span className="text-white">{booking.location}</span></p>

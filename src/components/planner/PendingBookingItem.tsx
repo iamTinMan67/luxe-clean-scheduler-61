@@ -7,8 +7,8 @@ import {
   Car, Clock, MapPin, User, CheckCircle2, AlertCircle, Mail, Phone, Package
 } from "lucide-react";
 import StaffAllocationDialog from './StaffAllocationDialog';
-import { packageOptions } from "@/data/packageOptions";
-import { additionalServices } from "@/data/additionalServices";
+import { packageOptions } from "@/data/servicePackageData";
+import { additionalServices } from "@/data/servicePackageData";
 import { calculateTotalBookingTime } from "@/utils/priceCalculator";
 
 interface PendingBookingItemProps {
@@ -99,7 +99,7 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
           <Package className="w-4 h-4 mr-2 text-gold" />
           <span>
             {packageDetail ? 
-              `${booking.packageType} Package (£${packageDetail.price})` : 
+              `${booking.packageType} Package (£${packageDetail.basePrice})` : 
               `${booking.packageType} Package`}
           </span>
         </div>
