@@ -6,79 +6,59 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Mail, Lock, AlertCircle } from "lucide-react";
-import { cleanupAuthState } from "@/utils/authCleanup";
+import { Mail, Lock } from "lucide-react";
 
 interface LoginFormProps {
   openResetDialog: () => void;
+  toggleMode: () => void; // Added prop to toggle between login and sign-up
 }
 
-const LoginForm = ({ openResetDialog }: LoginFormProps) => {
+const LoginForm = ({ openResetDialog, toggleMode }: LoginFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigate = useNavigate();
-
+  
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setErrorMessage(null);
-
+    
     try {
-      console.log("Attempting login for:", email);
+      // Clean up any existing auth state
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
+          localStorage.removeItem(key);
+        }
+      });
       
-      // Clean up existing auth state to prevent conflicts
-      cleanupAuthState();
-      
-      // Try global sign out first to clean state
+      // Try a global sign-out first (ignore errors)
       try {
         await supabase.auth.signOut({ scope: 'global' });
-      } catch (err) {
-        console.log("Pre-signout failed, continuing anyway:", err);
+      } catch (e) {
+        // Ignore any errors, just continue with sign in
       }
-
-      // Sign in existing user
-      const { data, error } = await supabase.auth.signInWithPassword({
+      
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-
-      if (error) {
-        console.error("Login error:", error);
-        throw error;
-      }
       
-      if (data && data.user) {
-        console.log("Login successful for user:", data.user.id);
-        
-        // The AuthContext will handle role checking and redirection
-        // Use window.location for a full page reload to ensure clean state
-        window.location.href = "/";
-      } else {
-        throw new Error("No user data returned from login attempt");
-      }
+      if (error) throw error;
+      
+      toast.success("Login successful");
+      
+      // Redirect to admin dashboard after successful login
+      navigate("/admin/dashboard");
     } catch (error: any) {
       console.error("Authentication error:", error);
-      // Set visible error message and show toast
-      setErrorMessage(error.message || "Authentication failed");
-      toast.error("Login failed", { 
-        description: error.message || "Authentication failed"
-      });
+      toast.error(error.message || "Authentication failed");
     } finally {
       setIsLoading(false);
     }
   };
-
+  
   return (
     <form onSubmit={handleLogin} className="space-y-6">
-      {errorMessage && (
-        <div className="bg-red-500/10 border border-red-500/30 rounded-md p-3 flex items-start">
-          <AlertCircle className="h-5 w-5 text-red-400 mt-0.5 mr-2 flex-shrink-0" />
-          <p className="text-sm text-red-400">{errorMessage}</p>
-        </div>
-      )}
-    
       <div className="space-y-2">
         <Label htmlFor="email">Email address</Label>
         <div className="relative">
@@ -114,10 +94,10 @@ const LoginForm = ({ openResetDialog }: LoginFormProps) => {
       </div>
       
       <div className="text-right">
-        <button
-          type="button"
+        <button 
+          type="button" 
           onClick={openResetDialog}
-          className="text-sm text-gold hover:underline focus:outline-none"
+          className="text-gold hover:underline text-sm focus:outline-none"
         >
           Forgot password?
         </button>
@@ -128,13 +108,17 @@ const LoginForm = ({ openResetDialog }: LoginFormProps) => {
         className="w-full gold-gradient text-black hover:shadow-xl hover:shadow-gold/20 transition-all"
         disabled={isLoading}
       >
-        {isLoading ? "Processing..." : "Sign In"}
+        {isLoading ? "Signing In..." : "Sign In"}
       </Button>
       
       <div className="mt-6 text-center">
-        <p className="text-sm text-gray-400">
-          Staff login only. Contact administrator for access.
-        </p>
+        <button 
+          type="button" 
+          onClick={toggleMode}
+          className="text-gold hover:underline focus:outline-none"
+        >
+          Need an account? Sign Up
+        </button>
       </div>
     </form>
   );

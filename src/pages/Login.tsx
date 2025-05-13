@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import LoginForm from "@/components/auth/LoginForm";
+import SignUpForm from "@/components/auth/SignUpForm"; // Import the new SignUpForm
 import PasswordResetDialog from "@/components/auth/PasswordResetDialog";
 import { useAuth } from "@/context/AuthContext";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
@@ -19,6 +20,7 @@ const Login = () => {
   const [isResetting, setIsResetting] = useState(false);
   const [resetError, setResetError] = useState<string | null>(null);
   const [resetSuccess, setResetSuccess] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false); // New state for toggling between login and sign-up
   const { user, isLoading } = useAuth();
   const location = useLocation();
 
@@ -123,6 +125,11 @@ const Login = () => {
     );
   }
 
+  // Toggle between login and sign-up forms
+  const toggleAuthMode = () => {
+    setIsSignUp(!isSignUp);
+  };
+
   return (
     <div className="min-h-screen bg-black text-white py-20">
       <div className="container mx-auto px-4">
@@ -135,12 +142,16 @@ const Login = () => {
           <h1 className="text-4xl font-bold mb-4">
             {isPasswordReset 
               ? "Reset Your Password" 
-              : "Staff Login"}
+              : isSignUp 
+                ? "Create An Account"
+                : "Staff Login"}
           </h1>
           <p className="text-gray-300">
             {isPasswordReset 
               ? "Please enter a new password for your account" 
-              : "Sign in to access the admin dashboard"}
+              : isSignUp 
+                ? "Sign up to access the management system"
+                : "Sign in to access the admin dashboard"}
           </p>
         </motion.div>
         
@@ -209,8 +220,12 @@ const Login = () => {
                 </div>
               )}
             </form>
+          ) : isSignUp ? (
+            // Sign Up Form
+            <SignUpForm toggleMode={toggleAuthMode} />
           ) : (
-            <LoginForm openResetDialog={() => setIsResetOpen(true)} />
+            // Login Form
+            <LoginForm openResetDialog={() => setIsResetOpen(true)} toggleMode={toggleAuthMode} />
           )}
         </motion.div>
       </div>

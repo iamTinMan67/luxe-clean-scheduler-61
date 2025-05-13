@@ -12,8 +12,7 @@ interface SignUpFormProps {
 }
 
 const SignUpForm = ({ toggleMode }: SignUpFormProps) => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -24,8 +23,8 @@ const SignUpForm = ({ toggleMode }: SignUpFormProps) => {
 
     try {
       // Validate form inputs
-      if (!firstName.trim()) {
-        throw new Error("First name is required");
+      if (!displayName.trim()) {
+        throw new Error("Display name is required");
       }
 
       // Sign up new user with metadata
@@ -34,8 +33,7 @@ const SignUpForm = ({ toggleMode }: SignUpFormProps) => {
         password,
         options: {
           data: {
-            first_name: firstName,
-            last_name: lastName
+            display_name: displayName
           }
         }
       });
@@ -57,38 +55,20 @@ const SignUpForm = ({ toggleMode }: SignUpFormProps) => {
 
   return (
     <form onSubmit={handleSignUp} className="space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="first-name">First Name</Label>
-          <div className="relative">
-            <Input
-              id="first-name"
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              placeholder="Enter your first name"
-              required
-              className="bg-gray-800 border-gray-700 text-white pl-10"
-              disabled={isLoading}
-            />
-            <User className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-          </div>
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="last-name">Last Name</Label>
-          <div className="relative">
-            <Input
-              id="last-name"
-              type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              placeholder="Enter your last name"
-              className="bg-gray-800 border-gray-700 text-white pl-10"
-              disabled={isLoading}
-            />
-            <User className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-          </div>
+      <div className="space-y-2">
+        <Label htmlFor="display-name">Display Name</Label>
+        <div className="relative">
+          <Input
+            id="display-name"
+            type="text"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            placeholder="Enter your display name"
+            required
+            className="bg-gray-800 border-gray-700 text-white pl-10"
+            disabled={isLoading}
+          />
+          <User className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
         </div>
       </div>
       
