@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Mail, Lock } from "lucide-react";
+import { cleanupAuthState } from "@/utils/authCleanup";
 
 interface LoginFormProps {
   openResetDialog: () => void;
@@ -25,11 +26,7 @@ const LoginForm = ({ openResetDialog, toggleMode }: LoginFormProps) => {
     
     try {
       // Clean up any existing auth state
-      Object.keys(localStorage).forEach((key) => {
-        if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
-          localStorage.removeItem(key);
-        }
-      });
+      cleanupAuthState();
       
       // Try a global sign-out first (ignore errors)
       try {

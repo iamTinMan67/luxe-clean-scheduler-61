@@ -2,11 +2,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
-import LoginForm from "@/components/auth/LoginForm";
-import SignUpForm from "@/components/auth/SignUpForm";
-import PasswordResetDialog from "@/components/auth/PasswordResetDialog";
-import PasswordResetForm from "@/components/auth/PasswordResetForm";
-import AlreadyLoggedIn from "@/components/auth/AlreadyLoggedIn";
+import LoginForm from "@/components/auth/login/LoginForm";
+import SignUpForm from "@/components/auth/login/SignUpForm";
+import PasswordResetDialog from "@/components/auth/password/PasswordResetDialog";
+import PasswordResetForm from "@/components/auth/password/PasswordResetForm";
+import AlreadyLoggedIn from "@/components/auth/status/AlreadyLoggedIn";
 import { usePasswordReset } from "@/hooks/usePasswordReset";
 
 const Login = () => {
