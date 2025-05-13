@@ -34,6 +34,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [initialCheckComplete, setInitialCheckComplete] = useState<boolean>(false);
 
   // Function to fetch user role
   const fetchUserRole = async (userId: string) => {
@@ -82,43 +83,40 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     console.log("AuthContext useEffect running");
     setIsLoading(true);
     
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, currentSession) => {
-        console.log("Auth state changed:", event, currentSession ? "Session exists" : "No session");
-        setSession(currentSession);
-        setUser(currentSession?.user ?? null);
-        
-        if (currentSession?.user) {
-          // Use setTimeout to avoid Supabase auth deadlock
-          setTimeout(() => {
-            fetchUserRole(currentSession.user.id);
-          }, 0);
-        } else {
-          setUserRole(null);
-        }
-        
-        setIsLoading(false);
-      }
-    );
-    
-    // THEN check for an existing session
-    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
-      console.log("Initial session check:", currentSession ? "Session exists" : "No session");
+    const handleAuthChange = (currentSession: Session | null) => {
+      console.log("Auth state changed:", currentSession ? "Session exists" : "No session");
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
       
       if (currentSession?.user) {
-        // Use setTimeout to avoid potential deadlocks
+        // Use setTimeout to avoid Supabase auth deadlock
         setTimeout(() => {
           fetchUserRole(currentSession.user.id);
         }, 0);
+      } else {
+        setUserRole(null);
       }
+      
       setIsLoading(false);
+      setInitialCheckComplete(true);
+    };
+    
+    // First check for an existing session
+    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      console.log("Initial session check:", currentSession ? "Session exists" : "No session");
+      handleAuthChange(currentSession);
     }).catch(err => {
       console.error("Error getting session:", err);
       setIsLoading(false);
+      setInitialCheckComplete(true);
     });
+    
+    // THEN set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, currentSession) => {
+        handleAuthChange(currentSession);
+      }
+    );
     
     return () => {
       subscription.unsubscribe();
@@ -156,8 +154,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // Debug output for role
+  // Get initial auth state for SSR
   console.log("Current user role:", userRole);
+
+  // Show loading state only during initial load
+  const shouldShowLoading = isLoading && !initialCheckComplete;
 
   const value = {
     session,
@@ -165,7 +166,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     isAdmin: userRole === 'admin',
     isStaff: userRole === 'staff',
     isCustomer: userRole === 'customer',
-    isLoading,
+    isLoading: shouldShowLoading,
     signOut,
   };
 

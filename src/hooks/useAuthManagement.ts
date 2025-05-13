@@ -17,7 +17,7 @@ export const useAuthManagement = () => {
     try {
       const { error } = await supabase
         .from('profiles')
-        .update(userData)
+        .update({ display_name: userData.display_name })
         .eq('id', user.id);
         
       if (error) throw error;
