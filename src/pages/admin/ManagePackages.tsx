@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { packageOptions } from "@/data/servicePackageData";
+import { packageOptions } from "@/data/packageOptions";
 import { ServiceTask } from "@/lib/types";
 import PackageSelector from "@/components/package-management/PackageSelector";
 import PackageTaskList from "@/components/package-management/PackageTaskList";

@@ -10,7 +10,8 @@ import PriceSummary from "@/components/service-package/PriceSummary";
 import VehicleCustomization from "@/components/service-package/VehicleCustomization";
 
 // Data and hooks
-import { packageOptions, additionalServices } from "@/data/servicePackageData";
+import { packageOptions } from "@/data/packageOptions";
+import { additionalServices } from "@/data/additionalServices";
 import { useVehicleState } from "@/hooks/useVehicleState";
 import { calculateTotalPrice } from "@/utils/priceCalculator";
 

@@ -7,7 +7,8 @@ import {
   Car, Clock, MapPin, User, CheckCircle2, AlertCircle, Mail, Phone
 } from "lucide-react";
 import StaffAllocationDialog from './StaffAllocationDialog';
-import { packageOptions, additionalServices } from "@/data/servicePackageData";
+import { packageOptions } from "@/data/packageOptions";
+import { additionalServices } from "@/data/additionalServices";
 import { calculateTotalBookingTime } from "@/utils/priceCalculator";
 
 interface PendingBookingItemProps {
