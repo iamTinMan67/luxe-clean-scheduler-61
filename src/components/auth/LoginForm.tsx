@@ -10,11 +10,10 @@ import { Mail, Lock, AlertCircle } from "lucide-react";
 import { cleanupAuthState } from "@/utils/authCleanup";
 
 interface LoginFormProps {
-  toggleMode: () => void;
   openResetDialog: () => void;
 }
 
-const LoginForm = ({ toggleMode, openResetDialog }: LoginFormProps) => {
+const LoginForm = ({ openResetDialog }: LoginFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -52,8 +51,8 @@ const LoginForm = ({ toggleMode, openResetDialog }: LoginFormProps) => {
       
       if (data && data.user) {
         console.log("Login successful for user:", data.user.id);
-        toast.success("Logged in successfully!");
         
+        // The AuthContext will handle role checking and redirection
         // Use window.location for a full page reload to ensure clean state
         window.location.href = "/";
       } else {
@@ -133,13 +132,9 @@ const LoginForm = ({ toggleMode, openResetDialog }: LoginFormProps) => {
       </Button>
       
       <div className="mt-6 text-center">
-        <button 
-          type="button"
-          onClick={toggleMode}
-          className="text-gold hover:underline focus:outline-none"
-        >
-          Don't have an account? Sign Up
-        </button>
+        <p className="text-sm text-gray-400">
+          Staff login only. Contact administrator for access.
+        </p>
       </div>
     </form>
   );

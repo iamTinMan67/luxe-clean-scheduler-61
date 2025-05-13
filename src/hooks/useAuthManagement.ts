@@ -9,7 +9,7 @@ export const useAuthManagement = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // Function to update user profile
-  const updateProfile = async (userData: { first_name?: string; last_name?: string }) => {
+  const updateProfile = async (userData: { display_name?: string }) => {
     if (!user) return { success: false, error: 'Not authenticated' };
     
     setIsLoading(true);

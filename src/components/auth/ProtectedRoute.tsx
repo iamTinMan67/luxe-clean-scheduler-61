@@ -48,18 +48,18 @@ const ProtectedRoute = ({
   
   // Check role requirements
   if (requiredRole === "admin" && !isAdmin) {
-    console.log("Redirecting to home - user not admin");
-    return <Navigate to="/" replace />;
+    console.log("Redirecting to login - user not admin");
+    return <Navigate to="/login" replace />;
   }
   
   if (requireAdmin && !isAdmin) {
-    console.log("Redirecting to home - user not admin");
-    return <Navigate to="/" replace />;
+    console.log("Redirecting to login - user not admin");
+    return <Navigate to="/login" replace />;
   }
   
   if (requireStaff && !(isAdmin || isStaff)) {
-    console.log("Redirecting to home - user not staff");
-    return <Navigate to="/" replace />;
+    console.log("Redirecting to login - user not staff");
+    return <Navigate to="/login" replace />;
   }
   
   // User is authenticated and meets role requirements

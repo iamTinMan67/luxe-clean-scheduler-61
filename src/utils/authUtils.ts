@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 // Function to create an initial admin account
-export const createInitialAdmin = async (email: string, password: string, firstName: string, lastName: string) => {
+export const createInitialAdmin = async (email: string, password: string, displayName: string) => {
   try {
     // First check if any admin already exists
     const { data: existingAdmins, error: checkError } = await supabase
@@ -28,8 +28,7 @@ export const createInitialAdmin = async (email: string, password: string, firstN
       password,
       options: {
         data: {
-          first_name: firstName,
-          last_name: lastName
+          display_name: displayName
         }
       }
     });
@@ -79,45 +78,14 @@ export const initializeAdminUser = async () => {
 
     // If no admin exists, prompt creation of a first admin account
     if (!adminProfiles || adminProfiles.length === 0) {
-      console.log('No admin accounts found. Please create an admin account through the signup process.');
+      console.log('No admin accounts found. Please create an admin account.');
       toast.info("No admin accounts exist yet", {
-        description: "Please create the first admin account by signing up",
+        description: "Please contact the system administrator",
         duration: 6000
       });
       
-      // Test if signups are allowed
-      try {
-        // Use a more identifiable test email with timestamp
-        const timestamp = new Date().toISOString().replace(/[^0-9]/g, '').substring(0, 14);
-        const testEmail = `test-signup-check-${timestamp}@example.com`;
-        
-        const { error: signUpTestError } = await supabase.auth.signUp({
-          email: testEmail,
-          password: 'StrongPassword123!', // This won't create an actual account due to Supabase email confirmation
-          options: { 
-            emailRedirectTo: window.location.origin,
-            data: {
-              first_name: 'Test',
-              last_name: 'User'
-            }
-          }
-        });
-        
-        if (signUpTestError) {
-          if (signUpTestError.message === 'Signups not allowed for this instance') {
-            return { success: false, error: 'Signups not allowed for this instance' };
-          }
-        }
-        
-        // Clean up test attempt
-        try {
-          await supabase.auth.signOut();
-        } catch (e) {
-          // Ignore cleanup errors
-        }
-      } catch (err) {
-        console.error('Error testing signup capability:', err);
-      }
+      // We're removing the test account creation to prevent dummy accounts
+      return { success: true, noAdmin: true };
     }
     
     return { success: true, data: adminProfiles };

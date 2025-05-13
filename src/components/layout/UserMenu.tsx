@@ -29,7 +29,7 @@ const UserMenu = () => {
         aria-label="Login"
       >
         <User size={18} className="inline-block mr-2" />
-        Login
+        Staff Login
       </Link>
     );
   }

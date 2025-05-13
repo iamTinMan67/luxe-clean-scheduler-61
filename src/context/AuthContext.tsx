@@ -59,6 +59,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           id: "admin-login",
           duration: 3000
         });
+      } else if (data?.role === 'staff') {
+        toast.success("Logged in as Staff", {
+          id: "staff-login",
+          duration: 3000
+        });
+      } else if (!data?.role || data.role === 'customer') {
+        // If the user is not staff or admin, sign them out immediately
+        console.log("Non-staff user detected, signing out");
+        supabase.auth.signOut();
+        toast.error("Access denied", {
+          description: "Only staff members can access this system",
+          duration: 5000
+        });
       }
     } catch (error) {
       console.error('Error in fetchUserRole:', error);
