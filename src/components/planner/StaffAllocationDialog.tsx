@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { staffData } from "@/data/staffData";
+import { staffMembers } from "@/data/staffData";
 import { Booking } from '@/types/booking';
 import { Checkbox } from "@/components/ui/checkbox";
 
@@ -71,7 +70,7 @@ const StaffAllocationDialog: React.FC<StaffAllocationDialogProps> = ({
             <div>
               <Label className="text-white mb-2 block">Select staff members:</Label>
               <div className="space-y-2 max-h-60 overflow-y-auto p-2 bg-black/40 rounded-md">
-                {staffData.map(staff => (
+                {staffMembers.map(staff => (
                   <div key={staff.id} className="flex items-center space-x-2">
                     <Checkbox 
                       id={`staff-${staff.id}`} 
@@ -83,7 +82,7 @@ const StaffAllocationDialog: React.FC<StaffAllocationDialogProps> = ({
                       htmlFor={`staff-${staff.id}`}
                       className="text-white cursor-pointer"
                     >
-                      {staff.name} ({staff.role})
+                      {staff.name} ({staff.position})
                     </Label>
                   </div>
                 ))}
