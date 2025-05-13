@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { Booking } from '@/types/booking';
 import { Button } from "@/components/ui/button";
 import { 
-  Car, Clock, MapPin, User, CheckCircle2, AlertCircle, Mail, Phone
+  Car, Clock, MapPin, User, CheckCircle2, AlertCircle, Mail, Phone, Package
 } from "lucide-react";
 import StaffAllocationDialog from './StaffAllocationDialog';
 import { packageOptions } from "@/data/packageOptions";
@@ -68,6 +68,14 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
     return `${hours > 0 ? hours + 'h ' : ''}${mins > 0 ? mins + 'm' : hours === 0 ? '0m' : ''}`;
   };
 
+  // Get package details
+  const packageDetail = packageOptions.find(p => p.type === booking.packageType);
+  
+  // Get additional services details
+  const additionalServiceDetails = booking.additionalServices && Array.isArray(booking.additionalServices) ? 
+    booking.additionalServices.map(id => additionalServices.find(s => s.id === id)).filter(Boolean) : 
+    [];
+
   return (
     <div 
       key={booking.id}
@@ -83,8 +91,16 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
           <Car className="w-4 h-4 mr-2 text-gold" />
           <span>
             {booking.vehicle} 
-            {booking.vehicleReg && ` (${booking.vehicleReg})`} - 
-            {booking.packageType} Package
+            {booking.vehicleReg && ` (${booking.vehicleReg})`}
+          </span>
+        </div>
+
+        <div className="flex items-center text-gray-300">
+          <Package className="w-4 h-4 mr-2 text-gold" />
+          <span>
+            {packageDetail ? 
+              `${booking.packageType} Package (£${packageDetail.price})` : 
+              `${booking.packageType} Package`}
           </span>
         </div>
         
@@ -128,20 +144,18 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
           </div>
         )}
 
-        {/* Show additional services if any */}
-        {booking.additionalServices && booking.additionalServices.length > 0 && (
+        {/* Show additional services if any - Updated display */}
+        {additionalServiceDetails.length > 0 && (
           <div className="mt-2 pt-2 border-t border-gray-800">
             <h4 className="text-sm font-medium text-gold mb-1">Additional Services:</h4>
             <ul className="text-sm text-gray-300">
-              {Array.isArray(booking.additionalServices) && booking.additionalServices.map((serviceId, index) => {
-                const service = additionalServices.find(s => s.id === serviceId);
-                return service ? (
-                  <li key={index} className="flex items-center">
-                    <span className="mr-1">•</span> {service.name} 
-                    {service.duration ? ` (${service.duration} mins)` : ''}
-                  </li>
-                ) : null;
-              })}
+              {additionalServiceDetails.map((service, index) => (
+                <li key={index} className="flex items-center">
+                  <span className="mr-1">•</span> {service?.name} 
+                  {service?.price ? ` (£${service.price})` : ''} 
+                  {service?.duration ? ` (${service.duration} mins)` : ''}
+                </li>
+              ))}
             </ul>
           </div>
         )}
