@@ -28,6 +28,7 @@ import VanInventory from '@/pages/admin/VanInventory';
 import PreInspection from '@/pages/admin/PreInspection';
 import ManagePackages from '@/pages/admin/ManagePackages';
 import FeedbackManager from '@/pages/admin/FeedbackManager';
+import FeedbackForm from '@/pages/admin/FeedbackForm';
 
 // Import protected route
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
@@ -63,6 +64,10 @@ export const router = createBrowserRouter([
       {
         path: '/feedback/:bookingId',
         element: <Feedback />,
+      },
+      {
+        path: '/feedback/new',
+        element: <ProtectedRoute requireAdmin element={<FeedbackForm />} />,
       },
       {
         path: '/progress/:bookingId',

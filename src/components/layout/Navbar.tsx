@@ -6,6 +6,12 @@ import { cn } from "@/lib/utils";
 import DesktopMenu from "./DesktopMenu";
 import MobileMenu from "./MobileMenu";
 
+interface AdminRoute {
+  path: string;
+  label: string;
+  subRoutes?: AdminRoute[];
+}
+
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -33,7 +39,7 @@ const Navbar = () => {
     closeMenu();
   }, [location]);
 
-  const adminRoutes = [
+  const adminRoutes: AdminRoute[] = [
     { path: "/admin/dashboard", label: "Dashboard" },
     { path: "/admin/planner", label: "Planners" },
     { path: "/admin/pre-inspection", label: "Pre-Inspection" },
@@ -42,7 +48,14 @@ const Navbar = () => {
     { path: "/admin/manage-packages", label: "Manage Packages" },
     { path: "/admin/todo", label: "To-do List" },
     { path: "/admin/invoices", label: "Invoices" },
-    { path: "/admin/feedback", label: "Feedback" },
+    { 
+      label: "Feedback",
+      path: "#",
+      subRoutes: [
+        { path: "/feedback/new", label: "Feedback Form" },
+        { path: "/admin/feedback", label: "Feedback Manager" }
+      ]
+    },
     { path: "/admin/gallery", label: "Gallery Manager" },
     { path: "/admin/brochure", label: "Brochure" },
   ];

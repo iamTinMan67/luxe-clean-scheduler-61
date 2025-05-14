@@ -5,8 +5,14 @@ import AdminDropdown from "./AdminDropdown";
 import UserMenu from "./UserMenu";
 import { useAuth } from "@/context/AuthContext";
 
+interface AdminRoute {
+  path: string;
+  label: string;
+  subRoutes?: AdminRoute[];
+}
+
 interface DesktopMenuProps {
-  adminRoutes: { path: string; label: string }[];
+  adminRoutes: AdminRoute[];
 }
 
 const DesktopMenu = ({ adminRoutes }: DesktopMenuProps) => {

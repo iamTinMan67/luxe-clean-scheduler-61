@@ -1,21 +1,36 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import NavLink from "./NavLink";
 import { useAuth } from "@/context/AuthContext";
 
+interface AdminRoute {
+  path: string;
+  label: string;
+  subRoutes?: AdminRoute[];
+}
+
 interface MobileMenuProps {
   isOpen: boolean;
-  adminRoutes: { path: string; label: string }[];
+  adminRoutes: AdminRoute[];
 }
 
 const MobileMenu = ({ isOpen, adminRoutes }: MobileMenuProps) => {
   const [adminDropdownOpen, setAdminDropdownOpen] = useState(false);
+  const [openSubmenus, setOpenSubmenus] = useState<string[]>([]);
   const { user, signOut, isAdmin, isStaff } = useAuth();
   
   const toggleAdminDropdown = () => setAdminDropdownOpen(!adminDropdownOpen);
+
+  const toggleSubmenu = (label: string) => {
+    setOpenSubmenus(prev => 
+      prev.includes(label) 
+        ? prev.filter(item => item !== label) 
+        : [...prev, label]
+    );
+  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -49,9 +64,41 @@ const MobileMenu = ({ isOpen, adminRoutes }: MobileMenuProps) => {
             {adminDropdownOpen && (
               <div className="pl-4 space-y-1 border-l border-gold/30 ml-4">
                 {adminRoutes.map((route) => (
-                  <NavLink key={route.path} to={route.path} isMobile>
-                    {route.label}
-                  </NavLink>
+                  route.subRoutes ? (
+                    <div key={route.label}>
+                      <button
+                        className="text-left py-2 px-4 w-full text-lg text-white flex items-center justify-between"
+                        onClick={() => toggleSubmenu(route.label)}
+                      >
+                        <span>{route.label}</span>
+                        <ChevronRight 
+                          size={16} 
+                          className={cn(
+                            "transition-transform",
+                            openSubmenus.includes(route.label) ? "rotate-90" : ""
+                          )}
+                        />
+                      </button>
+                      
+                      {openSubmenus.includes(route.label) && (
+                        <div className="pl-4 border-l border-gold/30 ml-4 space-y-1">
+                          {route.subRoutes.map((subRoute) => (
+                            <NavLink 
+                              key={subRoute.path} 
+                              to={subRoute.path} 
+                              isMobile
+                            >
+                              {subRoute.label}
+                            </NavLink>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <NavLink key={route.path} to={route.path} isMobile>
+                      {route.label}
+                    </NavLink>
+                  )
                 ))}
               </div>
             )}
