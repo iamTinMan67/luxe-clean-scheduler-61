@@ -13,18 +13,6 @@ const SocialLinks = ({ showLabels = false }: { showLabels?: boolean }) => {
 
   return (
     <div className={`flex ${showLabels ? 'flex-col space-y-3' : 'space-x-4'}`}>
-      {/* WhatsApp */}
-      <a 
-        href="https://wa.me/447927208228" 
-        target="_blank" 
-        rel="noopener noreferrer" 
-        className={`${showLabels ? 'flex items-center space-x-2' : ''} text-gray-400 hover:text-green-500 transition-colors duration-300`}
-        aria-label="WhatsApp"
-      >
-        <MessageSquare size={20} />
-        {showLabels && <span>Chat on WhatsApp</span>}
-      </a>
-
       {/* Facebook */}
       <a 
         href="https://facebook.com/midcheshiremobilevaleting" 
@@ -47,18 +35,6 @@ const SocialLinks = ({ showLabels = false }: { showLabels?: boolean }) => {
       >
         <Instagram size={20} />
         {showLabels && <span>Follow on Instagram</span>}
-      </a>
-
-      {/* Email */}
-      <a 
-        href="mailto:midcheshiremobilevalet@gmail.com" 
-        target="_blank" 
-        rel="noopener noreferrer" 
-        className={`${showLabels ? 'flex items-center space-x-2' : ''} text-gray-400 hover:text-red-500 transition-colors duration-300`}
-        aria-label="Email"
-      >
-        <Mail size={20} />
-        {showLabels && <span>Send us an Email</span>}
       </a>
 
       {/* SMS */}
