@@ -24,7 +24,7 @@ const ContactInfo = () => {
       </li>
       <li className="flex items-center">
         <Mail className="mr-2 text-gold flex-shrink-0" size={18} />
-        <a href="mailto:info@midcheshirevaleting.com" className="text-gray-400 hover:text-gold transition-colors duration-300">
+        <a href="mailto:midcheshiremobilevalet@gmail.com" className="text-gray-400 hover:text-gold transition-colors duration-300">
           midcheshiremobilevalet@gmail.com
         </a>
       </li>
