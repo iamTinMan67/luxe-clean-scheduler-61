@@ -11,8 +11,8 @@ const FeaturesSection = () => {
     {
       icon: <Leaf className="h-10 w-10 text-gold" />,
       title: "Eco-Friendly Products",
-      description: "We only use environmentally friendly machinery and cleaning products that are
-      tough on dirt but gentle on your equipment."
+      description: "We only use environmentally friendly cleaning products that are tough on dirt
+      but gentle on your equipment."
     },
     {
       icon: <ThumbsUp className="h-10 w-10 text-gold" />,
