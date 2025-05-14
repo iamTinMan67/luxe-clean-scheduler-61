@@ -13,7 +13,9 @@ const Footer = () => {
   ];
   
   return (
-
+    <footer className="bg-black border-t border-gold/20 pt-16 pb-8 px-4 animate-fade-in">
+      <div className="container mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           
         <FooterSection title="Contact Us">
             <ContactInfo />
