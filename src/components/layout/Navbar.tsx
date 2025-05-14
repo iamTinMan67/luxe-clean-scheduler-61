@@ -70,9 +70,9 @@ const Navbar = () => {
         {/* Logo - Now showing on all pages */}
         <Link to="/" className="flex items-center space-x-2" aria-label="Home">
           <img 
-            src="/lovable-uploads/20bcd8db-4042-4d14-9238-3fe36de9757f.png" 
+            src="C:\Users\tombo\Desktop\Mobile Valet\Images\Header logo.png" 
             alt="Mid-Cheshire Mobile Valeting" 
-            className="h-14 w-auto" 
+            className="h-28 w-auto" 
           />
         </Link>
         
