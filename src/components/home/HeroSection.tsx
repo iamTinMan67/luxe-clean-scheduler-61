@@ -46,8 +46,9 @@ const HeroSection = () => {
           transition={{ duration: 0.7, delay: 0.4 }}
         >
           Fully, self-sufficiant, mobile, cleaning and fine-detailing services.
-          We pride ourselves on our reputation and striving for excellence, every time. From cars, boats
-          even <span className="text-gold">airplanes!</span> You can even check our progress, almost in REAL-TIME
+          We pride ourselves on our reputation and striving for excellence, every time.
+          You can even check our progress, almost in REAL-TIME!" From cars, boats
+          even <span className="text-gold">airplanes.</span> We can do the lot!
         </motion.p>
       </div>
     </section>
