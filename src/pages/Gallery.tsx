@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import GalleryDisplay from "@/components/gallery/GalleryDisplay";
 import GalleryTestimonials from "@/components/gallery/GalleryTestimonials";
-import ConnectWithUs from "@/components/shared/ConnectWithUs";
 import { GalleryItem, Testimonial, getDefaultItems, getTestimonials } from "@/utils/galleryData";
 
 const Gallery = () => {
@@ -45,31 +44,22 @@ const Gallery = () => {
       {/* Hero Section */}
       <section className="relative py-24">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="text-center max-w-3xl mx-auto mb-16"
-              >
-                <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-                  Our Work <span className="text-gold">Gallery</span>
-                </h1>
-                <p className="text-xl text-gray-300">
-                  Browse through our portfolio of previous work
-                </p>
-              </motion.div>
-              
-              {/* Gallery Component */}
-              <GalleryDisplay galleryItems={galleryItems} />
-            </div>
-            
-            {/* Connect With Us - Right Side */}
-            <div className="lg:col-span-1 mt-6 lg:mt-0">
-              <ConnectWithUs />
-            </div>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-center max-w-3xl mx-auto mb-16"
+          >
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+              Our Work <span className="text-gold">Gallery</span>
+            </h1>
+            <p className="text-xl text-gray-300">
+              Browse through our portfolio of previous work
+            </p>
+          </motion.div>
+          
+          {/* Gallery Component */}
+          <GalleryDisplay galleryItems={galleryItems} />
         </div>
       </section>
       
