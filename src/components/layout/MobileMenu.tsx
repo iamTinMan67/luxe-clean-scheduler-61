@@ -30,9 +30,7 @@ const MobileMenu = ({ isOpen, adminRoutes }: MobileMenuProps) => {
     >
       <nav className="flex flex-col p-4">
         <NavLink to="/" isMobile>Home</NavLink>
-        <NavLink to="/services" isMobile>Services</NavLink>
         <NavLink to="/gallery" isMobile>Gallery</NavLink>
-        <NavLink to="/booking" isMobile>Book Now</NavLink>
         
         {(isAdmin || isStaff) && (
           <>
