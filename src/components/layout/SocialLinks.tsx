@@ -1,59 +1,35 @@
 
-import { Facebook, Instagram, Twitter, Mail, Phone, MessageSquare, Smartphone } from "lucide-react";
-import { toast } from "@/components/ui/use-toast"; 
+import { Facebook, Instagram, Twitter } from "lucide-react";
 
-const SocialLinks = ({ showLabels = false }: { showLabels?: boolean }) => {
-  const handleCopyNumber = (number: string) => {
-    navigator.clipboard.writeText(number);
-    toast({
-      description: "Phone number copied to clipboard!",
-      duration: 3000,
-    });
-  };
-
+const SocialLinks = () => {
   return (
-    <div className={`flex ${showLabels ? 'flex-col space-y-3' : 'space-x-4'}`}>
-      {/* Facebook */}
+    <div className="flex space-x-4">
       <a 
-        href="https://facebook.com/midcheshiremobilevaleting" 
+        href="https://facebook.com" 
         target="_blank" 
         rel="noopener noreferrer" 
-        className={`${showLabels ? 'flex items-center space-x-2' : ''} text-gray-400 hover:text-blue-600 transition-colors duration-300`}
+        className="text-gray-400 hover:text-gold transition-colors duration-300"
         aria-label="Facebook"
       >
         <Facebook size={20} />
-        {showLabels && <span>Message on Facebook</span>}
       </a>
-
-      {/* Instagram */}
       <a 
-        href="https://instagram.com/midcheshiremobilevaleting" 
+        href="https://instagram.com" 
         target="_blank" 
         rel="noopener noreferrer" 
-        className={`${showLabels ? 'flex items-center space-x-2' : ''} text-gray-400 hover:text-pink-500 transition-colors duration-300`}
+        className="text-gray-400 hover:text-gold transition-colors duration-300"
         aria-label="Instagram"
       >
         <Instagram size={20} />
-        {showLabels && <span>Follow on Instagram</span>}
       </a>
-
-      {/* SMS */}
       <a 
-        href="sms:+447927208228" 
-        className={`${showLabels ? 'flex items-center space-x-2' : ''} text-gray-400 hover:text-yellow-500 transition-colors duration-300`}
-        aria-label="Text Message"
+        href="https://twitter.com" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="text-gray-400 hover:text-gold transition-colors duration-300"
+        aria-label="Twitter"
       >
-        <Smartphone size={20} />
-        {showLabels && <span>Send a Text</span>}
-      </a>
-
-            <a 
-        href="sms:+447845574743" 
-        className={`${showLabels ? 'flex items-center space-x-2' : ''} text-gray-400 hover:text-yellow-500 transition-colors duration-300`}
-        aria-label="Text Message"
-      >
-        <Smartphone size={20} />
-        {showLabels && <span>Alternative</span>}
+        <Twitter size={20} />
       </a>
     </div>
   );

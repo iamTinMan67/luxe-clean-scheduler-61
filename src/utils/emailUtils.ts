@@ -46,7 +46,7 @@ export const generateEmailTemplate = (
           
           We look forward to serving you!
           
-          The Team
+          The Luxe Clean Team
         `
       };
     
@@ -70,10 +70,9 @@ export const generateEmailTemplate = (
           1. Visit: ${trackingLink}
           2. Enter your booking reference: ${trackingReference}
           
-          If you have any queries, please don't hesitate to contact us.
+          If you have any questions, please contact us.
           
-          Many Thanks
-          Salleah
+          The Luxe Clean Team
         `
       };
       
@@ -83,7 +82,7 @@ export const generateEmailTemplate = (
         body: `
           Hi ${booking.customer},
 
-          You can now track the progress of your valet service, almost in REAL-Time.
+          You can now track the progress of your valet service.
           
           Booking Details:
           - Reference: ${booking.id}
@@ -96,9 +95,9 @@ export const generateEmailTemplate = (
           1. Visit: ${trackingLink}
           2. Enter your booking reference: ${trackingReference}
           
-          Check how we are doing. 
+          Thank you for choosing our service.
           
-          
+          The Luxe Clean Team
         `
       };
   }
