@@ -17,6 +17,22 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ booking }) => {
     booking.additionalServices.map(id => additionalServices.find(s => s.id === id)).filter(Boolean) : 
     [];
 
+  // Function to get status text color
+  const getStatusColor = () => {
+    switch(booking.status) {
+      case 'pending':
+        return 'text-red-400';
+      case 'confirmed':
+        return 'text-amber-400';
+      case 'in-progress':
+        return 'text-blue-400';
+      case 'completed':
+        return 'text-green-400';
+      default:
+        return 'text-gray-400';
+    }
+  };
+
   return (
     <div className="space-y-1 text-sm">
       <p className="text-gray-300">Reference: <span className="text-white font-semibold">{booking.id}</span></p>
@@ -29,11 +45,9 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ booking }) => {
       <p className="text-gray-300">Location: <span className="text-white">{booking.location}</span></p>
       <p className="text-gray-300">Notes: <span className="text-white">{booking.notes}</span></p>
       <p className="text-gray-300">Status: 
-        <span className={`ml-1 ${
-          booking.status === "pending" ? "text-amber-400" : 
-          booking.status === "confirmed" ? "text-blue-400" :
-          booking.status === "completed" ? "text-green-400" : "text-white"
-        }`}>{booking.status}</span>
+        <span className={`ml-1 ${getStatusColor()}`}>
+          {booking.status}
+        </span>
       </p>
 
       {/* Show additional services if any */}

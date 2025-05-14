@@ -28,7 +28,7 @@ const PendingBookingsList: React.FC<PendingBookingsListProps> = ({
       <Card className="bg-gray-900 border-gray-800 p-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-white">Pending Bookings</h2>
-          <div className="px-3 py-1 rounded-full bg-amber-900/30 text-amber-400 border border-amber-700 text-xs font-medium">
+          <div className="px-3 py-1 rounded-full bg-red-900/30 text-red-400 border border-red-700 text-xs font-medium">
             {pendingBookings.length} pending
           </div>
         </div>

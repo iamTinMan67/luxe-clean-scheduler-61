@@ -20,6 +20,22 @@ interface BookingInfoCardProps {
 }
 
 const BookingInfoCard: React.FC<BookingInfoCardProps> = ({ booking, formatDate }) => {
+  // Function to get status badge styling
+  const getStatusBadgeStyles = () => {
+    switch(booking.status) {
+      case 'pending':
+        return 'bg-red-900/30 text-red-400 border border-red-700';
+      case 'confirmed':
+        return 'bg-amber-900/30 text-amber-400 border border-amber-700';
+      case 'in-progress':
+        return 'bg-blue-900/30 text-blue-400 border border-blue-700';
+      case 'completed':
+        return 'bg-green-900/30 text-green-400 border border-green-700';
+      default:
+        return 'bg-gray-900/30 text-gray-400 border border-gray-700';
+    }
+  };
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -38,15 +54,7 @@ const BookingInfoCard: React.FC<BookingInfoCardProps> = ({ booking, formatDate }
           </div>
         </div>
         
-        <div className={`px-4 py-2 rounded-full ${
-          booking.status === 'completed' 
-            ? 'bg-green-900/30 text-green-400 border border-green-700'
-            : booking.status === 'in-progress'
-            ? 'bg-blue-900/30 text-blue-400 border border-blue-700'
-            : booking.status === 'confirmed'
-            ? 'bg-amber-900/30 text-amber-400 border border-amber-700'
-            : 'bg-gray-900/30 text-gray-400 border border-gray-700'
-        }`}>
+        <div className={`px-4 py-2 rounded-full ${getStatusBadgeStyles()}`}>
           {booking.status === 'completed' && 'Completed'}
           {booking.status === 'in-progress' && 'In Progress'}
           {booking.status === 'confirmed' && 'Confirmed'}

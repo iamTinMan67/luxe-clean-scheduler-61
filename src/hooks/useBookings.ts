@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Booking } from '@/types/booking';
 import { useBookingsStorage } from './planner/useBookingsStorage';
 import { PlannerViewType } from './usePlannerCalendar';
-import { toast } from './use-toast';
+import { toast } from '@/components/ui/use-toast';
 import { useBookingManagement } from './planner/useBookingManagement';
 import { isSameDay } from 'date-fns';
 
@@ -63,7 +63,6 @@ export const useBookings = () => {
     toast({
       title: "Booking Confirmed",
       description: `${booking.customer}'s booking has been confirmed.`,
-      duration: 3000,
     });
   };
   
@@ -88,7 +87,6 @@ export const useBookings = () => {
     toast({
       title: "Booking Completed",
       description: `${booking.customer}'s booking has been marked as completed.`,
-      duration: 3000,
     });
   };
   
@@ -99,7 +97,6 @@ export const useBookings = () => {
     toast({
       title: "Booking Deleted",
       description: `${booking.customer}'s booking has been deleted.`,
-      duration: 3000,
     });
   };
   
@@ -128,7 +125,6 @@ export const useBookings = () => {
     toast({
       title: "Package Updated",
       description: `${booking.customer}'s package has been updated to ${newPackage}.`,
-      duration: 3000,
     });
   };
   
@@ -160,7 +156,6 @@ export const useBookings = () => {
     toast({
       title: "Booking Rescheduled",
       description: `${booking.customer}'s booking has been rescheduled to ${newDate.toLocaleDateString()}.`,
-      duration: 3000,
     });
   };
   

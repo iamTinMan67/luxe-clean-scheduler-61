@@ -11,6 +11,7 @@ import {
   Cell, XAxis, YAxis, CartesianGrid, Tooltip, 
   Legend, ResponsiveContainer 
 } from "recharts";
+import { Badge } from "@/components/ui/badge";
 
 const Dashboard = () => {
   // Mock data for statistics
@@ -152,6 +153,22 @@ const Dashboard = () => {
   
   // Colors for pie chart
   const COLORS = ['#FFD700', '#0088FE', '#00C49F'];
+
+  // Function to get status badge styling
+  const getStatusBadgeStyles = (status: string) => {
+    switch(status) {
+      case 'pending':
+        return 'bg-red-900/30 text-red-400 border border-red-700';
+      case 'confirmed':
+        return 'bg-amber-900/30 text-amber-400 border border-amber-700';
+      case 'in-progress':
+        return 'bg-blue-900/30 text-blue-400 border border-blue-700';
+      case 'completed':
+        return 'bg-green-900/30 text-green-400 border border-green-700';
+      default:
+        return 'bg-gray-900/30 text-gray-400 border border-gray-700';
+    }
+  };
   
   return (
     <div className="min-h-screen bg-black pb-16">
@@ -389,17 +406,9 @@ const Dashboard = () => {
                           {booking.date} <span className="text-gray-500">at</span> {booking.time}
                         </td>
                         <td className="py-3 px-4">
-                          <span className={`px-2 py-1 rounded-full text-xs ${
-                            booking.status === 'completed' 
-                              ? 'bg-green-900/30 text-green-400 border border-green-700'
-                              : booking.status === 'in-progress'
-                              ? 'bg-blue-900/30 text-blue-400 border border-blue-700'
-                              : booking.status === 'confirmed'
-                              ? 'bg-amber-900/30 text-amber-400 border border-amber-700'
-                              : 'bg-gray-900/30 text-gray-400 border border-gray-700'
-                          }`}>
+                          <div className={`px-2 py-1 rounded-full text-xs inline-flex items-center justify-center ${getStatusBadgeStyles(booking.status)}`}>
                             {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
-                          </span>
+                          </div>
                         </td>
                       </tr>
                     ))}
