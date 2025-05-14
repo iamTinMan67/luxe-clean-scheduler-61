@@ -13,7 +13,7 @@ const ServiceHero = () => {
         Customize Your <span className="text-gold">Requirements</span>
       </h1>
       <p className="text-xl text-gray-300">
-        Choose the best cleaning package for your vehicle or mix and select any additional services you require.
+        Choose the best cleaning package, even mix and select any additional services you require.
       </p>
     </motion.div>
   );
