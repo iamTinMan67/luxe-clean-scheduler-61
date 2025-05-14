@@ -39,7 +39,7 @@ const AdminDropdown = ({ adminRoutes, isOpen, toggle }: AdminDropdownProps) => {
       </button>
       
       <div className={cn(
-        "absolute right-0 mt-2 w-48 glass-morphism rounded-md shadow-lg overflow-hidden z-20 transition-all duration-300 origin-top-right",
+        "absolute right-0 mt-2 w-64 glass-morphism rounded-md shadow-lg overflow-hidden z-20 transition-all duration-300 origin-top-right",
         isOpen 
           ? "opacity-100 transform scale-100 pointer-events-auto" 
           : "opacity-0 transform scale-95 pointer-events-none"

@@ -86,40 +86,41 @@ export const router = createBrowserRouter([
         element: <ProtectedRoute requireAdmin element={<PlannerCalendar />} />,
       },
       {
-        path: '/admin/brochure',
-        element: <ProtectedRoute requireAdmin element={<Brochure />} />,
-      },
-      {
-        path: '/admin/gallery',
-        element: <ProtectedRoute requireAdmin element={<GalleryManager />} />,
+        path: '/admin/pre-inspection',
+        element: <ProtectedRoute requireAdmin element={<PreInspection />} />,
       },
       {
         path: '/admin/todo',
         element: <ProtectedRoute requireAdmin element={<TodoList />} />,
       },
+      // Management section routes
       {
-        path: '/admin/invoices',
+        path: '/management/invoices',
         element: <ProtectedRoute requireAdmin element={<Invoices />} />,
       },
       {
-        path: '/admin/invoice-report',
+        path: '/management/invoice-report',
         element: <ProtectedRoute requireAdmin element={<InvoiceReport />} />,
       },
       {
-        path: '/admin/warehouse-inventory',
-        element: <ProtectedRoute requireAdmin element={<WarehouseInventory />} />,
+        path: '/management/brochure',
+        element: <ProtectedRoute requireAdmin element={<Brochure />} />,
       },
       {
-        path: '/admin/van-inventory',
+        path: '/management/packages',
+        element: <ProtectedRoute requireAdmin element={<ManagePackages />} />,
+      },
+      {
+        path: '/management/gallery',
+        element: <ProtectedRoute requireAdmin element={<GalleryManager />} />,
+      },
+      {
+        path: '/management/van-inventory',
         element: <ProtectedRoute requireAdmin element={<VanInventory />} />,
       },
       {
-        path: '/admin/pre-inspection',
-        element: <ProtectedRoute requireAdmin element={<PreInspection />} />,
-      },
-      {
-        path: '/admin/manage-packages',
-        element: <ProtectedRoute requireAdmin element={<ManagePackages />} />,
+        path: '/management/warehouse-inventory',
+        element: <ProtectedRoute requireAdmin element={<WarehouseInventory />} />,
       },
       {
         path: '/admin/feedback',

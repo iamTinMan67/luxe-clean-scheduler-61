@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
@@ -42,11 +43,19 @@ const Navbar = () => {
     { path: "/admin/dashboard", label: "Dashboard" },
     { path: "/admin/planner", label: "Planners" },
     { path: "/admin/pre-inspection", label: "Pre-Inspection" },
-    { path: "/admin/van-inventory", label: "Van Stock" },
-    { path: "/admin/warehouse-inventory", label: "Warehouse Inventory" },
-    { path: "/admin/manage-packages", label: "Manage Packages" },
     { path: "/admin/todo", label: "To-do List" },
-    { path: "/admin/invoices", label: "Invoices" },
+    { 
+      label: "Management",
+      path: "#",
+      subRoutes: [
+        { path: "/management/invoices", label: "Invoices" },
+        { path: "/management/brochure", label: "Brochure" },
+        { path: "/management/packages", label: "Manage Packages" },
+        { path: "/management/gallery", label: "Gallery Manager" },
+        { path: "/management/van-inventory", label: "Van Inventory" },
+        { path: "/management/warehouse-inventory", label: "Warehouse Inventory" }
+      ]
+    },
     { 
       label: "Feedback",
       path: "#",
@@ -55,8 +64,6 @@ const Navbar = () => {
         { path: "/admin/feedback", label: "Feedback Manager" }
       ]
     },
-    { path: "/admin/gallery", label: "Gallery Manager" },
-    { path: "/admin/brochure", label: "Brochure" },
   ];
 
   return (
