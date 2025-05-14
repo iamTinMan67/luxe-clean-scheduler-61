@@ -7,7 +7,7 @@ const FooterCopyright = () => {
   return (
     <div className="border-t border-gray-800 pt-8 mt-8 text-center">
       <p className="text-gray-500">
-        © {currentYear} Mid Cheshire Valeting. All rights reserved 2025.
+      © {currentYear} Mid Cheshire Valeting. Winsford. CW7 2YE. All rights reserved 2025.
       </p>
       <div className="mt-2 flex justify-center space-x-4 text-sm">
         <Link to="/privacy" className="text-gray-500 hover:text-gold transition-colors duration-300">
