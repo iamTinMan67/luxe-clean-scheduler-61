@@ -1,3 +1,4 @@
+
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 // Import layout
@@ -17,7 +18,6 @@ import Progress from '@/pages/Progress';
 // Admin Pages
 import Dashboard from '@/pages/admin/Dashboard';
 import PlannerCalendar from '@/pages/admin/PlannerCalendar';
-import StaffPlanner from '@/pages/admin/StaffPlanner';
 import Brochure from '@/pages/admin/Brochure';
 import GalleryManager from '@/pages/admin/GalleryManager';
 import TodoList from '@/pages/admin/TodoList';
@@ -81,10 +81,6 @@ export const router = createBrowserRouter([
         element: <ProtectedRoute requireAdmin element={<PlannerCalendar />} />,
       },
       {
-        path: '/admin/staff-planner',
-        element: <ProtectedRoute requireAdmin element={<StaffPlanner />} />,
-      },
-      {
         path: '/admin/brochure',
         element: <ProtectedRoute requireAdmin element={<Brochure />} />,
       },
@@ -120,7 +116,6 @@ export const router = createBrowserRouter([
         path: '/admin/manage-packages',
         element: <ProtectedRoute requireAdmin element={<ManagePackages />} />,
       },
-      // Add new feedback manager route
       {
         path: '/admin/feedback',
         element: <ProtectedRoute requireAdmin element={<FeedbackManager />} />,

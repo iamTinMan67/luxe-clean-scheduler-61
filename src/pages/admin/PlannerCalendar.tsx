@@ -4,7 +4,10 @@ import { motion } from "framer-motion";
 import { usePlannerCalendar } from "@/hooks/usePlannerCalendar";
 import CalendarHeader from "@/components/planner/CalendarHeader";
 import PlannerContent from "@/components/planner/PlannerContent";
-import StaffAllocationList from "@/components/planner/StaffAllocationList";
+import StaffList from "@/components/planner/StaffList";
+import { Card, CardContent } from "@/components/ui/card";
+import { useBookings } from "@/hooks/useBookings";
+import BookingsCalendar from "@/components/planner/BookingsCalendar";
 
 const PlannerCalendar = () => {
   // Force re-render on mount to ensure latest data is loaded
@@ -33,6 +36,22 @@ const PlannerCalendar = () => {
     hasBookingsOnDate,
     checkTimeConflict
   } = usePlannerCalendar();
+
+  // Staff planner functionality
+  const {
+    pendingBookings: staffPendingBookings,
+    confirmedBookings: staffConfirmedBookings,
+    date: staffDate,
+    setDate: setStaffDate,
+    view: staffView,
+    setView: setStaffView,
+    getBookingsForDate,
+    handleConfirmBooking: staffHandleConfirmBooking,
+    handleDeleteBooking,
+    handlePackageChange,
+    handleReschedule,
+    handleCompleteBooking
+  } = useBookings();
 
   return (
     <div className="min-h-screen bg-black pb-16" key={key}>
@@ -67,7 +86,26 @@ const PlannerCalendar = () => {
           {/* Staff Planner section */}
           <div className="mt-8">
             <h2 className="text-2xl font-bold text-white mb-4">Staff Planner</h2>
-            <StaffAllocationList />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <Card className="bg-black/60 border-gold/30">
+                <CardContent className="pt-6">
+                  <StaffList />
+                </CardContent>
+              </Card>
+              
+              <BookingsCalendar 
+                date={staffDate}
+                setDate={setStaffDate}
+                view={staffView}
+                setView={setStaffView}
+                bookingsForDate={getBookingsForDate()}
+                onConfirmBooking={staffHandleConfirmBooking}
+                onCompleteBooking={handleCompleteBooking}
+                onDeleteBooking={handleDeleteBooking}
+                onPackageChange={handlePackageChange}
+                onReschedule={handleReschedule}
+              />
+            </div>
           </div>
         </div>
       </section>
