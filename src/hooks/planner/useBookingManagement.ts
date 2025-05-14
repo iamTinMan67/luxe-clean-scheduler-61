@@ -1,4 +1,3 @@
-
 import { Booking } from '@/types/booking';
 import { toast } from 'sonner';
 import { generateInvoice } from '@/utils/bookingUtils';
@@ -19,10 +18,10 @@ export const useBookingManagement = (
       return;
     }
     
-    // Create a confirmed booking with staff assignment and updated status
+    // Create a confirmed booking with staff assignment but keep status as pending
     const confirmedBooking: Booking = {
       ...bookingToConfirm,
-      status: "confirmed",
+      status: "pending", // Changed from "confirmed" to "pending"
       staff: selectedStaff,
       travelMinutes
     };
@@ -51,7 +50,7 @@ export const useBookingManagement = (
     // Create invoice
     generateInvoice(confirmedBooking);
     
-    toast.success(`Booking confirmed successfully for ${confirmedBooking.customer}`);
+    toast.success(`Booking scheduled successfully for ${confirmedBooking.customer}`);
   };
   
   // Function to cancel a booking

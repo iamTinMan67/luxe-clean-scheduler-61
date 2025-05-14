@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -30,6 +31,24 @@ const Booking = () => {
     }
   }, []);
 
+  useEffect(() => {
+    // Load vehicle details from localStorage if available
+    const savedVehicleDetails = localStorage.getItem('vehicleDetails');
+    if (savedVehicleDetails) {
+      try {
+        const vehicles = JSON.parse(savedVehicleDetails);
+        if (vehicles && vehicles.length > 0) {
+          // Set vehicle condition from the first vehicle
+          if (vehicles[0].condition) {
+            setVehicleCondition(vehicles[0].condition);
+          }
+        }
+      } catch (error) {
+        console.error('Error parsing vehicle details:', error);
+      }
+    }
+  }, []);
+
   const handleDateFocus = () => {
     // Scroll to the date picker when it receives focus
     if (datePickerRef.current) {
@@ -41,6 +60,23 @@ const Booking = () => {
   };
   
   const handleFormSubmit = (formData: any) => {
+    // Get saved vehicle details including package type
+    const savedVehicleDetails = localStorage.getItem('vehicleDetails');
+    let packageType = "TBC";
+    let vehicleType = "car";
+    
+    if (savedVehicleDetails) {
+      try {
+        const vehicles = JSON.parse(savedVehicleDetails);
+        if (vehicles && vehicles.length > 0) {
+          // Get package type from the first vehicle
+          packageType = vehicles[0].package || "TBC";
+          vehicleType = vehicles[0].type || "car";
+        }
+      } catch (error) {
+        console.error('Error parsing vehicle details:', error);
+      }
+    }
     
     const bookingData = {
       ...formData,
@@ -63,8 +99,8 @@ const Booking = () => {
       ...bookingData,
       status: "pending",
       customer: `${formData.yourName}`,
-      vehicle: vehicleReg || "TBC",
-      packageType: "TBC",
+      vehicle: vehicleReg || vehicleType,
+      packageType: packageType, // Use the saved package type
       location: formData.postcode || "TBC",
       contact: formData.phone,
       email: formData.email,
