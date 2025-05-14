@@ -49,8 +49,8 @@ const HeroSection = () => {
           and even <span className="text-gold">airplanes.</span> We can do the lot!
           <br></br>
           <br></br>
-          We pride ourselves on our reputation and strive for excellence and <span className="text-gold">high-end</span>
-           results every time. You can even check our progress, almost in REAL-TIME, with our UNIQUE progress-tracker."
+          We pride ourselves on our reputation and strive for excellence and <span className="text-gold">high-end</span> results
+          every time. You can also check our progress, almost in REAL-TIME, with our UNIQUE progress-tracker."
         </motion.p>
       </div>
     </section>
