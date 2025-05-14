@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Check, Image as ImageIcon, Upload } from "lucide-react";
+import { toast } from "@/components/ui/use-toast";
 import { 
   Select,
   SelectContent,
@@ -20,6 +21,8 @@ const PreInspection = () => {
   const [images, setImages] = useState<string[]>([]);
   const [selectedBooking, setSelectedBooking] = useState<string>("");
   const [bookingDetails, setBookingDetails] = useState<Booking | null>(null);
+  const [exteriorNotes, setExteriorNotes] = useState("");
+  const [interiorNotes, setInteriorNotes] = useState("");
   const { appointments, loading } = useScheduledAppointments();
   
   // Update booking details when a booking is selected
@@ -39,6 +42,81 @@ const PreInspection = () => {
     // In a real app, this would upload to a server
     // For now, we'll just add a placeholder image
     setImages([...images, "https://placeholder.pics/svg/300x200/DEDEDE/555555/Vehicle%20Image"]);
+  };
+
+  // Handle report submission
+  const handleSubmitReport = () => {
+    if (!bookingDetails) {
+      toast({
+        title: "Error",
+        description: "Please select a booking first",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (images.length === 0) {
+      toast({
+        title: "Warning",
+        description: "No images uploaded. Consider adding vehicle condition photos.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Update booking status to "in-progress" in localStorage
+    const confirmedBookings = JSON.parse(localStorage.getItem('confirmedBookings') || '[]');
+    const updatedBookings = confirmedBookings.map((booking: Booking) => {
+      if (booking.id === bookingDetails.id) {
+        return {
+          ...booking,
+          status: "in-progress"
+        };
+      }
+      return booking;
+    });
+    
+    localStorage.setItem('confirmedBookings', JSON.stringify(updatedBookings));
+    
+    // Also update in planner calendar bookings if it exists there
+    const plannerBookings = JSON.parse(localStorage.getItem('plannerCalendarBookings') || '[]');
+    const updatedPlannerBookings = plannerBookings.map((booking: Booking) => {
+      if (booking.id === bookingDetails.id) {
+        return {
+          ...booking,
+          status: "in-progress"
+        };
+      }
+      return booking;
+    });
+    
+    localStorage.setItem('plannerCalendarBookings', JSON.stringify(updatedPlannerBookings));
+
+    // Save inspection report to localStorage
+    const inspectionReport = {
+      id: `ins-${Date.now()}`,
+      bookingId: bookingDetails.id,
+      exteriorNotes,
+      interiorNotes,
+      images,
+      date: new Date().toISOString(),
+      type: "pre" as const
+    };
+    
+    const savedReports = JSON.parse(localStorage.getItem('inspectionReports') || '[]');
+    localStorage.setItem('inspectionReports', JSON.stringify([...savedReports, inspectionReport]));
+
+    // Reset form
+    setImages([]);
+    setExteriorNotes("");
+    setInteriorNotes("");
+    setSelectedBooking("");
+    setBookingDetails(null);
+    
+    toast({
+      title: "Report Submitted",
+      description: "Pre-inspection report has been saved and booking status updated to 'In Progress'",
+    });
   };
 
   return (
@@ -136,6 +214,8 @@ const PreInspection = () => {
                   id="exteriorNotes" 
                   className="bg-black/40 border-gold/30 text-white min-h-[100px]" 
                   placeholder="Note any existing damage, scratches, dents, etc."
+                  value={exteriorNotes}
+                  onChange={(e) => setExteriorNotes(e.target.value)}
                 />
               </div>
               
@@ -147,6 +227,8 @@ const PreInspection = () => {
                   id="interiorNotes" 
                   className="bg-black/40 border-gold/30 text-white min-h-[100px]" 
                   placeholder="Note any dog hairs, stains, wear, etc."
+                  value={interiorNotes}
+                  onChange={(e) => setInteriorNotes(e.target.value)}
                 />
               </div>
             </CardContent>
@@ -215,7 +297,10 @@ const PreInspection = () => {
               </div>
               
               <div className="mt-8">
-                <Button className="w-full gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg">
+                <Button 
+                  className="w-full gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg"
+                  onClick={handleSubmitReport}
+                >
                   Submit Report
                 </Button>
               </div>
