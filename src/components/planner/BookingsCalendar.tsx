@@ -33,6 +33,19 @@ const BookingsCalendar: React.FC<BookingsCalendarProps> = ({
   onPackageChange,
   onReschedule
 }) => {
+  // Function to check if a date has bookings
+  const hasBookingsOnDate = (checkDate: Date) => {
+    const allBookings = JSON.parse(localStorage.getItem('confirmedBookings') || '[]')
+      .concat(JSON.parse(localStorage.getItem('pendingBookings') || '[]'));
+      
+    return allBookings.some((booking: any) => {
+      const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
+      return bookingDate.getDate() === checkDate.getDate() &&
+             bookingDate.getMonth() === checkDate.getMonth() &&
+             bookingDate.getFullYear() === checkDate.getFullYear();
+    });
+  };
+
   return (
     <Card className="lg:col-span-2 bg-black/60 border-gold/30">
       <CardHeader>
@@ -60,6 +73,14 @@ const BookingsCalendar: React.FC<BookingsCalendarProps> = ({
               selected={date}
               onSelect={setDate}
               className="bg-black/30 border border-gold/30 rounded-md"
+              modifiers={{
+                highlighted: hasBookingsOnDate,
+                noBookings: (day) => !hasBookingsOnDate(day)
+              }}
+              modifiersClassNames={{
+                highlighted: "day_highlighted",
+                noBookings: "day_no_bookings"
+              }}
             />
           </div>
           

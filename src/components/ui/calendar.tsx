@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
@@ -49,6 +50,8 @@ function Calendar({
         day_range_middle:
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
+        day_highlighted: "font-bold text-red-500", // Dates with bookings - red and bold
+        day_no_bookings: "text-green-500", // Dates without bookings - green
         ...classNames,
       }}
       components={{

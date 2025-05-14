@@ -7,17 +7,15 @@ import { useLocation } from "react-router-dom";
 const Layout = () => {
   const location = useLocation();
   
-  // Check if current path is an admin page that should not have a footer
-  const isAdminPageWithoutFooter = [
-    '/admin/staff-planner', 
-    '/admin/planner', 
-    '/admin/manage-packages',
-    '/admin/invoices',
-    '/admin/gallery',
-    '/admin/todo',
-    '/admin/van-inventory',
-    '/admin/warehouse-inventory'
-  ].some(path => location.pathname.startsWith(path));
+  // Only show footer on home page, services, and bookings pages
+  const shouldShowFooter = [
+    '/', 
+    '/services', 
+    '/booking'
+  ].includes(location.pathname);
+
+  // Alternatively, hide footer on all admin pages
+  const isAdminPage = location.pathname.startsWith('/admin');
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -25,7 +23,7 @@ const Layout = () => {
       <main className="flex-1">
         <Outlet />
       </main>
-      {!isAdminPageWithoutFooter && <Footer />}
+      {(shouldShowFooter && !isAdminPage) && <Footer />}
     </div>
   );
 };

@@ -167,7 +167,7 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
           className="flex-1 bg-green-600 hover:bg-green-700 text-white"
           size="sm"
         >
-          <CheckCircle2 className="w-4 h-4 mr-1" /> Confirm
+          <CheckCircle2 className="w-4 h-4 mr-1" /> Schedule
         </Button>
         
         <Button 

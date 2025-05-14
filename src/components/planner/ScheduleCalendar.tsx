@@ -39,15 +39,14 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
             classNames={{
               day_selected: "bg-gold text-black",
               day_today: "bg-gray-800 text-white",
-              // Fix: Use a string instead of a function for basic styling
-              day: "text-white hover:bg-gray-800"
             }}
             modifiers={{
-              // Use modifiers instead for conditional styling
-              highlighted: hasBookingsOnDate ? (day) => !!hasBookingsOnDate(day) : undefined
+              highlighted: hasBookingsOnDate,
+              noBookings: (day) => hasBookingsOnDate ? !hasBookingsOnDate(day) : false
             }}
             modifiersClassNames={{
-              highlighted: "font-bold"
+              highlighted: "day_highlighted",
+              noBookings: "day_no_bookings"
             }}
           />
         </Card>
