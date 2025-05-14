@@ -73,7 +73,7 @@ const Navbar = () => {
           <img 
             src="/lovable-uploads/a116b705-88a0-44b6-ac10-862d8f1b3939.png" 
             alt="Mid-Cheshire Valeting" 
-            className="h-16 w-16" 
+            className="h-55 w-55" 
           />
         </Link>
         
