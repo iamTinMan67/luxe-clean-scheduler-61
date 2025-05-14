@@ -45,7 +45,7 @@ const FeaturesSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            Why Choose <span className="text-gold">Mid-Cheshire Valeting</span>
+            Why Choose <span className="text-white">Mid-Cheshire Valeting</span>
           </motion.h2>
           <motion.div 
             className="w-20 h-1 bg-gold mx-auto"
