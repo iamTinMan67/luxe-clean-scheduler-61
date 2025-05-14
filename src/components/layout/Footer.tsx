@@ -19,15 +19,15 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold text-white mb-4">Mid Cheshire Valeting</h3>
             <p className="text-gray-300 mb-4 max-w-md">
-              Professional valeting service striving for excellence, every time. 
-              We provide solutions for multiple bookings, block bookings and also commercial fleets upon request.
+              Fully self-sufficiant and mobile, valeting and detailing service striving for excellence,
+              every time. We can provide solutions for multiple bookings, block bookings and also commercial
+              fleets upon request.
             </p>
-            <SocialLinks />
           </div>
           
-        
-          <FooterSection title="Contact Us">
+        <FooterSection title="Contact Us">
             <ContactInfo />
+            <SocialLinks />
           </FooterSection>
         </div>
         
