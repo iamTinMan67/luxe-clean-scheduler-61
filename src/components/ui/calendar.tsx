@@ -50,13 +50,16 @@ function Calendar({
         day_range_middle:
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
-        day_highlighted: "font-bold text-red-500", // Dates with bookings - red and bold
-        day_no_bookings: "text-green-500", // Dates without bookings - green
         ...classNames,
       }}
       components={{
         IconLeft: ({ ..._props }) => <ChevronLeft className="h-4 w-4" />,
         IconRight: ({ ..._props }) => <ChevronRight className="h-4 w-4" />,
+      }}
+      modifiersClassNames={{
+        highlighted: "font-bold text-red-500", // Dates with bookings - red and bold
+        noBookings: "text-green-500", // Dates without bookings - green
+        ...(props.modifiersClassNames || {}),
       }}
       {...props}
     />
