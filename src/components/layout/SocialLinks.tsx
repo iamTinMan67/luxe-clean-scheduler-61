@@ -70,6 +70,15 @@ const SocialLinks = ({ showLabels = false }: { showLabels?: boolean }) => {
         <Smartphone size={20} />
         {showLabels && <span>Send a Text</span>}
       </a>
+
+            <a 
+        href="sms:+447845574743" 
+        className={`${showLabels ? 'flex items-center space-x-2' : ''} text-gray-400 hover:text-yellow-500 transition-colors duration-300`}
+        aria-label="Text Message"
+      >
+        <Smartphone size={20} />
+        {showLabels && <span>Alternative</span>}
+      </a>
     </div>
   );
 };
