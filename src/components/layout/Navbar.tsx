@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
@@ -43,6 +42,7 @@ const Navbar = () => {
     { path: "/admin/manage-packages", label: "Manage Packages" },
     { path: "/admin/todo", label: "To-do List" },
     { path: "/admin/invoices", label: "Invoices" },
+    { path: "/admin/feedback", label: "Feedback" },
     { path: "/admin/gallery", label: "Gallery Manager" },
     { path: "/admin/brochure", label: "Brochure" },
   ];

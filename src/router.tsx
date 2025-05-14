@@ -1,4 +1,3 @@
-
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 // Import layout
@@ -28,6 +27,7 @@ import WarehouseInventory from '@/pages/admin/WarehouseInventory';
 import VanInventory from '@/pages/admin/VanInventory';
 import PreInspection from '@/pages/admin/PreInspection';
 import ManagePackages from '@/pages/admin/ManagePackages';
+import FeedbackManager from '@/pages/admin/FeedbackManager';
 
 // Import protected route
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
@@ -119,6 +119,11 @@ export const router = createBrowserRouter([
       {
         path: '/admin/manage-packages',
         element: <ProtectedRoute requireAdmin element={<ManagePackages />} />,
+      },
+      // Add new feedback manager route
+      {
+        path: '/admin/feedback',
+        element: <ProtectedRoute requireAdmin element={<FeedbackManager />} />,
       },
       {
         path: '*',
