@@ -7,12 +7,11 @@ const FeaturesSection = () => {
     {
       icon: <Droplets className="h-10 w-10 text-gold" />,
       title: "Enviro-Friendly Equipment",
-      description: "Our vans come fully equipped with low-noise, quiet power supplies and equipment.    },
+      description: "Our vans come fully equipped with low-noise, quiet power supplies and equipment."},
     {
       icon: <Leaf className="h-10 w-10 text-gold" />,
       title: "Eco-Friendly Products",
-      description: "We only use environmentally friendly cleaning products that are tough on dirt
-      but gentle on your equipment."
+      description: "We only use environmentally friendly cleaning products that are tough on dirt-but gentle on your equipment."
     },
     {
       icon: <ThumbsUp className="h-10 w-10 text-gold" />,
