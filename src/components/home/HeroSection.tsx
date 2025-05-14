@@ -45,31 +45,9 @@ const HeroSection = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.7, delay: 0.4 }}
         >
-          Professional cleaning and detailing services for high-end results. From cars, boats even <span className="text-gold">airplanes</span>, we do the lot!
+          Professional self-sufficiant, mobile, cleaning and detailing services for high-end results. From cars, boats even <span className="text-gold">airplanes</span>, we do the lot!
         </motion.p>
-        
-        <motion.div
-          className="flex flex-col sm:flex-row gap-4 justify-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.6 }}
-        >
-          <button 
-            onClick={handleBooking}
-            className="gold-gradient text-black px-8 py-3 rounded-md font-medium text-lg flex items-center justify-center hover:shadow-lg hover:shadow-gold/20 transition-all"
-          >
-            Our Packages
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </button>
-          
-          <button 
-            onClick={() => navigate("/gallery")}
-            className="bg-white/10 backdrop-blur-sm text-white border border-white/20 px-8 py-3 rounded-md font-medium text-lg hover:bg-white/20 transition-all"
-          >
-            View Our Gallery
-          </button>
-        </motion.div>
-      </div>
+
       
       {/* Scroll indicator */}
       <motion.div 
