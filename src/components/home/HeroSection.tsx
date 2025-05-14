@@ -47,6 +47,20 @@ const HeroSection = () => {
         >
           Professional self-sufficiant, mobile, cleaning and detailing services for high-end results. From cars, boats even <span className="text-gold">airplanes</span>, we do the lot!
         </motion.p>
+
+      
+      {/* Scroll indicator */}
+      <motion.div 
+        className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, y: [0, 10, 0] }}
+        transition={{ 
+          opacity: { delay: 1, duration: 1 },
+          y: { repeat: Infinity, duration: 1.5, ease: "easeInOut" }
+        }}
+      >
+        <div className="h-14 w-8 rounded-full border-2 border-white/30 flex justify-center">
+          <div className="w-1.5 h-3 bg-gold rounded-full mt-2"></div>
         </div>
       </motion.div>
     </section>
