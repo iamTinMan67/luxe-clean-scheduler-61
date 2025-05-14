@@ -10,20 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
 import { format } from "date-fns";
-
-// Define feedback interface (imported from useFeedbackManager but duplicated here for component independence)
-interface CustomerFeedback {
-  id: string;
-  bookingId: string;
-  customerName: string;
-  name: string;
-  email?: string;
-  date: string;
-  rating: number;
-  comment: string;
-  responded: boolean;
-  images?: string[];
-}
+import { CustomerFeedback } from "@/components/feedback/types";
 
 interface FeedbackDetailsDialogProps {
   open: boolean;

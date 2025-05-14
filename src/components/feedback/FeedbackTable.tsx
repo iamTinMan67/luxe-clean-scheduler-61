@@ -6,19 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Star } from "lucide-react";
 import { format } from "date-fns";
-
-interface CustomerFeedback {
-  id: string;
-  bookingId: string;
-  customerName: string;
-  name: string;
-  email?: string;
-  date: string;
-  rating: number;
-  comment: string;
-  responded: boolean;
-  images?: string[];
-}
+import { CustomerFeedback } from "@/components/feedback/types";
 
 interface FeedbackTableProps {
   feedback: CustomerFeedback[];
