@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
@@ -70,9 +71,9 @@ const Navbar = () => {
         {/* Logo - Now showing on all pages */}
         <Link to="/" className="flex items-center space-x-2" aria-label="Home">
           <img 
-            src="C:\Users\tombo\Desktop\Mobile_Valet\Images\Header_logo.png" 
-            alt="Mid-Cheshire Mobile Valeting" 
-            className="h-28 w-auto" 
+            src="/lovable-uploads/a116b705-88a0-44b6-ac10-862d8f1b3939.png" 
+            alt="Mid-Cheshire Valeting" 
+            className="h-16 w-16" 
           />
         </Link>
         
