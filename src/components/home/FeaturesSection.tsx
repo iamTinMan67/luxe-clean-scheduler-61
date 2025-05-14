@@ -6,7 +6,7 @@ const FeaturesSection = () => {
   const features = [
     {
       icon: <Droplets className="h-10 w-10 text-gold" />,
-      title: "Self-Sufficient Equipment",
+      title: "Enviro-Friendly Equipment",
       description: "Our vans come fully equipped with independent water and low-noise level, power supplies and equipment, allowing us to operate anywhere."
     },
     {
