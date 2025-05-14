@@ -35,7 +35,7 @@ const FeaturesSection = () => {
   };
   
   return (
-    <section className="pt-8 py-12 bg-black">
+    <section className="pt-6 py-12 bg-black">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <motion.h2 
