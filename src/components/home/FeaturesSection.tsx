@@ -16,7 +16,7 @@ const FeaturesSection = () => {
     {
       icon: <ThumbsUp className="h-10 w-10 text-gold" />,
       title: "Satisfaction Guaranteed",
-      description: "We're not happy until you're thrilled with the results of our squeaky-clean service."
+      description: "We're not happy until you're thrilled with the results of our squeaky-clean service. You can even check the progress, almost in REAL-TIME"
     }
   ];
   
