@@ -25,10 +25,7 @@ const Footer = () => {
             <SocialLinks />
           </div>
           
-          <FooterSection title="Services">
-            <FooterLinks links={serviceLinks} />
-          </FooterSection>
-          
+        
           <FooterSection title="Contact Us">
             <ContactInfo />
           </FooterSection>
