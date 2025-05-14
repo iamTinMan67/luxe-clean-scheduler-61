@@ -5,12 +5,6 @@ const ContactInfo = () => {
   return (
     <ul className="space-y-3">
       <li className="flex items-start">
-        <MapPin className="mr-2 text-gold flex-shrink-0 mt-1" size={18} />
-        <span className="text-gray-400">
-          14 Manor Square, Winsford, CW7 2YG
-        </span>
-      </li>
-      <li className="flex items-center">
         <Phone className="mr-2 text-gold flex-shrink-0" size={18} />
         <a href="tel:+447927208228" className="text-gray-400 hover:text-gold transition-colors duration-300">
           07927 208 228
