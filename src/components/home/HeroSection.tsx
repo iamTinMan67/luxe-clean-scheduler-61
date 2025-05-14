@@ -47,8 +47,6 @@ const HeroSection = () => {
         >
           Professional self-sufficiant, mobile, cleaning and detailing services for high-end results. From cars, boats even <span className="text-gold">airplanes</span>, we do the lot!
         </motion.p>
-        
-        >
    
     </section>
   );
