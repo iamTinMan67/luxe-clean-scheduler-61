@@ -24,7 +24,7 @@ const WeeklyPlanner: React.FC<WeeklyPlannerProps> = ({
   getBookingBackground,
   checkTimeConflict
 }) => {
-  // Time slots to display in the weekly view - now in 30 minute intervals
+  // Time slots to display in the weekly view - now in 30 minute intervals for start times only
   const generateTimeSlots = () => {
     const slots = [];
     let hour = 8;
@@ -66,7 +66,7 @@ const WeeklyPlanner: React.FC<WeeklyPlannerProps> = ({
     }
   };
 
-  // Get bookings for a specific day and time slot
+  // Get bookings that start at a specific time slot
   const getBookingsForTimeSlot = (day: Date, timeSlot: string) => {
     const daySchedule = schedule.find(s => 
       s.date.getDate() === day.getDate() && 
@@ -76,49 +76,10 @@ const WeeklyPlanner: React.FC<WeeklyPlannerProps> = ({
     
     if (!daySchedule) return [];
     
+    // Only return bookings that start at this exact time slot
     return daySchedule.bookings.filter(booking => {
-      const bookingStartTime = booking.startTime || booking.time;
-      const bookingEndTime = booking.endTime;
-      
-      if (!bookingStartTime) return false;
-      
-      // Include travel time before booking
-      const travelMinutesBefore = booking.travelMinutes || 0;
-      let actualStartTime = bookingStartTime;
-      
-      // Adjust start time for travel
-      if (travelMinutesBefore > 0) {
-        actualStartTime = addMinutesToTime(bookingStartTime, -travelMinutesBefore);
-      }
-      
-      // Calculate end time including travel after
-      let actualEndTime;
-      if (bookingEndTime) {
-        const travelMinutesAfter = booking.travelMinutes || 0;
-        actualEndTime = travelMinutesAfter > 0 
-          ? addMinutesToTime(bookingEndTime, travelMinutesAfter) 
-          : bookingEndTime;
-      } else {
-        // Default 2-hour duration + travel time
-        const travelMinutesAfter = booking.travelMinutes || 0;
-        actualEndTime = addMinutesToTime(addMinutesToTime(bookingStartTime, 120), travelMinutesAfter);
-      }
-      
-      // Parse all times to compare numerically
-      const slotHour = parseInt(timeSlot.split(':')[0]);
-      const slotMinute = parseInt(timeSlot.split(':')[1]);
-      const startHour = parseInt(actualStartTime.split(':')[0]);
-      const startMinute = parseInt(actualStartTime.split(':')[1]);
-      const endHour = parseInt(actualEndTime.split(':')[0]);
-      const endMinute = parseInt(actualEndTime.split(':')[1]);
-      
-      // Convert to minutes for easier comparison
-      const slotTimeInMinutes = slotHour * 60 + slotMinute;
-      const startTimeInMinutes = startHour * 60 + startMinute;
-      const endTimeInMinutes = endHour * 60 + endMinute;
-      
-      // Check if this slot falls within the booking timeframe
-      return slotTimeInMinutes >= startTimeInMinutes && slotTimeInMinutes < endTimeInMinutes;
+      const bookingStartTime = booking.startTime || booking.time || '';
+      return bookingStartTime === timeSlot;
     });
   };
 

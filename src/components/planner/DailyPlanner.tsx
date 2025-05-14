@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { Booking } from "@/types/booking";
 import { format } from "date-fns";
-import { addMinutesToTime } from '@/utils/dateUtils';
 
 interface DailyPlannerProps {
   date: Date;
@@ -27,78 +26,18 @@ const DailyPlanner: React.FC<DailyPlannerProps> = ({
     day.date.getFullYear() === date.getFullYear()
   );
 
-  // Generate 30-minute time slots from 8:00 to 18:00
-  const generateTimeSlots = () => {
-    const slots = [];
-    let hour = 8;
-    let minute = 0;
-    
-    while (hour < 19) {
-      const formattedHour = hour.toString().padStart(2, '0');
-      const formattedMinute = minute.toString().padStart(2, '0');
-      slots.push(`${formattedHour}:${formattedMinute}`);
-      
-      minute += 30;
-      if (minute >= 60) {
-        minute = 0;
-        hour += 1;
-      }
+  // Group bookings by their start time
+  const bookingsByTime = todaySchedule?.bookings.reduce((acc, booking) => {
+    const timeSlot = booking.startTime || booking.time || '09:00';
+    if (!acc[timeSlot]) {
+      acc[timeSlot] = [];
     }
-    
-    return slots;
-  };
-  
-  const timeSlots = generateTimeSlots();
+    acc[timeSlot].push(booking);
+    return acc;
+  }, {} as Record<string, Booking[]>) || {};
 
-  // Get bookings for a specific time slot
-  const getBookingsForTimeSlot = (timeSlot: string) => {
-    if (!todaySchedule) return [];
-    
-    return todaySchedule.bookings.filter(booking => {
-      const bookingStartTime = booking.startTime || booking.time;
-      const bookingEndTime = booking.endTime;
-      
-      if (!bookingStartTime) return false;
-      
-      // Include travel time before booking
-      const travelMinutesBefore = booking.travelMinutes || 0;
-      let actualStartTime = bookingStartTime;
-      
-      // Adjust start time for travel
-      if (travelMinutesBefore > 0) {
-        actualStartTime = addMinutesToTime(bookingStartTime, -travelMinutesBefore);
-      }
-      
-      // Calculate end time including travel after
-      let actualEndTime;
-      if (bookingEndTime) {
-        const travelMinutesAfter = booking.travelMinutes || 0;
-        actualEndTime = travelMinutesAfter > 0 
-          ? addMinutesToTime(bookingEndTime, travelMinutesAfter) 
-          : bookingEndTime;
-      } else {
-        // Default 2-hour duration + travel time
-        const travelMinutesAfter = booking.travelMinutes || 0;
-        actualEndTime = addMinutesToTime(addMinutesToTime(bookingStartTime, 120), travelMinutesAfter);
-      }
-      
-      // Parse all times to compare numerically
-      const slotHour = parseInt(timeSlot.split(':')[0]);
-      const slotMinute = parseInt(timeSlot.split(':')[1]);
-      const startHour = parseInt(actualStartTime.split(':')[0]);
-      const startMinute = parseInt(actualStartTime.split(':')[1]);
-      const endHour = parseInt(actualEndTime.split(':')[0]);
-      const endMinute = parseInt(actualEndTime.split(':')[1]);
-      
-      // Convert to minutes for easier comparison
-      const slotTimeInMinutes = slotHour * 60 + slotMinute;
-      const startTimeInMinutes = startHour * 60 + startMinute;
-      const endTimeInMinutes = endHour * 60 + endMinute;
-      
-      // Check if this slot falls within the booking timeframe
-      return slotTimeInMinutes >= startTimeInMinutes && slotTimeInMinutes < endTimeInMinutes;
-    });
-  };
+  // Sort time slots
+  const sortedTimeSlots = Object.keys(bookingsByTime).sort();
 
   return (
     <Card className="bg-gray-900 border-gray-800 mt-8">
@@ -108,17 +47,17 @@ const DailyPlanner: React.FC<DailyPlannerProps> = ({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 gap-4">
-          {timeSlots.map(timeSlot => (
-            <div key={timeSlot} className="flex flex-col">
-              <div className="flex items-center mb-2">
-                <div className="text-white font-medium min-w-[60px]">{timeSlot}</div>
-                <div className="h-px flex-grow bg-gray-800 ml-2"></div>
-              </div>
-              
-              <div className="pl-[60px] space-y-2">
-                {getBookingsForTimeSlot(timeSlot).length > 0 ? (
-                  getBookingsForTimeSlot(timeSlot).map(booking => (
+        {sortedTimeSlots.length > 0 ? (
+          <div className="grid grid-cols-1 gap-4">
+            {sortedTimeSlots.map(timeSlot => (
+              <div key={timeSlot} className="flex flex-col">
+                <div className="flex items-center mb-2">
+                  <div className="text-white font-medium min-w-[60px]">{timeSlot}</div>
+                  <div className="h-px flex-grow bg-gray-800 ml-2"></div>
+                </div>
+                
+                <div className="pl-[60px] space-y-2">
+                  {bookingsByTime[timeSlot].map(booking => (
                     <div 
                       key={booking.id} 
                       className={`${getBookingBackground(booking)} p-3 rounded-md border`}
@@ -155,14 +94,14 @@ const DailyPlanner: React.FC<DailyPlannerProps> = ({
                         </div>
                       )}
                     </div>
-                  ))
-                ) : (
-                  <div className="text-gray-600 italic">No bookings scheduled</div>
-                )}
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-gray-600 italic text-center py-8">No bookings scheduled</div>
+        )}
       </CardContent>
     </Card>
   );
