@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { CustomerFeedback } from "@/components/feedback/types";
 import { toast } from "@/components/ui/use-toast";
@@ -93,7 +92,6 @@ export const useFeedbackData = () => {
     setFeedback(updatedFeedback);
     localStorage.setItem("customerFeedback", JSON.stringify(updatedFeedback));
     toast({
-      title: "Feedback marked as responded",
       description: "The feedback has been marked as responded."
     });
   };

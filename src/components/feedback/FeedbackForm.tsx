@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/use-toast"; // Changed from sonner to our unified toast
 import {
   Form,
   FormControl,
@@ -69,7 +68,10 @@ const FeedbackForm = ({ bookingId, customerName, serviceDate }: FeedbackFormProp
 
   const onSubmit = (data: FeedbackFormValues) => {
     if (rating === 0) {
-      toast.error("Please select a rating");
+      toast({
+        variant: "destructive",
+        description: "Please select a rating"
+      });
       return;
     }
 
@@ -138,7 +140,7 @@ const FeedbackForm = ({ bookingId, customerName, serviceDate }: FeedbackFormProp
       }
     }
 
-    toast.success("Thank you for your feedback!", {
+    toast({
       description: "Your feedback has been submitted successfully."
     });
     

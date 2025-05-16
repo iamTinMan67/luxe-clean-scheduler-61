@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -48,18 +47,16 @@ const PreInspection = () => {
   const handleSubmitReport = () => {
     if (!bookingDetails) {
       toast({
-        title: "Error",
-        description: "Please select a booking first",
-        variant: "destructive"
+        variant: "destructive",
+        description: "Please select a booking first"
       });
       return;
     }
 
     if (images.length === 0) {
       toast({
-        title: "Warning",
-        description: "No images uploaded. Consider adding vehicle condition photos.",
-        variant: "destructive"
+        variant: "destructive",
+        description: "No images uploaded. Consider adding vehicle condition photos."
       });
       return;
     }
@@ -114,7 +111,6 @@ const PreInspection = () => {
     setBookingDetails(null);
     
     toast({
-      title: "Report Submitted",
       description: "Pre-inspection report has been saved and booking status updated to 'In Progress'",
     });
   };

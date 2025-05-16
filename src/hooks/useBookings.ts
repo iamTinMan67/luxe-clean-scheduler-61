@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Booking } from '@/types/booking';
 import { useBookingsStorage } from './planner/useBookingsStorage';
@@ -61,7 +60,6 @@ export const useBookings = () => {
     confirmBooking(booking.id, updatedBooking.staff, updatedBooking.travelMinutes);
     
     toast({
-      title: "Booking Confirmed",
       description: `${booking.customer}'s booking has been confirmed.`,
     });
   };
@@ -85,7 +83,6 @@ export const useBookings = () => {
     localStorage.setItem('confirmedBookings', JSON.stringify(updatedConfirmed));
     
     toast({
-      title: "Booking Completed",
       description: `${booking.customer}'s booking has been marked as completed.`,
     });
   };
@@ -95,7 +92,6 @@ export const useBookings = () => {
     deleteBooking(booking.id);
     
     toast({
-      title: "Booking Deleted",
       description: `${booking.customer}'s booking has been deleted.`,
     });
   };
@@ -123,7 +119,6 @@ export const useBookings = () => {
     }
     
     toast({
-      title: "Package Updated",
       description: `${booking.customer}'s package has been updated to ${newPackage}.`,
     });
   };
@@ -154,7 +149,6 @@ export const useBookings = () => {
     setDate(newDate);
     
     toast({
-      title: "Booking Rescheduled",
       description: `${booking.customer}'s booking has been rescheduled to ${newDate.toLocaleDateString()}.`,
     });
   };

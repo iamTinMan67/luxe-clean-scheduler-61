@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { CustomerFeedback } from "@/components/feedback/types";
 import { toast } from "@/components/ui/use-toast";
@@ -57,7 +56,6 @@ export const useFeedbackStorage = () => {
     );
     saveFeedback(updatedFeedback);
     toast({
-      title: "Feedback marked as responded",
       description: "You've successfully responded to this feedback."
     });
   };
