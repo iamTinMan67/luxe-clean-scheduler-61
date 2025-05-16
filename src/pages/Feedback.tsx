@@ -25,17 +25,11 @@ const Feedback = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
-                {invoiceId ? (
-                  <FeedbackForm 
-                    bookingId={invoiceId}
-                    customerName={customerName}
-                    serviceDate={serviceDate}
-                  />
-                ) : (
-                  <div className="text-center py-8 text-white">
-                    <p>No booking reference found. Please use the link provided in your invoice.</p>
-                  </div>
-                )}
+                <FeedbackForm 
+                  bookingId={invoiceId} 
+                  customerName={customerName}
+                  serviceDate={serviceDate}
+                />
               </motion.div>
             )}
           </div>

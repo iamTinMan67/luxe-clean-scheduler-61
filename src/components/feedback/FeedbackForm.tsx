@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -6,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/components/ui/use-toast"; // Changed from sonner to our unified toast
+import { toast } from "@/components/ui/use-toast";
 import {
   Form,
   FormControl,
@@ -19,7 +20,7 @@ import { useForm } from "react-hook-form";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface FeedbackFormProps {
-  bookingId: string;
+  bookingId?: string; // Make bookingId optional
   customerName?: string;
   serviceDate?: string;
 }
@@ -75,12 +76,15 @@ const FeedbackForm = ({ bookingId, customerName, serviceDate }: FeedbackFormProp
       return;
     }
 
+    // Generate a unique ID if bookingId is not provided
+    const feedbackBookingId = bookingId || `manual-${Date.now()}`;
+
     // Combine form data with rating and images
     const feedbackData = {
       ...data,
       rating,
       images: uploadedImages,
-      bookingId,
+      bookingId: feedbackBookingId,
       date: new Date().toISOString(),
     };
 
@@ -98,7 +102,7 @@ const FeedbackForm = ({ bookingId, customerName, serviceDate }: FeedbackFormProp
         
         // Find if there's already a gallery item for this booking
         const existingItemIndex = galleryItems.findIndex((item: any) => 
-          item.bookingId === bookingId
+          item.bookingId === feedbackBookingId
         );
         
         if (existingItemIndex >= 0) {
@@ -118,7 +122,7 @@ const FeedbackForm = ({ bookingId, customerName, serviceDate }: FeedbackFormProp
           const newItem = {
             id: Date.now(),
             category: "customer-feedback",
-            bookingId,
+            bookingId: feedbackBookingId,
             title: `${data.name}'s Review`,
             images: uploadedImages,
             description: data.comment,
@@ -156,7 +160,7 @@ const FeedbackForm = ({ bookingId, customerName, serviceDate }: FeedbackFormProp
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="mb-8 text-center">
             <h2 className="text-2xl font-bold text-white mb-2">
-              How was your experience?
+              {bookingId ? "How was your experience?" : "Share Your Feedback"}
             </h2>
             {serviceDate && (
               <p className="text-gray-400 mb-2">
