@@ -49,7 +49,8 @@ const LoginForm = ({ openResetDialog, toggleMode }: LoginFormProps) => {
       localStorage.setItem('lastSignInEmail', email);
       
       // Redirect to admin dashboard after successful login
-      navigate("/admin/dashboard");
+      // Use window.location to ensure a complete page refresh
+      window.location.href = "/admin/dashboard";
     } catch (error: any) {
       console.error("Authentication error:", error);
       toast.error(error.message || "Authentication failed");

@@ -4,9 +4,22 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { cleanupAuthState } from "@/utils/authCleanup";
 import { supabase } from "@/integrations/supabase/client";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AlreadyLoggedIn = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
+  
+  // Automatically redirect to dashboard
+  useEffect(() => {
+    // Short timeout to allow the component to render first
+    const timer = setTimeout(() => {
+      navigate('/admin/dashboard');
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, [navigate]);
   
   const handleSignOut = async () => {
     try {
@@ -26,16 +39,10 @@ const AlreadyLoggedIn = () => {
         <CheckCircle2 className="mx-auto h-12 w-12 text-gold mb-4" />
         <h2 className="text-2xl font-bold mb-2">Already Logged In</h2>
         <p className="text-gray-400 mb-2">You are already logged in as {user?.email}.</p>
+        <p className="text-gray-400 mb-4">Redirecting to dashboard...</p>
       </div>
       
       <div className="flex flex-col gap-3">
-        <Button 
-          onClick={() => window.location.href = '/admin/dashboard'}
-          className="gold-gradient text-black hover:shadow-xl hover:shadow-gold/20 transition-all"
-        >
-          Go to Dashboard
-        </Button>
-        
         <Button 
           onClick={handleSignOut}
           variant="outline"
