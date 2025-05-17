@@ -4,15 +4,21 @@ import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import FeedbackErrors from "@/components/feedback/form/FeedbackErrors";
 import FeedbackFormComponent from "@/components/feedback/FeedbackFormComponent";
 
 const FeedbackForm = () => {
   const [manualBookingId, setManualBookingId] = useState<string>("");
   const [showForm, setShowForm] = useState<boolean>(false);
   const [isPaid, setIsPaid] = useState<boolean>(false);
+  const [error, setError] = useState<string | undefined>(undefined);
 
   const handleBookingIdSubmit = () => {
+    // Clear previous errors
+    setError(undefined);
+    
     if (!manualBookingId.trim()) {
+      setError("Please enter a valid booking ID");
       toast({
         variant: "destructive",
         description: "Please enter a valid booking ID"
@@ -29,6 +35,7 @@ const FeedbackForm = () => {
       const bookingExists = bookings.some((booking: any) => booking.id === bookingId);
       
       if (!bookingExists) {
+        setError("Booking ID not found in the system");
         toast({
           variant: "destructive",
           description: "Booking ID not found in the system"
@@ -68,6 +75,9 @@ const FeedbackForm = () => {
       {!showForm ? (
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Enter Booking Reference</h2>
+          
+          {error && <FeedbackErrors customMessage={error} />}
+          
           <div className="flex gap-3">
             <Input 
               placeholder="Enter the booking ID" 

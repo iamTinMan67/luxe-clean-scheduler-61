@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { FeedbackFormData } from "@/components/feedback/form/FeedbackFormFields";
+import { FeedbackErrorType } from "@/components/feedback/form/FeedbackErrors";
 
 interface UseFeedbackFormProps {
   bookingId: string;
@@ -19,6 +20,7 @@ export const useFeedbackForm = ({
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [error, setError] = useState<FeedbackErrorType | undefined>(undefined);
 
   // Check if feedback already exists for this booking
   const checkExistingFeedback = () => {
@@ -32,22 +34,32 @@ export const useFeedbackForm = ({
           
           if (existingFeedback) {
             setIsSubmitted(true);
+            setError("already-submitted");
             toast({
               description: "Feedback has already been submitted for this booking."
             });
           }
-        } catch (error) {
-          console.error("Error checking feedback:", error);
+        } catch (err) {
+          console.error("Error checking feedback:", err);
         }
       }
       setLoading(false);
     }
   };
 
+  // Clear any displayed errors
+  const clearError = () => {
+    setError(undefined);
+  };
+
   // Submit the feedback
   const submitFeedback = (data: FeedbackFormData) => {
+    // Clear previous errors
+    clearError();
+    
     // Check if feedback is already submitted
     if (isSubmitted) {
+      setError("already-submitted");
       toast({
         variant: "destructive",
         description: "You have already submitted feedback for this booking."
@@ -57,6 +69,7 @@ export const useFeedbackForm = ({
 
     // Verify that the invoice is paid
     if (!isPaid) {
+      setError("unpaid-invoice");
       toast({
         variant: "destructive",
         description: "Feedback can only be submitted for paid bookings."
@@ -65,6 +78,7 @@ export const useFeedbackForm = ({
     }
 
     if (data.rating === 0) {
+      setError("missing-rating");
       toast({
         variant: "destructive",
         description: "Please select a rating"
@@ -74,6 +88,7 @@ export const useFeedbackForm = ({
 
     // Check if bookingId is provided
     if (!bookingId) {
+      setError("missing-booking-id");
       toast({
         variant: "destructive",
         description: "Error: Missing booking reference."
@@ -81,28 +96,37 @@ export const useFeedbackForm = ({
       return;
     }
 
-    // Prepare submission data
-    const feedbackData = {
-      ...data,
-      bookingId,
-      images: uploadedImages,
-      date: new Date().toISOString(),
-    };
+    try {
+      // Prepare submission data
+      const feedbackData = {
+        ...data,
+        bookingId,
+        images: uploadedImages,
+        date: new Date().toISOString(),
+      };
 
-    // Store feedback in localStorage for now
-    saveToLocalStorage(feedbackData);
-    updateGalleryItems(feedbackData);
+      // Store feedback in localStorage for now
+      saveToLocalStorage(feedbackData);
+      updateGalleryItems(feedbackData);
 
-    toast({
-      description: "Your feedback has been submitted successfully."
-    });
-    
-    // Mark as submitted locally
-    setIsSubmitted(true);
-    
-    // Call onSuccess callback if provided
-    if (onSuccess) {
-      onSuccess();
+      toast({
+        description: "Your feedback has been submitted successfully."
+      });
+      
+      // Mark as submitted locally
+      setIsSubmitted(true);
+      
+      // Call onSuccess callback if provided
+      if (onSuccess) {
+        onSuccess();
+      }
+    } catch (err) {
+      console.error("Error submitting feedback:", err);
+      setError("submission-error");
+      toast({
+        variant: "destructive",
+        description: "There was a problem submitting your feedback."
+      });
     }
   };
 
@@ -173,6 +197,8 @@ export const useFeedbackForm = ({
     uploadedImages,
     setUploadedImages,
     setLoading,
+    error,
+    clearError,
     checkExistingFeedback,
     submitFeedback
   };

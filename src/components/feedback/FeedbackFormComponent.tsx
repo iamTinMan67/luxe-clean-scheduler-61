@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import LoadingSkeleton from "./form/LoadingSkeleton";
 import ThankYouMessage from "./form/ThankYouMessage";
 import FeedbackFormFields, { FeedbackFormData } from "./form/FeedbackFormFields";
+import FeedbackErrors from "./form/FeedbackErrors";
 import { useFeedbackForm } from "@/hooks/useFeedbackForm";
 import { Card } from "@/components/ui/card";
 
@@ -30,6 +31,7 @@ const FeedbackFormComponent = ({
     loading,
     uploadedImages,
     setUploadedImages,
+    error,
     checkExistingFeedback,
     submitFeedback
   } = useFeedbackForm({
@@ -63,6 +65,8 @@ const FeedbackFormComponent = ({
 
   return (
     <Card className="bg-gray-900/50 backdrop-blur-sm rounded-lg p-8 border border-gray-800">
+      {error && <FeedbackErrors errorType={error} />}
+      
       <FeedbackFormFields
         initialValues={{
           name: customerName,
