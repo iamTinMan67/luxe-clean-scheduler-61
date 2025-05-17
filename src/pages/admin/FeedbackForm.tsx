@@ -1,6 +1,6 @@
 
 import FeedbackFormComponent from "@/components/feedback/FeedbackFormComponent";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 const FeedbackForm = () => {
   const [manualBookingId, setManualBookingId] = useState<string>("");
   const [showForm, setShowForm] = useState<boolean>(false);
+  const [isPaid, setIsPaid] = useState<boolean>(false);
 
   const handleBookingIdSubmit = () => {
     if (!manualBookingId.trim()) {
@@ -19,11 +20,13 @@ const FeedbackForm = () => {
       return;
     }
 
+    const bookingId = manualBookingId.trim();
+
     // Check if booking exists in storage
     const bookingsStr = localStorage.getItem("confirmedBookings");
     if (bookingsStr) {
       const bookings = JSON.parse(bookingsStr);
-      const bookingExists = bookings.some((booking: any) => booking.id === manualBookingId.trim());
+      const bookingExists = bookings.some((booking: any) => booking.id === bookingId);
       
       if (!bookingExists) {
         toast({
@@ -31,6 +34,27 @@ const FeedbackForm = () => {
           description: "Booking ID not found in the system"
         });
         return;
+      }
+    }
+
+    // Check if invoice is paid
+    const invoicesStr = localStorage.getItem("invoices");
+    if (invoicesStr) {
+      const invoices = JSON.parse(invoicesStr);
+      const invoice = invoices.find((inv: any) => inv.id === bookingId);
+      
+      if (invoice) {
+        setIsPaid(invoice.paid === true);
+        
+        if (!invoice.paid) {
+          toast({
+            description: "Note: This invoice has not been marked as paid yet. In normal operation, customers can only submit feedback for paid invoices.",
+          });
+        }
+      } else {
+        toast({
+          description: "No invoice found for this booking ID. Creating a test invoice.",
+        });
       }
     }
 
@@ -60,6 +84,7 @@ const FeedbackForm = () => {
         <FeedbackFormComponent 
           bookingId={manualBookingId} 
           redirectPath="/admin/feedback"
+          isPaid={true} // Override for admin use - always allow feedback collection
         />
       )}
     </div>

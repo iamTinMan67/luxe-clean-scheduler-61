@@ -1,5 +1,4 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Star, Upload } from "lucide-react";
@@ -20,10 +19,11 @@ import { useForm } from "react-hook-form";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export interface FeedbackFormProps {
-  bookingId?: string; // Make bookingId optional
+  bookingId: string; // Now required
   customerName?: string;
   serviceDate?: string;
   redirectPath?: string; // Add redirect path option
+  isPaid?: boolean;     // New prop to verify payment status
 }
 
 interface FeedbackFormValues {
@@ -37,13 +37,16 @@ const FeedbackFormComponent = ({
   bookingId, 
   customerName, 
   serviceDate,
-  redirectPath = "/" // Default redirect to home
+  redirectPath = "/", // Default redirect to home
+  isPaid = false      // Default to false, must be explicitly passed as true
 }: FeedbackFormProps) => {
   const navigate = useNavigate();
   const [rating, setRating] = useState<number>(0);
   const [hoveredRating, setHoveredRating] = useState<number>(0);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const form = useForm<FeedbackFormValues>({
     defaultValues: {
@@ -53,6 +56,30 @@ const FeedbackFormComponent = ({
       email: "",
     },
   });
+
+  // Check if feedback already exists for this booking
+  useEffect(() => {
+    if (bookingId) {
+      // Check existing feedback
+      const storedFeedback = localStorage.getItem("customerFeedback");
+      if (storedFeedback) {
+        try {
+          const feedbackArray = JSON.parse(storedFeedback);
+          const existingFeedback = feedbackArray.find((f: any) => f.bookingId === bookingId);
+          
+          if (existingFeedback) {
+            setIsSubmitted(true);
+            toast({
+              description: "Feedback has already been submitted for this booking."
+            });
+          }
+        } catch (error) {
+          console.error("Error checking feedback:", error);
+        }
+      }
+      setLoading(false);
+    }
+  }, [bookingId]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -74,6 +101,24 @@ const FeedbackFormComponent = ({
   };
 
   const onSubmit = (data: FeedbackFormValues) => {
+    // Check if feedback is already submitted
+    if (isSubmitted) {
+      toast({
+        variant: "destructive",
+        description: "You have already submitted feedback for this booking."
+      });
+      return;
+    }
+
+    // Verify that the invoice is paid
+    if (!isPaid) {
+      toast({
+        variant: "destructive",
+        description: "Feedback can only be submitted for paid bookings."
+      });
+      return;
+    }
+
     if (rating === 0) {
       toast({
         variant: "destructive",
@@ -160,11 +205,53 @@ const FeedbackFormComponent = ({
       description: "Your feedback has been submitted successfully."
     });
     
+    // Mark as submitted locally
+    setIsSubmitted(true);
+    
     // Redirect after successful submission
     setTimeout(() => {
       navigate(redirectPath);
     }, 2000);
   };
+
+  if (loading) {
+    return (
+      <Card className="bg-gray-900/50 backdrop-blur-sm rounded-lg p-8 border border-gray-800">
+        <Skeleton className="h-12 w-3/4 mb-6" />
+        <Skeleton className="h-8 w-1/2 mb-4" />
+        <div className="space-y-4">
+          <div className="flex justify-center space-x-2 mb-6">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Skeleton key={star} className="h-10 w-10 rounded-full" />
+            ))}
+          </div>
+          <Skeleton className="h-12 w-full mb-4" />
+          <Skeleton className="h-12 w-full mb-4" />
+          <Skeleton className="h-24 w-full mb-4" />
+        </div>
+      </Card>
+    );
+  }
+
+  if (isSubmitted) {
+    return (
+      <Card className="bg-gray-900/50 backdrop-blur-sm rounded-lg p-8 border border-gray-800">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-white mb-4">Thank You!</h2>
+          <p className="text-gray-300 mb-6">
+            You have already submitted feedback for this booking.
+            We appreciate your input!
+          </p>
+          <Button 
+            onClick={() => navigate(redirectPath)} 
+            className="bg-gold hover:bg-gold/80 text-black font-bold transition-colors"
+          >
+            Return Home
+          </Button>
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="bg-gray-900/50 backdrop-blur-sm rounded-lg p-8 border border-gray-800">

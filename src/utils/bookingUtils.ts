@@ -56,16 +56,23 @@ export const sendNotification = (booking: Booking, type: "invoice" | "update" | 
   // In a real app, this would connect to SMS API
   let message = "";
   
-  switch (type) {
-    case "invoice":
-      message = `New invoice generated for ${booking.customer}`;
-      break;
-    case "update":
-      message = `Booking updated for ${booking.customer}`;
-      break;
-    case "completion":
+  // For completion messages, check if the invoice is paid before sending feedback request
+  if (type === "completion") {
+    // Check invoice payment status
+    const invoicesStr = localStorage.getItem('invoices');
+    const isPaid = invoicesStr ? JSON.parse(invoicesStr).some(
+      (inv: any) => inv.id === booking.id && inv.paid === true
+    ) : false;
+    
+    if (isPaid) {
       message = `Thank you for your business, ${booking.customer}! Your valet service is complete. Feedback would be GREATLY appreciated. Being as you are our last customer your comments will be shown on the website: ${window.location.origin}/feedback/${booking.id}`;
-      break;
+    } else {
+      message = `Thank you for your business, ${booking.customer}! Your valet service is complete. Once payment is processed, you'll be able to provide feedback on our service.`;
+    }
+  } else if (type === "invoice") {
+    message = `New invoice generated for ${booking.customer}`;
+  } else if (type === "update") {
+    message = `Booking updated for ${booking.customer}`;
   }
   
   console.log("SMS Notification:", message);

@@ -8,7 +8,7 @@ import { useFeedbackPage } from "@/hooks/useFeedbackPage";
 
 const Feedback = () => {
   const { invoiceId } = useParams();
-  const { customerName, serviceDate, loading } = useFeedbackPage(invoiceId);
+  const { customerName, serviceDate, loading, isPaid } = useFeedbackPage(invoiceId);
   
   return (
     <div className="min-h-screen bg-black">
@@ -26,10 +26,11 @@ const Feedback = () => {
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
                 <FeedbackForm 
-                  bookingId={invoiceId} 
+                  bookingId={invoiceId || ""} 
                   customerName={customerName}
                   serviceDate={serviceDate}
                   redirectPath="/"
+                  isPaid={isPaid}
                 />
               </motion.div>
             )}

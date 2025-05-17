@@ -8,6 +8,7 @@ interface UseFeedbackPageReturn {
   customerName: string;
   serviceDate: string;
   loading: boolean;
+  isPaid: boolean;  // Added property
 }
 
 export function useFeedbackPage(invoiceId: string | undefined): UseFeedbackPageReturn {
@@ -15,6 +16,7 @@ export function useFeedbackPage(invoiceId: string | undefined): UseFeedbackPageR
   const [customerName, setCustomerName] = useState<string>("");
   const [serviceDate, setServiceDate] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
+  const [isPaid, setIsPaid] = useState<boolean>(false);  // Added state
   
   // Load invoice data on component mount
   useEffect(() => {
@@ -37,6 +39,9 @@ export function useFeedbackPage(invoiceId: string | undefined): UseFeedbackPageR
               ...foundInvoice,
               date: new Date(foundInvoice.date)
             });
+            
+            // Set the paid status
+            setIsPaid(foundInvoice.paid === true);
             
             // Format service date
             const invoiceDate = new Date(foundInvoice.date);
@@ -80,6 +85,7 @@ export function useFeedbackPage(invoiceId: string | undefined): UseFeedbackPageR
     invoice,
     customerName,
     serviceDate,
-    loading
+    loading,
+    isPaid
   };
 }

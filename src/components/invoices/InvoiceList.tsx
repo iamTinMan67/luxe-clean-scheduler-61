@@ -56,6 +56,14 @@ const InvoiceList: React.FC<InvoiceListProps> = ({ invoices, onMarkAsPaid }) => 
   
   // Function to request customer feedback
   const requestFeedback = (invoice: Invoice) => {
+    // Only allow feedback requests for paid invoices
+    if (!invoice.paid) {
+      toast.error("Cannot request feedback", {
+        description: "Feedback can only be requested for paid invoices."
+      });
+      return;
+    }
+    
     console.log(`Requesting feedback for invoice ${invoice.id}`);
     
     // Generate a feedback URL with the invoice ID (which is now the booking ID)
@@ -167,9 +175,10 @@ const InvoiceList: React.FC<InvoiceListProps> = ({ invoices, onMarkAsPaid }) => 
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="text-gray-400 hover:text-white"
+                        className={invoice.paid ? "text-gray-400 hover:text-white" : "text-gray-600 cursor-not-allowed"}
                         onClick={() => requestFeedback(invoice)}
-                        title="Request Feedback"
+                        disabled={!invoice.paid}
+                        title={invoice.paid ? "Request Feedback" : "Feedback requires payment"}
                       >
                         <Star className="h-4 w-4" />
                       </Button>
