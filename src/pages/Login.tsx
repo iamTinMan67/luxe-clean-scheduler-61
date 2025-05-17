@@ -1,5 +1,6 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import LoginForm from "@/components/auth/login/LoginForm";
@@ -8,11 +9,22 @@ import PasswordResetDialog from "@/components/auth/password/PasswordResetDialog"
 import PasswordResetForm from "@/components/auth/password/PasswordResetForm";
 import AlreadyLoggedIn from "@/components/auth/status/AlreadyLoggedIn";
 import { usePasswordReset } from "@/hooks/usePasswordReset";
+import { cleanupAuthState } from "@/utils/authCleanup";
 
 const Login = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const { user, isLoading } = useAuth();
   const { isResetOpen, setIsResetOpen, isPasswordReset, setIsPasswordReset } = usePasswordReset();
+  const [searchParams] = useSearchParams();
+  const forceLogin = searchParams.get("force") === "true";
+  
+  // Handle force login parameter
+  useEffect(() => {
+    if (forceLogin) {
+      // If force login is requested, clean up auth state
+      cleanupAuthState();
+    }
+  }, [forceLogin]);
 
   // Toggle between login and sign-up forms
   const toggleAuthMode = () => {
@@ -29,8 +41,8 @@ const Login = () => {
     );
   }
 
-  // If user is already logged in and has appropriate role, don't show login screen
-  if (user && !isPasswordReset) {
+  // If user is already logged in and force login is not requested, show already logged in screen
+  if (user && !isPasswordReset && !forceLogin) {
     return <AlreadyLoggedIn />;
   }
 

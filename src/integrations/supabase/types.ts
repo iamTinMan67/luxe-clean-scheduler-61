@@ -243,6 +243,48 @@ export type Database = {
         }
         Relationships: []
       }
+      customer_feedback: {
+        Row: {
+          booking_id: string
+          comment: string | null
+          created_at: string | null
+          customer_name: string
+          date: string
+          email: string | null
+          id: string
+          images: string[] | null
+          rating: number
+          responded: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          booking_id: string
+          comment?: string | null
+          created_at?: string | null
+          customer_name: string
+          date?: string
+          email?: string | null
+          id?: string
+          images?: string[] | null
+          rating: number
+          responded?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          booking_id?: string
+          comment?: string | null
+          created_at?: string | null
+          customer_name?: string
+          date?: string
+          email?: string | null
+          id?: string
+          images?: string[] | null
+          rating?: number
+          responded?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       gallery_items: {
         Row: {
           category: string
@@ -399,6 +441,96 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      migrated_bookings: {
+        Row: {
+          condition: number | null
+          created_at: string | null
+          customer: string
+          date: string
+          end_time: string | null
+          id: string
+          location: string
+          notes: string | null
+          package_type: string
+          staff: string[] | null
+          start_time: string | null
+          status: string
+          time: string
+          total_price: number
+          travel_minutes: number | null
+          updated_at: string | null
+          vehicle: string
+        }
+        Insert: {
+          condition?: number | null
+          created_at?: string | null
+          customer: string
+          date: string
+          end_time?: string | null
+          id: string
+          location: string
+          notes?: string | null
+          package_type: string
+          staff?: string[] | null
+          start_time?: string | null
+          status: string
+          time: string
+          total_price: number
+          travel_minutes?: number | null
+          updated_at?: string | null
+          vehicle: string
+        }
+        Update: {
+          condition?: number | null
+          created_at?: string | null
+          customer?: string
+          date?: string
+          end_time?: string | null
+          id?: string
+          location?: string
+          notes?: string | null
+          package_type?: string
+          staff?: string[] | null
+          start_time?: string | null
+          status?: string
+          time?: string
+          total_price?: number
+          travel_minutes?: number | null
+          updated_at?: string | null
+          vehicle?: string
+        }
+        Relationships: []
+      }
+      migrated_invoices: {
+        Row: {
+          created_at: string | null
+          date: string
+          id: string
+          paid: boolean | null
+          payment_date: string | null
+          total: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          date: string
+          id: string
+          paid?: boolean | null
+          payment_date?: string | null
+          total: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          date?: string
+          id?: string
+          paid?: boolean | null
+          payment_date?: string | null
+          total?: number
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       profiles: {
         Row: {

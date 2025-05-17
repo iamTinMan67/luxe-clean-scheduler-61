@@ -17,4 +17,10 @@ export const cleanupAuthState = () => {
       sessionStorage.removeItem(key);
     }
   });
+  
+  // Clear any additional auth-related state
+  localStorage.removeItem('lastSignInEmail');
+  localStorage.removeItem('userRole');
+  
+  console.log("Auth state cleaned up successfully");
 };

@@ -25,7 +25,7 @@ const LoginForm = ({ openResetDialog, toggleMode }: LoginFormProps) => {
     setIsLoading(true);
     
     try {
-      // Clean up any existing auth state
+      // Clean up any existing auth state before login attempt
       cleanupAuthState();
       
       // Try a global sign-out first (ignore errors)
@@ -33,9 +33,10 @@ const LoginForm = ({ openResetDialog, toggleMode }: LoginFormProps) => {
         await supabase.auth.signOut({ scope: 'global' });
       } catch (e) {
         // Ignore any errors, just continue with sign in
+        console.log("Sign out before login failed, continuing anyway");
       }
       
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -43,6 +44,9 @@ const LoginForm = ({ openResetDialog, toggleMode }: LoginFormProps) => {
       if (error) throw error;
       
       toast.success("Login successful");
+      
+      // Save login info to localStorage for reference
+      localStorage.setItem('lastSignInEmail', email);
       
       // Redirect to admin dashboard after successful login
       navigate("/admin/dashboard");
