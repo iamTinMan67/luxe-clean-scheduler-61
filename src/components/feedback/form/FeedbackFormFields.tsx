@@ -27,13 +27,20 @@ interface FeedbackFormFieldsProps {
     name: string;
     email: string;
   };
-  onSubmit: (data: FeedbackFormData, images: string[]) => void;
+  onSubmit: (data: FeedbackFormData) => void;
   serviceDate?: string;
+  uploadedImages: string[];
+  setUploadedImages: (images: string[]) => void;
 }
 
-const FeedbackFormFields = ({ initialValues, onSubmit, serviceDate }: FeedbackFormFieldsProps) => {
+const FeedbackFormFields = ({ 
+  initialValues, 
+  onSubmit, 
+  serviceDate,
+  uploadedImages,
+  setUploadedImages
+}: FeedbackFormFieldsProps) => {
   const [rating, setRating] = React.useState<number>(0);
-  const [uploadedImages, setUploadedImages] = React.useState<string[]>([]);
   
   const form = useForm<FeedbackFormData>({
     defaultValues: {
@@ -48,7 +55,7 @@ const FeedbackFormFields = ({ initialValues, onSubmit, serviceDate }: FeedbackFo
     onSubmit({
       ...data,
       rating,
-    }, uploadedImages);
+    });
   };
 
   return (

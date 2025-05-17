@@ -1,10 +1,10 @@
 
-import FeedbackFormComponent from "@/components/feedback/FeedbackFormComponent";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import FeedbackFormComponent from "@/components/feedback/FeedbackFormComponent";
 
 const FeedbackForm = () => {
   const [manualBookingId, setManualBookingId] = useState<string>("");
