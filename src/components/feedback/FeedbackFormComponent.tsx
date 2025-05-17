@@ -1,61 +1,37 @@
+
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Star, Upload } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { useForm } from "react-hook-form";
-import { Skeleton } from "@/components/ui/skeleton";
+
+import LoadingSkeleton from "./form/LoadingSkeleton";
+import ThankYouMessage from "./form/ThankYouMessage";
+import FeedbackFormFields, { FeedbackFormData } from "./form/FeedbackFormFields";
 
 export interface FeedbackFormProps {
-  bookingId: string; // Now required
+  bookingId: string;
   customerName?: string;
   serviceDate?: string;
-  redirectPath?: string; // Add redirect path option
-  isPaid?: boolean;     // New prop to verify payment status
+  redirectPath?: string;
+  isPaid?: boolean;
 }
 
-interface FeedbackFormValues {
-  rating: number;
-  comment: string;
-  name: string;
-  email: string;
+interface FeedbackSubmissionData extends FeedbackFormData {
+  bookingId: string;
+  images: string[];
+  date: string;
 }
 
 const FeedbackFormComponent = ({ 
   bookingId, 
-  customerName, 
+  customerName = "", 
   serviceDate,
-  redirectPath = "/", // Default redirect to home
-  isPaid = false      // Default to false, must be explicitly passed as true
+  redirectPath = "/",
+  isPaid = false
 }: FeedbackFormProps) => {
   const navigate = useNavigate();
-  const [rating, setRating] = useState<number>(0);
-  const [hoveredRating, setHoveredRating] = useState<number>(0);
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
-  const [uploading, setUploading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-
-  const form = useForm<FeedbackFormValues>({
-    defaultValues: {
-      rating: 0,
-      comment: "",
-      name: customerName || "",
-      email: "",
-    },
-  });
 
   // Check if feedback already exists for this booking
   useEffect(() => {
@@ -81,26 +57,7 @@ const FeedbackFormComponent = ({
     }
   }, [bookingId]);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-    
-    setUploading(true);
-    
-    // In a real implementation, you'd upload these to storage
-    // For this demo, we'll use URL.createObjectURL to preview them
-    const newImages = Array.from(files).map(file => URL.createObjectURL(file));
-    setUploadedImages([...uploadedImages, ...newImages]);
-    setUploading(false);
-  };
-
-  const removeImage = (index: number) => {
-    const newImages = [...uploadedImages];
-    newImages.splice(index, 1);
-    setUploadedImages(newImages);
-  };
-
-  const onSubmit = (data: FeedbackFormValues) => {
+  const onSubmit = (data: FeedbackFormData, images: string[]) => {
     // Check if feedback is already submitted
     if (isSubmitted) {
       toast({
@@ -119,7 +76,7 @@ const FeedbackFormComponent = ({
       return;
     }
 
-    if (rating === 0) {
+    if (data.rating === 0) {
       toast({
         variant: "destructive",
         description: "Please select a rating"
@@ -136,22 +93,42 @@ const FeedbackFormComponent = ({
       return;
     }
 
-    // Combine form data with rating and images
-    const feedbackData = {
+    // Prepare submission data
+    const feedbackData: FeedbackSubmissionData = {
       ...data,
-      rating,
-      images: uploadedImages,
       bookingId,
+      images,
       date: new Date().toISOString(),
     };
 
     // Store feedback in localStorage for now
+    saveToLocalStorage(feedbackData);
+    updateGalleryItems(feedbackData);
+
+    toast({
+      description: "Your feedback has been submitted successfully."
+    });
+    
+    // Mark as submitted locally
+    setIsSubmitted(true);
+    
+    // Redirect after successful submission
+    setTimeout(() => {
+      navigate(redirectPath);
+    }, 2000);
+  };
+
+  const saveToLocalStorage = (feedbackData: FeedbackSubmissionData) => {
     const storedFeedback = localStorage.getItem("customerFeedback");
     const feedbackArray = storedFeedback ? JSON.parse(storedFeedback) : [];
     feedbackArray.push(feedbackData);
     localStorage.setItem("customerFeedback", JSON.stringify(feedbackArray));
+  };
 
-    // Update gallery items to include this feedback if relevant
+  const updateGalleryItems = (feedbackData: FeedbackSubmissionData) => {
+    // Only update gallery if there are images
+    if (!feedbackData.images || feedbackData.images.length === 0) return;
+
     const galleryItemsStr = localStorage.getItem('galleryItems');
     if (galleryItemsStr) {
       try {
@@ -167,27 +144,27 @@ const FeedbackFormComponent = ({
           galleryItems[existingItemIndex] = {
             ...galleryItems[existingItemIndex],
             customerReview: {
-              rating,
-              comment: data.comment,
+              rating: feedbackData.rating,
+              comment: feedbackData.comment,
               date: new Date(),
-              customerName: data.name,
-              images: uploadedImages
+              customerName: feedbackData.name,
+              images: feedbackData.images
             }
           };
-        } else if (uploadedImages.length > 0) {
+        } else {
           // Create a new gallery item for this booking with the review and images
           const newItem = {
             id: Date.now(),
             category: "customer-feedback",
             bookingId,
-            title: `${data.name}'s Review`,
-            images: uploadedImages,
-            description: data.comment,
+            title: `${feedbackData.name}'s Review`,
+            images: feedbackData.images,
+            description: feedbackData.comment,
             customerReview: {
-              rating,
-              comment: data.comment,
+              rating: feedbackData.rating,
+              comment: feedbackData.comment,
               date: new Date(),
-              customerName: data.name
+              customerName: feedbackData.name
             }
           };
           
@@ -200,233 +177,26 @@ const FeedbackFormComponent = ({
         console.error('Error updating gallery items:', error);
       }
     }
-
-    toast({
-      description: "Your feedback has been submitted successfully."
-    });
-    
-    // Mark as submitted locally
-    setIsSubmitted(true);
-    
-    // Redirect after successful submission
-    setTimeout(() => {
-      navigate(redirectPath);
-    }, 2000);
   };
 
   if (loading) {
-    return (
-      <Card className="bg-gray-900/50 backdrop-blur-sm rounded-lg p-8 border border-gray-800">
-        <Skeleton className="h-12 w-3/4 mb-6" />
-        <Skeleton className="h-8 w-1/2 mb-4" />
-        <div className="space-y-4">
-          <div className="flex justify-center space-x-2 mb-6">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <Skeleton key={star} className="h-10 w-10 rounded-full" />
-            ))}
-          </div>
-          <Skeleton className="h-12 w-full mb-4" />
-          <Skeleton className="h-12 w-full mb-4" />
-          <Skeleton className="h-24 w-full mb-4" />
-        </div>
-      </Card>
-    );
+    return <LoadingSkeleton />;
   }
 
   if (isSubmitted) {
-    return (
-      <Card className="bg-gray-900/50 backdrop-blur-sm rounded-lg p-8 border border-gray-800">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-white mb-4">Thank You!</h2>
-          <p className="text-gray-300 mb-6">
-            You have already submitted feedback for this booking.
-            We appreciate your input!
-          </p>
-          <Button 
-            onClick={() => navigate(redirectPath)} 
-            className="bg-gold hover:bg-gold/80 text-black font-bold transition-colors"
-          >
-            Return Home
-          </Button>
-        </div>
-      </Card>
-    );
+    return <ThankYouMessage redirectPath={redirectPath} />;
   }
 
   return (
     <Card className="bg-gray-900/50 backdrop-blur-sm rounded-lg p-8 border border-gray-800">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="mb-8 text-center">
-            <h2 className="text-2xl font-bold text-white mb-2">
-              {bookingId ? "How was your experience?" : "Share Your Feedback"}
-            </h2>
-            {serviceDate && (
-              <p className="text-gray-400 mb-2">
-                Service Date: {serviceDate}
-              </p>
-            )}
-            <div className="mt-6 flex justify-center space-x-2">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <button
-                  key={star}
-                  type="button"
-                  onClick={() => {
-                    setRating(star);
-                    form.setValue("rating", star);
-                  }}
-                  onMouseEnter={() => setHoveredRating(star)}
-                  onMouseLeave={() => setHoveredRating(0)}
-                  className="focus:outline-none transition duration-150"
-                >
-                  <Star
-                    className={`h-10 w-10 transition-colors ${
-                      (hoveredRating ? star <= hoveredRating : star <= rating)
-                        ? "fill-gold text-gold"
-                        : "text-gray-500"
-                    }`}
-                  />
-                </button>
-              ))}
-            </div>
-            <p className="mt-2 text-gold">
-              {rating === 1 && "Poor"}
-              {rating === 2 && "Fair"}
-              {rating === 3 && "Good"}
-              {rating === 4 && "Very Good"}
-              {rating === 5 && "Excellent"}
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-white">Your Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter your name"
-                      {...field}
-                      className="bg-gray-800 border-gray-700 text-white"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-white">Email (optional)</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="Enter your email"
-                      {...field}
-                      className="bg-gray-800 border-gray-700 text-white"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="comment"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-white">Your Comments</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Please share your experience with our service..."
-                      className="bg-gray-800 border-gray-700 text-white"
-                      rows={4}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div>
-              <FormLabel className="text-white block mb-2">Upload Photos (optional)</FormLabel>
-              <div className="flex items-center justify-center w-full">
-                <label
-                  htmlFor="dropzone-file"
-                  className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-700 border-dashed rounded-lg cursor-pointer bg-gray-800 hover:bg-gray-700"
-                >
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <Upload className="w-8 h-8 mb-3 text-gray-400" />
-                    <p className="mb-2 text-sm text-gray-400">
-                      <span className="font-bold">Click to upload</span> or drag and drop
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      PNG, JPG or WEBP (MAX. 5MB each)
-                    </p>
-                  </div>
-                  <input
-                    id="dropzone-file"
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    multiple
-                    onChange={handleImageUpload}
-                  />
-                </label>
-              </div>
-
-              {uploading && (
-                <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-4">
-                  <Skeleton className="h-24 w-full rounded-md" />
-                  <Skeleton className="h-24 w-full rounded-md" />
-                </div>
-              )}
-
-              {uploadedImages.length > 0 && (
-                <div className="mt-4">
-                  <h3 className="text-white text-sm mb-2">Uploaded Images:</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {uploadedImages.map((src, index) => (
-                      <div key={index} className="relative group h-24">
-                        <img
-                          src={src}
-                          alt={`Uploaded ${index + 1}`}
-                          className="h-full w-full object-cover rounded-md"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => removeImage(index)}
-                          className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                          </svg>
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="flex justify-center pt-4">
-            <Button 
-              type="submit" 
-              className="bg-gold hover:bg-gold/80 text-black font-bold transition-colors px-8 py-3"
-            >
-              Submit Feedback
-            </Button>
-          </div>
-        </form>
-      </Form>
+      <FeedbackFormFields
+        initialValues={{
+          name: customerName,
+          email: "",
+        }}
+        onSubmit={onSubmit}
+        serviceDate={serviceDate}
+      />
     </Card>
   );
 };
