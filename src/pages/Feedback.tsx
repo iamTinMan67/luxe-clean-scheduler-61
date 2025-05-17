@@ -29,6 +29,7 @@ const Feedback = () => {
                   bookingId={invoiceId} 
                   customerName={customerName}
                   serviceDate={serviceDate}
+                  redirectPath="/"
                 />
               </motion.div>
             )}

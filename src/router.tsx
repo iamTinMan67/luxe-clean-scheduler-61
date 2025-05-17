@@ -1,4 +1,3 @@
-
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 // Import layout
@@ -62,7 +61,7 @@ export const router = createBrowserRouter([
         element: <TrackBooking />,
       },
       {
-        path: '/feedback/:bookingId',
+        path: '/feedback/:invoiceId',
         element: <Feedback />,
       },
       {
