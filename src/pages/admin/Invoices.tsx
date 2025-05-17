@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import InvoiceList from "@/components/invoices/InvoiceList";
 import InvoiceSummary from "@/components/invoices/InvoiceSummary";
 import { useInvoiceManagement } from "@/hooks/invoices/useInvoiceManagement";
+import AdminPageTitle from "@/components/admin/AdminPageTitle";
 
 const Invoices = () => {
   const { invoices, markAsPaid } = useInvoiceManagement();
@@ -12,19 +13,12 @@ const Invoices = () => {
     <div className="min-h-screen bg-black pb-16">
       <section className="relative py-8">
         <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-8"
+          <AdminPageTitle 
+            title="Customer" 
+            subtitle="View and manage all customer invoices" 
           >
-            <h1 className="text-3xl font-bold text-white">
-              Customer <span className="text-gold">Invoices</span>
-            </h1>
-            <p className="text-gray-400">
-              View and manage all customer invoices
-            </p>
-          </motion.div>
+            <span className="text-gold">Invoices</span>
+          </AdminPageTitle>
           
           <motion.div
             initial={{ opacity: 0, y: 20 }}

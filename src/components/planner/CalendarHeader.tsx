@@ -30,7 +30,7 @@ const CalendarHeader = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="mb-8"
+      className="mb-8 text-center"
     >
       <h1 className="text-3xl font-bold text-white">
         Planner <span className="text-gold">Calendar</span>
@@ -39,7 +39,7 @@ const CalendarHeader = ({
         Manage bookings and staff schedules
       </p>
       
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-4 gap-4">
+      <div className="flex flex-col md:flex-row justify-between items-center mt-4 gap-4">
         <div className="px-3 py-1 rounded-full bg-amber-900/30 text-amber-400 border border-amber-700 text-xs font-medium">
           {pendingBookingsCount} pending bookings
         </div>

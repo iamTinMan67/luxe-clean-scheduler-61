@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { additionalServices } from "@/data/servicePackageData";
 import AdditionalServicesManager from "@/components/package-management/AdditionalServicesManager";
 import { useAdditionalServicesManager } from "@/hooks/useAdditionalServicesManager";
+import AdminPageTitle from "@/components/admin/AdminPageTitle";
 
 const ManageAdditionalServices = () => {
   const {
@@ -16,12 +17,10 @@ const ManageAdditionalServices = () => {
 
   return (
     <div className="container py-20 px-4 mx-auto max-w-7xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white">Manage Additional Services</h1>
-        <p className="text-gold/70 mt-2">
-          Update additional services, set prices, and manage durations
-        </p>
-      </div>
+      <AdminPageTitle 
+        title="Manage Additional Services" 
+        subtitle="Update additional services, set prices, and manage durations" 
+      />
       
       <div className="grid grid-cols-1 gap-6 mt-6">
         <Card className="bg-black/60 border-gold/30">

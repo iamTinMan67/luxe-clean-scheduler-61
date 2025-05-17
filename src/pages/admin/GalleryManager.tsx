@@ -3,6 +3,7 @@ import { useGalleryManager } from "@/hooks/useGalleryManager";
 import GalleryHeader from "@/components/gallery/GalleryHeader";
 import AlbumFormDialog from "@/components/gallery/AlbumFormDialog";
 import AlbumsList from "@/components/gallery/AlbumsList";
+import AdminPageTitle from "@/components/admin/AdminPageTitle";
 
 const GalleryManager = () => {
   const {
@@ -25,8 +26,8 @@ const GalleryManager = () => {
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="container mx-auto px-4 py-24">
-        <GalleryHeader onAddAlbum={() => setOpen(true)} />
-
+        <AdminPageTitle title="Gallery Manager" />
+        
         <AlbumsList 
           galleryItems={galleryItems}
           onEdit={handleEditItem}

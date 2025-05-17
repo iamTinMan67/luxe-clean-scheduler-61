@@ -5,6 +5,7 @@ import FeedbackTabs from "@/components/feedback/FeedbackTabs";
 import { useFeedbackData } from "@/hooks/useFeedbackData";
 import { CustomerFeedback } from "@/components/feedback/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import AdminPageTitle from "@/components/admin/AdminPageTitle";
 
 const FeedbackManager = () => {
   const { feedback, markAsResponded } = useFeedbackData();
@@ -25,7 +26,7 @@ const FeedbackManager = () => {
 
   return (
     <div className="container px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Customer Feedback Manager</h1>
+      <AdminPageTitle title="Customer Feedback Manager" />
       
       <FeedbackTabs 
         feedback={feedback} 

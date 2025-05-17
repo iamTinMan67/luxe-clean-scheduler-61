@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
@@ -12,6 +11,7 @@ import {
   Legend, ResponsiveContainer 
 } from "recharts";
 import { Badge } from "@/components/ui/badge";
+import AdminPageTitle from "@/components/admin/AdminPageTitle";
 
 const Dashboard = () => {
   // Mock data for statistics
@@ -174,19 +174,10 @@ const Dashboard = () => {
     <div className="min-h-screen bg-black pb-16">
       <section className="relative py-8">
         <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-8"
-          >
-            <h1 className="text-3xl font-bold text-white">
-              Admin <span className="text-gold">Dashboard</span>
-            </h1>
-            <p className="text-gray-400">
-              Overview of your business performance and metrics
-            </p>
-          </motion.div>
+          <AdminPageTitle 
+            title="Admin" 
+            subtitle="Overview of your business performance and metrics" 
+          />
           
           {/* Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

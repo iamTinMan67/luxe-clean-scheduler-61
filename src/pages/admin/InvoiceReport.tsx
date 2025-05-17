@@ -5,6 +5,7 @@ import QuickActions from "@/components/invoices/QuickActions";
 import StaffAssignment from "@/components/invoices/StaffAssignment";
 import InvoiceManagement from "@/components/invoices/InvoiceManagement";
 import { useInvoiceReport } from "@/hooks/useInvoiceReport";
+import AdminPageTitle from "@/components/admin/AdminPageTitle";
 
 const InvoiceReport = () => {
   const {
@@ -27,10 +28,10 @@ const InvoiceReport = () => {
       exit={{ opacity: 0, y: 20 }}
       className="container mx-auto py-8 px-4"
     >
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Invoice Reports</h1>
-        <p className="text-gold">Track payments and manage customer invoices</p>
-      </div>
+      <AdminPageTitle 
+        title="Invoice Reports" 
+        subtitle="Track payments and manage customer invoices" 
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="lg:col-span-1 space-y-6">
