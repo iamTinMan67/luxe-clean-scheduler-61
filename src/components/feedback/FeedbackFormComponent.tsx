@@ -82,15 +82,21 @@ const FeedbackFormComponent = ({
       return;
     }
 
-    // Generate a unique ID if bookingId is not provided
-    const feedbackBookingId = bookingId || `manual-${Date.now()}`;
+    // Check if bookingId is provided
+    if (!bookingId) {
+      toast({
+        variant: "destructive",
+        description: "Error: Missing booking reference."
+      });
+      return;
+    }
 
     // Combine form data with rating and images
     const feedbackData = {
       ...data,
       rating,
       images: uploadedImages,
-      bookingId: feedbackBookingId,
+      bookingId,
       date: new Date().toISOString(),
     };
 
@@ -108,7 +114,7 @@ const FeedbackFormComponent = ({
         
         // Find if there's already a gallery item for this booking
         const existingItemIndex = galleryItems.findIndex((item: any) => 
-          item.bookingId === feedbackBookingId
+          item.bookingId === bookingId
         );
         
         if (existingItemIndex >= 0) {
@@ -128,7 +134,7 @@ const FeedbackFormComponent = ({
           const newItem = {
             id: Date.now(),
             category: "customer-feedback",
-            bookingId: feedbackBookingId,
+            bookingId,
             title: `${data.name}'s Review`,
             images: uploadedImages,
             description: data.comment,
