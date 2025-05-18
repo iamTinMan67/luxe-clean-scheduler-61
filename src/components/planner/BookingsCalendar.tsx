@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Booking } from '@/types/booking';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -33,6 +33,9 @@ const BookingsCalendar: React.FC<BookingsCalendarProps> = ({
   onPackageChange,
   onReschedule
 }) => {
+  // Force rendering when bookings change
+  const [refreshKey, setRefreshKey] = useState(0);
+  
   // Function to check if a date has bookings
   const hasBookingsOnDate = (checkDate: Date) => {
     const allBookings = JSON.parse(localStorage.getItem('confirmedBookings') || '[]')
@@ -45,6 +48,11 @@ const BookingsCalendar: React.FC<BookingsCalendarProps> = ({
              bookingDate.getFullYear() === checkDate.getFullYear();
     });
   };
+  
+  // Effect to refresh calendar when bookings change
+  useEffect(() => {
+    setRefreshKey(prev => prev + 1);
+  }, [bookingsForDate]);
 
   return (
     <Card className="lg:col-span-2 bg-black/60 border-gold/30">
@@ -67,7 +75,7 @@ const BookingsCalendar: React.FC<BookingsCalendarProps> = ({
       </CardHeader>
       <CardContent>
         <div className="flex flex-col md:flex-row gap-4">
-          <div className="w-full md:w-auto">
+          <div className="w-full md:w-auto" key={refreshKey}>
             <Calendar
               mode="single"
               selected={date}

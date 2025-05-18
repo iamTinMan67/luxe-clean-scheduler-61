@@ -15,9 +15,17 @@ const RescheduleDialog: React.FC<RescheduleDialogProps> = ({ booking, onReschedu
   const [rescheduledDate, setRescheduledDate] = useState<Date | undefined>(
     booking.date instanceof Date ? booking.date : new Date(booking.date)
   );
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const handleReschedule = () => {
+    if (rescheduledDate) {
+      onReschedule(booking, rescheduledDate);
+      setIsOpen(false);
+    }
+  };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button 
           size="sm" 
@@ -47,12 +55,14 @@ const RescheduleDialog: React.FC<RescheduleDialogProps> = ({ booking, onReschedu
           <Button 
             variant="outline" 
             className="bg-gray-800 hover:bg-gray-700"
+            onClick={() => setIsOpen(false)}
           >
             Cancel
           </Button>
           <Button 
             className="bg-gold hover:bg-gold/80 text-black"
-            onClick={() => rescheduledDate && onReschedule(booking, rescheduledDate)}
+            onClick={handleReschedule}
+            disabled={!rescheduledDate}
           >
             Confirm Reschedule
           </Button>

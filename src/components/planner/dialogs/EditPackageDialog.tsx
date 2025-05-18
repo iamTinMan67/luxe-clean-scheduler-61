@@ -1,10 +1,11 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import { Booking } from '@/types/booking';
+import { packageOptions } from '@/data/packageOptions';
 
 interface EditPackageDialogProps {
   booking: Booking;
@@ -13,9 +14,22 @@ interface EditPackageDialogProps {
 
 const EditPackageDialog: React.FC<EditPackageDialogProps> = ({ booking, onPackageChange }) => {
   const [newPackageType, setNewPackageType] = useState<string>(booking.packageType);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  // Reset selected package when dialog opens
+  useEffect(() => {
+    if (isOpen) {
+      setNewPackageType(booking.packageType);
+    }
+  }, [isOpen, booking.packageType]);
+
+  const handleSave = () => {
+    onPackageChange(booking, newPackageType);
+    setIsOpen(false);
+  };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button 
           size="sm" 
@@ -38,10 +52,11 @@ const EditPackageDialog: React.FC<EditPackageDialogProps> = ({ booking, onPackag
               <SelectValue placeholder="Select package" />
             </SelectTrigger>
             <SelectContent className="bg-gray-950 border-gray-800">
-              <SelectItem value="basic">Basic Package</SelectItem>
-              <SelectItem value="medium">Medium Package</SelectItem>
-              <SelectItem value="elite">Elite Package</SelectItem>
-              <SelectItem value="platinum">Platinum Package</SelectItem>
+              {packageOptions.map((packageOption) => (
+                <SelectItem key={packageOption.id} value={packageOption.type}>
+                  {packageOption.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -49,12 +64,13 @@ const EditPackageDialog: React.FC<EditPackageDialogProps> = ({ booking, onPackag
           <Button 
             variant="outline" 
             className="bg-gray-800 hover:bg-gray-700"
+            onClick={() => setIsOpen(false)}
           >
             Cancel
           </Button>
           <Button 
             className="bg-gold hover:bg-gold/80 text-black"
-            onClick={() => onPackageChange(booking, newPackageType)}
+            onClick={handleSave}
           >
             Save Changes
           </Button>
