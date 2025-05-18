@@ -15,6 +15,7 @@ interface StaffAllocationDialogProps {
   booking: Booking;
   onConfirm: (booking: Booking, selectedStaff: string[], travelMinutes: number) => void;
   estimatedDuration?: number;
+  defaultStaff?: string[];
 }
 
 const StaffAllocationDialog: React.FC<StaffAllocationDialogProps> = ({
@@ -22,7 +23,8 @@ const StaffAllocationDialog: React.FC<StaffAllocationDialogProps> = ({
   onClose,
   booking,
   onConfirm,
-  estimatedDuration = 0
+  estimatedDuration = 0,
+  defaultStaff = []
 }) => {
   const [selectedStaff, setSelectedStaff] = useState<string[]>([]);
   const [travelTime, setTravelTime] = useState<number>(15); // Default 15 minutes travel time
@@ -30,11 +32,11 @@ const StaffAllocationDialog: React.FC<StaffAllocationDialogProps> = ({
   // Reset state when dialog opens
   useEffect(() => {
     if (open) {
-      // Don't set any default staff
-      setSelectedStaff([]);
+      // Initialize with default staff if provided
+      setSelectedStaff(defaultStaff);
       setTravelTime(15);
     }
-  }, [open]);
+  }, [open, defaultStaff]);
   
   const handleStaffToggle = (staffName: string) => {
     setSelectedStaff(prev => {

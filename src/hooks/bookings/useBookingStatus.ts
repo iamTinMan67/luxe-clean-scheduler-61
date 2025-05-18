@@ -57,7 +57,7 @@ export const useBookingStatus = (
       ...booking,
       status: 'confirmed' as const,
       // Default staff assignment if not already assigned
-      staff: booking.staff || ['Staff Assigned'],
+      staff: booking.staff || ['Karl', 'Salleah'],
       // Default travel time if not set
       travelMinutes: booking.travelMinutes || 15
     };

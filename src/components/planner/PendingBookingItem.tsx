@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { format } from "date-fns";
 import { Booking } from '@/types/booking';
@@ -10,6 +9,7 @@ import StaffAllocationDialog from './StaffAllocationDialog';
 import { packageOptions } from "@/data/servicePackageData";
 import { additionalServices } from "@/data/servicePackageData";
 import { calculateTotalBookingTime } from "@/utils/priceCalculator";
+import { staffMembers } from "@/data/staffData";
 
 interface PendingBookingItemProps {
   booking: Booking;
@@ -54,8 +54,17 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
     }
   }, [booking]);
 
+  // Get default staff (first two staff members)
+  const defaultStaff = staffMembers.slice(0, 2).map(staff => staff.name);
+  
   const handleConfirmClick = () => {
-    setShowStaffDialog(true);
+    // If there are more than 2 staff members, show the dialog
+    if (staffMembers.length > 2) {
+      setShowStaffDialog(true);
+    } else {
+      // Otherwise, directly confirm with the default staff
+      onConfirm(booking.id, defaultStaff, 15);
+    }
   };
 
   const handleStaffConfirm = (booking: Booking, selectedStaff: string[], travelMinutes: number) => {
@@ -180,13 +189,17 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
         </Button>
       </div>
 
-      <StaffAllocationDialog
-        open={showStaffDialog}
-        onClose={() => setShowStaffDialog(false)}
-        booking={booking}
-        onConfirm={handleStaffConfirm}
-        estimatedDuration={estimatedDuration}
-      />
+      {/* Only show staff dialog if there are more than 2 staff members */}
+      {staffMembers.length > 2 && (
+        <StaffAllocationDialog
+          open={showStaffDialog}
+          onClose={() => setShowStaffDialog(false)}
+          booking={booking}
+          onConfirm={handleStaffConfirm}
+          estimatedDuration={estimatedDuration}
+          defaultStaff={defaultStaff}
+        />
+      )}
     </div>
   );
 };
