@@ -88,7 +88,7 @@ const PlannerCalendar = () => {
             setView={setView}
           />
           
-          {/* Staff Planner section */}
+          {/* Schedule View section - Now properly configured for daily view */}
           <div className="mt-8">
             <h2 className="text-2xl font-bold text-white mb-4">Schedule View</h2>
             <div className="grid grid-cols-1 gap-6">

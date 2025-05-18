@@ -1,7 +1,7 @@
 
 import HeroSection from "@/components/home/HeroSection";
-import FeaturesSection from "@/components/home/FeaturesSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
+import FeaturesSection from "@/components/home/FeaturesSection";
 import CTASection from "@/components/home/CTASection";
 import DataMigrationTrigger from "@/components/DataMigrationTrigger";
 import { useEffect, useState } from "react";
@@ -29,10 +29,10 @@ export default function Index() {
       {/* Migration Component - Only show if needed */}
       {showMigration && <DataMigrationTrigger />}
       
-      {/* Features Section */}
+      {/* Features Section - Now placed before testimonials */}
       <FeaturesSection />
       
-      {/* Testimonials Section */}
+      {/* Testimonials Section - Now at the bottom */}
       <TestimonialsSection />
       
       {/* Call to Action Section */}

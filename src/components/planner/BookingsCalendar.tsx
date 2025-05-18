@@ -7,6 +7,7 @@ import { Tabs } from "@/components/ui/tabs";
 import { Calendar } from "@/components/ui/calendar";
 import { PlannerViewType } from '@/hooks/usePlannerCalendar';
 import BookingsCalendarContent from './BookingsCalendarContent';
+import { format } from 'date-fns';
 
 interface BookingsCalendarProps {
   date: Date | undefined;
@@ -60,9 +61,13 @@ const BookingsCalendar: React.FC<BookingsCalendarProps> = ({
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-white">Schedule View</CardTitle>
+            <CardTitle className="text-white">
+              {view === 'daily' ? 
+                `Daily Schedule: ${date ? format(date, 'EEEE, MMMM d, yyyy') : 'Select a date'}` :
+                'Schedule View'}
+            </CardTitle>
             <CardDescription className="text-gold/70">
-              Plan and organize team assignments
+              {view === 'daily' ? '15-minute time slots' : 'Plan and organize team assignments'}
             </CardDescription>
           </div>
           <Tabs defaultValue="daily" value={view} onValueChange={(v) => setView(v as PlannerViewType)}>
@@ -76,21 +81,23 @@ const BookingsCalendar: React.FC<BookingsCalendarProps> = ({
       </CardHeader>
       <CardContent>
         <div className="flex flex-col md:flex-row gap-4">
-          <div className="w-full md:w-auto" key={refreshKey}>
-            <Calendar
-              mode="single"
-              selected={date}
-              onSelect={setDate}
-              className="bg-black/30 border border-gold/30 rounded-md"
-              modifiers={{
-                highlighted: hasBookingsOnDate
-              }}
-              modifiersClassNames={{
-                highlighted: "font-bold text-gold",
-                noBookings: "text-white font-normal"
-              }}
-            />
-          </div>
+          {view !== 'daily' && (
+            <div className="w-full md:w-auto" key={refreshKey}>
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={setDate}
+                className="bg-black/30 border border-gold/30 rounded-md"
+                modifiers={{
+                  highlighted: hasBookingsOnDate
+                }}
+                modifiersClassNames={{
+                  highlighted: "font-bold text-gold",
+                  noBookings: "text-white font-normal"
+                }}
+              />
+            </div>
+          )}
           
           <BookingsCalendarContent
             date={date}
