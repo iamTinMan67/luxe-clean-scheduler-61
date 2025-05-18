@@ -13,6 +13,7 @@ interface BookingFormProps {
     phone: string;
     email: string;
     notes: string;
+    vehicleReg: string; // Added vehicleReg field
   }) => void;
 }
 
@@ -22,11 +23,12 @@ const BookingForm = ({ onSubmit }: BookingFormProps) => {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [notes, setNotes] = useState("");
+  const [vehicleReg, setVehicleReg] = useState(""); // Added state for vehicleReg
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!yourName || !postcode || !phone || !email || !notes) {
+    if (!yourName || !postcode || !phone || !email) {
       toast.error("Oops! Check Again");
       return;
     }
@@ -37,6 +39,7 @@ const BookingForm = ({ onSubmit }: BookingFormProps) => {
       phone,
       email,
       notes,
+      vehicleReg, // Added vehicleReg to submission
     });
   };
 
@@ -89,7 +92,20 @@ const BookingForm = ({ onSubmit }: BookingFormProps) => {
             className="bg-gray-800 border-gray-700 text-white"
             required
           />
-        </div>       
+        </div>
+        
+        {/* Added Vehicle Registration field */}
+        <div>
+          <Label htmlFor="vehicleReg" className="text-white">Vehicle Reg/Job request</Label>
+          <Input 
+            id="vehicleReg" 
+            placeholder="Car registration or boat/vehicle details"
+            value={vehicleReg}
+            onChange={(e) => setVehicleReg(e.target.value)}
+            className="bg-gray-800 border-gray-700 text-white"
+          />
+        </div>
+        
         <div>
           <Label htmlFor="notes" className="text-white">Any Notes</Label>
           <Textarea 

@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -83,7 +82,7 @@ const Booking = () => {
       date: selectedDate,
       time: selectedTime,
       vehicleCondition: vehicleCondition,
-      vehicleReg: vehicleReg
+      vehicleReg: formData.vehicleReg // Use the vehicleReg from the form
     };
     
     // Retrieve existing bookings from localStorage
@@ -99,7 +98,7 @@ const Booking = () => {
       ...bookingData,
       status: "pending",
       customer: `${formData.yourName}`,
-      vehicle: vehicleReg || vehicleType,
+      vehicle: formData.vehicleReg || vehicleType, // Use vehicleReg if available
       packageType: packageType, // Use the saved package type
       location: formData.postcode || "TBC",
       contact: formData.phone,

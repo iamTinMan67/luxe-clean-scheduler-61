@@ -175,31 +175,17 @@ const PreInspection = () => {
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label htmlFor="make" className="text-white text-sm font-medium block mb-1">
-                    Make
-                  </label>
-                  <Input id="make" className="bg-black/40 border-gold/30 text-white" placeholder="Vehicle make" />
-                </div>
-                <div>
-                  <label htmlFor="model" className="text-white text-sm font-medium block mb-1">
-                    Model
-                  </label>
-                  <Input id="model" className="bg-black/40 border-gold/30 text-white" placeholder="Vehicle model" />
-                </div>
-                <div>
-                  <label htmlFor="regNumber" className="text-white text-sm font-medium block mb-1">
-                    Registration
-                  </label>
-                  <Input 
-                    id="regNumber" 
-                    className="bg-black/40 border-gold/30 text-white" 
-                    placeholder="Reg. number" 
-                    value={bookingDetails?.vehicleReg || ""}
-                    readOnly={!!bookingDetails?.vehicleReg}
-                  />
-                </div>
+              <div>
+                <label htmlFor="regNumber" className="text-white text-sm font-medium block mb-1">
+                  Registration/Vehicle
+                </label>
+                <Input 
+                  id="regNumber" 
+                  className="bg-black/40 border-gold/30 text-white" 
+                  placeholder="Reg. number" 
+                  value={bookingDetails?.vehicleReg || bookingDetails?.vehicle || ""}
+                  readOnly={!!(bookingDetails?.vehicleReg || bookingDetails?.vehicle)}
+                />
               </div>
               
               <div>
