@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Booking } from '@/types/booking';
 import { useBookingsStorage } from './planner/useBookingsStorage';
@@ -6,6 +5,8 @@ import { PlannerViewType } from './usePlannerCalendar';
 import { toast } from 'sonner';
 import { useBookingManagement } from './planner/useBookingManagement';
 import { isSameDay } from 'date-fns';
+import { packageOptions, additionalServices } from '@/data/servicePackageData';
+import { generateInvoice as generateBookingInvoice } from '@/utils/bookingUtils';
 
 export const useBookings = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -115,14 +116,16 @@ export const useBookings = () => {
       
       // If status is finished, trigger invoice generation
       if (newStatus === "finished") {
-        // Generate invoice
-        generateInvoice(booking);
+        // Generate invoice using imported function
+        generateBookingInvoice(booking);
       }
       
       // If status is in-progress, populate To-Do list
       if (newStatus === "in-progress") {
         populateToDoList(booking);
       }
+      
+      toast.success(`${booking.customer}'s booking has been updated to ${newStatus}.`);
     } else if (isPending) {
       // Update in pending bookings
       const updatedPending = pendingBookings.map(b => 
@@ -131,25 +134,15 @@ export const useBookings = () => {
       
       setPendingBookings(updatedPending);
       localStorage.setItem('pendingBookings', JSON.stringify(updatedPending));
+      
+      toast.success(`${booking.customer}'s booking has been updated to ${newStatus}.`);
     }
-    
-    toast.success(`${booking.customer}'s booking has been updated to ${newStatus}.`);
-  };
-  
-  // Helper function to generate an invoice
-  const generateInvoice = (booking: Booking) => {
-    // Import the utility function
-    const { generateInvoice } = require('@/utils/bookingUtils');
-    generateInvoice(booking);
-    
-    toast.success(`Invoice generated for ${booking.customer}.`);
   };
   
   // Helper function to populate To-Do list
   const populateToDoList = (booking: Booking) => {
     // Find the package
-    const packageData = require('@/data/servicePackageData');
-    const packageOption = packageData.packageOptions.find(p => p.type === booking.packageType);
+    const packageOption = packageOptions.find(p => p.type === booking.packageType);
     
     if (packageOption) {
       // Create service tasks
@@ -166,7 +159,7 @@ export const useBookings = () => {
       // Add additional services if present
       if (booking.additionalServices && Array.isArray(booking.additionalServices)) {
         booking.additionalServices.forEach(serviceId => {
-          const service = packageData.additionalServices.find(s => s.id === serviceId);
+          const service = additionalServices.find(s => s.id === serviceId);
           if (service) {
             serviceTasks.push({
               id: `${service.id}-${booking.id}`,

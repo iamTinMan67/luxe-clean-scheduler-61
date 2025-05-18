@@ -5,8 +5,7 @@ import {
   CheckCircle, 
   PlayCircle, 
   CheckSquare, 
-  FileText, 
-  ArrowRight 
+  FileText
 } from "lucide-react";
 import { Booking } from '@/types/booking';
 
@@ -67,19 +66,6 @@ const BookingActions: React.FC<BookingActionsProps> = ({
         >
           <FileText className="h-4 w-4 mr-1" /> Finalize
         </Button>
-      )}
-      
-      {/* Show status progression indication */}
-      {booking.status !== "pending" && booking.status !== "finished" && (
-        <div className="text-xs text-gray-400 flex items-center ml-1">
-          <span>{booking.status}</span>
-          <ArrowRight className="h-3 w-3 mx-1" />
-          <span>
-            {booking.status === "confirmed" ? "in-progress" : 
-             booking.status === "in-progress" ? "completed" : 
-             booking.status === "completed" ? "finished" : ""}
-          </span>
-        </div>
       )}
     </div>
   );
