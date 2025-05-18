@@ -20,15 +20,19 @@ export const useBookingStatus = (
   };
 
   // Handler for updating booking status
-  const updateBookingStatus = (booking: Booking, newStatus: string) => {
+  const updateBookingStatus = (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished" | "cancelled" | "pending") => {
     // If the booking is pending and we're confirming it, use the special confirmation handler
     if (booking.status === "pending" && newStatus === "confirmed") {
       confirmBooking(booking);
       return;
     }
     
-    // Update the booking status
-    const updatedBooking = { ...booking, status: newStatus };
+    // Update the booking status - ensure we're using the correct type
+    const updatedBooking = { 
+      ...booking, 
+      status: newStatus as "pending" | "confirmed" | "cancelled" | "in-progress" | "completed" | "finished"
+    };
+    
     updateBooking(updatedBooking);
     
     // Status-specific actions

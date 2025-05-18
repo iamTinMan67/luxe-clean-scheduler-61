@@ -13,7 +13,7 @@ interface BookingItemProps {
   onDelete: (booking: Booking) => void;
   onPackageChange: (booking: Booking, newPackage: string) => void;
   onReschedule: (booking: Booking, newDate: Date) => void;
-  onUpdateStatus: (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished") => void;
+  onUpdateStatus: (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished" | "pending" | "cancelled") => void;
 }
 
 const BookingItem: React.FC<BookingItemProps> = ({ 

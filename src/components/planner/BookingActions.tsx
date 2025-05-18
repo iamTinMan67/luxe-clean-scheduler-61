@@ -14,7 +14,7 @@ interface BookingActionsProps {
   booking: Booking;
   onConfirm: (booking: Booking) => void;
   onComplete: (booking: Booking) => void;
-  onUpdateStatus: (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished") => void;
+  onUpdateStatus: (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished" | "pending" | "cancelled") => void;
 }
 
 const BookingActions: React.FC<BookingActionsProps> = ({ 
@@ -36,7 +36,11 @@ const BookingActions: React.FC<BookingActionsProps> = ({
         <Button 
           size="sm"
           className={`bg-${statusInfo.badgeColor} hover:bg-${statusInfo.badgeColor}/80 text-white`}
-          onClick={() => onUpdateStatus(booking, statusInfo.nextStatus as any)}
+          onClick={() => {
+            // Cast nextStatus to the valid type to ensure compatibility
+            const typedNextStatus = statusInfo.nextStatus as "confirmed" | "in-progress" | "completed" | "finished" | "pending" | "cancelled";
+            onUpdateStatus(booking, typedNextStatus);
+          }}
         >
           {booking.status === "pending" && <CheckCircle className="h-4 w-4 mr-1" />}
           {booking.status === "confirmed" && <PlayCircle className="h-4 w-4 mr-1" />}
