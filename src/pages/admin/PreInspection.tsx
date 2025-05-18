@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useScheduledAppointments } from "@/hooks/useScheduledAppointments";
 import VehicleInfoForm from "@/components/admin/preinspection/VehicleInfoForm";
@@ -11,8 +11,11 @@ import { Booking } from "@/types/booking";
 
 const PreInspection = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const initialBookingId = searchParams.get('bookingId') || '';
+  
   const [images, setImages] = useState<string[]>([]);
-  const [selectedBooking, setSelectedBooking] = useState<string>("");
+  const [selectedBooking, setSelectedBooking] = useState<string>(initialBookingId);
   const [bookingDetails, setBookingDetails] = useState<Booking | null>(null);
   const [exteriorNotes, setExteriorNotes] = useState("");
   const [interiorNotes, setInteriorNotes] = useState("");
@@ -51,12 +54,21 @@ const PreInspection = () => {
       setImages([]);
       setExteriorNotes("");
       setInteriorNotes("");
-      setSelectedBooking("");
-      setBookingDetails(null);
+      
+      // Get the checklist data from localStorage if needed
+      const checklistData = localStorage.getItem('lastInspectionChecklist');
       
       // Navigate to TodoList with the booking ID as parameter
       navigate(`/admin/todo-list?bookingId=${bookingDetails?.id}`);
     }
+  };
+
+  // Extract vehicle type from booking details
+  const getVehicleType = (): string => {
+    if (bookingDetails?.vehicle?.toLowerCase().includes('van')) {
+      return 'van';
+    }
+    return 'car';
   };
 
   return (
@@ -92,7 +104,10 @@ const PreInspection = () => {
         </div>
         
         <div className="lg:col-span-1">
-          <InspectionChecklist onSubmitReport={handleSubmitReport} />
+          <InspectionChecklist 
+            onSubmitReport={handleSubmitReport} 
+            vehicleType={getVehicleType()}
+          />
         </div>
       </div>
     </motion.div>

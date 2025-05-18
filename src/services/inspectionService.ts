@@ -1,6 +1,7 @@
 
 import { toast } from "sonner";
 import { Booking } from "@/types/booking";
+import { InspectionChecklistItem, CustomChecklistItem } from "@/types/task";
 
 export const submitPreInspectionReport = (
   bookingDetails: Booking | null,
@@ -16,6 +17,21 @@ export const submitPreInspectionReport = (
   if (images.length === 0) {
     toast.error("No images uploaded. Consider adding vehicle condition photos.");
     return false;
+  }
+
+  // Get checklist data from localStorage
+  let standardItems: InspectionChecklistItem[] = [];
+  let customItems: CustomChecklistItem[] = [];
+  
+  try {
+    const checklistData = localStorage.getItem('lastInspectionChecklist');
+    if (checklistData) {
+      const parsedData = JSON.parse(checklistData);
+      standardItems = parsedData.standardItems || [];
+      customItems = parsedData.customItems || [];
+    }
+  } catch (error) {
+    console.error("Error parsing checklist data:", error);
   }
 
   // Update booking status to "in-progress" in localStorage
@@ -54,7 +70,9 @@ export const submitPreInspectionReport = (
     interiorNotes,
     images,
     date: new Date().toISOString(),
-    type: "pre" as const
+    type: "pre" as const,
+    standardChecklistItems: standardItems,
+    customChecklistItems: customItems
   };
   
   const savedReports = JSON.parse(localStorage.getItem('inspectionReports') || '[]');

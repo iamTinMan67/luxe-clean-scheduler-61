@@ -26,3 +26,18 @@ export interface ProgressData {
   steps: BookingStep[];
   updatedAt: string;
 }
+
+// New types for checklist items
+export interface InspectionChecklistItem {
+  id: number;
+  label: string;
+  completed: boolean;
+  required: boolean;
+  vehicleType?: 'car' | 'van' | 'all'; // The vehicle type this checklist item applies to
+}
+
+export interface CustomChecklistItem {
+  id: string;
+  label: string;
+  completed: boolean;
+}
