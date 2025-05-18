@@ -12,9 +12,14 @@ import { getChecklistItemsForVehicle } from "@/data/inspectionChecklist";
 interface InspectionChecklistProps {
   onSubmitReport: () => void;
   vehicleType?: string;
+  isSubmitting?: boolean;
 }
 
-const InspectionChecklist = ({ onSubmitReport, vehicleType = "car" }: InspectionChecklistProps) => {
+const InspectionChecklist = ({ 
+  onSubmitReport, 
+  vehicleType = "car", 
+  isSubmitting = false 
+}: InspectionChecklistProps) => {
   const { toast } = useToast();
   const [checklistItems, setChecklistItems] = useState<InspectionChecklistItem[]>([]);
   const [customItems, setCustomItems] = useState<CustomChecklistItem[]>([]);
@@ -81,7 +86,7 @@ const InspectionChecklist = ({ onSubmitReport, vehicleType = "car" }: Inspection
       customItems: customItems
     };
     
-    // Save to localStorage for now
+    // Save to localStorage for now (will be used by the submitPreInspectionReport function)
     localStorage.setItem('lastInspectionChecklist', JSON.stringify(inspectionData));
     
     onSubmitReport();
@@ -174,8 +179,9 @@ const InspectionChecklist = ({ onSubmitReport, vehicleType = "car" }: Inspection
           <Button 
             className="w-full gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg"
             onClick={handleSubmit}
+            disabled={isSubmitting}
           >
-            Submit Report
+            {isSubmitting ? "Submitting..." : "Submit Report"}
           </Button>
         </div>
       </CardContent>

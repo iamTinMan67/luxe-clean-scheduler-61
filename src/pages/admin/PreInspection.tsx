@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { useScheduledAppointments } from "@/hooks/useScheduledAppointments";
 import VehicleInfoForm from "@/components/admin/preinspection/VehicleInfoForm";
 import ImageUploadSection from "@/components/admin/preinspection/ImageUploadSection";
@@ -19,6 +20,7 @@ const PreInspection = () => {
   const [bookingDetails, setBookingDetails] = useState<Booking | null>(null);
   const [exteriorNotes, setExteriorNotes] = useState("");
   const [interiorNotes, setInteriorNotes] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { appointments, loading } = useScheduledAppointments();
   
   // Update booking details when a booking is selected
@@ -41,25 +43,31 @@ const PreInspection = () => {
   };
 
   // Handle report submission
-  const handleSubmitReport = () => {
-    const success = submitPreInspectionReport(
-      bookingDetails,
-      images,
-      exteriorNotes,
-      interiorNotes
-    );
+  const handleSubmitReport = async () => {
+    setIsSubmitting(true);
     
-    if (success) {
-      // Reset form
-      setImages([]);
-      setExteriorNotes("");
-      setInteriorNotes("");
+    try {
+      const success = await submitPreInspectionReport(
+        bookingDetails,
+        images,
+        exteriorNotes,
+        interiorNotes
+      );
       
-      // Get the checklist data from localStorage if needed
-      const checklistData = localStorage.getItem('lastInspectionChecklist');
-      
-      // Navigate to TodoList with the booking ID as parameter
-      navigate(`/admin/todo-list?bookingId=${bookingDetails?.id}`);
+      if (success) {
+        // Reset form
+        setImages([]);
+        setExteriorNotes("");
+        setInteriorNotes("");
+        
+        // Navigate to TodoList with the booking ID as parameter
+        navigate(`/admin/todo-list?bookingId=${bookingDetails?.id}`);
+      }
+    } catch (error) {
+      console.error("Error submitting report:", error);
+      toast.error("Failed to submit inspection report");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -107,6 +115,7 @@ const PreInspection = () => {
           <InspectionChecklist 
             onSubmitReport={handleSubmitReport} 
             vehicleType={getVehicleType()}
+            isSubmitting={isSubmitting}
           />
         </div>
       </div>

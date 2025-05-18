@@ -315,6 +315,106 @@ export type Database = {
         }
         Relationships: []
       }
+      inspection_checklist_items: {
+        Row: {
+          completed: boolean | null
+          id: string
+          item_id: number
+          label: string
+          report_id: string | null
+          required: boolean | null
+        }
+        Insert: {
+          completed?: boolean | null
+          id?: string
+          item_id: number
+          label: string
+          report_id?: string | null
+          required?: boolean | null
+        }
+        Update: {
+          completed?: boolean | null
+          id?: string
+          item_id?: number
+          label?: string
+          report_id?: string | null
+          required?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inspection_checklist_items_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "inspection_reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inspection_custom_items: {
+        Row: {
+          completed: boolean | null
+          id: string
+          label: string
+          report_id: string | null
+        }
+        Insert: {
+          completed?: boolean | null
+          id?: string
+          label: string
+          report_id?: string | null
+        }
+        Update: {
+          completed?: boolean | null
+          id?: string
+          label?: string
+          report_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inspection_custom_items_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "inspection_reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inspection_reports: {
+        Row: {
+          booking_id: string
+          created_at: string | null
+          date: string | null
+          exterior_notes: string | null
+          id: string
+          images: string[] | null
+          interior_notes: string | null
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string | null
+          date?: string | null
+          exterior_notes?: string | null
+          id?: string
+          images?: string[] | null
+          interior_notes?: string | null
+          type: string
+          updated_at?: string | null
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string | null
+          date?: string | null
+          exterior_notes?: string | null
+          id?: string
+          images?: string[] | null
+          interior_notes?: string | null
+          type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       inventory_items: {
         Row: {
           allocated_stock: Json | null
