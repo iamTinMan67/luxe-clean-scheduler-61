@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { format } from "date-fns";
 import { Booking } from "@/types/booking";
 
 interface VehicleInfoFormProps {
@@ -35,6 +36,17 @@ const VehicleInfoForm = ({
   setExteriorNotes,
   setInteriorNotes,
 }: VehicleInfoFormProps) => {
+  // Filter appointments to only show today's bookings
+  const todayAppointments = appointments.filter(booking => {
+    const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
+    const today = new Date();
+    return (
+      bookingDate.getDate() === today.getDate() &&
+      bookingDate.getMonth() === today.getMonth() &&
+      bookingDate.getFullYear() === today.getFullYear()
+    );
+  });
+
   return (
     <Card className="bg-black/60 border-gold/30">
       <CardHeader>
@@ -44,26 +56,26 @@ const VehicleInfoForm = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label htmlFor="customer" className="text-white text-sm font-medium block mb-1">
-              Customer Name
+              Today's Appointments
             </label>
             <Select
               value={selectedBooking}
               onValueChange={(value) => setSelectedBooking(value)}
             >
               <SelectTrigger className="bg-black/40 border-gold/30 text-white">
-                <SelectValue placeholder="Select a scheduled appointment" />
+                <SelectValue placeholder="Select today's appointment" />
               </SelectTrigger>
               <SelectContent className="bg-gray-900 border-gold/30 text-white">
                 {loading ? (
                   <SelectItem value="loading" disabled>Loading appointments...</SelectItem>
-                ) : appointments.length > 0 ? (
-                  appointments.map((booking) => (
+                ) : todayAppointments.length > 0 ? (
+                  todayAppointments.map((booking) => (
                     <SelectItem key={booking.id} value={booking.id}>
-                      {booking.customer} - {new Date(booking.date).toLocaleDateString()}
+                      {booking.customer} - {booking.time} - {booking.packageType}
                     </SelectItem>
                   ))
                 ) : (
-                  <SelectItem value="none" disabled>No scheduled appointments found</SelectItem>
+                  <SelectItem value="none" disabled>No appointments scheduled for today</SelectItem>
                 )}
               </SelectContent>
             </Select>
@@ -75,24 +87,10 @@ const VehicleInfoForm = ({
             <Input 
               id="bookingId" 
               className="bg-black/40 border-gold/30 text-white" 
-              placeholder="Enter booking ID" 
               value={bookingDetails?.id || ""}
-              readOnly={!!bookingDetails}
+              readOnly
             />
           </div>
-        </div>
-        
-        <div>
-          <label htmlFor="regNumber" className="text-white text-sm font-medium block mb-1">
-            Registration/Vehicle
-          </label>
-          <Input 
-            id="regNumber" 
-            className="bg-black/40 border-gold/30 text-white" 
-            placeholder="Reg. number" 
-            value={bookingDetails?.vehicleReg || bookingDetails?.vehicle || ""}
-            readOnly={!!(bookingDetails?.vehicleReg || bookingDetails?.vehicle)}
-          />
         </div>
         
         <div>

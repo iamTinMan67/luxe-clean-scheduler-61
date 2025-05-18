@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { toast } from "@/components/ui/use-toast";
 import { useScheduledAppointments } from "@/hooks/useScheduledAppointments";
 import VehicleInfoForm from "@/components/admin/preinspection/VehicleInfoForm";
 import ImageUploadSection from "@/components/admin/preinspection/ImageUploadSection";
@@ -10,6 +10,7 @@ import { submitPreInspectionReport } from "@/services/inspectionService";
 import { Booking } from "@/types/booking";
 
 const PreInspection = () => {
+  const navigate = useNavigate();
   const [images, setImages] = useState<string[]>([]);
   const [selectedBooking, setSelectedBooking] = useState<string>("");
   const [bookingDetails, setBookingDetails] = useState<Booking | null>(null);
@@ -52,6 +53,9 @@ const PreInspection = () => {
       setInteriorNotes("");
       setSelectedBooking("");
       setBookingDetails(null);
+      
+      // Navigate to TodoList with the booking ID as parameter
+      navigate(`/admin/todo-list?bookingId=${bookingDetails?.id}`);
     }
   };
 

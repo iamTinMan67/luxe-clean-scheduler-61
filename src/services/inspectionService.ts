@@ -1,5 +1,5 @@
 
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { Booking } from "@/types/booking";
 
 export const submitPreInspectionReport = (
@@ -9,18 +9,12 @@ export const submitPreInspectionReport = (
   interiorNotes: string
 ): boolean => {
   if (!bookingDetails) {
-    toast({
-      variant: "destructive",
-      description: "Please select a booking first"
-    });
+    toast.error("Please select a booking first");
     return false;
   }
 
   if (images.length === 0) {
-    toast({
-      variant: "destructive",
-      description: "No images uploaded. Consider adding vehicle condition photos."
-    });
+    toast.error("No images uploaded. Consider adding vehicle condition photos.");
     return false;
   }
 
@@ -66,9 +60,7 @@ export const submitPreInspectionReport = (
   const savedReports = JSON.parse(localStorage.getItem('inspectionReports') || '[]');
   localStorage.setItem('inspectionReports', JSON.stringify([...savedReports, inspectionReport]));
   
-  toast({
-    description: "Pre-inspection report has been saved and booking status updated to 'In Progress'",
-  });
+  toast.success("Pre-inspection report has been saved and booking status updated to 'In Progress'");
 
   return true;
 };
