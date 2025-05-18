@@ -1,57 +1,42 @@
 
 import { useState } from 'react';
 import { Booking } from '@/types/booking';
-import { useBookingStateManager } from './useBookingStateManager';
-import { isSameDay } from 'date-fns';
+import { isSameDayDate } from '@/utils/dateUtils';
 
 export const useBookingFiltering = () => {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
-  
-  const { pendingBookings, confirmedBookings } = useBookingStateManager();
-  
-  // Get all bookings for a specific date
-  const getBookingsForDate = (date: Date | undefined = selectedDate) => {
+  const [filters, setFilters] = useState({
+    status: 'all',
+    packageType: 'all'
+  });
+
+  // Filter bookings by date
+  const getBookingsForDate = (
+    date: Date | undefined, 
+    allBookings: Booking[]
+  ): Booking[] => {
     if (!date) return [];
     
-    const allBookings = [...confirmedBookings, ...pendingBookings];
-    
     return allBookings.filter(booking => {
-      const bookingDate = booking.date instanceof Date 
-        ? booking.date 
-        : new Date(booking.date);
+      const bookingDate = booking.date instanceof Date ? 
+        booking.date : new Date(booking.date);
       
-      return isSameDay(bookingDate, date);
+      return isSameDayDate(bookingDate, date);
     });
   };
-  
-  // Filter bookings by status
-  const getBookingsByStatus = (status: string) => {
-    const allBookings = [...confirmedBookings, ...pendingBookings];
-    return allBookings.filter(booking => booking.status === status);
-  };
-  
-  // Filter bookings by date range
-  const getBookingsInDateRange = (startDate: Date, endDate: Date) => {
-    const allBookings = [...confirmedBookings, ...pendingBookings];
-    
-    return allBookings.filter(booking => {
-      const bookingDate = booking.date instanceof Date 
-        ? booking.date 
-        : new Date(booking.date);
-      
-      return bookingDate >= startDate && bookingDate <= endDate;
+
+  // Filter bookings by status and package type
+  const filterBookings = (bookings: Booking[]): Booking[] => {
+    return bookings.filter(booking => {
+      const statusMatch = filters.status === 'all' || booking.status === filters.status;
+      const packageMatch = filters.packageType === 'all' || booking.packageType === filters.packageType;
+      return statusMatch && packageMatch;
     });
   };
 
   return {
-    selectedDate,
-    setSelectedDate,
-    pendingBookings,
-    confirmedBookings,
+    filters,
+    setFilters,
     getBookingsForDate,
-    getBookingsByStatus,
-    getBookingsInDateRange
+    filterBookings
   };
 };
-
-export default useBookingFiltering;
