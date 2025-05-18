@@ -5,8 +5,13 @@ import { statsData, revenueData, packageData, vehicleData, inventoryAlerts, rece
 const DashboardContent = () => {
   return (
     <>
-      {/* Recent Bookings - Moved to the top */}
+      {/* Recent Bookings - At the top */}
       <RecentBookings bookings={recentBookings} />
+      
+      {/* Inventory Alerts - Below Recent Bookings */}
+      <div className="mb-8">
+        <InventoryAlerts alerts={inventoryAlerts} />
+      </div>
       
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -33,9 +38,6 @@ const DashboardContent = () => {
         
         {/* Vehicle Types Chart */}
         <VehicleTypeChart data={vehicleData} />
-        
-        {/* Inventory Alerts */}
-        <InventoryAlerts alerts={inventoryAlerts} />
       </div>
     </>
   );
