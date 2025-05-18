@@ -1,5 +1,5 @@
 
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
 interface ProtectedRouteProps {
@@ -20,6 +20,7 @@ const ProtectedRoute = ({
   public: isPublic = false
 }: ProtectedRouteProps) => {
   const { user, isAdmin, isStaff, isLoading } = useAuth();
+  const location = useLocation();
   
   // Return the element or children without any auth checks if route is public
   if (isPublic) {
@@ -27,7 +28,7 @@ const ProtectedRoute = ({
     return <>{element || children}</>;
   }
   
-  // Always return the element for non-protected routes
+  // For non-protected routes, just render the element without conditions
   if (!requireAdmin && !requireStaff && !requiredRole) {
     console.log("Rendering non-protected route");
     return <>{element || children}</>;
@@ -46,7 +47,7 @@ const ProtectedRoute = ({
     return <Navigate to="/login" replace />;
   }
   
-  // Check role requirements
+  // Check role requirements without redirecting to dashboard
   if (requiredRole === "admin" && !isAdmin) {
     console.log("Redirecting to login - user not admin");
     return <Navigate to="/login" replace />;
@@ -63,6 +64,7 @@ const ProtectedRoute = ({
   }
   
   // User is authenticated and meets role requirements
+  // Return the actual component without redirecting anywhere else
   console.log("User authenticated and meets role requirements");
   return <>{element || children}</>;
 };
