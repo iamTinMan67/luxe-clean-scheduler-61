@@ -16,13 +16,11 @@ export const useBookingOperations = () => {
   
   const { getBookingsForDate: filterBookingsByDate } = useBookingFiltering();
 
-  // Get all bookings (both pending and confirmed) for the selected date
+  // Get only confirmed bookings for the selected date
+  // This ensures pending bookings are not shown in the Schedule View
   const getBookingsForDate = (): Booking[] => {
-    // Combine pending and confirmed bookings for complete list
-    const allBookings = [...pendingBookings, ...confirmedBookings];
-    
-    // Filter by the currently selected date
-    return filterBookingsByDate(date, allBookings);
+    // Only use confirmed bookings for the schedule view
+    return filterBookingsByDate(date, confirmedBookings);
   };
 
   // Delete a booking

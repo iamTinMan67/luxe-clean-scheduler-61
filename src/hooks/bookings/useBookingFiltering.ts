@@ -9,14 +9,14 @@ export const useBookingFiltering = () => {
     packageType: 'all'
   });
 
-  // Filter bookings by date - include both pending and confirmed bookings
+  // Filter bookings by date
   const getBookingsForDate = (
     date: Date | undefined, 
-    allBookings: Booking[]
+    bookings: Booking[]
   ): Booking[] => {
     if (!date) return [];
     
-    return allBookings.filter(booking => {
+    return bookings.filter(booking => {
       const bookingDate = booking.date instanceof Date ? 
         booking.date : new Date(booking.date);
       
