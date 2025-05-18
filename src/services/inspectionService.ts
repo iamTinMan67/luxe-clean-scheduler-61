@@ -189,6 +189,11 @@ export const getInspectionReports = async (bookingId: string): Promise<Inspectio
           completed: item.completed
         }));
         
+        // Ensure the type is correctly cast to the string literal union type
+        const inspectionType = report.type === 'pre' || report.type === 'post' 
+          ? report.type as 'pre' | 'post'
+          : 'pre'; // Default to 'pre' if somehow we get an invalid value
+        
         return {
           id: report.id,
           bookingId: report.booking_id,
@@ -196,7 +201,7 @@ export const getInspectionReports = async (bookingId: string): Promise<Inspectio
           interiorNotes: report.interior_notes || '',
           images: report.images || [],
           date: report.date,
-          type: report.type,
+          type: inspectionType,
           standardChecklistItems: mappedStandardItems,
           customChecklistItems: mappedCustomItems
         };
