@@ -23,10 +23,10 @@ interface BookingsCalendarContentProps {
 // Generate time slots for daily view (15-minute intervals)
 const generateTimeSlots = () => {
   const slots = [];
-  const startHour = 6; // 6 AM
-  const endHour = 22; // 10 PM
+  const startHour = 8; // 8 AM
+  const endHour = 17; // 5 PM
   
-  for (let hour = startHour; hour < endHour; hour++) {
+  for (let hour = startHour; hour <= endHour; hour++) {
     for (let minute = 0; minute < 60; minute += 15) {
       slots.push(`${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`);
     }
@@ -47,7 +47,8 @@ const BookingsCalendarContent: React.FC<BookingsCalendarContentProps> = ({
   onUpdateStatus
 }) => {
   // Only show confirmed bookings
-  const confirmedBookingsForDate = bookingsForDate.filter(booking => booking.status === 'confirmed' || 
+  const confirmedBookingsForDate = bookingsForDate.filter(booking => 
+    booking.status === 'confirmed' || 
     booking.status === 'in-progress' || 
     booking.status === 'completed');
   
@@ -60,14 +61,14 @@ const BookingsCalendarContent: React.FC<BookingsCalendarContentProps> = ({
     );
   }
   
-  // If daily view, show time slots
+  // If daily view, show time slots horizontally
   if (view === 'daily') {
     const timeSlots = generateTimeSlots();
     // Map bookings to their time slots
     const bookingsByTime: Record<string, Booking[]> = {};
     
     confirmedBookingsForDate.forEach(booking => {
-      const timeSlot = booking.startTime || booking.time || '09:00';
+      const timeSlot = booking.startTime || booking.time || '08:00';
       if (!bookingsByTime[timeSlot]) {
         bookingsByTime[timeSlot] = [];
       }
@@ -75,64 +76,72 @@ const BookingsCalendarContent: React.FC<BookingsCalendarContentProps> = ({
     });
     
     return (
-      <div className="flex-1 overflow-y-auto max-h-[500px] pr-2 scrollbar-none">
-        <div className="relative">
-          {timeSlots.map((timeSlot, index) => {
-            const hasBooking = bookingsByTime[timeSlot] && bookingsByTime[timeSlot].length > 0;
-            const isHourStart = timeSlot.endsWith(':00');
-            
-            return (
-              <div key={timeSlot} className={`flex items-start ${isHourStart ? 'mt-4' : 'mt-1'}`}>
-                <div className={`min-w-[60px] text-right pr-2 ${isHourStart ? 'font-bold text-white' : 'text-xs text-gray-400'}`}>
-                  {timeSlot}
-                </div>
-                
-                <div className="flex-1 border-l border-gray-700 pl-2 min-h-[20px]">
-                  {hasBooking ? (
-                    <div className="space-y-1 mb-1">
-                      {bookingsByTime[timeSlot].map(booking => (
-                        <Card key={booking.id} className="bg-green-900/40 border-green-700/50 p-2">
-                          <CardContent className="p-1">
-                            <div className="flex justify-between items-start">
-                              <div>
-                                <div className="font-semibold text-white">{booking.customer}</div>
-                                <div className="text-xs text-gray-300">{booking.packageType}</div>
-                                {booking.vehicleReg && (
-                                  <Badge variant="outline" className="mt-1 text-xs">
-                                    {booking.vehicleReg}
-                                  </Badge>
-                                )}
-                              </div>
-                              <Badge className={`${
-                                booking.status === "confirmed" ? "bg-green-900/60 text-green-300" : 
-                                booking.status === "in-progress" ? "bg-blue-900/60 text-blue-300" :
-                                "bg-purple-900/60 text-purple-300"
-                              }`}>
-                                {booking.status}
-                              </Badge>
-                            </div>
-                            
-                            <div className="mt-2 text-xs text-gray-300 flex items-center">
-                              <Clock className="h-3 w-3 mr-1" />
-                              {booking.startTime || booking.time} - {booking.endTime || 'N/A'}
-                            </div>
-                            
-                            <div className="mt-2 flex flex-wrap gap-1">
-                              {booking.staff && booking.staff.map(staff => (
-                                <Badge key={staff} variant="outline" className="bg-blue-900/30 text-blue-300 text-xs">
-                                  {staff}
-                                </Badge>
-                              ))}
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  ) : null}
-                </div>
+      <div className="flex-1 overflow-auto max-h-[500px]">
+        <div className="flex flex-col gap-2">
+          {/* Time header */}
+          <div className="flex sticky top-0 bg-black/80 z-10 border-b border-gray-700 py-2">
+            <div className="min-w-[80px] font-bold text-white">Time</div>
+            <div className="flex-1 overflow-x-auto">
+              <div className="flex min-w-max">
+                {Array.from(new Set(timeSlots.map(slot => slot.split(':')[0]))).map(hour => (
+                  <div key={hour} className="w-[120px] text-center font-bold text-gold">
+                    {hour}:00
+                  </div>
+                ))}
               </div>
-            );
-          })}
+            </div>
+          </div>
+          
+          {/* Bookings by hour rows */}
+          <div className="flex flex-col gap-2">
+            {confirmedBookingsForDate.map(booking => {
+              const startTime = booking.startTime || booking.time || '08:00';
+              const [startHour, startMinute] = startTime.split(':').map(Number);
+              const totalStartMinutes = startHour * 60 + startMinute;
+              
+              // Calculate position based on start time (8:00 = 0 minutes from start)
+              const startPosition = totalStartMinutes - 8 * 60;
+              // Calculate width based on duration (default 1 hour if not specified)
+              const duration = booking.duration || 60; // minutes
+              
+              return (
+                <div key={booking.id} className="flex items-center">
+                  <div className="min-w-[80px] text-gray-300 text-sm font-medium">
+                    {startTime}
+                  </div>
+                  <div className="flex-1 overflow-x-auto">
+                    <div className="relative min-w-max h-16" style={{paddingLeft: `${(startPosition / 15) * 30}px`}}>
+                      <Card 
+                        className={`absolute top-0 bg-green-900/40 border-green-700/50 w-[${duration * 2}px] min-w-[120px]`}
+                      >
+                        <CardContent className="p-2">
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1">
+                              <div className="font-semibold text-white truncate">{booking.customer}</div>
+                              <div className="text-xs text-gray-300 truncate">{booking.packageType}</div>
+                            </div>
+                            <Badge className={`${
+                              booking.status === "confirmed" ? "bg-green-900/60 text-green-300" : 
+                              booking.status === "in-progress" ? "bg-blue-900/60 text-blue-300" :
+                              "bg-purple-900/60 text-purple-300"
+                            }`}>
+                              {booking.status}
+                            </Badge>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            
+            {confirmedBookingsForDate.length === 0 && (
+              <div className="text-center py-6 text-gray-500">
+                No bookings scheduled for this day
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );

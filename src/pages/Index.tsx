@@ -29,14 +29,14 @@ export default function Index() {
       {/* Migration Component - Only show if needed */}
       {showMigration && <DataMigrationTrigger />}
       
-      {/* Features Section - Now placed before testimonials */}
+      {/* Features Section */}
       <FeaturesSection />
-      
-      {/* Testimonials Section - Now at the bottom */}
-      <TestimonialsSection />
       
       {/* Call to Action Section */}
       <CTASection />
+      
+      {/* Testimonials Section - Now moved to the bottom */}
+      <TestimonialsSection />
     </div>
   );
 }
