@@ -8,7 +8,7 @@ import EmptyCalendarView from './EmptyCalendarView';
 interface DailyCalendarViewProps {
   bookings: Booking[];
   onCompleteBooking?: (booking: Booking) => void;
-  onReschedule?: (booking: Booking) => void;
+  onReschedule?: (booking: Booking, newDate: Date) => void;
   onDeleteBooking?: (booking: Booking) => void;
   onUpdateStatus?: (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished") => void;
   onPackageChange?: (booking: Booking, newPackage: string) => void;

@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 interface DailyTimeSlotProps {
   booking: Booking;
   onCompleteBooking?: (booking: Booking) => void;
-  onReschedule?: (booking: Booking) => void;
+  onReschedule?: (booking: Booking, newDate: Date) => void;
   onDeleteBooking?: (booking: Booking) => void;
   onUpdateStatus?: (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished") => void;
   onPackageChange?: (booking: Booking, newPackage: string) => void;
@@ -82,7 +82,7 @@ const DailyTimeSlot: React.FC<DailyTimeSlotProps> = ({
                     className="h-6 text-[10px] px-1 py-0 bg-blue-900/30 border-blue-600/50 text-blue-300 hover:bg-blue-800/50"
                     onClick={(e) => {
                       e.stopPropagation();
-                      onReschedule(booking);
+                      onReschedule(booking, new Date(booking.date));
                     }}
                   >
                     Reschedule
