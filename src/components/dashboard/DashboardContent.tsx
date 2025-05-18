@@ -5,6 +5,9 @@ import { statsData, revenueData, packageData, vehicleData, inventoryAlerts, rece
 const DashboardContent = () => {
   return (
     <>
+      {/* Recent Bookings - Moved to the top */}
+      <RecentBookings bookings={recentBookings} />
+      
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {statsData.map((stat, index) => (
@@ -34,9 +37,6 @@ const DashboardContent = () => {
         {/* Inventory Alerts */}
         <InventoryAlerts alerts={inventoryAlerts} />
       </div>
-      
-      {/* Recent Bookings */}
-      <RecentBookings bookings={recentBookings} />
     </>
   );
 };

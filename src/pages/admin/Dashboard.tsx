@@ -9,7 +9,7 @@ const Dashboard = () => {
       <section className="relative py-8">
         <div className="container mx-auto px-4">
           <AdminPageTitle 
-            title="Admin" 
+            title="Admin Dashboard" 
             subtitle="Overview of your business performance and metrics" 
           />
           
