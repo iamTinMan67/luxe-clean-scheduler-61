@@ -1,13 +1,13 @@
 
 import { useState } from 'react';
 import { Booking } from '@/types/booking';
-import { useBookingsStorage } from '@/hooks/planner/useBookingsStorage';
-import { isSameDayDate } from '@/utils/dateUtils';
+import { useBookingStateManager } from './useBookingStateManager';
+import { isSameDay } from 'date-fns';
 
 export const useBookingFiltering = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   
-  const { pendingBookings, confirmedBookings } = useBookingsStorage();
+  const { pendingBookings, confirmedBookings } = useBookingStateManager();
   
   // Get all bookings for a specific date
   const getBookingsForDate = (date: Date | undefined = selectedDate) => {
@@ -20,7 +20,7 @@ export const useBookingFiltering = () => {
         ? booking.date 
         : new Date(booking.date);
       
-      return isSameDayDate(bookingDate, date);
+      return isSameDay(bookingDate, date);
     });
   };
   

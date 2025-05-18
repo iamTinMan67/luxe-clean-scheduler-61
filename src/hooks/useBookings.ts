@@ -1,52 +1,38 @@
 
-import { useState } from 'react';
-import { Booking } from '@/types/booking';
-import { useBookingsStorage } from './planner/useBookingsStorage';
-import { PlannerViewType } from './usePlannerCalendar';
+import { useBookingStateManager } from './bookings/useBookingStateManager';
 import { useBookingManagement } from './bookings/useBookingManagement';
 import { useBookingOperations } from './bookings/useBookingOperations';
+import { PlannerViewType } from './usePlannerCalendar';
 import { useBookingManagement as usePlannerBookingManagement } from './planner/useBookingManagement';
 
 export const useBookings = () => {
-  const [date, setDate] = useState<Date | undefined>(new Date());
-  const [view, setView] = useState<PlannerViewType>('daily');
-  
-  const { 
-    pendingBookings, 
-    setPendingBookings, 
-    confirmedBookings, 
-    setConfirmedBookings 
-  } = useBookingsStorage();
+  const {
+    date,
+    setDate,
+    view,
+    setView,
+    pendingBookings,
+    confirmedBookings
+  } = useBookingStateManager();
   
   const { 
     handleConfirmBooking,
     handleCompleteBooking,
     handleUpdateStatus
-  } = useBookingManagement(
-    pendingBookings, 
-    setPendingBookings, 
-    confirmedBookings, 
-    setConfirmedBookings
-  );
+  } = useBookingManagement();
   
   const {
     getBookingsForDate,
     handleDeleteBooking,
     handlePackageChange,
     handleReschedule
-  } = useBookingOperations(
-    date,
-    pendingBookings,
-    setPendingBookings,
-    confirmedBookings,
-    setConfirmedBookings
-  );
+  } = useBookingOperations();
   
   const { getBookingBackground } = usePlannerBookingManagement(
-    pendingBookings, 
-    setPendingBookings, 
-    confirmedBookings, 
-    setConfirmedBookings
+    pendingBookings,
+    () => {}, // We're not using setPendingBookings directly anymore
+    confirmedBookings,
+    () => {}  // We're not using setConfirmedBookings directly anymore
   );
   
   return {
