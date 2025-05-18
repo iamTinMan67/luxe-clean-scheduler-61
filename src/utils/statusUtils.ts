@@ -10,7 +10,7 @@ export const getStatusInfo = (status: string) => {
         badgeColor: "red-600",
         textColor: "text-red-400",
         nextStatus: "confirmed",
-        nextLabel: "Confirm"
+        nextLabel: "Inspect"
       };
     case "confirmed":
       return {
@@ -19,7 +19,7 @@ export const getStatusInfo = (status: string) => {
         badgeColor: "orange-600", 
         textColor: "text-orange-400",
         nextStatus: "in-progress",
-        nextLabel: "Start Service"
+        nextLabel: "Start Inspection"
       };
     case "in-progress":
       return {
@@ -28,7 +28,7 @@ export const getStatusInfo = (status: string) => {
         badgeColor: "blue-600",
         textColor: "text-blue-400",
         nextStatus: "completed",
-        nextLabel: "Complete"
+        nextLabel: "Task Finish?"
       };
     case "completed":
       return {
@@ -37,7 +37,7 @@ export const getStatusInfo = (status: string) => {
         badgeColor: "purple-600",
         textColor: "text-purple-400",
         nextStatus: "finished",
-        nextLabel: "Finalize"
+        nextLabel: "Finished?"
       };
     case "finished":
       return {
@@ -46,7 +46,7 @@ export const getStatusInfo = (status: string) => {
         badgeColor: "green-600",
         textColor: "text-green-400",
         nextStatus: null,
-        nextLabel: null
+        nextLabel: "Create Invoice?"
       };
     case "cancelled":
       return {
