@@ -74,12 +74,10 @@ const BookingsCalendar: React.FC<BookingsCalendarProps> = ({
               onSelect={setDate}
               className="bg-black/30 border border-gold/30 rounded-md"
               modifiers={{
-                highlighted: hasBookingsOnDate,
-                noBookings: (day) => !hasBookingsOnDate(day)
+                highlighted: hasBookingsOnDate
               }}
               modifiersClassNames={{
-                highlighted: "day_highlighted",
-                noBookings: "day_no_bookings"
+                highlighted: "font-bold text-purple-500 dark:text-gold"
               }}
             />
           </div>

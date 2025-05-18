@@ -2,7 +2,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 import PendingBookingsList from './PendingBookingsList';
-import DailyPlanner from './DailyPlanner';
 import WeeklyPlanner from './WeeklyPlanner';
 import MonthlyPlanner from './MonthlyPlanner';
 import { PlannerViewType } from '@/hooks/usePlannerCalendar';
@@ -46,15 +45,6 @@ const PlannerContent: React.FC<PlannerContentProps> = ({
       />
       
       {/* View Specific Planners */}
-      {view === "daily" && (
-        <DailyPlanner
-          date={date}
-          setDate={setDate}
-          schedule={schedule}
-          getBookingBackground={getBookingBackground}
-        />
-      )}
-      
       {view === "weekly" && (
         <WeeklyPlanner
           date={date}
