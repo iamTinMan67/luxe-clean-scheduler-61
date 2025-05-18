@@ -18,7 +18,10 @@ export const useBookingOperations = () => {
 
   // Get all bookings (both pending and confirmed) for the selected date
   const getBookingsForDate = (): Booking[] => {
+    // Combine pending and confirmed bookings for complete list
     const allBookings = [...pendingBookings, ...confirmedBookings];
+    
+    // Filter by the currently selected date
     return filterBookingsByDate(date, allBookings);
   };
 

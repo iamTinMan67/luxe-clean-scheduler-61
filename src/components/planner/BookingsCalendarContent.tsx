@@ -28,7 +28,7 @@ const BookingsCalendarContent: React.FC<BookingsCalendarContentProps> = ({
   onReschedule,
   onUpdateStatus
 }) => {
-  // Filter bookings based on date
+  // Display bookings passed in via props directly
   const filteredBookings = bookingsForDate || [];
   
   return (
