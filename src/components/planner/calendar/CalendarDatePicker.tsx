@@ -12,8 +12,10 @@ const CalendarDatePicker: React.FC<CalendarDatePickerProps> = ({ date, onDateCha
   // Function to check if a date has bookings - only use confirmed bookings
   const hasBookingsOnDate = (checkDate: Date) => {
     const confirmedBookings = JSON.parse(localStorage.getItem('confirmedBookings') || '[]');
+    const plannerBookings = JSON.parse(localStorage.getItem('plannerCalendarBookings') || '[]');
+    const allBookings = [...confirmedBookings, ...plannerBookings];
       
-    return confirmedBookings.some((booking: any) => {
+    return allBookings.some((booking: any) => {
       const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
       return bookingDate.getDate() === checkDate.getDate() &&
              bookingDate.getMonth() === checkDate.getMonth() &&
@@ -32,7 +34,7 @@ const CalendarDatePicker: React.FC<CalendarDatePickerProps> = ({ date, onDateCha
           highlighted: hasBookingsOnDate
         }}
         modifiersClassNames={{
-          highlighted: "font-bold text-gold",
+          highlighted: "font-bold text-gold bg-gold/20 rounded-md",
           noBookings: "text-white font-normal"
         }}
       />

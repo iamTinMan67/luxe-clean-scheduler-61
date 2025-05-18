@@ -2,12 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import { Booking } from '@/types/booking';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Tabs } from "@/components/ui/tabs";
-import { Calendar } from "@/components/ui/calendar";
+import { format } from 'date-fns';
 import { PlannerViewType } from '@/hooks/usePlannerCalendar';
 import BookingsCalendarContent from './BookingsCalendarContent';
-import { format } from 'date-fns';
 import CalendarViewSelector from './calendar/CalendarViewSelector';
 import CalendarDatePicker from './calendar/CalendarDatePicker';
 
@@ -54,7 +51,10 @@ const BookingsCalendar: React.FC<BookingsCalendarProps> = ({
             <CardTitle className="text-white">
               {view === 'daily' ? 
                 `Daily Schedule: ${date ? format(date, 'EEEE, MMMM d, yyyy') : 'Select a date'}` :
-                'Schedule View'}
+                view === 'weekly' ?
+                'Weekly Schedule' :
+                'Monthly Schedule'
+              }
             </CardTitle>
             <CardDescription className="text-gold/70">
               {view === 'daily' ? '15-minute time slots' : 'Plan and organize team assignments'}

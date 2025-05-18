@@ -7,6 +7,11 @@ import EmptyCalendarView from './EmptyCalendarView';
 
 interface DailyCalendarViewProps {
   bookings: Booking[];
+  onCompleteBooking?: (booking: Booking) => void;
+  onReschedule?: (booking: Booking) => void;
+  onDeleteBooking?: (booking: Booking) => void;
+  onUpdateStatus?: (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished") => void;
+  onPackageChange?: (booking: Booking, newPackage: string) => void;
 }
 
 // Generate time slots for daily view (15-minute intervals)
@@ -24,7 +29,14 @@ const generateTimeSlots = () => {
   return slots;
 };
 
-const DailyCalendarView: React.FC<DailyCalendarViewProps> = ({ bookings }) => {
+const DailyCalendarView: React.FC<DailyCalendarViewProps> = ({ 
+  bookings,
+  onCompleteBooking,
+  onReschedule,
+  onDeleteBooking,
+  onUpdateStatus,
+  onPackageChange
+}) => {
   const timeSlots = generateTimeSlots();
   
   if (bookings.length === 0) {
@@ -38,7 +50,15 @@ const DailyCalendarView: React.FC<DailyCalendarViewProps> = ({ bookings }) => {
         
         <div className="flex flex-col gap-2">
           {bookings.map(booking => (
-            <DailyTimeSlot key={booking.id} booking={booking} />
+            <DailyTimeSlot 
+              key={booking.id} 
+              booking={booking}
+              onCompleteBooking={onCompleteBooking}
+              onReschedule={onReschedule}
+              onDeleteBooking={onDeleteBooking}
+              onUpdateStatus={onUpdateStatus}
+              onPackageChange={onPackageChange}
+            />
           ))}
         </div>
       </div>

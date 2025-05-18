@@ -41,7 +41,16 @@ const BookingsCalendarContent: React.FC<BookingsCalendarContentProps> = ({
   
   // If daily view, show time slots horizontally
   if (view === 'daily') {
-    return <DailyCalendarView bookings={confirmedBookingsForDate} />;
+    return (
+      <DailyCalendarView 
+        bookings={confirmedBookingsForDate}
+        onCompleteBooking={onCompleteBooking}
+        onReschedule={onReschedule}
+        onDeleteBooking={onDeleteBooking}
+        onUpdateStatus={onUpdateStatus}
+        onPackageChange={onPackageChange}
+      />
+    );
   }
   
   // For weekly and monthly views
@@ -53,6 +62,7 @@ const BookingsCalendarContent: React.FC<BookingsCalendarContentProps> = ({
       onCompleteBooking={onCompleteBooking}
       onReschedule={onReschedule}
       onDeleteBooking={onDeleteBooking}
+      onPackageChange={onPackageChange}
     />
   );
 };

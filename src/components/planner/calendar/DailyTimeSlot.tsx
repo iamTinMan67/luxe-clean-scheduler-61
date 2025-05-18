@@ -3,12 +3,26 @@ import React from 'react';
 import { Booking } from '@/types/booking';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Clock, MapPin, Car } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface DailyTimeSlotProps {
   booking: Booking;
+  onCompleteBooking?: (booking: Booking) => void;
+  onReschedule?: (booking: Booking) => void;
+  onDeleteBooking?: (booking: Booking) => void;
+  onUpdateStatus?: (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished") => void;
+  onPackageChange?: (booking: Booking, newPackage: string) => void;
 }
 
-const DailyTimeSlot: React.FC<DailyTimeSlotProps> = ({ booking }) => {
+const DailyTimeSlot: React.FC<DailyTimeSlotProps> = ({ 
+  booking,
+  onCompleteBooking,
+  onReschedule,
+  onDeleteBooking,
+  onUpdateStatus,
+  onPackageChange
+}) => {
   const startTime = booking.startTime || booking.time || '08:00';
   const [startHour, startMinute] = startTime.split(':').map(Number);
   const totalStartMinutes = startHour * 60 + startMinute;
@@ -24,16 +38,21 @@ const DailyTimeSlot: React.FC<DailyTimeSlotProps> = ({ booking }) => {
         {startTime}
       </div>
       <div className="flex-1 overflow-x-auto">
-        <div className="relative min-w-max h-16" style={{ paddingLeft: `${(startPosition / 15) * 30}px` }}>
+        <div className="relative min-w-max h-20" style={{ paddingLeft: `${(startPosition / 15) * 30}px` }}>
           <Card 
-            className="absolute top-0 bg-green-900/40 border-green-700/50"
-            style={{ width: `${duration * 2}px`, minWidth: '120px' }}
+            className="absolute top-0 bg-green-900/40 border-green-700/50 hover:bg-green-900/60 transition-colors cursor-pointer"
+            style={{ width: `${duration * 2}px`, minWidth: '180px' }}
           >
             <CardContent className="p-2">
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <div className="font-semibold text-white truncate">{booking.customer}</div>
-                  <div className="text-xs text-gray-300 truncate">{booking.packageType}</div>
+                  <div className="text-xs text-gray-300 truncate flex items-center gap-1">
+                    <Car className="h-3 w-3" /> {booking.vehicle || booking.vehicleReg || 'No vehicle info'}
+                  </div>
+                  <div className="text-xs text-gray-300 truncate flex items-center gap-1">
+                    <MapPin className="h-3 w-3" /> {booking.location || 'No location info'}
+                  </div>
                 </div>
                 <Badge className={`${
                   booking.status === "confirmed" ? "bg-green-900/60 text-green-300" : 
@@ -43,6 +62,44 @@ const DailyTimeSlot: React.FC<DailyTimeSlotProps> = ({ booking }) => {
                   {booking.status}
                 </Badge>
               </div>
+              
+              {onCompleteBooking && onReschedule && onDeleteBooking && (
+                <div className="flex gap-1 mt-1">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="h-6 text-[10px] px-1 py-0 bg-green-900/30 border-green-600/50 text-green-300 hover:bg-green-800/50"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onCompleteBooking(booking);
+                    }}
+                  >
+                    Complete
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="h-6 text-[10px] px-1 py-0 bg-blue-900/30 border-blue-600/50 text-blue-300 hover:bg-blue-800/50"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onReschedule(booking);
+                    }}
+                  >
+                    Reschedule
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="h-6 text-[10px] px-1 py-0 bg-red-900/30 border-red-600/50 text-red-300 hover:bg-red-800/50"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDeleteBooking(booking);
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
