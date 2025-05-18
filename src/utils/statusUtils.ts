@@ -5,41 +5,46 @@ export const getStatusInfo = (status: string) => {
   switch (status) {
     case "pending":
       return {
-        color: "border-amber-500 bg-amber-950/30",
+        color: "border-red-500 bg-red-950/30",
         label: "Pending",
-        badgeColor: "bg-amber-600",
+        badgeColor: "bg-red-600",
+        textColor: "text-red-400",
         nextStatus: "confirmed",
         nextLabel: "Confirm"
       };
     case "confirmed":
       return {
-        color: "border-blue-500 bg-blue-950/30",
+        color: "border-orange-500 bg-orange-950/30",
         label: "Confirmed",
-        badgeColor: "bg-blue-600",
+        badgeColor: "bg-orange-600", 
+        textColor: "text-orange-400",
         nextStatus: "in-progress",
         nextLabel: "Start Service"
       };
     case "in-progress":
       return {
-        color: "border-purple-500 bg-purple-950/30",
+        color: "border-blue-500 bg-blue-950/30",
         label: "In Progress",
-        badgeColor: "bg-purple-600",
+        badgeColor: "bg-blue-600",
+        textColor: "text-blue-400",
         nextStatus: "completed",
         nextLabel: "Complete"
       };
     case "completed":
       return {
-        color: "border-green-500 bg-green-950/30",
+        color: "border-purple-500 bg-purple-950/30",
         label: "Completed",
-        badgeColor: "bg-green-600",
+        badgeColor: "bg-purple-600",
+        textColor: "text-purple-400",
         nextStatus: "finished",
         nextLabel: "Finalize"
       };
     case "finished":
       return {
-        color: "border-gold bg-gold/10",
+        color: "border-green-500 bg-green-950/30",
         label: "Finished",
-        badgeColor: "bg-gold",
+        badgeColor: "bg-green-600",
+        textColor: "text-green-400",
         nextStatus: null,
         nextLabel: null
       };
@@ -48,6 +53,7 @@ export const getStatusInfo = (status: string) => {
         color: "border-red-500 bg-red-950/30",
         label: "Cancelled",
         badgeColor: "bg-red-600",
+        textColor: "text-red-400",
         nextStatus: null,
         nextLabel: null
       };
@@ -56,6 +62,7 @@ export const getStatusInfo = (status: string) => {
         color: "border-gray-500 bg-gray-950/30",
         label: "Unknown",
         badgeColor: "bg-gray-600",
+        textColor: "text-gray-400",
         nextStatus: null,
         nextLabel: null
       };
@@ -68,6 +75,10 @@ export const getStatusLabel = (status: string) => {
 
 export const getStatusColor = (status: string) => {
   return getStatusInfo(status).color;
+};
+
+export const getStatusTextColor = (status: string) => {
+  return getStatusInfo(status).textColor;
 };
 
 export const getNextStatus = (booking: Booking) => {

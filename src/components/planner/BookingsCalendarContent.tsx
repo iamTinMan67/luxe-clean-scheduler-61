@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { Badge } from "@/components/ui/badge";
 import { Booking } from '@/types/booking';
 import { PlannerViewType } from '@/hooks/usePlannerCalendar';
 import BookingItem from './BookingItem';
@@ -30,25 +29,6 @@ const BookingsCalendarContent: React.FC<BookingsCalendarContentProps> = ({
   onReschedule,
   onUpdateStatus
 }) => {
-  const renderStatus = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return <Badge className="bg-amber-600">Pending</Badge>;
-      case 'confirmed':
-        return <Badge className="bg-blue-600">Confirmed</Badge>;
-      case 'in-progress':
-        return <Badge className="bg-purple-600">In Progress</Badge>;
-      case 'completed':
-        return <Badge className="bg-green-600">Completed</Badge>;
-      case 'finished':
-        return <Badge className="bg-gold">Finished</Badge>;
-      case 'cancelled':
-        return <Badge className="bg-red-600">Cancelled</Badge>;
-      default:
-        return null;
-    }
-  };
-
   return (
     <div className="flex-1 bg-black/30 border border-gold/30 rounded-md p-4">
       <div className="mb-4">
@@ -68,9 +48,6 @@ const BookingsCalendarContent: React.FC<BookingsCalendarContentProps> = ({
             {bookingsForDate.length > 0 ? (
               bookingsForDate.map((booking) => (
                 <div key={booking.id} className="relative">
-                  <div className="absolute top-3 right-3">
-                    {renderStatus(booking.status)}
-                  </div>
                   <BookingItem
                     booking={booking}
                     onConfirm={onConfirmBooking}
