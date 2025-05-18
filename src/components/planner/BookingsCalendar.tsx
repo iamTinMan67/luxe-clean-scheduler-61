@@ -38,12 +38,11 @@ const BookingsCalendar: React.FC<BookingsCalendarProps> = ({
   // Force rendering when bookings change
   const [refreshKey, setRefreshKey] = useState(0);
   
-  // Function to check if a date has bookings
+  // Function to check if a date has bookings - only use confirmed bookings
   const hasBookingsOnDate = (checkDate: Date) => {
-    const allBookings = JSON.parse(localStorage.getItem('confirmedBookings') || '[]')
-      .concat(JSON.parse(localStorage.getItem('pendingBookings') || '[]'));
+    const confirmedBookings = JSON.parse(localStorage.getItem('confirmedBookings') || '[]');
       
-    return allBookings.some((booking: any) => {
+    return confirmedBookings.some((booking: any) => {
       const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
       return bookingDate.getDate() === checkDate.getDate() &&
              bookingDate.getMonth() === checkDate.getMonth() &&
@@ -66,7 +65,7 @@ const BookingsCalendar: React.FC<BookingsCalendarProps> = ({
               Plan and organize team assignments
             </CardDescription>
           </div>
-          <Tabs defaultValue="daily" value={view} onValueChange={setView}>
+          <Tabs defaultValue="daily" value={view} onValueChange={(v) => setView(v as PlannerViewType)}>
             <TabsList className="bg-black/60">
               <TabsTrigger value="daily">Daily</TabsTrigger>
               <TabsTrigger value="weekly">Weekly</TabsTrigger>
@@ -87,7 +86,8 @@ const BookingsCalendar: React.FC<BookingsCalendarProps> = ({
                 highlighted: hasBookingsOnDate
               }}
               modifiersClassNames={{
-                highlighted: "font-bold text-gold"
+                highlighted: "font-bold text-gold",
+                noBookings: "text-white font-normal"
               }}
             />
           </div>

@@ -57,7 +57,8 @@ function Calendar({
         IconRight: ({ ..._props }) => <ChevronRight className="h-4 w-4" />,
       }}
       modifiersClassNames={{
-        highlighted: "font-bold text-purple-500 dark:text-gold", // Dates with bookings - bold and purple/gold
+        highlighted: "font-bold text-gold", // Dates with bookings
+        noBookings: "text-white font-normal", // Dates without bookings - white text normal weight
         ...(props.modifiersClassNames || {}),
       }}
       {...props}

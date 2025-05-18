@@ -57,7 +57,7 @@ const PlannerCalendar = () => {
     <div className="min-h-screen bg-black pb-16" key={key}>
       <section className="relative py-8">
         <div className="container mx-auto px-4">
-          {/* Calendar header with navigation */}
+          {/* Calendar header - WITHOUT pending bookings count */}
           <CalendarHeader 
             date={date}
             view={view}
@@ -65,7 +65,7 @@ const PlannerCalendar = () => {
             navigateNext={navigateNext}
             navigateToday={navigateToday}
             setView={setView}
-            pendingBookingsCount={pendingBookings.length}
+            pendingBookingsCount={0} // Set to 0 to remove notification
           />
           
           {/* Main planner content */}
@@ -81,6 +81,11 @@ const PlannerCalendar = () => {
             getBookingBackground={getBookingBackground}
             hasBookingsOnDate={hasBookingsOnDate}
             checkTimeConflict={checkTimeConflict}
+            // Pass navigation functions to be rendered below pending bookings
+            navigatePrevious={navigatePrevious}
+            navigateNext={navigateNext}
+            navigateToday={navigateToday}
+            setView={setView}
           />
           
           {/* Staff Planner section */}
