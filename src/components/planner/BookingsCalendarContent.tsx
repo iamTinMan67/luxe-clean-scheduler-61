@@ -101,8 +101,8 @@ const BookingsCalendarContent: React.FC<BookingsCalendarContentProps> = ({
               
               // Calculate position based on start time (8:00 = 0 minutes from start)
               const startPosition = totalStartMinutes - 8 * 60;
-              // Calculate width based on duration (default 1 hour if not specified)
-              const duration = booking.duration || 60; // minutes
+              // Calculate width based on duration (default 60 minutes if not specified)
+              const duration = 60; // Default to 60 minutes
               
               return (
                 <div key={booking.id} className="flex items-center">
@@ -112,7 +112,8 @@ const BookingsCalendarContent: React.FC<BookingsCalendarContentProps> = ({
                   <div className="flex-1 overflow-x-auto">
                     <div className="relative min-w-max h-16" style={{paddingLeft: `${(startPosition / 15) * 30}px`}}>
                       <Card 
-                        className={`absolute top-0 bg-green-900/40 border-green-700/50 w-[${duration * 2}px] min-w-[120px]`}
+                        className={`absolute top-0 bg-green-900/40 border-green-700/50`}
+                        style={{width: `${duration * 2}px`, minWidth: '120px'}}
                       >
                         <CardContent className="p-2">
                           <div className="flex justify-between items-start">
