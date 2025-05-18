@@ -2,7 +2,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 import PendingBookingsList from './PendingBookingsList';
-import ScheduleCalendar from './ScheduleCalendar';
 import DailyPlanner from './DailyPlanner';
 import WeeklyPlanner from './WeeklyPlanner';
 import MonthlyPlanner from './MonthlyPlanner';
@@ -44,15 +43,6 @@ const PlannerContent: React.FC<PlannerContentProps> = ({
         handleConfirmBooking={handleConfirmBooking}
         handleCancelBooking={handleCancelBooking}
         getBookingBackground={getBookingBackground}
-      />
-      
-      {/* Calendar Section */}
-      <ScheduleCalendar 
-        date={date}
-        setDate={setDate}
-        schedule={schedule}
-        getBookingBackground={getBookingBackground}
-        hasBookingsOnDate={hasBookingsOnDate}
       />
       
       {/* View Specific Planners */}

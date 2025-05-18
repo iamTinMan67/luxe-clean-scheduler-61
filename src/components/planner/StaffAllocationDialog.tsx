@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -26,30 +27,14 @@ const StaffAllocationDialog: React.FC<StaffAllocationDialogProps> = ({
   const [selectedStaff, setSelectedStaff] = useState<string[]>([]);
   const [travelTime, setTravelTime] = useState<number>(15); // Default 15 minutes travel time
   
-  // Set default staff selection when dialog opens
+  // Reset state when dialog opens
   useEffect(() => {
     if (open) {
-      const defaultStaff = getDefaultStaffSelection();
-      setSelectedStaff(defaultStaff);
-      
-      // Show toast notification about default assignment
-      if (defaultStaff.length > 0) {
-        toast.info(`Default staff members assigned: ${defaultStaff.join(", ")}`);
-      }
+      // Don't set any default staff
+      setSelectedStaff([]);
+      setTravelTime(15);
     }
   }, [open]);
-  
-  // Function to get default staff selection based on availability
-  const getDefaultStaffSelection = (): string[] => {
-    // If we have 3 or more staff, don't set defaults
-    if (staffMembers.length >= 3) {
-      return [];
-    }
-    
-    // Otherwise, assign Staff1 and Staff2 (or as many as are available)
-    const availableStaff = staffMembers.map(staff => staff.name);
-    return availableStaff.slice(0, Math.min(2, availableStaff.length));
-  };
   
   const handleStaffToggle = (staffName: string) => {
     setSelectedStaff(prev => {
@@ -62,6 +47,11 @@ const StaffAllocationDialog: React.FC<StaffAllocationDialogProps> = ({
   };
   
   const handleConfirm = () => {
+    if (selectedStaff.length === 0) {
+      toast.error("Please select at least one staff member");
+      return;
+    }
+    
     onConfirm(booking, selectedStaff, travelTime);
     onClose();
   };
