@@ -5,7 +5,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import { Booking } from '@/types/booking';
-import { packageOptions } from '@/data/packageOptions';
+import { packageOptions } from '@/data/servicePackageData';
+import { toast } from "sonner";
 
 interface EditPackageDialogProps {
   booking: Booking;
@@ -25,6 +26,7 @@ const EditPackageDialog: React.FC<EditPackageDialogProps> = ({ booking, onPackag
 
   const handleSave = () => {
     onPackageChange(booking, newPackageType);
+    toast.success(`Package updated to ${newPackageType}`);
     setIsOpen(false);
   };
 

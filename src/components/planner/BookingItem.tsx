@@ -12,6 +12,7 @@ interface BookingItemProps {
   onDelete: (booking: Booking) => void;
   onPackageChange: (booking: Booking, newPackage: string) => void;
   onReschedule: (booking: Booking, newDate: Date) => void;
+  onUpdateStatus: (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished") => void;
 }
 
 const BookingItem: React.FC<BookingItemProps> = ({ 
@@ -20,14 +21,24 @@ const BookingItem: React.FC<BookingItemProps> = ({
   onComplete, 
   onDelete, 
   onPackageChange, 
-  onReschedule 
+  onReschedule,
+  onUpdateStatus
 }) => {
+  // Get the border color based on status
+  const getBorderColor = () => {
+    switch (booking.status) {
+      case "pending": return "border-amber-500";
+      case "confirmed": return "border-blue-500";
+      case "in-progress": return "border-purple-500";
+      case "completed": return "border-green-500";
+      case "finished": return "border-gold";
+      default: return "border-gray-500";
+    }
+  };
+
   return (
     <div 
-      className={`border ${
-        booking.status === "pending" ? "border-amber-500" : 
-        booking.status === "completed" ? "border-green-500" : "border-gold"
-      } rounded-md p-3 bg-black/40`}
+      className={`border ${getBorderColor()} rounded-md p-3 bg-black/40`}
     >
       <BookingHeader 
         booking={booking} 
@@ -41,7 +52,8 @@ const BookingItem: React.FC<BookingItemProps> = ({
       <BookingActions 
         booking={booking} 
         onConfirm={onConfirm} 
-        onComplete={onComplete} 
+        onComplete={onComplete}
+        onUpdateStatus={onUpdateStatus}
       />
     </div>
   );

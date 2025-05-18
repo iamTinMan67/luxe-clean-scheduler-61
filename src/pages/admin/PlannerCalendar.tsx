@@ -50,7 +50,8 @@ const PlannerCalendar = () => {
     handleDeleteBooking,
     handlePackageChange,
     handleReschedule,
-    handleCompleteBooking
+    handleCompleteBooking,
+    handleUpdateStatus
   } = useBookings();
 
   return (
@@ -104,6 +105,7 @@ const PlannerCalendar = () => {
                 onDeleteBooking={handleDeleteBooking}
                 onPackageChange={handlePackageChange}
                 onReschedule={handleReschedule}
+                onUpdateStatus={handleUpdateStatus}
               />
             </div>
           </div>

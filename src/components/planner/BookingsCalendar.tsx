@@ -19,6 +19,7 @@ interface BookingsCalendarProps {
   onDeleteBooking: (booking: Booking) => void;
   onPackageChange: (booking: Booking, newPackage: string) => void;
   onReschedule: (booking: Booking, newDate: Date) => void;
+  onUpdateStatus: (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished") => void;
 }
 
 const BookingsCalendar: React.FC<BookingsCalendarProps> = ({
@@ -31,7 +32,8 @@ const BookingsCalendar: React.FC<BookingsCalendarProps> = ({
   onCompleteBooking,
   onDeleteBooking,
   onPackageChange,
-  onReschedule
+  onReschedule,
+  onUpdateStatus
 }) => {
   // Force rendering when bookings change
   const [refreshKey, setRefreshKey] = useState(0);
@@ -85,7 +87,7 @@ const BookingsCalendar: React.FC<BookingsCalendarProps> = ({
                 highlighted: hasBookingsOnDate
               }}
               modifiersClassNames={{
-                highlighted: "font-bold text-purple-500 dark:text-gold"
+                highlighted: "font-bold text-gold"
               }}
             />
           </div>
@@ -99,6 +101,7 @@ const BookingsCalendar: React.FC<BookingsCalendarProps> = ({
             onDeleteBooking={onDeleteBooking}
             onPackageChange={onPackageChange}
             onReschedule={onReschedule}
+            onUpdateStatus={onUpdateStatus}
           />
         </div>
       </CardContent>
