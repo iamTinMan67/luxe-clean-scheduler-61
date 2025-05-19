@@ -1,13 +1,11 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import PendingBookingsList from './PendingBookingsList';
-import DailyPlanner from './DailyPlanner';
-import WeeklyPlanner from './WeeklyPlanner';
-import MonthlyPlanner from './MonthlyPlanner';
+import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
+import MonthlyCalendar from './MonthlyCalendar';
+import DailySchedule from './DailySchedule';
 import { PlannerViewType } from '@/hooks/usePlannerCalendar';
 import { Booking } from '@/types/booking';
-import { toast } from "sonner";
 
 interface PlannerContentProps {
   date: Date;
@@ -21,6 +19,9 @@ interface PlannerContentProps {
   getBookingBackground: (booking: Booking) => string;
   hasBookingsOnDate: (date: Date) => boolean;
   checkTimeConflict: (date: Date, time: string) => boolean;
+  navigatePrevious: () => void;
+  navigateNext: () => void;
+  navigateToday: () => void;
 }
 
 const PlannerContent: React.FC<PlannerContentProps> = ({
@@ -34,61 +35,28 @@ const PlannerContent: React.FC<PlannerContentProps> = ({
   handleCancelBooking,
   getBookingBackground,
   hasBookingsOnDate,
-  checkTimeConflict
+  checkTimeConflict,
+  navigatePrevious,
+  navigateNext,
+  navigateToday
 }) => {
-  // Enhanced confirmation handler with notification
-  const handleConfirmWithNotification = (bookingId: string, selectedStaff: string[], travelMinutes: number) => {
-    handleConfirmBooking(bookingId, selectedStaff, travelMinutes);
-    
-    // Find the booking that was just confirmed
-    const booking = pendingBookings.find(b => b.id === bookingId);
-    if (booking) {
-      toast.success("Booking Confirmed", {
-        description: `${booking.customer}'s booking has been confirmed and added to the schedule.`,
-      });
-    }
-  };
-
   return (
-    <div className="container mx-auto px-4">
-      {/* Pending Bookings List - Now placed above view-specific planners */}
-      <PendingBookingsList 
-        pendingBookings={pendingBookings}
-        handleConfirmBooking={handleConfirmWithNotification}
-        handleCancelBooking={handleCancelBooking}
-        getBookingBackground={getBookingBackground}
-      />
-      
-      {/* View Specific Planners */}
-      {view === "daily" && (
-        <DailyPlanner
+    <Card className="bg-gray-900 border-gray-800">
+      <CardHeader>
+        <CardTitle className="text-white">Calendar</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {/* Monthly calendar view */}
+        <MonthlyCalendar 
           date={date}
           setDate={setDate}
-          schedule={schedule}
-          getBookingBackground={getBookingBackground}
-        />
-      )}
-      
-      {view === "weekly" && (
-        <WeeklyPlanner
-          date={date}
-          setDate={setDate}
-          schedule={schedule}
-          getBookingBackground={getBookingBackground}
-          checkTimeConflict={checkTimeConflict}
-        />
-      )}
-      
-      {view === "monthly" && (
-        <MonthlyPlanner
-          date={date}
-          setDate={setDate}
-          schedule={schedule}
-          getBookingBackground={getBookingBackground}
+          bookings={[...confirmedBookings, ...pendingBookings]}
           hasBookingsOnDate={hasBookingsOnDate}
+          navigatePrevious={navigatePrevious}
+          navigateNext={navigateNext}
         />
-      )}
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 
