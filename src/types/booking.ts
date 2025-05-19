@@ -10,7 +10,6 @@ export interface Booking {
   time?: string;
   startTime?: string;
   endTime?: string;
-  duration?: string;  // Added duration property
   location: string;
   contact?: string;
   email?: string;

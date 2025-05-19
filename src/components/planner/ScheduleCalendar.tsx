@@ -1,9 +1,10 @@
 
 import React from 'react';
 import { motion } from "framer-motion";
+import { Card } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
 import { Booking } from '@/types/booking';
-import { format } from 'date-fns';
+import ScheduleDay from './ScheduleDay';
 
 interface ScheduleCalendarProps {
   date: Date;
@@ -20,58 +21,62 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
   getBookingBackground,
   hasBookingsOnDate
 }) => {
-  // Count bookings by date
-  const getBookingsCount = (checkDate: Date): number => {
-    const daySchedule = schedule.find(day => 
-      day.date.getDate() === checkDate.getDate() && 
-      day.date.getMonth() === checkDate.getMonth() && 
-      day.date.getFullYear() === checkDate.getFullYear()
-    );
-    
-    return daySchedule?.bookings.length || 0;
-  };
-  
   return (
-    <div>
-      <div className="text-sm text-gray-500 mb-2">
-        {format(date, 'EEEE, MMMM d, yyyy')}
-      </div>
-        
-      <Calendar
-        mode="single"
-        selected={date}
-        onSelect={(newDate) => newDate && setDate(newDate)}
-        className="bg-gray-900 border border-gray-800 rounded-md"
-        classNames={{
-          day_selected: "bg-gold text-black hover:bg-gold hover:text-black",
-          day_today: "bg-gray-800 text-white",
-          day: "hover:bg-gray-800 focus:bg-gray-800",
-        }}
-        modifiers={{
-          highlighted: hasBookingsOnDate,
-          noBookings: (day) => hasBookingsOnDate ? !hasBookingsOnDate(day) : false
-        }}
-        modifiersClassNames={{
-          highlighted: "border-gold text-gold",
-          noBookings: "text-gray-600"
-        }}
-      />
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Calendar for date selection */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <Card className="bg-gray-900 border-gray-800 p-6">
+          <h2 className="text-xl font-bold text-white mb-4">Calendar</h2>
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={(newDate) => newDate && setDate(newDate)}
+            className="bg-gray-900 border border-gray-800 rounded-md p-4"
+            classNames={{
+              day_selected: "bg-gold text-black",
+              day_today: "bg-gray-800 text-white",
+            }}
+            modifiers={{
+              highlighted: hasBookingsOnDate,
+              noBookings: (day) => hasBookingsOnDate ? !hasBookingsOnDate(day) : false
+            }}
+            modifiersClassNames={{
+              highlighted: "day_highlighted",
+              noBookings: "day_no_bookings"
+            }}
+          />
+        </Card>
+      </motion.div>
       
-      {/* Show a legend for the calendar */}
-      <div className="flex justify-center mt-4 gap-4 text-sm">
-        <div className="flex items-center">
-          <div className="w-3 h-3 bg-gold rounded-full mr-2"></div>
-          <span className="text-gray-400">Selected</span>
-        </div>
-        <div className="flex items-center">
-          <div className="w-3 h-3 border border-gold rounded-full mr-2"></div>
-          <span className="text-gray-400">Has bookings</span>
-        </div>
-        <div className="flex items-center">
-          <div className="w-3 h-3 bg-gray-800 rounded-full mr-2"></div>
-          <span className="text-gray-400">Today</span>
-        </div>
-      </div>
+      {/* Schedule view */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        className="lg:col-span-2"
+      >
+        <Card className="bg-gray-900 border-gray-800 p-6">
+          <div className="mb-6">
+            <h2 className="text-xl font-bold text-white">Schedule</h2>
+          </div>
+          
+          {/* Schedule grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {schedule.map((daySchedule) => (
+              <ScheduleDay 
+                key={daySchedule.date.toISOString()} 
+                date={daySchedule.date} 
+                bookings={daySchedule.bookings} 
+                getBookingBackground={getBookingBackground}
+              />
+            ))}
+          </div>
+        </Card>
+      </motion.div>
     </div>
   );
 };
