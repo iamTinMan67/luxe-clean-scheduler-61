@@ -7,8 +7,8 @@ import { useScheduleFiltering } from './planner/useScheduleFiltering';
 import { toast } from 'sonner';
 import { Booking } from '@/types/booking';
 
-// Update the view type to include "monthly"
-export type PlannerViewType = "daily" | "weekly" | "monthly";
+// Update the view type to remove "monthly"
+export type PlannerViewType = "daily" | "weekly";
 
 export const usePlannerCalendar = () => {
   const [date, setDate] = useState<Date>(new Date());
@@ -73,6 +73,13 @@ export const usePlannerCalendar = () => {
     toast.success(`Booking for ${booking.customer} has been scheduled.`, {
       description: `${startTime} - ${endTime} with ${selectedStaff.join(' & ')}`
     });
+    
+    // Add dummy complete notification for testing
+    setTimeout(() => {
+      toast.success(`Test: Completed booking for ${booking.customer}`, {
+        description: "This is a test notification for a completed booking."
+      });
+    }, 3000);
   };
   
   // Navigation functions

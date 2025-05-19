@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { usePlannerCalendar } from "@/hooks/usePlannerCalendar";
-import CalendarHeader from "@/components/planner/CalendarHeader";
 import PendingBookingsList from "@/components/planner/PendingBookingsList";
 import ScheduleCalendar from "@/components/planner/ScheduleCalendar";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,7 +9,6 @@ import { useBookings } from "@/hooks/useBookings";
 import BookingsCalendar from "@/components/planner/BookingsCalendar";
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import StaffTimeline from "@/components/planner/calendar/StaffTimeline";
 import { format } from "date-fns";
 
 const PlannerCalendar = () => {
@@ -41,36 +39,34 @@ const PlannerCalendar = () => {
     checkTimeConflict
   } = usePlannerCalendar();
 
-  // Staff planner functionality
-  const {
-    pendingBookings: staffPendingBookings,
-    confirmedBookings: staffConfirmedBookings,
-    date: staffDate,
-    setDate: setStaffDate,
-    view: staffView,
-    setView: setStaffView,
-    getBookingsForDate,
-    handleConfirmBooking: staffHandleConfirmBooking,
-    handleDeleteBooking,
-    handlePackageChange,
-    handleReschedule,
-    handleCompleteBooking,
-    handleUpdateStatus
-  } = useBookings();
-
   return (
     <div className="min-h-screen bg-black pb-16" key={key}>
       <section className="relative py-6">
         <div className="container mx-auto px-4">
-          {/* Main heading with date display */}
-          <div className="mb-6">
+          {/* Centered Main heading with date display */}
+          <div className="mb-6 text-center">
             <h1 className="text-2xl md:text-3xl font-bold text-white">
               Planner Dashboard: {format(date, "MMMM d, yyyy")}
             </h1>
             <p className="text-gray-400">Manage bookings and staff schedules</p>
           </div>
           
-          {/* Navigation Controls - Moved to the top level */}
+          {/* Pending Bookings List - Moved above date controllers */}
+          <motion.div 
+            className="mb-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            <PendingBookingsList 
+              pendingBookings={pendingBookings}
+              handleConfirmBooking={handleConfirmBooking}
+              handleCancelBooking={handleCancelBooking}
+              getBookingBackground={getBookingBackground}
+            />
+          </motion.div>
+          
+          {/* Navigation Controls */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -93,13 +89,6 @@ const PlannerCalendar = () => {
                     onClick={() => setView('weekly')}
                   >
                     Weekly
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className={`text-white hover:text-gold ${view === 'monthly' ? 'bg-gray-800' : ''}`}
-                    onClick={() => setView('monthly')}
-                  >
-                    Monthly
                   </Button>
                 </div>
                 
@@ -132,60 +121,22 @@ const PlannerCalendar = () => {
             </Card>
           </motion.div>
           
-          {/* Three-panel grid layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Panel 1: Pending Bookings - Spans full width on top */}
+          {/* Calendar Grid Layout */}
+          <div className="grid grid-cols-1 gap-6">
+            {/* Calendar View */}
             <motion.div 
-              className="lg:col-span-3"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
-              {/* Pending Bookings List */}
-              <PendingBookingsList 
-                pendingBookings={pendingBookings}
-                handleConfirmBooking={handleConfirmBooking}
-                handleCancelBooking={handleCancelBooking}
-                getBookingBackground={getBookingBackground}
-              />
-            </motion.div>
-            
-            {/* Panel 2: Calendar View - Left side of bottom row */}
-            <motion.div 
-              className="lg:col-span-1"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
               <Card className="bg-gray-900 border-gray-800 p-6 h-full">
-                <h2 className="text-xl font-bold text-white mb-4">Date Selection</h2>
+                <h2 className="text-xl font-bold text-white mb-4">Calendar</h2>
                 <ScheduleCalendar
                   date={date}
                   setDate={setDate}
                   schedule={schedule}
                   getBookingBackground={getBookingBackground}
                   hasBookingsOnDate={hasBookingsOnDate}
-                />
-              </Card>
-            </motion.div>
-            
-            {/* Panel 3: Staff Timeline - Right side of bottom row */}
-            <motion.div 
-              className="lg:col-span-2"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              <Card className="bg-gray-900 border-gray-800 p-6 h-full">
-                <h2 className="text-xl font-bold text-white mb-4">Staff Schedule</h2>
-                <StaffTimeline 
-                  date={staffDate || new Date()}
-                  bookings={getBookingsForDate()}
-                  onCompleteBooking={handleCompleteBooking}
-                  onReschedule={handleReschedule}
-                  onDeleteBooking={handleDeleteBooking}
-                  onUpdateStatus={handleUpdateStatus}
-                  onPackageChange={handlePackageChange}
                 />
               </Card>
             </motion.div>
