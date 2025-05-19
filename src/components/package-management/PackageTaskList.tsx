@@ -4,6 +4,7 @@ import { ServiceTask, PackageOption } from "@/lib/types";
 import TaskListHeader from "./TaskListHeader";
 import TaskTableHeader from "./TaskTableHeader";
 import TaskRow from "./TaskRow";
+import PackageDuration from "./PackageDuration";
 
 interface PackageTaskListProps {
   packageOption: PackageOption;
@@ -28,7 +29,12 @@ const PackageTaskList = ({
 }: PackageTaskListProps) => {
   return (
     <div className="rounded-md border border-gold/30 bg-black/50">
-      <TaskListHeader onAddTask={onAddTask} />
+      <div className="flex justify-between items-center">
+        <TaskListHeader onAddTask={onAddTask} />
+        <div className="pr-4">
+          <PackageDuration tasks={packageOption.tasks} />
+        </div>
+      </div>
       
       <Table>
         <TaskTableHeader />

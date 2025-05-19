@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useToast } from "@/hooks/use-toast";
@@ -268,6 +267,24 @@ export const useTaskManagement = () => {
     });
   };
 
+  // Calculate total time for current booking tasks
+  const calculateTotalBookingTime = () => {
+    if (!serviceTasks.length) return 0;
+    
+    return serviceTasks.reduce((total, task) => total + task.allocatedTime, 0);
+  };
+  
+  // Calculate remaining time based on completed tasks
+  const calculateRemainingTime = () => {
+    const totalTime = calculateTotalBookingTime();
+    const completedTime = serviceTasks
+      .filter(task => task.completed)
+      .reduce((total, task) => total + task.allocatedTime, 0);
+      
+    return totalTime - completedTime;
+  };
+  
+  // Add new functions to the return object
   return {
     todos,
     newTodo,
@@ -284,7 +301,9 @@ export const useTaskManagement = () => {
     handleUpdateTimeAllocation,
     handleToggleTaskCompletion,
     handleSetActualTime,
-    handleSaveServiceProgress
+    handleSaveServiceProgress,
+    calculateTotalBookingTime,
+    calculateRemainingTime
   };
 };
 
@@ -296,4 +315,3 @@ export interface TodoTask {
 
 // Import required from data/packageData
 import { packageOptions, additionalServices } from "@/data/servicePackageData";
-

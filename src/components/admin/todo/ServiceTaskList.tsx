@@ -42,6 +42,26 @@ const ServiceTaskList = ({
     );
   }
 
+  // Calculate total allocated time
+  const totalAllocatedTime = serviceTasks.reduce((total, task) => total + task.allocatedTime, 0);
+  
+  // Calculate completed time
+  const completedTime = serviceTasks
+    .filter(task => task.completed)
+    .reduce((total, task) => total + (task.actualTime || task.allocatedTime), 0);
+  
+  // Calculate percentage complete
+  const percentComplete = Math.round((completedTime / totalAllocatedTime) * 100);
+  
+  // Format time (convert minutes to hours and minutes)
+  const formatTimeDisplay = (minutes: number) => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return hours > 0 
+      ? `${hours} hr${hours !== 1 ? 's' : ''} ${mins > 0 ? `${mins} min${mins !== 1 ? 's' : ''}` : ''}` 
+      : `${mins} min${mins !== 1 ? 's' : ''}`;
+  };
+
   return (
     <div>
       <div className="mb-4 p-4 border border-gold/20 rounded-md bg-black/40">
@@ -53,6 +73,25 @@ const ServiceTaskList = ({
           <p>Vehicle: {currentBooking.vehicle} {currentBooking.vehicleReg ? `(${currentBooking.vehicleReg})` : ''}</p>
           <p>Location: {currentBooking.location}</p>
           <p>Date: {new Date(currentBooking.date).toLocaleDateString()} {currentBooking.time}</p>
+        </div>
+        
+        {/* Add time summary section */}
+        <div className="mt-3 pt-3 border-t border-gray-800/50 flex flex-wrap justify-between items-center">
+          <div className="flex items-center text-sm">
+            <Clock className="h-3 w-3 mr-1 text-gold" />
+            <span className="text-gray-300">Total Duration: </span>
+            <span className="text-white ml-1">{formatTimeDisplay(totalAllocatedTime)}</span>
+          </div>
+          
+          <div className="flex items-center text-sm">
+            <span className="text-gray-300">Completed: </span>
+            <span className="text-white ml-1">{formatTimeDisplay(completedTime)} ({percentComplete}%)</span>
+          </div>
+          
+          <div className="flex items-center text-sm">
+            <span className="text-gray-300">Remaining: </span>
+            <span className="text-white ml-1">{formatTimeDisplay(totalAllocatedTime - completedTime)}</span>
+          </div>
         </div>
       </div>
 
