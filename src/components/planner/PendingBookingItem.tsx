@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { format } from "date-fns";
 import { Booking } from '@/types/booking';
@@ -10,6 +11,7 @@ import { packageOptions } from "@/data/servicePackageData";
 import { additionalServices } from "@/data/servicePackageData";
 import { calculateTotalBookingTime } from "@/utils/priceCalculator";
 import { staffMembers } from "@/data/staffData";
+import { formatDuration } from "@/lib/utils";
 
 interface PendingBookingItemProps {
   booking: Booking;
@@ -75,6 +77,11 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
 
   // Get package details
   const packageDetail = packageOptions.find(p => p.type === booking.packageType);
+
+  // Get additional service details
+  const additionalServiceDetails = booking.additionalServices?.map(serviceId => 
+    additionalServices.find(service => service.id === serviceId)
+  ).filter(Boolean) || [];
 
   // Minimal display mode
   if (showMinimal) {

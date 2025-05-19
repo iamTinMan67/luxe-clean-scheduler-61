@@ -20,7 +20,9 @@ export const useTaskManagement = () => {
     currentBooking, 
     setCurrentBooking,
     serviceTasks, 
-    setServiceTasks
+    setServiceTasks,
+    taskProgress,
+    updateTaskProgress
   } = useTaskState();
 
   const {
@@ -42,13 +44,15 @@ export const useTaskManagement = () => {
   } = useProgressTracking(currentBooking);
 
   // Initialize appointment selection and service tasks
-  useAppointmentSelection(
+  const { isBookingComplete } = useAppointmentSelection(
     selectedAppointment,
     bookingIdFromUrl,
     appointments,
     setSelectedAppointment,
     setCurrentBooking,
-    setServiceTasks
+    setServiceTasks,
+    taskProgress,
+    updateTaskProgress
   );
 
   const handleSaveWithTasks = () => {
@@ -73,7 +77,8 @@ export const useTaskManagement = () => {
     handleSetActualTime,
     handleSaveServiceProgress: handleSaveWithTasks,
     calculateTotalBookingTime,
-    calculateRemainingTime
+    calculateRemainingTime,
+    isBookingComplete
   };
 };
 
