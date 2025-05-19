@@ -5,8 +5,7 @@ import { usePlannerCalendar } from "@/hooks/usePlannerCalendar";
 import CalendarHeader from "@/components/planner/CalendarHeader";
 import PlannerContent from "@/components/planner/PlannerContent";
 import { Card } from "@/components/ui/card";
-import { useBookings } from "@/hooks/useBookings";
-import BookingsCalendar from "@/components/planner/BookingsCalendar";
+import { Toaster } from "@/components/ui/sonner";
 
 const PlannerCalendar = () => {
   // Force re-render on mount to ensure latest data is loaded
@@ -35,22 +34,6 @@ const PlannerCalendar = () => {
     hasBookingsOnDate,
     checkTimeConflict
   } = usePlannerCalendar();
-
-  // Staff planner functionality
-  const {
-    pendingBookings: staffPendingBookings,
-    confirmedBookings: staffConfirmedBookings,
-    date: staffDate,
-    setDate: setStaffDate,
-    view: staffView,
-    setView: setStaffView,
-    getBookingsForDate,
-    handleConfirmBooking: staffHandleConfirmBooking,
-    handleDeleteBooking,
-    handlePackageChange,
-    handleReschedule,
-    handleCompleteBooking
-  } = useBookings();
 
   return (
     <div className="min-h-screen bg-black pb-16" key={key}>
@@ -81,29 +64,11 @@ const PlannerCalendar = () => {
             hasBookingsOnDate={hasBookingsOnDate}
             checkTimeConflict={checkTimeConflict}
           />
-          
-          {/* Staff Planner section */}
-          <div className="mt-8">
-            <h2 className="text-2xl font-bold text-white mb-4">Staff Planner</h2>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Staff list component removed */}
-              
-              <BookingsCalendar 
-                date={staffDate}
-                setDate={setStaffDate}
-                view={staffView}
-                setView={setStaffView}
-                bookingsForDate={getBookingsForDate()}
-                onConfirmBooking={staffHandleConfirmBooking}
-                onCompleteBooking={handleCompleteBooking}
-                onDeleteBooking={handleDeleteBooking}
-                onPackageChange={handlePackageChange}
-                onReschedule={handleReschedule}
-              />
-            </div>
-          </div>
         </div>
       </section>
+      
+      {/* Add Toaster component for notifications */}
+      <Toaster />
     </div>
   );
 };

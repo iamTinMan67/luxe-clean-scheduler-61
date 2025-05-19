@@ -7,6 +7,7 @@ import WeeklyPlanner from './WeeklyPlanner';
 import MonthlyPlanner from './MonthlyPlanner';
 import { PlannerViewType } from '@/hooks/usePlannerCalendar';
 import { Booking } from '@/types/booking';
+import { toast } from "sonner";
 
 interface PlannerContentProps {
   date: Date;
@@ -35,12 +36,25 @@ const PlannerContent: React.FC<PlannerContentProps> = ({
   hasBookingsOnDate,
   checkTimeConflict
 }) => {
+  // Enhanced confirmation handler with notification
+  const handleConfirmWithNotification = (bookingId: string, selectedStaff: string[], travelMinutes: number) => {
+    handleConfirmBooking(bookingId, selectedStaff, travelMinutes);
+    
+    // Find the booking that was just confirmed
+    const booking = pendingBookings.find(b => b.id === bookingId);
+    if (booking) {
+      toast.success("Booking Confirmed", {
+        description: `${booking.customer}'s booking has been confirmed and added to the schedule.`,
+      });
+    }
+  };
+
   return (
     <div className="container mx-auto px-4">
       {/* Pending Bookings List - Now placed above view-specific planners */}
       <PendingBookingsList 
         pendingBookings={pendingBookings}
-        handleConfirmBooking={handleConfirmBooking}
+        handleConfirmBooking={handleConfirmWithNotification}
         handleCancelBooking={handleCancelBooking}
         getBookingBackground={getBookingBackground}
       />

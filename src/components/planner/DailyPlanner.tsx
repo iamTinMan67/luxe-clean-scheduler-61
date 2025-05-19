@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { Booking } from "@/types/booking";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 interface DailyPlannerProps {
   date: Date;
@@ -82,6 +83,13 @@ const DailyPlanner: React.FC<DailyPlannerProps> = ({
     return timeSlot.endsWith(':00');
   };
 
+  // Function to mark a booking as complete (for demo/testing purposes)
+  const handleCompleteBooking = (booking: Booking) => {
+    toast.success("Booking Completed", {
+      description: `${booking.customer}'s booking has been marked as completed.`,
+    });
+  };
+
   return (
     <Card className="bg-gray-900 border-gray-800 mt-8">
       <CardHeader>
@@ -90,66 +98,93 @@ const DailyPlanner: React.FC<DailyPlannerProps> = ({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 gap-1">
-          {timeSlots.map(timeSlot => {
-            const bookingsInSlot = getBookingsForTimeSlot(timeSlot);
-            const hasBookings = bookingsInSlot.length > 0;
-            
-            return (
-              <div 
-                key={timeSlot} 
-                className={`flex ${isHourMark(timeSlot) ? 'border-t border-gray-700' : ''}`}
-              >
-                <div className={`text-white font-medium min-w-[70px] py-2 ${isHourMark(timeSlot) ? 'text-base' : 'text-xs text-gray-400'}`}>
+        <div className="overflow-x-auto">
+          <div className="min-w-[1200px]">
+            {/* Time slot header */}
+            <div className="grid grid-cols-37 gap-1 mb-2 border-b border-gray-700 pb-2">
+              {/* Empty cell for hour labels */}
+              <div className="col-span-1"></div>
+              
+              {/* Time slot labels */}
+              {timeSlots.map(timeSlot => (
+                <div 
+                  key={timeSlot} 
+                  className={`text-center ${isHourMark(timeSlot) ? 'text-white font-medium' : 'text-gray-400 text-xs'}`}
+                >
                   {timeSlot}
                 </div>
-                
-                {hasBookings ? (
-                  <div className="flex-grow grid grid-cols-1 gap-2 pl-2 py-1">
-                    {bookingsInSlot.map(booking => (
+              ))}
+            </div>
+            
+            {/* If we have bookings, display them in rows */}
+            {todaySchedule && todaySchedule.bookings && todaySchedule.bookings.length > 0 ? (
+              <div className="space-y-4">
+                {todaySchedule.bookings.map(booking => {
+                  const bookingStartTime = booking.startTime || booking.time || '09:00';
+                  const bookingEndTime = booking.endTime || 
+                    (booking.startTime ? 
+                      `${parseInt(booking.startTime.split(':')[0]) + 2}:${booking.startTime.split(':')[1]}` : 
+                      `${parseInt(bookingStartTime.split(':')[0]) + 2}:${bookingStartTime.split(':')[1]}`
+                    );
+                  
+                  // Calculate start and end slot indexes
+                  const startSlotIndex = timeSlots.findIndex(slot => slot === bookingStartTime);
+                  const endSlotIndex = timeSlots.findIndex(slot => slot === bookingEndTime);
+                  
+                  // Calculate span (how many slots this booking takes up)
+                  const slotSpan = endSlotIndex > startSlotIndex ? endSlotIndex - startSlotIndex : 
+                                   timeSlots.length - startSlotIndex;
+                  
+                  return (
+                    <div key={booking.id} className="grid grid-cols-37 gap-1">
+                      {/* Booking info in first column */}
+                      <div className="col-span-1 pr-2 flex items-center">
+                        <div className="text-white text-sm">
+                          {booking.customer}
+                        </div>
+                      </div>
+                      
+                      {/* Render empty cells before the booking starts */}
+                      {startSlotIndex > 0 && (
+                        <div className={`col-span-${startSlotIndex}`}></div>
+                      )}
+                      
+                      {/* Render the booking */}
                       <div 
-                        key={`${timeSlot}-${booking.id}`} 
-                        className={`${getBookingBackground(booking)} p-2 rounded-md`}
+                        className={`${getBookingBackground(booking)} p-2 rounded-md flex items-center justify-between cursor-pointer col-span-${slotSpan}`}
+                        onClick={() => handleCompleteBooking(booking)}
+                        style={{ gridColumn: `span ${slotSpan}` }}
                       >
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h4 className="text-white font-medium text-sm">{booking.customer}</h4>
-                            <p className="text-gray-400 text-xs">
-                              {booking.packageType}
-                              {booking.travelMinutes && booking.travelMinutes > 0 && 
-                                ` (Travel: ${booking.travelMinutes} mins)`
-                              }
-                            </p>
-                            <p className="text-[10px] text-gray-500">
-                              {(booking.startTime || booking.time)} - {booking.endTime || 'N/A'}
-                            </p>
-                          </div>
+                        <div>
+                          <h4 className="text-white font-medium text-sm">{booking.packageType}</h4>
+                          <p className="text-[10px] text-gray-300">
+                            {bookingStartTime} - {bookingEndTime}
+                          </p>
+                        </div>
+                        <div className="flex flex-col items-end">
                           <Badge className={booking.status === "confirmed" ? "bg-green-900/60 text-green-300 text-xs" : "bg-amber-900/60 text-amber-300 text-xs"}>
                             {booking.status}
                           </Badge>
+                          {booking.staff && booking.staff.length > 0 && (
+                            <div className="mt-1 text-[10px] text-blue-300">
+                              {booking.staff.join(', ')}
+                            </div>
+                          )}
                         </div>
-                        {booking.staff && booking.staff.length > 0 && (
-                          <div className="mt-1 flex flex-wrap gap-1">
-                            {booking.staff.map(staff => (
-                              <Badge key={staff} variant="outline" className="bg-blue-900/30 text-blue-300 border-blue-800 text-[10px]">
-                                {staff}
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="flex-grow border-l border-gray-800 ml-2"></div>
-                )}
+                      
+                      {/* Fill remaining slots if needed */}
+                      {startSlotIndex + slotSpan < timeSlots.length && (
+                        <div className={`col-span-${timeSlots.length - (startSlotIndex + slotSpan)}`}></div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-            );
-          })}
-          
-          {!todaySchedule || todaySchedule.bookings.length === 0 ? (
-            <div className="text-gray-600 italic text-center py-8">No bookings scheduled</div>
-          ) : null}
+            ) : (
+              <div className="text-gray-600 italic text-center py-8">No bookings scheduled</div>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>
