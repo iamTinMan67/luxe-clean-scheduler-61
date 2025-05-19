@@ -37,7 +37,7 @@ const PlannerContent: React.FC<PlannerContentProps> = ({
 }) => {
   return (
     <div className="container mx-auto px-4">
-      {/* Pending Bookings List */}
+      {/* Pending Bookings List - Now placed above view-specific planners */}
       <PendingBookingsList 
         pendingBookings={pendingBookings}
         handleConfirmBooking={handleConfirmBooking}

@@ -4,8 +4,7 @@ import { motion } from "framer-motion";
 import { usePlannerCalendar } from "@/hooks/usePlannerCalendar";
 import CalendarHeader from "@/components/planner/CalendarHeader";
 import PlannerContent from "@/components/planner/PlannerContent";
-import StaffList from "@/components/planner/StaffList";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { useBookings } from "@/hooks/useBookings";
 import BookingsCalendar from "@/components/planner/BookingsCalendar";
 
@@ -87,11 +86,7 @@ const PlannerCalendar = () => {
           <div className="mt-8">
             <h2 className="text-2xl font-bold text-white mb-4">Staff Planner</h2>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <Card className="bg-black/60 border-gold/30">
-                <CardContent className="pt-6">
-                  <StaffList />
-                </CardContent>
-              </Card>
+              {/* Staff list component removed */}
               
               <BookingsCalendar 
                 date={staffDate}

@@ -17,10 +17,12 @@ export const useBookingsStorage = () => {
           ...booking,
           date: new Date(booking.date),
           // Add default time slots based on the booking time
-          startTime: booking.time || "09:00",
-          endTime: booking.time ? 
-            `${parseInt(booking.time.split(':')[0]) + 2}:${booking.time.split(':')[1]}` : 
-            "11:00",
+          startTime: booking.time || booking.startTime || "09:00",
+          endTime: booking.endTime || (booking.time ? 
+            // If we have time but no endTime, calculate 2 hours later
+            calculateEndTime(booking.time) : 
+            // If we have startTime but no endTime, calculate 2 hours later
+            (booking.startTime ? calculateEndTime(booking.startTime) : "11:00")),
           status: validateBookingStatus(booking.status)
         }));
         setPendingBookings(parsedBookings);
@@ -39,6 +41,13 @@ export const useBookingsStorage = () => {
           ...booking,
           // Ensure date is a Date object
           date: new Date(booking.date),
+          // Ensure time slots are properly set
+          startTime: booking.time || booking.startTime || "09:00",
+          endTime: booking.endTime || (booking.time ? 
+            // If we have time but no endTime, calculate 2 hours later
+            calculateEndTime(booking.time) : 
+            // If we have startTime but no endTime, calculate 2 hours later
+            (booking.startTime ? calculateEndTime(booking.startTime) : "11:00")),
           status: validateBookingStatus(booking.status)
         }));
         allConfirmedBookings = [...allConfirmedBookings, ...parsedBookings];
@@ -55,6 +64,13 @@ export const useBookingsStorage = () => {
           ...booking,
           // Ensure date is a Date object
           date: new Date(booking.date),
+          // Ensure time slots are properly set
+          startTime: booking.time || booking.startTime || "09:00",
+          endTime: booking.endTime || (booking.time ? 
+            // If we have time but no endTime, calculate 2 hours later
+            calculateEndTime(booking.time) : 
+            // If we have startTime but no endTime, calculate 2 hours later
+            (booking.startTime ? calculateEndTime(booking.startTime) : "11:00")),
           status: validateBookingStatus(booking.status)
         }));
         
@@ -71,6 +87,19 @@ export const useBookingsStorage = () => {
     setConfirmedBookings(allConfirmedBookings);
   }, []);
   
+  // Helper function to calculate an end time based on a start time
+  const calculateEndTime = (startTime: string): string => {
+    const [hours, minutes] = startTime.split(':').map(Number);
+    let endHours = hours + 2; // Default duration of 2 hours
+    
+    // Handle overflow to next day
+    if (endHours >= 24) {
+      endHours = endHours - 24;
+    }
+    
+    return `${endHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  };
+  
   return {
     pendingBookings,
     setPendingBookings,
@@ -78,3 +107,4 @@ export const useBookingsStorage = () => {
     setConfirmedBookings
   };
 };
+

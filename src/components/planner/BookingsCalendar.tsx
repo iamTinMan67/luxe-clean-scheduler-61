@@ -47,7 +47,7 @@ const BookingsCalendar: React.FC<BookingsCalendarProps> = ({
   };
 
   return (
-    <Card className="lg:col-span-2 bg-black/60 border-gold/30">
+    <Card className="bg-black/60 border-gold/30 col-span-full">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
