@@ -8,6 +8,11 @@ export const useBookingsStorage = () => {
   
   // Load saved bookings from localStorage on component mount
   useEffect(() => {
+    loadBookingsFromStorage();
+  }, []);
+
+  // Load bookings from multiple localStorage sources
+  const loadBookingsFromStorage = () => {
     // Load pending bookings
     const savedPendingBookings = localStorage.getItem('pendingBookings');
     if (savedPendingBookings) {
@@ -17,10 +22,9 @@ export const useBookingsStorage = () => {
           ...booking,
           date: new Date(booking.date),
           // Add default time slots based on the booking time
-          startTime: booking.time || "09:00",
-          endTime: booking.time ? 
-            `${parseInt(booking.time.split(':')[0]) + 2}:${booking.time.split(':')[1]}` : 
-            "11:00",
+          startTime: booking.startTime || booking.time || "09:00",
+          endTime: booking.endTime || 
+            (booking.time ? calculateEndTime(booking.time, booking.duration || 120) : "11:00"),
           status: validateBookingStatus(booking.status)
         }));
         setPendingBookings(parsedBookings);
@@ -39,6 +43,10 @@ export const useBookingsStorage = () => {
           ...booking,
           // Ensure date is a Date object
           date: new Date(booking.date),
+          // Add default time slots if missing
+          startTime: booking.startTime || booking.time || "09:00",
+          endTime: booking.endTime || 
+            (booking.time ? calculateEndTime(booking.time, booking.duration || 120) : "11:00"),
           status: validateBookingStatus(booking.status)
         }));
         allConfirmedBookings = [...allConfirmedBookings, ...parsedBookings];
@@ -55,6 +63,10 @@ export const useBookingsStorage = () => {
           ...booking,
           // Ensure date is a Date object
           date: new Date(booking.date),
+          // Add default time slots if missing
+          startTime: booking.startTime || booking.time || "09:00",
+          endTime: booking.endTime || 
+            (booking.time ? calculateEndTime(booking.time, booking.duration || 120) : "11:00"),
           status: validateBookingStatus(booking.status)
         }));
         
@@ -69,12 +81,39 @@ export const useBookingsStorage = () => {
     }
     
     setConfirmedBookings(allConfirmedBookings);
-  }, []);
+  };
+  
+  // Helper function to calculate end time based on start time and duration (in minutes)
+  const calculateEndTime = (startTime: string, durationMinutes: number): string => {
+    const [hours, minutes] = startTime.split(':').map(Number);
+    const startDate = new Date();
+    startDate.setHours(hours, minutes, 0, 0);
+    
+    const endDate = new Date(startDate.getTime() + durationMinutes * 60000);
+    const endHours = endDate.getHours().toString().padStart(2, '0');
+    const endMinutes = endDate.getMinutes().toString().padStart(2, '0');
+    
+    return `${endHours}:${endMinutes}`;
+  };
+
+  // Function to sync bookings with localStorage
+  const syncBookings = (pendingBookings: Booking[], confirmedBookings: Booking[]) => {
+    // Save pending bookings
+    localStorage.setItem('pendingBookings', JSON.stringify(pendingBookings));
+    
+    // Save confirmed bookings
+    localStorage.setItem('confirmedBookings', JSON.stringify(confirmedBookings));
+    
+    // Also save to planner calendar bookings for compatibility
+    localStorage.setItem('plannerCalendarBookings', JSON.stringify(confirmedBookings));
+  };
   
   return {
     pendingBookings,
     setPendingBookings,
     confirmedBookings,
-    setConfirmedBookings
+    setConfirmedBookings,
+    syncBookings,
+    loadBookingsFromStorage
   };
 };

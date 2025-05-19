@@ -3,7 +3,7 @@ import React from 'react';
 import { Booking } from '@/types/booking';
 import { additionalServices } from '@/data/servicePackageData';
 import { packageOptions } from '@/data/servicePackageData';
-import { getStatusTextColor } from '@/utils/statusUtils';
+import { getStatusInfo } from '@/utils/statusUtils';
 
 interface BookingDetailsProps {
   booking: Booking;
@@ -18,8 +18,8 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ booking }) => {
     booking.additionalServices.map(id => additionalServices.find(s => s.id === id)).filter(Boolean) : 
     [];
 
-  // Get status text color
-  const statusTextColorClass = getStatusTextColor(booking.status);
+  // Get status info
+  const statusInfo = getStatusInfo(booking.status);
 
   return (
     <div className="space-y-1 text-sm">
@@ -31,10 +31,10 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ booking }) => {
         </span>
       </p>
       <p className="text-gray-300">Location: <span className="text-white">{booking.location}</span></p>
-      <p className="text-gray-300">Notes: <span className="text-white">{booking.notes}</span></p>
+      {booking.notes && <p className="text-gray-300">Notes: <span className="text-white">{booking.notes}</span></p>}
       <p className="text-gray-300">Status: 
-        <span className={`ml-1 ${statusTextColorClass}`}>
-          {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+        <span className={`ml-1 ${statusInfo.textColor}`}>
+          {statusInfo.label}
         </span>
       </p>
 

@@ -8,12 +8,13 @@ import {
   FileText
 } from "lucide-react";
 import { Booking } from '@/types/booking';
+import { getStatusInfo } from '@/utils/statusUtils';
 
 interface BookingActionsProps {
   booking: Booking;
   onConfirm: (booking: Booking) => void;
   onComplete: (booking: Booking) => void;
-  onUpdateStatus: (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished") => void;
+  onUpdateStatus: (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished" | "pending" | "cancelled") => void;
 }
 
 const BookingActions: React.FC<BookingActionsProps> = ({ 
@@ -22,49 +23,30 @@ const BookingActions: React.FC<BookingActionsProps> = ({
   onComplete,
   onUpdateStatus 
 }) => {
+  const statusInfo = getStatusInfo(booking.status);
+  
+  // If there's no next status, don't render any action buttons
+  if (!statusInfo.nextStatus) {
+    return null;
+  }
+  
   return (
     <div className="mt-3 flex flex-wrap gap-2">
-      {/* Pending → Confirmed */}
-      {booking.status === "pending" && (
+      {statusInfo.nextStatus && (
         <Button 
-          size="sm" 
-          className="bg-green-600 hover:bg-green-700 text-white"
-          onClick={() => onConfirm(booking)}
+          size="sm"
+          className={`bg-${statusInfo.badgeColor} hover:bg-${statusInfo.badgeColor}/80 text-white`}
+          onClick={() => {
+            // Cast nextStatus to the valid type to ensure compatibility
+            const typedNextStatus = statusInfo.nextStatus as "confirmed" | "in-progress" | "completed" | "finished" | "pending" | "cancelled";
+            onUpdateStatus(booking, typedNextStatus);
+          }}
         >
-          <CheckCircle className="h-4 w-4 mr-1" /> Confirm
-        </Button>
-      )}
-      
-      {/* Confirmed → In Progress (Pre-inspection completed) */}
-      {booking.status === "confirmed" && (
-        <Button 
-          size="sm" 
-          className="bg-blue-600 hover:bg-blue-700 text-white"
-          onClick={() => onUpdateStatus(booking, "in-progress")}
-        >
-          <PlayCircle className="h-4 w-4 mr-1" /> Start Service
-        </Button>
-      )}
-      
-      {/* In Progress → Completed */}
-      {booking.status === "in-progress" && (
-        <Button 
-          size="sm" 
-          className="bg-purple-600 hover:bg-purple-700 text-white"
-          onClick={() => onUpdateStatus(booking, "completed")}
-        >
-          <CheckSquare className="h-4 w-4 mr-1" /> Complete
-        </Button>
-      )}
-      
-      {/* Completed → Finished (Final stage) */}
-      {booking.status === "completed" && (
-        <Button 
-          size="sm" 
-          className="bg-gold hover:bg-gold/80 text-black"
-          onClick={() => onUpdateStatus(booking, "finished")}
-        >
-          <FileText className="h-4 w-4 mr-1" /> Finalize
+          {booking.status === "pending" && <CheckCircle className="h-4 w-4 mr-1" />}
+          {booking.status === "confirmed" && <PlayCircle className="h-4 w-4 mr-1" />}
+          {booking.status === "in-progress" && <CheckSquare className="h-4 w-4 mr-1" />}
+          {booking.status === "completed" && <FileText className="h-4 w-4 mr-1" />}
+          {statusInfo.nextLabel}
         </Button>
       )}
     </div>

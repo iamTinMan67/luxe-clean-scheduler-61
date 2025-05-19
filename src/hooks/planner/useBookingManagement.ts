@@ -1,7 +1,7 @@
 
+import React from 'react';
 import { Booking } from '@/types/booking';
 import { toast } from 'sonner';
-import { generateInvoice } from '@/utils/bookingUtils';
 
 export const useBookingManagement = (
   pendingBookings: Booking[],
@@ -9,104 +9,94 @@ export const useBookingManagement = (
   confirmedBookings: Booking[],
   setConfirmedBookings: React.Dispatch<React.SetStateAction<Booking[]>>
 ) => {
-  // Function to confirm a booking
-  const handleConfirmBooking = (bookingId: string, selectedStaff: string[] = [], travelMinutes: number = 0) => {
-    // Find the booking to confirm
-    const bookingToConfirm = pendingBookings.find(booking => booking.id === bookingId);
+  // Handle confirming a booking - now accepts an optional enriched booking param
+  const handleConfirmBooking = (
+    bookingId: string, 
+    selectedStaff: string[], 
+    travelMinutes: number,
+    enrichedBooking?: Booking
+  ) => {
+    // Find the booking in the pending list
+    const bookingToConfirm = pendingBookings.find((booking) => booking.id === bookingId);
     
-    if (!bookingToConfirm) {
-      toast.error("Booking not found");
-      return;
+    if (bookingToConfirm) {
+      // Remove the booking from pending
+      const updatedPendingBookings = pendingBookings.filter(
+        (booking) => booking.id !== bookingId
+      );
+      setPendingBookings(updatedPendingBookings);
+      
+      // Use enriched booking if provided, otherwise create a new one
+      const confirmedBooking = enrichedBooking || {
+        ...bookingToConfirm,
+        status: "confirmed" as const,
+        staff: selectedStaff,
+        travelMinutes
+      };
+      
+      // Make sure status is set to confirmed (enrichedBooking might not have this)
+      confirmedBooking.status = "confirmed";
+      
+      // Add staff if not in the enriched booking
+      if (!confirmedBooking.staff) {
+        confirmedBooking.staff = selectedStaff;
+      }
+      
+      // Add travel minutes if not in enriched booking
+      if (!confirmedBooking.travelMinutes) {
+        confirmedBooking.travelMinutes = travelMinutes;
+      }
+      
+      // Add the booking to confirmed
+      const updatedConfirmedBookings = [...confirmedBookings, confirmedBooking];
+      setConfirmedBookings(updatedConfirmedBookings);
+      
+      // Save to localStorage
+      localStorage.setItem('pendingBookings', JSON.stringify(updatedPendingBookings));
+      localStorage.setItem('confirmedBookings', JSON.stringify(updatedConfirmedBookings));
+      localStorage.setItem('plannerCalendarBookings', JSON.stringify(updatedConfirmedBookings));
     }
-    
-    // Create a confirmed booking with staff assignment
-    const confirmedBooking: Booking = {
-      ...bookingToConfirm,
-      status: "confirmed", // Changed from "pending" to "confirmed"
-      staff: selectedStaff,
-      travelMinutes
-    };
-    
-    // Update localStorage
-    const updatedPendingBookings = pendingBookings.filter(booking => booking.id !== bookingId);
-    setPendingBookings(updatedPendingBookings);
-    
-    const updatedConfirmedBookings = [...confirmedBookings, confirmedBooking];
-    setConfirmedBookings(updatedConfirmedBookings);
-    
-    // Save to localStorage
-    localStorage.setItem('pendingBookings', JSON.stringify(updatedPendingBookings));
-    localStorage.setItem('confirmedBookings', JSON.stringify(updatedConfirmedBookings));
-    
-    // Update planner calendar bookings as well
-    const existingPlannerBookings = localStorage.getItem('plannerCalendarBookings') 
-      ? JSON.parse(localStorage.getItem('plannerCalendarBookings') || '[]') 
-      : [];
-    
-    localStorage.setItem('plannerCalendarBookings', JSON.stringify([
-      ...existingPlannerBookings,
-      confirmedBooking
-    ]));
-    
-    // Create invoice
-    generateInvoice(confirmedBooking);
-    
-    toast.success(`Booking confirmed successfully for ${confirmedBooking.customer}`);
   };
-  
-  // Function to cancel a booking
+
+  // Handle cancelling a booking
   const handleCancelBooking = (bookingId: string) => {
-    // Update the booking status to cancelled
-    const bookingToCancel = pendingBookings.find(booking => booking.id === bookingId);
+    const bookingToDelete = pendingBookings.find((booking) => booking.id === bookingId);
     
-    if (!bookingToCancel) {
-      toast.error("Booking not found");
-      return;
+    if (bookingToDelete) {
+      // Remove the booking from pending
+      const updatedPendingBookings = pendingBookings.filter(
+        (booking) => booking.id !== bookingId
+      );
+      setPendingBookings(updatedPendingBookings);
+      
+      // Save to localStorage
+      localStorage.setItem('pendingBookings', JSON.stringify(updatedPendingBookings));
+      
+      // Show toast notification
+      toast.success(`Booking for ${bookingToDelete.customer} has been cancelled.`);
     }
-    
-    // Create a cancelled booking
-    const cancelledBooking: Booking = {
-      ...bookingToCancel,
-      status: "cancelled"
-    };
-    
-    // Update localStorage
-    const updatedPendingBookings = pendingBookings.filter(booking => booking.id !== bookingId);
-    setPendingBookings(updatedPendingBookings);
-    
-    localStorage.setItem('pendingBookings', JSON.stringify(updatedPendingBookings));
-    
-    // Store cancelled bookings separately if needed
-    const cancelledBookings = localStorage.getItem('cancelledBookings') 
-      ? JSON.parse(localStorage.getItem('cancelledBookings') || '[]') 
-      : [];
-    
-    localStorage.setItem('cancelledBookings', JSON.stringify([
-      ...cancelledBookings,
-      cancelledBooking
-    ]));
-    
-    toast.success(`Booking cancelled for ${cancelledBooking.customer}`);
   };
-  
-  // Function to get background color based on booking status
+
+  // Get background color for a booking based on its status
   const getBookingBackground = (booking: Booking) => {
     switch (booking.status) {
       case "pending":
-        return "border-amber-500 bg-amber-950/30";
+        return "border-yellow-600/50 bg-yellow-900/20";
       case "confirmed":
-        return "border-green-500 bg-green-950/30";
+        return "border-green-600/50 bg-green-900/20";
       case "in-progress":
-        return "border-blue-500 bg-blue-950/30";
+        return "border-blue-600/50 bg-blue-900/20";
       case "completed":
-        return "border-purple-500 bg-purple-950/30";
+        return "border-purple-600/50 bg-purple-900/20";
+      case "finished":
+        return "border-cyan-600/50 bg-cyan-900/20";
       case "cancelled":
-        return "border-red-500 bg-red-950/30";
+        return "border-red-600/50 bg-red-900/20";
       default:
-        return "border-gray-500 bg-gray-950/30";
+        return "border-gray-700 bg-gray-900/20";
     }
   };
-  
+
   return {
     handleConfirmBooking,
     handleCancelBooking,

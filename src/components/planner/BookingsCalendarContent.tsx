@@ -2,9 +2,9 @@
 import React from 'react';
 import { Booking } from '@/types/booking';
 import { PlannerViewType } from '@/hooks/usePlannerCalendar';
-import BookingItem from './BookingItem';
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { format } from 'date-fns';
+import EmptyCalendarView from './calendar/EmptyCalendarView';
+import DailyCalendarView from './calendar/DailyCalendarView';
+import WeeklyMonthlyView from './calendar/WeeklyMonthlyView';
 
 interface BookingsCalendarContentProps {
   date: Date | undefined;
@@ -29,45 +29,41 @@ const BookingsCalendarContent: React.FC<BookingsCalendarContentProps> = ({
   onReschedule,
   onUpdateStatus
 }) => {
+  // Only show confirmed bookings
+  const confirmedBookingsForDate = bookingsForDate.filter(booking => 
+    booking.status === 'confirmed' || 
+    booking.status === 'in-progress' || 
+    booking.status === 'completed');
+  
+  if (!date) {
+    return <EmptyCalendarView message="Please select a date to view bookings" />;
+  }
+  
+  // If daily view, show time slots horizontally
+  if (view === 'daily') {
+    return (
+      <DailyCalendarView 
+        bookings={confirmedBookingsForDate}
+        onCompleteBooking={onCompleteBooking}
+        onReschedule={onReschedule}
+        onDeleteBooking={onDeleteBooking}
+        onUpdateStatus={onUpdateStatus}
+        onPackageChange={onPackageChange}
+      />
+    );
+  }
+  
+  // For weekly and monthly views
   return (
-    <div className="flex-1 bg-black/30 border border-gold/30 rounded-md p-4">
-      <div className="mb-4">
-        <h2 className="text-xl font-bold text-white">
-          {date ? format(date, 'MMMM d, yyyy') : 'No date selected'}
-        </h2>
-        <div className="text-sm text-gold/70">
-          {bookingsForDate.length === 0
-            ? 'No bookings scheduled'
-            : `${bookingsForDate.length} booking${bookingsForDate.length !== 1 ? 's' : ''}`}
-        </div>
-      </div>
-
-      {date && (
-        <ScrollArea className="h-[400px] pr-4">
-          <div className="space-y-4">
-            {bookingsForDate.length > 0 ? (
-              bookingsForDate.map((booking) => (
-                <div key={booking.id} className="relative">
-                  <BookingItem
-                    booking={booking}
-                    onConfirm={onConfirmBooking}
-                    onComplete={onCompleteBooking}
-                    onDelete={onDeleteBooking}
-                    onPackageChange={onPackageChange}
-                    onReschedule={onReschedule}
-                    onUpdateStatus={onUpdateStatus}
-                  />
-                </div>
-              ))
-            ) : (
-              <div className="text-center py-12 text-gray-500">
-                <p>No bookings for this date</p>
-              </div>
-            )}
-          </div>
-        </ScrollArea>
-      )}
-    </div>
+    <WeeklyMonthlyView 
+      bookings={confirmedBookingsForDate}
+      view={view as 'weekly' | 'monthly'}
+      date={date}
+      onCompleteBooking={onCompleteBooking}
+      onReschedule={onReschedule}
+      onDeleteBooking={onDeleteBooking}
+      onPackageChange={onPackageChange}
+    />
   );
 };
 
