@@ -73,13 +73,6 @@ export const usePlannerCalendar = () => {
     toast.success(`Booking for ${booking.customer} has been scheduled.`, {
       description: `${startTime} - ${endTime} with ${selectedStaff.join(' & ')}`
     });
-    
-    // Add dummy complete notification for testing
-    setTimeout(() => {
-      toast.success(`Test: Completed booking for ${booking.customer}`, {
-        description: "This is a test notification for a completed booking."
-      });
-    }, 3000);
   };
   
   // Navigation functions

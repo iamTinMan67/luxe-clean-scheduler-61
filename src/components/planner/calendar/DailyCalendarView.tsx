@@ -22,7 +22,10 @@ const generateTimeSlots = () => {
   
   for (let hour = startHour; hour <= endHour; hour++) {
     for (let minute = 0; minute < 60; minute += 15) {
-      slots.push(`${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`);
+      // Only add a new entry if we're not past the end time
+      if (!(hour === endHour && minute > 0)) {
+        slots.push(`${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`);
+      }
     }
   }
   

@@ -12,8 +12,8 @@ const DailyViewHeader: React.FC<DailyViewHeaderProps> = ({ timeSlots }) => {
       <div className="flex-1 overflow-x-auto">
         <div className="flex min-w-max">
           {timeSlots.map(slot => (
-            <div key={slot} className="w-[120px] text-center font-medium text-gold">
-              {slot}
+            <div key={slot} className="w-[30px] text-center font-medium text-gold">
+              {slot.split(':')[1] === '00' ? slot : slot.split(':')[1]}
             </div>
           ))}
         </div>
