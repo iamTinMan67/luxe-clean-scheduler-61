@@ -2,8 +2,8 @@
 import React from 'react';
 import { Booking } from '@/types/booking';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Clock, MapPin, Car, Package } from 'lucide-react';
+import NotificationButtons from './NotificationButtons';
 
 interface EventCardProps {
   booking: Booking;
@@ -66,41 +66,14 @@ const EventCard: React.FC<EventCardProps> = ({
         </div>
       )}
       
-      <div className="mt-3 flex flex-wrap gap-2">
-        <Button 
-          size="sm" 
-          variant="outline" 
-          className="bg-green-900/30 border-green-600/50 text-green-300 hover:bg-green-800/50"
-          onClick={() => onCompleteBooking(booking)}
-        >
-          Complete
-        </Button>
-        <Button 
-          size="sm" 
-          variant="outline" 
-          className="bg-blue-900/30 border-blue-600/50 text-blue-300 hover:bg-blue-800/50"
-          onClick={() => onReschedule(booking, new Date(booking.date))}
-        >
-          Reschedule
-        </Button>
-        <Button 
-          size="sm" 
-          variant="outline" 
-          className="bg-red-900/30 border-red-600/50 text-red-300 hover:bg-red-800/50"
-          onClick={() => onDeleteBooking(booking)}
-        >
-          Delete
-        </Button>
-        {onPackageChange && (
-          <Button 
-            size="sm" 
-            variant="outline" 
-            className="bg-purple-900/30 border-purple-600/50 text-purple-300 hover:bg-purple-800/50"
-            onClick={() => onPackageChange(booking, booking.packageType)}
-          >
-            Edit Package
-          </Button>
-        )}
+      <div className="mt-3">
+        <NotificationButtons
+          booking={booking}
+          onCompleteBooking={onCompleteBooking}
+          onReschedule={onReschedule}
+          onDeleteBooking={onDeleteBooking}
+          onPackageChange={onPackageChange}
+        />
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import { Booking } from '@/types/booking';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Clock, MapPin, Car } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import NotificationButtons from './NotificationButtons';
 
 interface DailyTimeSlotProps {
   booking: Booking;
@@ -63,43 +63,14 @@ const DailyTimeSlot: React.FC<DailyTimeSlotProps> = ({
                 </Badge>
               </div>
               
-              {onCompleteBooking && onReschedule && onDeleteBooking && (
-                <div className="flex gap-1 mt-1">
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    className="h-6 text-[10px] px-1 py-0 bg-green-900/30 border-green-600/50 text-green-300 hover:bg-green-800/50"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onCompleteBooking(booking);
-                    }}
-                  >
-                    Complete
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    className="h-6 text-[10px] px-1 py-0 bg-blue-900/30 border-blue-600/50 text-blue-300 hover:bg-blue-800/50"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onReschedule(booking, new Date(booking.date));
-                    }}
-                  >
-                    Reschedule
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    className="h-6 text-[10px] px-1 py-0 bg-red-900/30 border-red-600/50 text-red-300 hover:bg-red-800/50"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDeleteBooking(booking);
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </div>
-              )}
+              <NotificationButtons
+                booking={booking}
+                onCompleteBooking={onCompleteBooking}
+                onReschedule={onReschedule}
+                onDeleteBooking={onDeleteBooking}
+                onUpdateStatus={onUpdateStatus}
+                onPackageChange={onPackageChange}
+              />
             </CardContent>
           </Card>
         </div>
