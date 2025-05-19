@@ -7,7 +7,7 @@ export const getStatusInfo = (status: string) => {
       return {
         color: "border-red-500 bg-red-950/30",
         label: "Pending",
-        badgeColor: "red-600",
+        badgeColor: "bg-red-600",
         textColor: "text-red-400",
         nextStatus: "confirmed",
         nextLabel: "Confirm"
@@ -16,7 +16,7 @@ export const getStatusInfo = (status: string) => {
       return {
         color: "border-orange-500 bg-orange-950/30",
         label: "Confirmed",
-        badgeColor: "orange-600", 
+        badgeColor: "bg-orange-600", 
         textColor: "text-orange-400",
         nextStatus: "in-progress",
         nextLabel: "Start Service"
@@ -25,7 +25,7 @@ export const getStatusInfo = (status: string) => {
       return {
         color: "border-blue-500 bg-blue-950/30",
         label: "In Progress",
-        badgeColor: "blue-600",
+        badgeColor: "bg-blue-600",
         textColor: "text-blue-400",
         nextStatus: "completed",
         nextLabel: "Complete"
@@ -34,7 +34,7 @@ export const getStatusInfo = (status: string) => {
       return {
         color: "border-purple-500 bg-purple-950/30",
         label: "Completed",
-        badgeColor: "purple-600",
+        badgeColor: "bg-purple-600",
         textColor: "text-purple-400",
         nextStatus: "finished",
         nextLabel: "Finalize"
@@ -43,7 +43,7 @@ export const getStatusInfo = (status: string) => {
       return {
         color: "border-green-500 bg-green-950/30",
         label: "Finished",
-        badgeColor: "green-600",
+        badgeColor: "bg-green-600",
         textColor: "text-green-400",
         nextStatus: null,
         nextLabel: null
@@ -52,7 +52,7 @@ export const getStatusInfo = (status: string) => {
       return {
         color: "border-red-500 bg-red-950/30",
         label: "Cancelled",
-        badgeColor: "red-600",
+        badgeColor: "bg-red-600",
         textColor: "text-red-400",
         nextStatus: null,
         nextLabel: null
@@ -61,7 +61,7 @@ export const getStatusInfo = (status: string) => {
       return {
         color: "border-gray-500 bg-gray-950/30",
         label: "Unknown",
-        badgeColor: "gray-600",
+        badgeColor: "bg-gray-600",
         textColor: "text-gray-400",
         nextStatus: null,
         nextLabel: null
