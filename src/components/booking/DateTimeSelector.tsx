@@ -3,7 +3,6 @@ import { useState } from "react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { useScheduledAppointments } from "@/hooks/useScheduledAppointments";
-import { toast } from "sonner";
 
 interface DateTimeSelectorProps {
   date: Date | undefined;
@@ -18,23 +17,10 @@ const DateTimeSelector = ({
   onDateChange, 
   onTimeChange 
 }: DateTimeSelectorProps) => {
-  // Generate time slots every 15 minutes between 8:00 and 17:00
-  const generateTimeSlots = () => {
-    const slots = [];
-    for (let hour = 8; hour <= 17; hour++) {
-      for (let minute = 0; minute < 60; minute += 15) {
-        // Skip 17:15, 17:30, 17:45
-        if (hour === 17 && minute > 0) continue;
-        
-        const formattedHour = hour.toString().padStart(2, '0');
-        const formattedMinute = minute.toString().padStart(2, '0');
-        slots.push(`${formattedHour}:${formattedMinute}`);
-      }
-    }
-    return slots;
-  };
-  
-  const timeSlots = generateTimeSlots();
+  const timeSlots = [
+    "08:00", "09:00", "10:00", "11:00", "12:00",
+    "13:00", "14:00", "15:00", "16:00", "17:00"
+  ];
   
   // Get all scheduled appointments
   const { appointments, loading } = useScheduledAppointments();
@@ -54,42 +40,31 @@ const DateTimeSelector = ({
         
       if (!datesMatch) return false;
       
-      // Only confirmed bookings should block time slots
-      if (booking.status !== "confirmed") return false;
+      // Check if time matches directly
+      const bookingTime = booking.time || booking.startTime;
+      if (bookingTime === timeSlot) return true;
       
-      // Check if time is directly at the slot
-      const bookingStartTime = booking.startTime || booking.time;
-      if (bookingStartTime === timeSlot) return true;
-      
-      // Check if the slot is within the booking's time range
-      if (bookingStartTime) {
-        // Parse time slot
-        const [timeSlotHours, timeSlotMinutes] = timeSlot.split(':').map(Number);
-        const timeSlotTotalMinutes = (timeSlotHours * 60) + timeSlotMinutes;
+      // Check if time is within a range (for bookings with start and end times)
+      if (booking.startTime && booking.endTime) {
+        // Parse time slot hour
+        const timeSlotHour = parseInt(timeSlot.split(':')[0]);
+        const timeSlotMinute = parseInt(timeSlot.split(':')[1]);
         
         // Parse booking start time
-        const [startHours, startMinutes] = bookingStartTime.split(':').map(Number);
-        const startTotalMinutes = (startHours * 60) + startMinutes;
+        const startHour = parseInt(booking.startTime.split(':')[0]);
+        const startMinute = parseInt(booking.startTime.split(':')[1]);
         
-        // Parse booking end time (or default to start time + 2 hours)
-        let endTotalMinutes;
-        if (booking.endTime) {
-          const [endHours, endMinutes] = booking.endTime.split(':').map(Number);
-          endTotalMinutes = (endHours * 60) + endMinutes;
-        } else {
-          // Default to 2 hours after start time
-          endTotalMinutes = startTotalMinutes + 120;
-        }
+        // Parse booking end time
+        const endHour = parseInt(booking.endTime.split(':')[0]);
+        const endMinute = parseInt(booking.endTime.split(':')[1]);
         
-        // Factor in travel time before and after (if specified)
-        const travelMinutesBefore = booking.travelMinutes || 0;
-        const travelMinutesAfter = booking.travelMinutes || 0;
+        // Convert everything to minutes for easier comparison
+        const timeSlotTotalMinutes = (timeSlotHour * 60) + timeSlotMinute;
+        const startTotalMinutes = (startHour * 60) + startMinute;
+        const endTotalMinutes = (endHour * 60) + endMinute;
         
-        const actualStartTime = startTotalMinutes - travelMinutesBefore;
-        const actualEndTime = endTotalMinutes + travelMinutesAfter;
-        
-        // Check if time slot falls within the adjusted booking's time range
-        return timeSlotTotalMinutes >= actualStartTime && timeSlotTotalMinutes < actualEndTime;
+        // Check if time slot falls within the booking's time range
+        return timeSlotTotalMinutes >= startTotalMinutes && timeSlotTotalMinutes < endTotalMinutes;
       }
       
       return false;
@@ -125,10 +100,12 @@ const DateTimeSelector = ({
       return bookingTime === reservedTimeSlot;
     });
     
-    // Show a warning message
-    toast.warning("This time slot is already booked.", {
-      description: "Please select an available time slot."
-    });
+    // Show a prompt or modal for handling the conflict
+    // For now, we'll just log it
+    console.log("Conflict with booking:", conflictingBooking);
+    
+    // Still select the time but mark it as conflicting
+    onTimeChange(reservedTimeSlot);
   };
 
   return (
@@ -166,7 +143,7 @@ const DateTimeSelector = ({
           <h3 className="text-lg font-medium text-white mb-3">
             Available Times for {format(date, "EEEE, MMMM d, yyyy")}
           </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {timeSlots.map((slot) => {
               const reserved = isTimeSlotReserved(slot);
               return (
@@ -174,12 +151,13 @@ const DateTimeSelector = ({
                   key={slot}
                   type="button"
                   onClick={() => reserved ? handleReservedTimeClick(slot) : onTimeChange(slot)}
-                  disabled={reserved}
                   className={`py-2 px-3 rounded-md text-sm transition-colors ${
                     time === slot
-                      ? "gold-gradient text-black" 
+                      ? reserved
+                        ? "bg-red-700 text-white" // Conflicting selection
+                        : "gold-gradient text-black" // Normal selection
                       : reserved 
-                        ? "bg-red-900/40 text-gray-400 cursor-not-allowed" // Clearly show as unavailable
+                        ? "bg-red-900/40 text-gray-300" // Reserved slot
                         : "bg-gray-800 text-white hover:bg-gray-700" // Available slot
                   }`}
                 >
@@ -194,7 +172,7 @@ const DateTimeSelector = ({
             <div className="mt-4 p-3 bg-red-900/20 border border-red-800 rounded-md text-sm">
               <p className="text-red-300">
                 <strong>Booking Conflict:</strong> This time slot already has a confirmed booking.
-                Please select another available time.
+                Consider selecting another time or click "Submit" to request this slot anyway.
               </p>
             </div>
           )}

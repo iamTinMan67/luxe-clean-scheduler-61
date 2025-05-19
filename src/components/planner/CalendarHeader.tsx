@@ -1,16 +1,10 @@
-
-import React from 'react';
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PlannerViewType } from "@/hooks/usePlannerCalendar";
-import { format } from "date-fns";
-import DailySchedule from './DailySchedule';
 
 interface CalendarHeaderProps {
   date: Date;
-  view: PlannerViewType;
+  view: PlannerViewType; 
   navigatePrevious: () => void;
   navigateNext: () => void;
   navigateToday: () => void;
@@ -20,68 +14,31 @@ interface CalendarHeaderProps {
 
 const CalendarHeader = ({
   date,
-  view,
-  navigatePrevious,
-  navigateNext,
-  navigateToday,
-  setView,
   pendingBookingsCount
 }: CalendarHeaderProps) => {
   return (
-    <Card className="bg-gray-900 border-gray-800">
-      <CardHeader className="pb-0">
-        <div className="flex justify-between items-center">
-          <CardTitle className="text-white">Schedule</CardTitle>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="bg-gray-800 border-gray-700 text-white hover:bg-gray-700"
-              onClick={() => setView('daily')}
-            >
-              Daily
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="bg-gray-800 border-gray-700 text-white hover:bg-gray-700"
-              onClick={() => setView('weekly')}
-            >
-              Weekly
-            </Button>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="mb-8 text-center"
+    >
+      <h1 className="text-3xl font-bold text-white">
+        Planner <span className="text-gold">Calendar</span>
+      </h1>
+      <p className="text-gray-400">
+        Manage bookings and staff schedules
+      </p>
+      
+      {/* Keep the pending bookings count badge if count > 0 */}
+      {pendingBookingsCount > 0 && (
+        <div className="flex justify-center mt-4">
+          <div className="px-3 py-1 rounded-full bg-amber-900/30 text-amber-400 border border-amber-700 text-xs font-medium">
+            {pendingBookingsCount} pending bookings
           </div>
         </div>
-        
-        <div className="flex items-center justify-between mt-4">
-          <Button 
-            variant="outline" 
-            size="sm"
-            className="bg-gray-800 border-gray-700 text-white hover:bg-gray-700"
-            onClick={navigatePrevious}
-          >
-            <ChevronLeft className="h-4 w-4 mr-1" />
-          </Button>
-          
-          <h3 className="text-white text-lg font-medium">
-            {format(date, 'EEEE')}
-            <br />
-            <span className="text-gold">{format(date, 'MMM dd, yyyy')}</span>
-          </h3>
-          
-          <Button
-            variant="outline"
-            size="sm"
-            className="bg-gray-800 border-gray-700 text-white hover:bg-gray-700"
-            onClick={navigateNext}
-          >
-            <ChevronRight className="h-4 w-4 ml-1" />
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <DailySchedule date={date} />
-      </CardContent>
-    </Card>
+      )}
+    </motion.div>
   );
 };
 

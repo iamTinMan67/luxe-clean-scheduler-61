@@ -1,9 +1,11 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { navigatePrevious, navigateNext, hasTimeConflict as checkTimeConflict } from '@/utils/dateUtils';
 import { useBookingsStorage } from './planner/useBookingsStorage';
 import { useBookingManagement } from './planner/useBookingManagement';
 import { useScheduleFiltering } from './planner/useScheduleFiltering';
+import { toast } from 'sonner';
+import { Booking } from '@/types/booking';
 
 // Update the view type to include "monthly"
 export type PlannerViewType = "daily" | "weekly" | "monthly";
@@ -17,7 +19,8 @@ export const usePlannerCalendar = () => {
     pendingBookings, 
     setPendingBookings, 
     confirmedBookings, 
-    setConfirmedBookings 
+    setConfirmedBookings,
+    syncBookings // New function to sync bookings with localStorage
   } = useBookingsStorage();
   
   // Get booking management functions
@@ -29,6 +32,48 @@ export const usePlannerCalendar = () => {
   
   // Get filtered schedule data
   const { filteredBookings, schedule } = useScheduleFiltering(date, view, confirmedBookings, pendingBookings);
+
+  // Ensure we sync bookings with localStorage on any changes
+  useEffect(() => {
+    syncBookings(pendingBookings, confirmedBookings);
+  }, [pendingBookings, confirmedBookings, syncBookings]);
+  
+  // Enhanced handle confirm function to include start/end times
+  const enhancedHandleConfirmBooking = (bookingId: string, selectedStaff: string[], travelMinutes: number) => {
+    const booking = pendingBookings.find(b => b.id === bookingId);
+    if (!booking) return;
+    
+    // Calculate start and end time based on booking time
+    const startTime = booking.time || "09:00";
+    const [startHour, startMin] = startTime.split(':').map(num => parseInt(num, 10));
+    
+    // Calculate duration - default to 2 hours if no specific duration info
+    const duration = booking.duration ? parseInt(booking.duration, 10) : 120;
+    
+    // Calculate end time
+    const endHour = startHour + Math.floor(duration / 60);
+    const endMin = startMin + (duration % 60);
+    
+    // Format end time
+    const formattedEndHour = (endHour < 10 ? '0' : '') + endHour.toString();
+    const formattedEndMin = (endMin < 10 ? '0' : '') + endMin.toString();
+    const endTime = `${formattedEndHour}:${formattedEndMin}`;
+    
+    // Create enriched booking with time slots
+    const enrichedBooking = {
+      ...booking,
+      startTime: startTime,
+      endTime: endTime
+    };
+    
+    // Call original confirm handler with enriched booking
+    handleConfirmBooking(bookingId, selectedStaff, travelMinutes, enrichedBooking);
+    
+    // Show success toast
+    toast.success(`Booking for ${booking.customer} has been scheduled.`, {
+      description: `${startTime} - ${endTime} with ${selectedStaff.join(' & ')}`
+    });
+  };
   
   // Navigation functions
   const handleNavigatePrevious = () => {
@@ -65,7 +110,7 @@ export const usePlannerCalendar = () => {
     navigatePrevious: handleNavigatePrevious,
     navigateNext: handleNavigateNext,
     navigateToday,
-    handleConfirmBooking,
+    handleConfirmBooking: enhancedHandleConfirmBooking,
     handleCancelBooking,
     getBookingBackground,
     hasBookingsOnDate,

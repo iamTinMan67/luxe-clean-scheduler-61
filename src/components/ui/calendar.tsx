@@ -17,7 +17,7 @@ function Calendar({
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
-      className={cn("p-3", className)}
+      className={cn("p-3 pointer-events-auto", className)}
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4",
@@ -57,8 +57,8 @@ function Calendar({
         IconRight: ({ ..._props }) => <ChevronRight className="h-4 w-4" />,
       }}
       modifiersClassNames={{
-        highlighted: "font-bold text-red-500", // Dates with bookings - red and bold
-        noBookings: "text-green-500", // Dates without bookings - green
+        highlighted: "font-bold text-gold", // Dates with bookings
+        noBookings: "text-white font-normal", // Dates without bookings - white text normal weight
         ...(props.modifiersClassNames || {}),
       }}
       {...props}

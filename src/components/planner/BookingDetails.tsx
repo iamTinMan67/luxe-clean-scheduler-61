@@ -3,6 +3,7 @@ import React from 'react';
 import { Booking } from '@/types/booking';
 import { additionalServices } from '@/data/servicePackageData';
 import { packageOptions } from '@/data/servicePackageData';
+import { getStatusInfo } from '@/utils/statusUtils';
 
 interface BookingDetailsProps {
   booking: Booking;
@@ -17,21 +18,8 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ booking }) => {
     booking.additionalServices.map(id => additionalServices.find(s => s.id === id)).filter(Boolean) : 
     [];
 
-  // Function to get status text color
-  const getStatusColor = () => {
-    switch(booking.status) {
-      case 'pending':
-        return 'text-red-400';
-      case 'confirmed':
-        return 'text-amber-400';
-      case 'in-progress':
-        return 'text-blue-400';
-      case 'completed':
-        return 'text-green-400';
-      default:
-        return 'text-gray-400';
-    }
-  };
+  // Get status info
+  const statusInfo = getStatusInfo(booking.status);
 
   return (
     <div className="space-y-1 text-sm">
@@ -43,10 +31,10 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ booking }) => {
         </span>
       </p>
       <p className="text-gray-300">Location: <span className="text-white">{booking.location}</span></p>
-      <p className="text-gray-300">Notes: <span className="text-white">{booking.notes}</span></p>
+      {booking.notes && <p className="text-gray-300">Notes: <span className="text-white">{booking.notes}</span></p>}
       <p className="text-gray-300">Status: 
-        <span className={`ml-1 ${getStatusColor()}`}>
-          {booking.status}
+        <span className={`ml-1 ${statusInfo.textColor}`}>
+          {statusInfo.label}
         </span>
       </p>
 
@@ -67,7 +55,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ booking }) => {
       {/* Show staff assignments if available */}
       {booking.staff && booking.staff.length > 0 && (
         <div className="mt-2 pt-1 border-t border-gray-800">
-          <p className="text-gray-300 mb-1">Staff Assigned:</p>
+          <p className="text-gray-300 mb-1">Staff Assigned</p>
           <div className="flex flex-wrap gap-1">
             {booking.staff.map((staffMember, idx) => (
               <span key={idx} className="bg-gray-800 px-2 py-0.5 rounded-full text-white text-xs">
