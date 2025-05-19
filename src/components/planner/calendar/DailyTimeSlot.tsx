@@ -5,6 +5,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Clock, MapPin, Car } from 'lucide-react';
 import NotificationButtons from './NotificationButtons';
+import { getStatusInfo } from '@/utils/statusUtils';
+import { formatTimeToAmPm } from '@/lib/utils';
 
 interface DailyTimeSlotProps {
   booking: Booking;
@@ -23,24 +25,29 @@ const DailyTimeSlot: React.FC<DailyTimeSlotProps> = ({
   onUpdateStatus,
   onPackageChange
 }) => {
+  // Get status info for styling
+  const statusInfo = getStatusInfo(booking.status);
+  
+  // Use startTime if available, fallback to time, default to 08:00
   const startTime = booking.startTime || booking.time || '08:00';
   const [startHour, startMinute] = startTime.split(':').map(Number);
   const totalStartMinutes = startHour * 60 + startMinute;
   
   // Calculate position based on start time (8:00 = 0 minutes from start)
   const startPosition = totalStartMinutes - 8 * 60;
-  // Default to 60 minutes duration
-  const duration = 60;
+  
+  // Calculate duration - use explicit duration if available or default to 60 minutes
+  const duration = booking.duration ? parseInt(booking.duration) : 60;
   
   return (
     <div className="flex items-center">
       <div className="min-w-[80px] text-gray-300 text-sm font-medium">
-        {startTime}
+        {formatTimeToAmPm(startTime)}
       </div>
       <div className="flex-1 overflow-x-auto">
         <div className="relative min-w-max h-20" style={{ paddingLeft: `${(startPosition / 15) * 30}px` }}>
           <Card 
-            className="absolute top-0 bg-green-900/40 border-green-700/50 hover:bg-green-900/60 transition-colors cursor-pointer"
+            className={`absolute top-0 ${statusInfo.color} hover:bg-opacity-70 transition-colors cursor-pointer`}
             style={{ width: `${duration * 2}px`, minWidth: '180px' }}
           >
             <CardContent className="p-2">
@@ -54,11 +61,7 @@ const DailyTimeSlot: React.FC<DailyTimeSlotProps> = ({
                     <MapPin className="h-3 w-3" /> {booking.location || 'No location info'}
                   </div>
                 </div>
-                <Badge className={`${
-                  booking.status === "confirmed" ? "bg-green-900/60 text-green-300" : 
-                  booking.status === "in-progress" ? "bg-blue-900/60 text-blue-300" :
-                  "bg-purple-900/60 text-purple-300"
-                }`}>
+                <Badge className={`${statusInfo.badgeColor} ${statusInfo.textColor}`}>
                   {booking.status}
                 </Badge>
               </div>

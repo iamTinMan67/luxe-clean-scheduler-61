@@ -4,12 +4,15 @@ import { Booking } from '@/types/booking';
 import { Badge } from '@/components/ui/badge';
 import { Clock, MapPin, Car, Package } from 'lucide-react';
 import NotificationButtons from './NotificationButtons';
+import { getStatusInfo } from '@/utils/statusUtils';
+import { formatTimeToAmPm } from '@/lib/utils';
 
 interface EventCardProps {
   booking: Booking;
   onCompleteBooking: (booking: Booking) => void;
   onReschedule: (booking: Booking, date: Date) => void;
   onDeleteBooking: (booking: Booking) => void;
+  onUpdateStatus?: (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished") => void;
   onPackageChange?: (booking: Booking, newPackage: string) => void;
 }
 
@@ -18,10 +21,18 @@ const EventCard: React.FC<EventCardProps> = ({
   onCompleteBooking, 
   onReschedule, 
   onDeleteBooking,
+  onUpdateStatus,
   onPackageChange
 }) => {
+  // Get status info for styling
+  const statusInfo = getStatusInfo(booking.status);
+  
+  // Format start and end times
+  const startTime = booking.startTime || booking.time || 'N/A';
+  const endTime = booking.endTime || 'N/A';
+  
   return (
-    <div className="mb-4 p-3 bg-green-900/30 border border-green-600/50 rounded-md">
+    <div className={`mb-4 p-3 rounded-md ${statusInfo.color}`}>
       <div className="flex justify-between items-start">
         <div>
           <h3 className="font-medium text-white">{booking.customer}</h3>
@@ -31,7 +42,7 @@ const EventCard: React.FC<EventCardProps> = ({
           </div>
           <div className="text-xs text-gray-400 mt-1 flex items-center gap-1">
             <Clock className="h-3 w-3" />
-            {booking.startTime || booking.time} - {booking.endTime || 'N/A'}
+            {formatTimeToAmPm(startTime)} - {formatTimeToAmPm(endTime)}
           </div>
           <div className="text-xs text-gray-400 flex items-center gap-1">
             <Car className="h-3 w-3" />
@@ -72,6 +83,7 @@ const EventCard: React.FC<EventCardProps> = ({
           onCompleteBooking={onCompleteBooking}
           onReschedule={onReschedule}
           onDeleteBooking={onDeleteBooking}
+          onUpdateStatus={onUpdateStatus}
           onPackageChange={onPackageChange}
         />
       </div>
