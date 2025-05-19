@@ -36,8 +36,23 @@ const DailyTimeSlot: React.FC<DailyTimeSlotProps> = ({
   // Calculate position based on start time (8:00 = 0 minutes from start)
   const startPosition = totalStartMinutes - 8 * 60;
   
-  // Calculate duration - use explicit duration if available or default to 60 minutes
-  const duration = booking.duration ? parseInt(booking.duration) : 60;
+  // Calculate duration - use explicit duration if available or calculate from endTime or default to 60 minutes
+  let durationMinutes = 60; // Default duration
+  
+  if (booking.duration) {
+    // If duration is provided as a string, convert to number
+    durationMinutes = parseInt(booking.duration);
+  } else if (booking.endTime && booking.startTime) {
+    // Calculate from end and start times if both are available
+    const [endHour, endMinute] = booking.endTime.split(':').map(Number);
+    const endTotalMinutes = endHour * 60 + endMinute;
+    durationMinutes = endTotalMinutes - totalStartMinutes;
+    
+    // Ensure duration is at least 30 minutes if calculation results in negative or small value
+    if (durationMinutes < 30) {
+      durationMinutes = 60;
+    }
+  }
   
   return (
     <div className="flex items-center">
@@ -48,7 +63,7 @@ const DailyTimeSlot: React.FC<DailyTimeSlotProps> = ({
         <div className="relative min-w-max h-20" style={{ paddingLeft: `${(startPosition / 15) * 30}px` }}>
           <Card 
             className={`absolute top-0 ${statusInfo.color} hover:bg-opacity-70 transition-colors cursor-pointer`}
-            style={{ width: `${duration * 2}px`, minWidth: '180px' }}
+            style={{ width: `${durationMinutes * 2}px`, minWidth: '180px' }}
           >
             <CardContent className="p-2">
               <div className="flex justify-between items-start">
