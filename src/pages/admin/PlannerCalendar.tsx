@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { usePlannerCalendar } from "@/hooks/usePlannerCalendar";
 import CalendarHeader from "@/components/planner/CalendarHeader";
 import PlannerContent from "@/components/planner/PlannerContent";
+import StaffList from "@/components/planner/StaffList";
 import { Card, CardContent } from "@/components/ui/card";
 import { useBookings } from "@/hooks/useBookings";
 import BookingsCalendar from "@/components/planner/BookingsCalendar";
@@ -57,7 +58,7 @@ const PlannerCalendar = () => {
     <div className="min-h-screen bg-black pb-16" key={key}>
       <section className="relative py-8">
         <div className="container mx-auto px-4">
-          {/* Calendar header - WITHOUT pending bookings count */}
+          {/* Calendar header with navigation */}
           <CalendarHeader 
             date={date}
             view={view}
@@ -65,7 +66,7 @@ const PlannerCalendar = () => {
             navigateNext={navigateNext}
             navigateToday={navigateToday}
             setView={setView}
-            pendingBookingsCount={0} // Set to 0 to remove notification
+            pendingBookingsCount={pendingBookings.length}
           />
           
           {/* Main planner content */}
@@ -81,17 +82,18 @@ const PlannerCalendar = () => {
             getBookingBackground={getBookingBackground}
             hasBookingsOnDate={hasBookingsOnDate}
             checkTimeConflict={checkTimeConflict}
-            // Pass navigation functions to be rendered below pending bookings
-            navigatePrevious={navigatePrevious}
-            navigateNext={navigateNext}
-            navigateToday={navigateToday}
-            setView={setView}
           />
           
-          {/* Schedule View section - Now properly configured for daily view */}
+          {/* Staff Planner section */}
           <div className="mt-8">
-            <h2 className="text-2xl font-bold text-white mb-4">Schedule View</h2>
-            <div className="grid grid-cols-1 gap-6">
+            <h2 className="text-2xl font-bold text-white mb-4">Staff Planner</h2>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <Card className="bg-black/60 border-gold/30">
+                <CardContent className="pt-6">
+                  <StaffList />
+                </CardContent>
+              </Card>
+              
               <BookingsCalendar 
                 date={staffDate}
                 setDate={setStaffDate}

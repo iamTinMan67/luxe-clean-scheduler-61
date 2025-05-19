@@ -16,8 +16,8 @@ export const useBookingManagement = () => {
     completeBooking
   } = useBookingStatus(updateBooking, moveBookingToConfirmed);
 
-  // Handler for updating booking status with proper type constraints
-  const handleUpdateStatus = (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished" | "pending" | "cancelled") => {
+  // Handler for updating booking status
+  const handleUpdateStatus = (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished") => {
     updateBookingStatus(booking, newStatus);
   };
   

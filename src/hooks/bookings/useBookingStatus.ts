@@ -20,19 +20,15 @@ export const useBookingStatus = (
   };
 
   // Handler for updating booking status
-  const updateBookingStatus = (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished" | "cancelled" | "pending") => {
+  const updateBookingStatus = (booking: Booking, newStatus: string) => {
     // If the booking is pending and we're confirming it, use the special confirmation handler
     if (booking.status === "pending" && newStatus === "confirmed") {
       confirmBooking(booking);
       return;
     }
     
-    // Update the booking status - ensure we're using the correct type
-    const updatedBooking = { 
-      ...booking, 
-      status: newStatus as "pending" | "confirmed" | "cancelled" | "in-progress" | "completed" | "finished"
-    };
-    
+    // Update the booking status
+    const updatedBooking = { ...booking, status: newStatus };
     updateBooking(updatedBooking);
     
     // Status-specific actions
@@ -57,7 +53,7 @@ export const useBookingStatus = (
       ...booking,
       status: 'confirmed' as const,
       // Default staff assignment if not already assigned
-      staff: booking.staff || ['Karl', 'Salleah'],
+      staff: booking.staff || ['Staff Assigned'],
       // Default travel time if not set
       travelMinutes: booking.travelMinutes || 15
     };

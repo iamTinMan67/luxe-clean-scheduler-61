@@ -10,7 +10,7 @@ export const useBookingManagement = (
   setConfirmedBookings: React.Dispatch<React.SetStateAction<Booking[]>>
 ) => {
   // Function to confirm a booking
-  const handleConfirmBooking = (bookingId: string, selectedStaff: string[] = ['Karl', 'Salleah'], travelMinutes: number = 15) => {
+  const handleConfirmBooking = (bookingId: string, selectedStaff: string[] = [], travelMinutes: number = 0) => {
     // Find the booking to confirm
     const bookingToConfirm = pendingBookings.find(booking => booking.id === bookingId);
     
