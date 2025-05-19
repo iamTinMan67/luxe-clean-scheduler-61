@@ -4,27 +4,30 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { cleanupAuthState } from "@/utils/authCleanup";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const AlreadyLoggedIn = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Remove the auto-redirect effect that was causing reload loops
+  // Only show a message instead, and let user explicitly navigate
   
   const handleSignOut = async () => {
     try {
       cleanupAuthState();
-      await supabase.auth.signOut();
-      // Use the reload as a last resort only
-      setTimeout(() => window.location.href = '/login', 100);
+      await supabase.auth.signOut({ scope: 'global' });
+      window.location.reload();
     } catch (error) {
       console.error("Error signing out:", error);
-      // Navigate instead of reload to prevent infinite loop
-      navigate('/login', { replace: true });
+      // Force reload even if sign out fails
+      window.location.reload();
     }
   };
   
   const handleGotoDashboard = () => {
-    navigate('/admin/dashboard', { replace: true });
+    navigate('/admin/dashboard');
   };
   
   return (

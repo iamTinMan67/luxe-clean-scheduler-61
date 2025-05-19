@@ -4,7 +4,6 @@ import { Booking } from '@/types/booking';
 import BookingHeader from './BookingHeader';
 import BookingDetails from './BookingDetails';
 import BookingActions from './BookingActions';
-import { getStatusInfo } from '@/utils/statusUtils';
 
 interface BookingItemProps {
   booking: Booking;
@@ -13,7 +12,6 @@ interface BookingItemProps {
   onDelete: (booking: Booking) => void;
   onPackageChange: (booking: Booking, newPackage: string) => void;
   onReschedule: (booking: Booking, newDate: Date) => void;
-  onUpdateStatus: (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished" | "pending" | "cancelled") => void;
 }
 
 const BookingItem: React.FC<BookingItemProps> = ({ 
@@ -22,15 +20,14 @@ const BookingItem: React.FC<BookingItemProps> = ({
   onComplete, 
   onDelete, 
   onPackageChange, 
-  onReschedule,
-  onUpdateStatus
+  onReschedule 
 }) => {
-  // Get status info for styling
-  const statusInfo = getStatusInfo(booking.status);
-
   return (
     <div 
-      className={`border ${statusInfo.color} rounded-md p-3 bg-black/40`}
+      className={`border ${
+        booking.status === "pending" ? "border-amber-500" : 
+        booking.status === "completed" ? "border-green-500" : "border-gold"
+      } rounded-md p-3 bg-black/40`}
     >
       <BookingHeader 
         booking={booking} 
@@ -44,8 +41,7 @@ const BookingItem: React.FC<BookingItemProps> = ({
       <BookingActions 
         booking={booking} 
         onConfirm={onConfirm} 
-        onComplete={onComplete}
-        onUpdateStatus={onUpdateStatus}
+        onComplete={onComplete} 
       />
     </div>
   );
