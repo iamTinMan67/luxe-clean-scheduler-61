@@ -91,6 +91,14 @@ const PreInspection = () => {
         <p className="text-gold">Document the vehicle condition before commencement</p>
       </div>
 
+      <div className="lg:col-span-1">
+        <InspectionChecklist 
+          onSubmitReport={handleSubmitReport} 
+          vehicleType={getVehicleType()}
+          isSubmitting={isSubmitting}
+        />
+      </div>
+      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <VehicleInfoForm
@@ -108,14 +116,6 @@ const PreInspection = () => {
           <ImageUploadSection 
             images={images}
             onImageUpload={handleImageUpload}
-          />
-        </div>
-        
-        <div className="lg:col-span-1">
-          <InspectionChecklist 
-            onSubmitReport={handleSubmitReport} 
-            vehicleType={getVehicleType()}
-            isSubmitting={isSubmitting}
           />
         </div>
       </div>
