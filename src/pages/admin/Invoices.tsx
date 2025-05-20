@@ -7,7 +7,7 @@ import { useInvoiceManagement } from "@/hooks/invoices/useInvoiceManagement";
 import AdminPageTitle from "@/components/admin/AdminPageTitle";
 
 const Invoices = () => {
-  const { invoices, markAsPaid } = useInvoiceManagement();
+  const { invoices, markAsPaid, generateInvoicePDF } = useInvoiceManagement();
   
   return (
     <div className="min-h-screen bg-black pb-16">
@@ -34,6 +34,9 @@ const Invoices = () => {
               <InvoiceList 
                 invoices={invoices}
                 onMarkAsPaid={markAsPaid}
+                onViewPDF={generateInvoicePDF}
+                hideInvoiceIds={true}
+                showCustomerName={true}
               />
             </Card>
           </motion.div>
