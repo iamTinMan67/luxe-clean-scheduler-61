@@ -36,7 +36,7 @@ const TestimonialsSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            What Our Clients Say about our work ethics
+            What Our Clients say about us
           </motion.h2>
           <motion.div 
             className="w-20 h-1 bg-gold mx-auto"

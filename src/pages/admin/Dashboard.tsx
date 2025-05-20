@@ -10,7 +10,7 @@ const Dashboard = () => {
         <div className="container mx-auto px-4">
           <AdminPageTitle 
             title="Admin Dashboard" 
-            subtitle="Overview of your business performance and metrics" 
+            subtitle="How things are looking" 
           />
           
           <DashboardContent />
