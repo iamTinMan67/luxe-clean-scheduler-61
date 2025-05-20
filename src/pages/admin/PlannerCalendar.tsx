@@ -90,8 +90,8 @@ const PlannerCalendar = () => {
             <BookingsCalendar 
               date={staffDate}
               setDate={setStaffDate}
-              view={staffView}
-              setView={setStaffView}
+              view={staffView as "daily" | "weekly"}
+              setView={setStaffView as (view: "daily" | "weekly") => void}
               bookingsForDate={getBookingsForDate()}
               onConfirmBooking={staffHandleConfirmBooking}
               onCompleteBooking={handleCompleteBooking}
