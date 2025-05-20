@@ -35,7 +35,7 @@ const TodoList = () => {
     >
       <h1 className="text-3xl font-bold text-white mb-6">Task Management</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
         {/* Service Tasks Section */}
         <div className="md:col-span-2">
           <Card className="bg-black/60 border-gold/30 mb-8">
