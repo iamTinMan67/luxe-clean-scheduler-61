@@ -45,7 +45,7 @@ const HeroSection = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.7, delay: 0.4 }}
         >
-          Fully, self-sufficiant, mobile, cleaning and fine-detailing services. From cars, boats
+          Fully, self-sufficient, mobile, cleaning and fine-detailing services. From cars, boats
           and even <span className="text-gold">airplanes.</span> We can do the lot!
           <br></br>
           <br></br>
