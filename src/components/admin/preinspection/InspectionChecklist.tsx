@@ -11,12 +11,14 @@ import { getChecklistItemsForVehicle } from "@/data/inspectionChecklist";
 
 interface InspectionChecklistProps {
   onSubmitReport: () => void;
+  onDeclineReport: () => void;
   vehicleType?: string;
   isSubmitting?: boolean;
 }
 
 const InspectionChecklist = ({ 
   onSubmitReport, 
+  onDeclineReport,
   vehicleType = "car", 
   isSubmitting = false 
 }: InspectionChecklistProps) => {
@@ -90,6 +92,15 @@ const InspectionChecklist = ({
     localStorage.setItem('lastInspectionChecklist', JSON.stringify(inspectionData));
     
     onSubmitReport();
+  };
+
+  const handleDecline = () => {
+    toast({
+      title: "Inspection Declined",
+      description: "Customer has been notified about the declined inspection."
+    });
+    
+    onDeclineReport();
   };
 
   return (
@@ -175,13 +186,20 @@ const InspectionChecklist = ({
           </div>
         </div>
         
-        <div className="mt-8">
+        <div className="mt-8 flex gap-2">
           <Button 
-            className="w-sm gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg"
+            className="w-1/2 gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg"
             onClick={handleSubmit}
             disabled={isSubmitting}
           >
             {isSubmitting ? "Submitting..." : "Submit Report"}
+          </Button>
+          <Button 
+            className="w-1/2 bg-red-500 hover:bg-red-600 text-white"
+            onClick={handleDecline}
+            disabled={isSubmitting}
+          >
+            Decline Service
           </Button>
         </div>
       </CardContent>

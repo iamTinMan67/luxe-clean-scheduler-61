@@ -9,11 +9,14 @@ import ImageUploadSection from "@/components/admin/preinspection/ImageUploadSect
 import InspectionChecklist from "@/components/admin/preinspection/InspectionChecklist";
 import { submitPreInspectionReport } from "@/services/inspectionService";
 import { Booking } from "@/types/booking";
+import { useCustomerNotifications } from "@/hooks/progress/useCustomerNotifications";
+import { sendTrackingInfo } from "@/utils/emailUtils";
 
 const PreInspection = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const initialBookingId = searchParams.get('bookingId') || '';
+  const { sendTextReport } = useCustomerNotifications();
   
   const [images, setImages] = useState<string[]>([]);
   const [selectedBooking, setSelectedBooking] = useState<string>(initialBookingId);
@@ -47,6 +50,12 @@ const PreInspection = () => {
     setIsSubmitting(true);
     
     try {
+      if (!bookingDetails) {
+        toast.error("Please select a booking first");
+        setIsSubmitting(false);
+        return;
+      }
+      
       const success = await submitPreInspectionReport(
         bookingDetails,
         images,
@@ -55,6 +64,11 @@ const PreInspection = () => {
       );
       
       if (success) {
+        // Send report to customer via email
+        if (bookingDetails.email) {
+          sendTrackingInfo(bookingDetails);
+        }
+        
         // Reset form
         setImages([]);
         setExteriorNotes("");
@@ -68,6 +82,33 @@ const PreInspection = () => {
       toast.error("Failed to submit inspection report");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  // Handle decline service
+  const handleDeclineService = () => {
+    if (!bookingDetails) {
+      toast.error("Please select a booking first");
+      return;
+    }
+    
+    // Send notification to customer
+    if (bookingDetails) {
+      // Send text notification
+      sendTextReport(bookingDetails);
+      
+      // Send email notification if email is available
+      if (bookingDetails.email) {
+        sendTrackingInfo(bookingDetails);
+      }
+      
+      // Reset form
+      setImages([]);
+      setExteriorNotes("");
+      setInteriorNotes("");
+      
+      // Redirect to planner
+      navigate("/admin/planner-calendar");
     }
   };
 
@@ -91,16 +132,17 @@ const PreInspection = () => {
         <p className="text-gold">Document the vehicle condition before commencement</p>
       </div>
 
-      <div className="lg:col-span-1">
-        <InspectionChecklist 
-          onSubmitReport={handleSubmitReport} 
-          vehicleType={getVehicleType()}
-          isSubmitting={isSubmitting}
-        />
-      </div>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="lg:col-span-1">
+          <InspectionChecklist 
+            onSubmitReport={handleSubmitReport} 
+            onDeclineReport={handleDeclineService}
+            vehicleType={getVehicleType()}
+            isSubmitting={isSubmitting}
+          />
+        </div>
+        
+        <div className="lg:col-span-1 space-y-6">
           <VehicleInfoForm
             appointments={appointments}
             loading={loading}

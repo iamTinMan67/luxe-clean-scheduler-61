@@ -53,44 +53,31 @@ const VehicleInfoForm = ({
         <CardTitle className="text-white">Vehicle Information</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="customer" className="text-white text-sm font-medium block mb-1">
-              Today's Appointments
-            </label>
-            <Select
-              value={selectedBooking}
-              onValueChange={(value) => setSelectedBooking(value)}
-            >
-              <SelectTrigger className="bg-black/40 border-gold/30 text-white">
-                <SelectValue placeholder="Select today's appointment" />
-              </SelectTrigger>
-              <SelectContent className="bg-gray-900 border-gold/30 text-white">
-                {loading ? (
-                  <SelectItem value="loading" disabled>Loading appointments...</SelectItem>
-                ) : todayAppointments.length > 0 ? (
-                  todayAppointments.map((booking) => (
-                    <SelectItem key={booking.id} value={booking.id}>
-                      {booking.customer} - {booking.time} - {booking.packageType}
-                    </SelectItem>
-                  ))
-                ) : (
-                  <SelectItem value="none" disabled>No appointments scheduled for today</SelectItem>
-                )}
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <label htmlFor="bookingId" className="text-white text-sm font-medium block mb-1">
-              Booking ID
-            </label>
-            <Input 
-              id="bookingId" 
-              className="bg-black/40 border-gold/30 text-white" 
-              value={bookingDetails?.id || ""}
-              readOnly
-            />
-          </div>
+        <div>
+          <label htmlFor="customer" className="text-white text-sm font-medium block mb-1">
+            Today's Appointments
+          </label>
+          <Select
+            value={selectedBooking}
+            onValueChange={(value) => setSelectedBooking(value)}
+          >
+            <SelectTrigger className="bg-black/40 border-gold/30 text-white">
+              <SelectValue placeholder="Select today's appointment" />
+            </SelectTrigger>
+            <SelectContent className="bg-gray-900 border-gold/30 text-white">
+              {loading ? (
+                <SelectItem value="loading" disabled>Loading appointments...</SelectItem>
+              ) : todayAppointments.length > 0 ? (
+                todayAppointments.map((booking) => (
+                  <SelectItem key={booking.id} value={booking.id}>
+                    {booking.customer} - {booking.time} - {booking.packageType}
+                  </SelectItem>
+                ))
+              ) : (
+                <SelectItem value="none" disabled>No appointments scheduled for today</SelectItem>
+              )}
+            </SelectContent>
+          </Select>
         </div>
         
         <div>
