@@ -5,6 +5,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import NavLink from "./NavLink";
 import { useAuth } from "@/context/AuthContext";
+import ContactInfo from "./ContactInfo";
 
 interface AdminRoute {
   path: string;
@@ -19,10 +20,12 @@ interface MobileMenuProps {
 
 const MobileMenu = ({ isOpen, adminRoutes }: MobileMenuProps) => {
   const [adminDropdownOpen, setAdminDropdownOpen] = useState(false);
+  const [contactDropdownOpen, setContactDropdownOpen] = useState(false);
   const [openSubmenus, setOpenSubmenus] = useState<string[]>([]);
   const { user, signOut, isAdmin, isStaff } = useAuth();
   
   const toggleAdminDropdown = () => setAdminDropdownOpen(!adminDropdownOpen);
+  const toggleContactDropdown = () => setContactDropdownOpen(!contactDropdownOpen);
 
   const toggleSubmenu = (label: string) => {
     setOpenSubmenus(prev => 
@@ -46,6 +49,25 @@ const MobileMenu = ({ isOpen, adminRoutes }: MobileMenuProps) => {
       <nav className="flex flex-col p-4">
         <NavLink to="/" isMobile>Home</NavLink>
         <NavLink to="/gallery" isMobile>Gallery</NavLink>
+        
+        {/* Contact Us Dropdown */}
+        <button
+          className="text-left py-3 px-4 w-full text-lg text-white flex items-center justify-between"
+          onClick={toggleContactDropdown}
+          aria-expanded={contactDropdownOpen}
+        >
+          <span>Contact Us</span>
+          <ChevronDown size={16} className={cn(
+            "transition-transform duration-200",
+            contactDropdownOpen ? "rotate-180" : ""
+          )} />
+        </button>
+        
+        {contactDropdownOpen && (
+          <div className="pl-4 space-y-3 border-l border-gold/30 ml-4 py-3">
+            <ContactInfo />
+          </div>
+        )}
         
         {(isAdmin || isStaff) && (
           <>
