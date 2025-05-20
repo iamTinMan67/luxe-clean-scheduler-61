@@ -3,6 +3,7 @@ import HeroSection from "@/components/home/HeroSection";
 import FeaturesSection from "@/components/home/FeaturesSection";
 import FeedbackSection from "@/components/home/FeedbackSection";
 import CTASection from "@/components/home/CTASection";
+import CopyrightSection from "@/components/home/CopyrightSection";
 import DataMigrationTrigger from "@/components/DataMigrationTrigger";
 import { useEffect, useState } from "react";
 
@@ -37,6 +38,9 @@ export default function Index() {
       
       {/* Customer Feedback Section - Now shows 6 items */}
       <FeedbackSection />
+      
+      {/* Copyright Section - Only on home page */}
+      <CopyrightSection />
     </div>
   );
 }

@@ -7,9 +7,10 @@ import { useLocation } from "react-router-dom";
 const Layout = () => {
   const location = useLocation();
   
-  // Only show footer on home page, services, and bookings pages
+  // Only show footer on services and bookings pages
   const shouldShowFooter = [
-  //Deleted paths  
+    '/services',
+    '/booking'
   ].includes(location.pathname);
 
   // Hide footer on all admin pages
