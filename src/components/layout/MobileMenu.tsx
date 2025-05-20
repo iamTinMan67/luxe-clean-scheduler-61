@@ -16,9 +16,10 @@ interface AdminRoute {
 interface MobileMenuProps {
   isOpen: boolean;
   adminRoutes: AdminRoute[];
+  isAdminPage: boolean;
 }
 
-const MobileMenu = ({ isOpen, adminRoutes }: MobileMenuProps) => {
+const MobileMenu = ({ isOpen, adminRoutes, isAdminPage }: MobileMenuProps) => {
   const [adminDropdownOpen, setAdminDropdownOpen] = useState(false);
   const [contactDropdownOpen, setContactDropdownOpen] = useState(false);
   const [openSubmenus, setOpenSubmenus] = useState<string[]>([]);
@@ -50,23 +51,27 @@ const MobileMenu = ({ isOpen, adminRoutes }: MobileMenuProps) => {
         <NavLink to="/" isMobile>Home</NavLink>
         <NavLink to="/gallery" isMobile>Gallery</NavLink>
         
-        {/* Contact Us Dropdown */}
-        <button
-          className="text-left py-3 px-4 w-full text-lg text-white flex items-center justify-between"
-          onClick={toggleContactDropdown}
-          aria-expanded={contactDropdownOpen}
-        >
-          <span>Contact Us</span>
-          <ChevronDown size={16} className={cn(
-            "transition-transform duration-200",
-            contactDropdownOpen ? "rotate-180" : ""
-          )} />
-        </button>
-        
-        {contactDropdownOpen && (
-          <div className="pl-4 space-y-3 border-l border-gold/30 ml-4 py-3">
-            <ContactInfo />
-          </div>
+        {/* Contact Us Dropdown - Hide on Admin Pages */}
+        {!isAdminPage && (
+          <>
+            <button
+              className="text-left py-3 px-4 w-full text-lg text-white flex items-center justify-between"
+              onClick={toggleContactDropdown}
+              aria-expanded={contactDropdownOpen}
+            >
+              <span>Contact Us</span>
+              <ChevronDown size={16} className={cn(
+                "transition-transform duration-200",
+                contactDropdownOpen ? "rotate-180" : ""
+              )} />
+            </button>
+            
+            {contactDropdownOpen && (
+              <div className="pl-4 space-y-3 border-l border-gold/30 ml-4 py-3">
+                <ContactInfo />
+              </div>
+            )}
+          </>
         )}
         
         {(isAdmin || isStaff) && (

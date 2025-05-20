@@ -19,7 +19,14 @@ const Navbar = () => {
   const [showContact, setShowContact] = useState(false);
   const location = useLocation();
   const isHomePage = location.pathname === '/';
-  const isAdminDashboard = location.pathname === '/admin/dashboard';
+  
+  // Function to check if current page is admin-related
+  const isAdminRelatedPage = () => {
+    const path = location.pathname;
+    return path.startsWith('/admin') || 
+           path.startsWith('/management') || 
+           path === '/feedback/new';
+  };
 
   const handleToggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleContact = () => setShowContact(!showContact);
@@ -88,8 +95,8 @@ const Navbar = () => {
             />
           </Link>
           
-          {/* Quick Contact - Hide on Admin Dashboard */}
-          {!isAdminDashboard && (
+          {/* Quick Contact - Hide on Admin-related pages */}
+          {!isAdminRelatedPage() && (
             <div className="hidden md:block mt-1">
               <button 
                 onClick={toggleContact}
@@ -120,7 +127,7 @@ const Navbar = () => {
         </button>
       </div>
 
-      <MobileMenu isOpen={isMenuOpen} adminRoutes={adminRoutes} />
+      <MobileMenu isOpen={isMenuOpen} adminRoutes={adminRoutes} isAdminPage={isAdminRelatedPage()} />
     </header>
   );
 };
