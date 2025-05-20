@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import PendingBookingsList from './PendingBookingsList';
 import WeeklyPlanner from './WeeklyPlanner';
-import MonthlyPlanner from './MonthlyPlanner';
 import DailyPlanner from './DailyPlanner';
 import { PlannerViewType } from '@/hooks/usePlannerCalendar';
 import { Booking } from '@/types/booking';
@@ -98,13 +97,6 @@ const PlannerContent: React.FC<PlannerContentProps> = ({
           >
             Weekly
           </Button>
-          <Button
-            variant="ghost"
-            className={`text-white hover:text-gold ${view === 'monthly' ? 'bg-gray-800' : ''}`}
-            onClick={() => setView('monthly')}
-          >
-            Monthly
-          </Button>
         </div>
       </div>
       
@@ -125,16 +117,6 @@ const PlannerContent: React.FC<PlannerContentProps> = ({
           schedule={schedule}
           getBookingBackground={getBookingBackground}
           checkTimeConflict={checkTimeConflict}
-        />
-      )}
-      
-      {view === "monthly" && (
-        <MonthlyPlanner
-          date={date}
-          setDate={setDate}
-          schedule={schedule}
-          getBookingBackground={getBookingBackground}
-          hasBookingsOnDate={hasBookingsOnDate}
         />
       )}
     </div>
