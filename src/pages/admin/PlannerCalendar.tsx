@@ -62,9 +62,6 @@ const PlannerCalendar = () => {
           <CalendarHeader 
             date={date}
             view={view}
-            navigatePrevious={navigatePrevious}
-            navigateNext={navigateNext}
-            navigateToday={navigateToday}
             setView={setView}
             pendingBookingsCount={pendingBookings.length}
           />
@@ -83,6 +80,9 @@ const PlannerCalendar = () => {
             getBookingBackground={getBookingBackground}
             hasBookingsOnDate={hasBookingsOnDate}
             checkTimeConflict={checkTimeConflict}
+            navigatePrevious={navigatePrevious}
+            navigateNext={navigateNext}
+            navigateToday={navigateToday}
           />
           
           {/* Staff Planner section */}

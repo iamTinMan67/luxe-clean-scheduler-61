@@ -8,6 +8,7 @@ import MonthlyPlanner from './MonthlyPlanner';
 import DailyPlanner from './DailyPlanner';
 import { PlannerViewType } from '@/hooks/usePlannerCalendar';
 import { Booking } from '@/types/booking';
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 
 interface PlannerContentProps {
   date: Date;
@@ -22,6 +23,9 @@ interface PlannerContentProps {
   getBookingBackground: (booking: Booking) => string;
   hasBookingsOnDate: (date: Date) => boolean;
   checkTimeConflict: (date: Date, time: string) => boolean;
+  navigatePrevious: () => void;
+  navigateNext: () => void;
+  navigateToday: () => void;
 }
 
 const PlannerContent: React.FC<PlannerContentProps> = ({
@@ -36,7 +40,10 @@ const PlannerContent: React.FC<PlannerContentProps> = ({
   handleCancelBooking,
   getBookingBackground,
   hasBookingsOnDate,
-  checkTimeConflict
+  checkTimeConflict,
+  navigatePrevious,
+  navigateNext,
+  navigateToday
 }) => {
   return (
     <div className="container mx-auto px-4">
@@ -48,8 +55,34 @@ const PlannerContent: React.FC<PlannerContentProps> = ({
         getBookingBackground={getBookingBackground}
       />
       
-      {/* View selector buttons */}
-      <div className="flex justify-center my-4">
+      {/* Today control and view selector buttons */}
+      <div className="flex justify-between items-center my-4">
+        <div className="flex items-center rounded-md border border-gray-800">
+          <Button 
+            variant="outline" 
+            size="icon"
+            className="rounded-r-none border-gray-800 text-white hover:text-gold"
+            onClick={navigatePrevious}
+          >
+            {view === 'daily' ? <ChevronLeft className="h-4 w-4" /> : <ChevronsLeft className="h-4 w-4" />}
+          </Button>
+          <Button
+            variant="outline"
+            className="rounded-none border-l-0 border-r-0 border-gray-800 text-white"
+            onClick={navigateToday}
+          >
+            Today
+          </Button>
+          <Button 
+            variant="outline" 
+            size="icon"
+            className="rounded-l-none border-gray-800 text-white hover:text-gold"
+            onClick={navigateNext}
+          >
+            {view === 'daily' ? <ChevronRight className="h-4 w-4" /> : <ChevronsRight className="h-4 w-4" />}
+          </Button>
+        </div>
+        
         <div className="flex items-center rounded-md border border-gray-800">
           <Button
             variant="ghost"

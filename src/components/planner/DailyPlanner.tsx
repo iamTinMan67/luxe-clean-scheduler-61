@@ -69,68 +69,69 @@ const DailyPlanner: React.FC<DailyPlannerProps> = ({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {timeSlots.length > 0 ? (
-          <div className="grid grid-cols-1 gap-2">
+        <div className="overflow-x-auto">
+          {/* Time slot header row */}
+          <div className="flex min-w-max mb-4 pb-2 border-b border-gray-800">
+            {timeSlots.map(timeSlot => (
+              <div key={timeSlot} className="flex-shrink-0 w-32 text-center">
+                <div className="text-white font-medium">{timeSlot}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Booking rows */}
+          <div className="flex min-w-max">
             {timeSlots.map(timeSlot => {
               const slotBookings = getBookingsForTimeSlot(timeSlot);
               return (
-                <div key={timeSlot} className="flex flex-col">
-                  <div className="flex items-center mb-2">
-                    <div className="text-white font-medium min-w-[60px]">{timeSlot}</div>
-                    <div className="h-px flex-grow bg-gray-800 ml-2"></div>
-                  </div>
-                  
+                <div key={timeSlot} className="flex-shrink-0 w-32 px-1">
                   {slotBookings.length > 0 ? (
-                    <div className="pl-[60px] space-y-2">
+                    <div className="space-y-2">
                       {slotBookings.map(booking => (
                         <div 
                           key={booking.id} 
-                          className={`${getBookingBackground(booking)} p-3 rounded-md border`}
+                          className={`${getBookingBackground(booking)} p-2 rounded-md border text-xs`}
                         >
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <h4 className="text-white font-medium">{booking.customer}</h4>
-                              <p className="text-gray-400 text-sm">
-                                {booking.packageType}
-                                {booking.travelMinutes && booking.travelMinutes > 0 && 
-                                  ` (Travel: ${booking.travelMinutes} mins)`
-                                }
-                              </p>
-                              <p className="text-xs text-gray-500">
-                                {(booking.startTime || booking.time)} - {booking.endTime || 'N/A'}
-                              </p>
-                              {booking.vehicleReg && (
-                                <Badge variant="outline" className="mt-1 bg-black/30">
-                                  {booking.vehicleReg}
-                                </Badge>
-                              )}
-                            </div>
-                            <Badge className={booking.status === "confirmed" ? "bg-green-900/60 text-green-300" : "bg-amber-900/60 text-amber-300"}>
+                          <div className="flex flex-col">
+                            <div className="font-medium text-white truncate">{booking.customer}</div>
+                            <p className="text-gray-400 text-xs truncate">
+                              {booking.packageType}
+                              {booking.travelMinutes && booking.travelMinutes > 0 && 
+                                ` (T: ${booking.travelMinutes}m)`
+                              }
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {(booking.startTime || booking.time)} - {booking.endTime || 'N/A'}
+                            </p>
+                            {booking.vehicleReg && (
+                              <Badge variant="outline" className="mt-1 text-xs bg-black/30 truncate">
+                                {booking.vehicleReg}
+                              </Badge>
+                            )}
+                            <Badge className={`mt-1 text-xs ${booking.status === "confirmed" ? "bg-green-900/60 text-green-300" : "bg-amber-900/60 text-amber-300"}`}>
                               {booking.status}
                             </Badge>
+                            {booking.staff && booking.staff.length > 0 && (
+                              <div className="mt-1 flex flex-wrap gap-1">
+                                {booking.staff.map(staff => (
+                                  <Badge key={staff} variant="outline" className="text-xs bg-blue-900/30 text-blue-300 border-blue-800">
+                                    {staff}
+                                  </Badge>
+                                ))}
+                              </div>
+                            )}
                           </div>
-                          {booking.staff && booking.staff.length > 0 && (
-                            <div className="mt-2 flex flex-wrap gap-1">
-                              {booking.staff.map(staff => (
-                                <Badge key={staff} variant="outline" className="bg-blue-900/30 text-blue-300 border-blue-800">
-                                  {staff}
-                                </Badge>
-                              ))}
-                            </div>
-                          )}
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <div className="pl-[60px] text-gray-600 text-sm">No bookings</div>
+                    <div className="h-8 text-gray-600 text-xs text-center border-r border-gray-800"></div>
                   )}
                 </div>
               );
             })}
           </div>
-        ) : (
-          <div className="text-gray-600 italic text-center py-8">No bookings scheduled</div>
-        )}
+        </div>
       </CardContent>
     </Card>
   );
