@@ -26,7 +26,7 @@ const FeedbackManager = () => {
 
   return (
     <div className="container px-4 py-8">
-      <AdminPageTitle title="Manage" />
+      <AdminPageTitle title="Manager" />
       
       <FeedbackTabs 
         feedback={feedback} 
