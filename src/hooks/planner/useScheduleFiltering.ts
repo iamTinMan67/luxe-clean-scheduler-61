@@ -25,6 +25,11 @@ export const useScheduleFiltering = (
         // Ensure booking.date is a Date object before comparing
         const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
         return isSameDayDate(bookingDate, day);
+      }).sort((a, b) => {
+        // Sort by time
+        const timeA = a.startTime || a.time || '00:00';
+        const timeB = b.startTime || b.time || '00:00';
+        return timeA.localeCompare(timeB);
       });
       
       return {

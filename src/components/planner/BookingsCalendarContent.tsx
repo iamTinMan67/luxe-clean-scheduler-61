@@ -14,8 +14,8 @@ interface BookingsCalendarContentProps {
   onCompleteBooking: (booking: Booking) => void;
   onDeleteBooking: (booking: Booking) => void;
   onPackageChange: (booking: Booking, newPackage: string) => void;
-  onReschedule: (booking: Booking, newDate: Date) => void;
-  onUpdateStatus: (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished") => void;
+  onReschedule: (booking: Booking, newDate: Date, newTime?: string) => void;
+  onUpdateStatus: (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished" | "pending" | "cancelled") => void;
 }
 
 const BookingsCalendarContent: React.FC<BookingsCalendarContentProps> = ({

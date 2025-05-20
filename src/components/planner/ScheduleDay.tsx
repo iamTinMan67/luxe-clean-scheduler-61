@@ -11,6 +11,13 @@ interface ScheduleDayProps {
 }
 
 const ScheduleDay: React.FC<ScheduleDayProps> = ({ date, bookings, getBookingBackground }) => {
+  // Sort bookings by time
+  const sortedBookings = [...bookings].sort((a, b) => {
+    const timeA = a.startTime || a.time || '00:00';
+    const timeB = b.startTime || b.time || '00:00';
+    return timeA.localeCompare(timeB);
+  });
+
   return (
     <div className="col-span-1">
       <div className="text-center mb-3 py-2 border-b border-gray-800">
@@ -18,14 +25,12 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({ date, bookings, getBookingBac
         <h3 className="text-white font-bold">{format(date, "MMMM d, yyyy")}</h3>
       </div>
 
-      {bookings.length > 0 ? (
+      {sortedBookings.length > 0 ? (
         <div className="space-y-3">
-          {bookings.map(booking => (
+          {sortedBookings.map(booking => (
             <div 
               key={booking.id}
-              className={`rounded-lg p-3 border-l-4 ${
-                booking.status === "pending" ? "border-amber-500" : "border-gold"
-              } ${getBookingBackground(booking)}`}
+              className={`rounded-lg p-3 border-l-4 ${getBookingBackground(booking)}`}
             >
               <div className="flex justify-between items-start mb-1">
                 <h4 className="font-medium text-white">
@@ -34,7 +39,13 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({ date, bookings, getBookingBac
                 <span className={`text-xs px-2 py-0.5 rounded-full ${
                   booking.status === "pending" 
                     ? "bg-amber-900/30 text-amber-400 border border-amber-700"
-                    : "bg-green-900/30 text-green-400 border border-green-700"
+                    : booking.status === "confirmed" 
+                    ? "bg-green-900/30 text-green-400 border border-green-700"
+                    : booking.status === "in-progress"
+                    ? "bg-blue-900/30 text-blue-400 border border-blue-700"
+                    : booking.status === "completed"
+                    ? "bg-purple-900/30 text-purple-400 border border-purple-700"
+                    : "bg-gray-900/30 text-gray-400 border border-gray-700"
                 }`}>
                   {booking.status}
                 </span>

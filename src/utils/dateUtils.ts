@@ -68,11 +68,46 @@ export const addHoursToTime = (time: string, hours: number): string => {
   return addMinutesToTime(time, hours * 60);
 };
 
+// Parse time string to get hours and minutes
+export const parseTime = (time: string): { hours: number; minutes: number } => {
+  const [hoursStr, minutesStr] = time.split(':');
+  return {
+    hours: parseInt(hoursStr, 10),
+    minutes: parseInt(minutesStr, 10)
+  };
+};
+
+// Compare two times to see if they overlap
+export const doTimesOverlap = (
+  start1: string, 
+  end1: string, 
+  start2: string, 
+  end2: string
+): boolean => {
+  // If any time is missing, assume no conflict
+  if (!start1 || !end1 || !start2 || !end2) return false;
+  
+  // Convert times to comparable format (minutes since midnight)
+  const time1Start = parseTime(start1);
+  const time1End = parseTime(end1);
+  const time2Start = parseTime(start2);
+  const time2End = parseTime(end2);
+  
+  // Convert to minutes for easier comparison
+  const start1Mins = time1Start.hours * 60 + time1Start.minutes;
+  const end1Mins = time1End.hours * 60 + time1End.minutes;
+  const start2Mins = time2Start.hours * 60 + time2Start.minutes;
+  const end2Mins = time2End.hours * 60 + time2End.minutes;
+  
+  // Check if they overlap
+  return (start1Mins < end2Mins && end1Mins > start2Mins);
+};
+
 // Check for booking time conflicts including travel time
 export const hasTimeConflict = (date: Date, time: string, bookings: any[]) => {
   return bookings.some(booking => {
     // Only check confirmed bookings
-    if (booking.status !== "confirmed") return false;
+    if (booking.status !== "confirmed" && booking.status !== "in-progress") return false;
     
     const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
     

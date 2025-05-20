@@ -42,10 +42,24 @@ export const useBookingOperations = () => {
   };
   
   // Handler for rescheduling a booking
-  const handleReschedule = (booking: Booking, newDate: Date) => {
-    const updatedBooking = { ...booking, date: newDate };
+  const handleReschedule = (booking: Booking, newDate: Date, newTime?: string) => {
+    const updatedBooking = { 
+      ...booking, 
+      date: newDate,
+      time: newTime || booking.time, // Update the time if provided
+      startTime: newTime || booking.startTime, // Update startTime too if provided
+    };
+    
+    // If we have an endTime and a new time was provided, recalculate endTime
+    // (assuming 2 hour duration)
+    if (booking.endTime && newTime) {
+      const [hours, minutes] = newTime.split(':').map(Number);
+      const endHours = hours + 2;
+      updatedBooking.endTime = `${endHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    }
+    
     updateBooking(updatedBooking);
-    toast.success(`${booking.customer}'s booking has been rescheduled to ${newDate.toLocaleDateString()}.`);
+    toast.success(`${booking.customer}'s booking has been rescheduled to ${newDate.toLocaleDateString()} at ${newTime || booking.time || ''}.`);
   };
 
   return {
