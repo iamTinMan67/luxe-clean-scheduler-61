@@ -5,6 +5,7 @@ import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import DesktopMenu from "./DesktopMenu";
 import MobileMenu from "./MobileMenu";
+import ContactInfo from "./ContactInfo";
 
 interface AdminRoute {
   path: string;
@@ -15,10 +16,12 @@ interface AdminRoute {
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [showContact, setShowContact] = useState(false);
   const location = useLocation();
   const isHomePage = location.pathname === '/';
 
   const handleToggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const toggleContact = () => setShowContact(!showContact);
 
   const closeMenu = () => setIsMenuOpen(false);
 
@@ -74,14 +77,32 @@ const Navbar = () => {
       )}
     >
       <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
-        {/* Logo - Now showing on all pages */}
-        <Link to="/" className="flex items-center space-x-2" aria-label="Home">
-          <img 
-            src="/lovable-uploads/20bcd8db-4042-4d14-9238-3fe36de9757f.png" 
-            alt="Mid-Cheshire Mobile Valeting" 
-            className="h-20 w-auto" 
-          />
-        </Link>
+        {/* Logo and Contact Section */}
+        <div className="flex flex-col">
+          <Link to="/" className="flex items-center space-x-2" aria-label="Home">
+            <img 
+              src="/lovable-uploads/20bcd8db-4042-4d14-9238-3fe36de9757f.png" 
+              alt="Mid-Cheshire Mobile Valeting" 
+              className="h-20 w-auto" 
+            />
+          </Link>
+          
+          {/* Quick Contact - Visible on medium and larger screens */}
+          <div className="hidden md:block mt-1">
+            <button 
+              onClick={toggleContact}
+              className="text-gold hover:text-white text-sm flex items-center transition-colors"
+            >
+              Contact Us {showContact ? '▲' : '▼'}
+            </button>
+            
+            {showContact && (
+              <div className="absolute bg-black/90 p-3 rounded-md shadow-lg border border-gold/20 mt-1">
+                <ContactInfo />
+              </div>
+            )}
+          </div>
+        </div>
         
         <DesktopMenu adminRoutes={adminRoutes} />
 

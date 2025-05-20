@@ -1,8 +1,6 @@
 
 import FooterSection from "./FooterSection";
 import FooterLinks from "./FooterLinks";
-import SocialLinks from "./SocialLinks";
-import ContactInfo from "./ContactInfo";
 import FooterCopyright from "./FooterCopyright";
 
 const Footer = () => {
@@ -21,11 +19,6 @@ const Footer = () => {
             alt="Mid-Cheshire Mobile Valeting" 
             className="h-36 w-auto mb-8" 
           />
-          
-          <FooterSection title="Contact Us">
-            <ContactInfo />
-            <SocialLinks />
-          </FooterSection>
         </div>
         
         <FooterCopyright />

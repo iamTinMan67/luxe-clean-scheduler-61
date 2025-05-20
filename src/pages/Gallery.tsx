@@ -4,9 +4,6 @@ import { motion } from "framer-motion";
 import GalleryDisplay from "@/components/gallery/GalleryDisplay";
 import GalleryTestimonials from "@/components/gallery/GalleryTestimonials";
 import { GalleryItem, Testimonial, getDefaultItems, getTestimonials } from "@/utils/galleryData";
-import FooterSection from "@/components/layout/FooterSection";
-import ContactInfo from "@/components/layout/ContactInfo";
-import SocialLinks from "@/components/layout/SocialLinks";
 
 const Gallery = () => {
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
@@ -68,28 +65,6 @@ const Gallery = () => {
       
       {/* Testimonials Component */}
       <GalleryTestimonials testimonials={testimonials} />
-      
-      {/* Contact Section - Added to match the Footer layout */}
-      <section className="py-16 bg-black border-t border-gold/20">
-        <div className="container mx-auto">
-          <div className="flex flex-col items-center mb-12">
-            <img 
-              src="/lovable-uploads/20bcd8db-4042-4d14-9238-3fe36de9757f.png" 
-              alt="Mid-Cheshire Mobile Valeting" 
-              className="h-36 w-auto mb-8" 
-            />
-            
-            <FooterSection title="Contact Us">
-              <ContactInfo />
-              <SocialLinks />
-            </FooterSection>
-          </div>
-          
-          <div className="text-center text-gray-400 text-sm">
-            <p>© {new Date().getFullYear()} Mid-Cheshire Mobile Valeting. All rights reserved.</p>
-          </div>
-        </div>
-      </section>
     </div>
   );
 };
