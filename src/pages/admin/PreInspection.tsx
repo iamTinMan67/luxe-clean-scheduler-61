@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -135,8 +136,10 @@ const PreInspection = () => {
         <p className="text-gold">Document the vehicle condition before commencement</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="lg:col-span-1">
+      {/* Updated grid layout with fixed side-by-side layout */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        {/* Inspection Checklist - Left side, 5 columns */}
+        <div className="md:col-span-5">
           <InspectionChecklist 
             onSubmitReport={handleSubmitReport} 
             onDeclineReport={handleDeclineService}
@@ -145,23 +148,28 @@ const PreInspection = () => {
           />
         </div>
         
-        <div className="lg:col-span-1 space-y-6">
-          <VehicleInfoForm
-            appointments={appointments}
-            loading={loading}
-            selectedBooking={selectedBooking}
-            bookingDetails={bookingDetails}
-            exteriorNotes={exteriorNotes}
-            interiorNotes={interiorNotes}
-            setSelectedBooking={setSelectedBooking}
-            setExteriorNotes={setExteriorNotes}
-            setInteriorNotes={setInteriorNotes}
-          />
-          
-          <ImageUploadSection 
-            images={images}
-            onImageUpload={handleImageUpload}
-          />
+        {/* Vehicle Info and Images - Right side, 7 columns */}
+        <div className="md:col-span-7 space-y-6">
+          <div className="sticky top-24">
+            <VehicleInfoForm
+              appointments={appointments}
+              loading={loading}
+              selectedBooking={selectedBooking}
+              bookingDetails={bookingDetails}
+              exteriorNotes={exteriorNotes}
+              interiorNotes={interiorNotes}
+              setSelectedBooking={setSelectedBooking}
+              setExteriorNotes={setExteriorNotes}
+              setInteriorNotes={setInteriorNotes}
+            />
+            
+            <div className="mt-6">
+              <ImageUploadSection 
+                images={images}
+                onImageUpload={handleImageUpload}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </motion.div>
