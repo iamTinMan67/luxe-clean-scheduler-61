@@ -33,14 +33,14 @@ export default function Index() {
       {/* Features Section */}
       <FeaturesSection />
       
-      {/* Testimonials Section */}
+      {/* Call to Action Section */}
+      <CTASection />
+
+            {/* Testimonials Section */}
       <TestimonialsSection />
       
       {/* Customer Feedback Section */}
       <FeedbackSection />
-      
-      {/* Call to Action Section */}
-      <CTASection />
     </div>
   );
 }
