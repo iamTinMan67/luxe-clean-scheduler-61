@@ -2,6 +2,7 @@
 import HeroSection from "@/components/home/HeroSection";
 import FeaturesSection from "@/components/home/FeaturesSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
+import FeedbackSection from "@/components/home/FeedbackSection";
 import CTASection from "@/components/home/CTASection";
 import DataMigrationTrigger from "@/components/DataMigrationTrigger";
 import { useEffect, useState } from "react";
@@ -34,6 +35,9 @@ export default function Index() {
       
       {/* Testimonials Section */}
       <TestimonialsSection />
+      
+      {/* Customer Feedback Section */}
+      <FeedbackSection />
       
       {/* Call to Action Section */}
       <CTASection />
