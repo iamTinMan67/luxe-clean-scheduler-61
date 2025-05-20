@@ -75,9 +75,8 @@ const WarehouseInventory = () => {
       exit={{ opacity: 0, y: 20 }}
       className="container mx-auto py-8 px-4"
     >
-      <div className="mb-8">
+      <div className="mb-8 text-center">
         <h1 className="text-3xl font-bold text-white mb-2">Warehouse Inventory</h1>
-        <p className="text-gold">Manage your main warehouse stock levels</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
