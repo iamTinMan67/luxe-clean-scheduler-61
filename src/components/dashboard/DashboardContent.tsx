@@ -1,6 +1,6 @@
 
-import { StatsCard, RevenueChart, PackageDistribution, VehicleTypeChart, InventoryAlerts, RecentBookings } from '@/components/dashboard';
-import { statsData, revenueData, packageData, vehicleData, inventoryAlerts, recentBookings } from '@/components/dashboard/DashboardData';
+import { StatsCard, RevenueChart, PackageDistribution, FeedbackDistribution, InventoryAlerts, RecentBookings } from '@/components/dashboard';
+import { statsData, revenueData, packageData, inventoryAlerts, recentBookings } from '@/components/dashboard/DashboardData';
 
 const DashboardContent = () => {
   return (
@@ -36,8 +36,8 @@ const DashboardContent = () => {
         {/* Package Distribution Chart */}
         <PackageDistribution data={packageData} />
         
-        {/* Vehicle Types Chart */}
-        <VehicleTypeChart data={vehicleData} />
+        {/* Feedback Distribution Chart (replacing Vehicle Types) */}
+        <FeedbackDistribution />
       </div>
     </>
   );
