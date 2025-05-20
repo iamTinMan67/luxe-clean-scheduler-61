@@ -29,7 +29,7 @@ const ManagePackages = () => {
   };
 
   return (
-    <div className="container py-20 px-4 mx-auto max-w-7xl">
+    <div className="container py-20 px-4 mx-auto max-w-7xl text-center">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-white">Manage Packages</h1>
         <p className="text-gold/70 mt-2">
