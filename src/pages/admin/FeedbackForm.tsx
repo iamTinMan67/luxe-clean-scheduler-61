@@ -69,7 +69,7 @@ const FeedbackForm = () => {
   };
 
   return (
-    <div className="container py-8">
+    <div className="container py-8 text-center">
       <h1 className="text-3xl font-bold mb-6">Manual Feedback Collection</h1>
       
       {!showForm ? (
