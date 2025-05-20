@@ -36,10 +36,10 @@ export default function Index() {
       {/* Call to Action Section */}
       <CTASection />
 
-            {/* Testimonials Section */}
+      {/* Testimonials Section */}
       <TestimonialsSection />
       
-      {/* Customer Feedback Section */}
+      {/* Customer Feedback Section - Now shows 6 items */}
       <FeedbackSection />
     </div>
   );

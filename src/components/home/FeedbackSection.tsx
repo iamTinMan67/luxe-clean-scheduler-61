@@ -14,7 +14,7 @@ const FeedbackSection = () => {
       // Only show feedback with ratings >= 4 and with comments
       const highRatedFeedback = feedback
         .filter(item => item.rating >= 4 && item.comment.trim().length > 0)
-        .slice(0, 4); // Limit to 4 items
+        .slice(0, 6); // Increased to 6 items
       
       setDisplayFeedback(highRatedFeedback);
     }
@@ -47,7 +47,7 @@ const FeedbackSection = () => {
           ></motion.div>
         </motion.div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {displayFeedback.map((item, index) => (
             <motion.div
               key={item.id}
