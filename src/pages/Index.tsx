@@ -1,7 +1,6 @@
 
 import HeroSection from "@/components/home/HeroSection";
 import FeaturesSection from "@/components/home/FeaturesSection";
-import TestimonialsSection from "@/components/home/TestimonialsSection";
 import FeedbackSection from "@/components/home/FeedbackSection";
 import CTASection from "@/components/home/CTASection";
 import DataMigrationTrigger from "@/components/DataMigrationTrigger";
@@ -35,9 +34,6 @@ export default function Index() {
       
       {/* Call to Action Section */}
       <CTASection />
-
-      {/* Testimonials Section */}
-      <TestimonialsSection />
       
       {/* Customer Feedback Section - Now shows 6 items */}
       <FeedbackSection />
