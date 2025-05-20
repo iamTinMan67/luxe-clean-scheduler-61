@@ -5,8 +5,8 @@ import { useBookingsStorage } from './planner/useBookingsStorage';
 import { useBookingManagement } from './planner/useBookingManagement';
 import { useScheduleFiltering } from './planner/useScheduleFiltering';
 
-// Update the view type to include "monthly"
-export type PlannerViewType = "daily" | "weekly" | "monthly";
+// Update the view type to remove "monthly"
+export type PlannerViewType = "daily" | "weekly";
 
 export const usePlannerCalendar = () => {
   const [date, setDate] = useState<Date>(new Date());

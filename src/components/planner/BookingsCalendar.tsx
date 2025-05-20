@@ -19,7 +19,7 @@ interface BookingsCalendarProps {
   onDeleteBooking: (booking: Booking) => void;
   onPackageChange: (booking: Booking, newPackage: string) => void;
   onReschedule: (booking: Booking, newDate: Date) => void;
-  onUpdateStatus: (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished") => void;
+  onUpdateStatus: (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished" | "pending" | "cancelled") => void;
 }
 
 const BookingsCalendar: React.FC<BookingsCalendarProps> = ({
@@ -70,7 +70,6 @@ const BookingsCalendar: React.FC<BookingsCalendarProps> = ({
             <TabsList className="bg-black/60">
               <TabsTrigger value="daily">Daily</TabsTrigger>
               <TabsTrigger value="weekly">Weekly</TabsTrigger>
-              <TabsTrigger value="monthly">Monthly</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
