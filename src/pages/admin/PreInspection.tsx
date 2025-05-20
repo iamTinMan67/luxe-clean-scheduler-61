@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -11,6 +10,7 @@ import { submitPreInspectionReport } from "@/services/inspectionService";
 import { Booking } from "@/types/booking";
 import { useCustomerNotifications } from "@/hooks/progress/useCustomerNotifications";
 import { sendTrackingInfo } from "@/utils/emailUtils";
+import { bookingToProgressBooking } from "@/utils/bookingTypeAdapter";
 
 const PreInspection = () => {
   const navigate = useNavigate();
@@ -94,8 +94,11 @@ const PreInspection = () => {
     
     // Send notification to customer
     if (bookingDetails) {
+      // Convert Booking to ProgressBooking before sending to sendTextReport
+      const progressBooking = bookingToProgressBooking(bookingDetails);
+      
       // Send text notification
-      sendTextReport(bookingDetails);
+      sendTextReport(progressBooking);
       
       // Send email notification if email is available
       if (bookingDetails.email) {

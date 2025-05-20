@@ -1,6 +1,8 @@
 
 import { toast } from "sonner";
 import { ProgressBooking } from "./types";
+import { Booking } from "@/types/booking";
+import { bookingToProgressBooking } from "@/utils/bookingTypeAdapter";
 
 export const useCustomerNotifications = () => {
   // Function to send text report to customer
