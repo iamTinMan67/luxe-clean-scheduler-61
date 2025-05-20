@@ -74,6 +74,7 @@ const PlannerCalendar = () => {
             date={date}
             setDate={setDate}
             view={view}
+            setView={setView}
             pendingBookings={pendingBookings}
             confirmedBookings={confirmedBookings}
             schedule={schedule}

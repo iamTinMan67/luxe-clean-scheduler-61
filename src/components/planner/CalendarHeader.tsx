@@ -30,7 +30,7 @@ const CalendarHeader = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="mb-8 text-center"
+      className="mb-4 text-center"
     >
       <h1 className="text-3xl font-bold text-white">
         Planner <span className="text-gold">Calendar</span>
@@ -40,35 +40,7 @@ const CalendarHeader = ({
       </p>
       
       <div className="flex flex-col md:flex-row justify-between items-center mt-4 gap-4">
-        <div className="px-3 py-1 rounded-full bg-amber-900/30 text-amber-400 border border-amber-700 text-xs font-medium">
-          {pendingBookingsCount} pending bookings
-        </div>
-        
         <div className="flex items-center gap-2">
-          <div className="flex items-center rounded-md border border-gray-800 mr-2">
-            <Button
-              variant="ghost"
-              className={`text-white hover:text-gold ${view === 'daily' ? 'bg-gray-800' : ''}`}
-              onClick={() => setView('daily')}
-            >
-              Daily
-            </Button>
-            <Button
-              variant="ghost"
-              className={`text-white hover:text-gold ${view === 'weekly' ? 'bg-gray-800' : ''}`}
-              onClick={() => setView('weekly')}
-            >
-              Weekly
-            </Button>
-            <Button
-              variant="ghost"
-              className={`text-white hover:text-gold ${view === 'monthly' ? 'bg-gray-800' : ''}`}
-              onClick={() => setView('monthly')}
-            >
-              Monthly
-            </Button>
-          </div>
-          
           <div className="flex">
             <Button 
               variant="outline" 

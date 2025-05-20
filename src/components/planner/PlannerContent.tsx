@@ -1,9 +1,11 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 import PendingBookingsList from './PendingBookingsList';
 import WeeklyPlanner from './WeeklyPlanner';
 import MonthlyPlanner from './MonthlyPlanner';
+import DailyPlanner from './DailyPlanner';
 import { PlannerViewType } from '@/hooks/usePlannerCalendar';
 import { Booking } from '@/types/booking';
 
@@ -11,6 +13,7 @@ interface PlannerContentProps {
   date: Date;
   setDate: (date: Date) => void;
   view: PlannerViewType;
+  setView: (view: PlannerViewType) => void;
   pendingBookings: Booking[];
   confirmedBookings: Booking[];
   schedule: Array<{date: Date, bookings: Booking[]}>;
@@ -25,6 +28,7 @@ const PlannerContent: React.FC<PlannerContentProps> = ({
   date,
   setDate,
   view,
+  setView,
   pendingBookings,
   confirmedBookings,
   schedule,
@@ -44,7 +48,43 @@ const PlannerContent: React.FC<PlannerContentProps> = ({
         getBookingBackground={getBookingBackground}
       />
       
+      {/* View selector buttons */}
+      <div className="flex justify-center my-4">
+        <div className="flex items-center rounded-md border border-gray-800">
+          <Button
+            variant="ghost"
+            className={`text-white hover:text-gold ${view === 'daily' ? 'bg-gray-800' : ''}`}
+            onClick={() => setView('daily')}
+          >
+            Daily
+          </Button>
+          <Button
+            variant="ghost"
+            className={`text-white hover:text-gold ${view === 'weekly' ? 'bg-gray-800' : ''}`}
+            onClick={() => setView('weekly')}
+          >
+            Weekly
+          </Button>
+          <Button
+            variant="ghost"
+            className={`text-white hover:text-gold ${view === 'monthly' ? 'bg-gray-800' : ''}`}
+            onClick={() => setView('monthly')}
+          >
+            Monthly
+          </Button>
+        </div>
+      </div>
+      
       {/* View Specific Planners */}
+      {view === "daily" && (
+        <DailyPlanner
+          date={date}
+          setDate={setDate}
+          schedule={schedule}
+          getBookingBackground={getBookingBackground}
+        />
+      )}
+      
       {view === "weekly" && (
         <WeeklyPlanner
           date={date}
