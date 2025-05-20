@@ -10,17 +10,11 @@ import { InspectionChecklistItem, CustomChecklistItem } from "@/types/task";
 import { getChecklistItemsForVehicle } from "@/data/inspectionChecklist";
 
 interface InspectionChecklistProps {
-  onSubmitReport: () => void;
-  onDeclineReport: () => void;
   vehicleType?: string;
-  isSubmitting?: boolean;
 }
 
 const InspectionChecklist = ({ 
-  onSubmitReport, 
-  onDeclineReport,
-  vehicleType = "car", 
-  isSubmitting = false 
+  vehicleType = "car"
 }: InspectionChecklistProps) => {
   const { toast } = useToast();
   const [checklistItems, setChecklistItems] = useState<InspectionChecklistItem[]>([]);
@@ -66,41 +60,6 @@ const InspectionChecklist = ({
   
   const removeCustomItem = (id: string) => {
     setCustomItems(items => items.filter(item => item.id !== id));
-  };
-
-  const handleSubmit = () => {
-    // Check if minimum required items are completed
-    const requiredItems = checklistItems.filter(item => item.required);
-    const missingItems = requiredItems.filter(item => !item.completed);
-    
-    if (missingItems.length > 0) {
-      toast({
-        variant: "destructive",
-        title: "Missing checklist items",
-        description: "Please complete all required inspection items before submitting."
-      });
-      return;
-    }
-    
-    // Save inspection data
-    const inspectionData = {
-      standardItems: checklistItems,
-      customItems: customItems
-    };
-    
-    // Save to localStorage for now (will be used by the submitPreInspectionReport function)
-    localStorage.setItem('lastInspectionChecklist', JSON.stringify(inspectionData));
-    
-    onSubmitReport();
-  };
-
-  const handleDecline = () => {
-    toast({
-      title: "Inspection Declined",
-      description: "Customer has been notified about the declined inspection."
-    });
-    
-    onDeclineReport();
   };
 
   return (
@@ -184,23 +143,6 @@ const InspectionChecklist = ({
               <p className="text-gray-400 text-sm">No custom items added</p>
             )}
           </div>
-        </div>
-        
-        <div className="mt-8 flex gap-2">
-          <Button 
-            className="w-1/2 gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg"
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Submitting..." : "Submit Report"}
-          </Button>
-          <Button 
-            className="w-1/2 bg-red-500 hover:bg-red-600 text-white"
-            onClick={handleDecline}
-            disabled={isSubmitting}
-          >
-            Decline Service
-          </Button>
         </div>
       </CardContent>
     </Card>

@@ -12,6 +12,7 @@ import { Booking } from "@/types/booking";
 import { useCustomerNotifications } from "@/hooks/progress/useCustomerNotifications";
 import { sendTrackingInfo } from "@/utils/emailUtils";
 import { bookingToProgressBooking } from "@/utils/bookingTypeAdapter";
+import { Button } from "@/components/ui/button";
 
 const PreInspection = () => {
   const navigate = useNavigate();
@@ -141,10 +142,7 @@ const PreInspection = () => {
         {/* Inspection Checklist - Left side, 5 columns */}
         <div className="md:col-span-5">
           <InspectionChecklist 
-            onSubmitReport={handleSubmitReport} 
-            onDeclineReport={handleDeclineService}
             vehicleType={getVehicleType()}
-            isSubmitting={isSubmitting}
           />
         </div>
         
@@ -168,6 +166,24 @@ const PreInspection = () => {
                 images={images}
                 onImageUpload={handleImageUpload}
               />
+            </div>
+            
+            {/* Submit and Decline buttons moved below the Image component */}
+            <div className="mt-6 flex gap-4">
+              <Button 
+                className="w-1/2 gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg"
+                onClick={handleSubmitReport}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Submitting..." : "Submit Report"}
+              </Button>
+              <Button 
+                className="w-1/2 bg-red-500 hover:bg-red-600 text-white"
+                onClick={handleDeclineService}
+                disabled={isSubmitting}
+              >
+                Decline Service
+              </Button>
             </div>
           </div>
         </div>
