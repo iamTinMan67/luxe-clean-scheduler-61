@@ -86,7 +86,7 @@ const PreInspection = () => {
       exit={{ opacity: 0, y: 20 }}
       className="container mx-auto py-8 px-4"
     >
-      <div className="mb-8">
+      <div className="mb-8 text-center">
         <h1 className="text-3xl font-bold text-white mb-2">Pre-Inspection Report</h1>
         <p className="text-gold">Document the vehicle condition before commencement</p>
       </div>
