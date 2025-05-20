@@ -1,19 +1,25 @@
 
-import { addDays, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay } from "date-fns";
+import { addDays, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, startOfMonth, endOfMonth } from "date-fns";
 import { PlannerViewType } from "@/hooks/usePlannerCalendar";
 
-// Navigate to previous day or week
+// Navigate to previous day, week or month
 export const navigatePrevious = (date: Date, view: PlannerViewType) => {
   if (view === "daily") return addDays(date, -1);
   if (view === "weekly") return addDays(date, -7);
-  return date; // Default
+  // For monthly view, go back to same date in previous month
+  const prevMonth = new Date(date);
+  prevMonth.setMonth(prevMonth.getMonth() - 1);
+  return prevMonth;
 };
 
-// Navigate to next day or week
+// Navigate to next day, week or month
 export const navigateNext = (date: Date, view: PlannerViewType) => {
   if (view === "daily") return addDays(date, 1);
   if (view === "weekly") return addDays(date, 7);
-  return date; // Default
+  // For monthly view, go forward to same date in next month
+  const nextMonth = new Date(date);
+  nextMonth.setMonth(nextMonth.getMonth() + 1);
+  return nextMonth;
 };
 
 // Get days to show based on the selected view
@@ -25,8 +31,12 @@ export const getDaysForView = (date: Date, view: PlannerViewType) => {
     const start = startOfWeek(date, { weekStartsOn: 1 }); // Start on Monday
     const end = endOfWeek(date, { weekStartsOn: 1 });
     return eachDayOfInterval({ start, end });
+  } else {
+    // Monthly view
+    const start = startOfMonth(date);
+    const end = endOfMonth(date);
+    return eachDayOfInterval({ start, end });
   }
-  return [date]; // Default
 };
 
 // Check if two dates are the same day

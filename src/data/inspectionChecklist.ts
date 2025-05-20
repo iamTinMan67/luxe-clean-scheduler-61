@@ -3,24 +3,24 @@ import { InspectionChecklistItem } from "@/types/task";
 
 // Default checklist items for all vehicle types
 export const defaultChecklistItems: InspectionChecklistItem[] = [
-  { id: 1, label: "Exterior body condition documented", completed: true, required: true, vehicleType: 'all' },
-  { id: 2, label: "Interior condition documented", completed: true, required: true, vehicleType: 'all' },
-  { id: 3, label: "Existing damage photographed", completed: true, required: true, vehicleType: 'all' },
-  { id: 4, label: "Personal items noted and secured", completed: true, required: true, vehicleType: 'all' },
+  { id: 1, label: "Exterior body condition documented", completed: false, required: true, vehicleType: 'all' },
+  { id: 2, label: "Interior condition documented", completed: false, required: true, vehicleType: 'all' },
+  { id: 3, label: "Existing damage photographed", completed: false, required: true, vehicleType: 'all' },
+  { id: 4, label: "Personal items noted and secured", completed: false, required: true, vehicleType: 'all' },
 ];
 
 // Car-specific checklist items
 export const carChecklistItems: InspectionChecklistItem[] = [
-  { id: 101, label: "Dashboard controls checked", completed: true, required: true, vehicleType: 'car' },
-  { id: 102, label: "Glove compartment inspected", completed: true, required: true, vehicleType: 'car' },
-  { id: 103, label: "Trunk condition documented", completed: true, required: true, vehicleType: 'car' },
+  { id: 101, label: "Dashboard controls checked", completed: false, required: false, vehicleType: 'car' },
+  { id: 102, label: "Glove compartment inspected", completed: false, required: false, vehicleType: 'car' },
+  { id: 103, label: "Trunk condition documented", completed: false, required: false, vehicleType: 'car' },
 ];
 
 // Van-specific checklist items
 export const vanChecklistItems: InspectionChecklistItem[] = [
-  { id: 201, label: "Cargo area inspected", completed: true, required: true, vehicleType: 'van' },
-  { id: 202, label: "Sliding door operation verified", completed: true, required: true, vehicleType: 'van' },
-  { id: 203, label: "Roof height noted", completed: true, required: true, vehicleType: 'van' },
+  { id: 201, label: "Cargo area inspected", completed: false, required: false, vehicleType: 'van' },
+  { id: 202, label: "Sliding door operation verified", completed: false, required: false, vehicleType: 'van' },
+  { id: 203, label: "Roof height noted", completed: false, required: false, vehicleType: 'van' },
 ];
 
 // Get vehicle-specific checklist items

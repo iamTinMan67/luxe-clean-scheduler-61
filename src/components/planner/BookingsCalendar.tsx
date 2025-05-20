@@ -2,11 +2,11 @@
 import React, { useEffect, useState } from 'react';
 import { Booking } from '@/types/booking';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { format } from 'date-fns';
+import { TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs } from "@/components/ui/tabs";
+import { Calendar } from "@/components/ui/calendar";
 import { PlannerViewType } from '@/hooks/usePlannerCalendar';
 import BookingsCalendarContent from './BookingsCalendarContent';
-import CalendarViewSelector from './calendar/CalendarViewSelector';
-import CalendarDatePicker from './calendar/CalendarDatePicker';
 
 interface BookingsCalendarProps {
   date: Date | undefined;
@@ -38,6 +38,19 @@ const BookingsCalendar: React.FC<BookingsCalendarProps> = ({
   // Force rendering when bookings change
   const [refreshKey, setRefreshKey] = useState(0);
   
+  // Function to check if a date has bookings
+  const hasBookingsOnDate = (checkDate: Date) => {
+    const allBookings = JSON.parse(localStorage.getItem('confirmedBookings') || '[]')
+      .concat(JSON.parse(localStorage.getItem('pendingBookings') || '[]'));
+      
+    return allBookings.some((booking: any) => {
+      const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
+      return bookingDate.getDate() === checkDate.getDate() &&
+             bookingDate.getMonth() === checkDate.getMonth() &&
+             bookingDate.getFullYear() === checkDate.getFullYear();
+    });
+  };
+  
   // Effect to refresh calendar when bookings change
   useEffect(() => {
     setRefreshKey(prev => prev + 1);
@@ -48,33 +61,36 @@ const BookingsCalendar: React.FC<BookingsCalendarProps> = ({
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-white">
-              {view === 'daily' ? 
-                `Daily Schedule: ${date ? format(date, 'EEEE, MMMM d, yyyy') : 'Select a date'}` :
-                view === 'weekly' ?
-                'Weekly Schedule' :
-                'Monthly Schedule'
-              }
-            </CardTitle>
+            <CardTitle className="text-white">Schedule View</CardTitle>
             <CardDescription className="text-gold/70">
-              {view === 'daily' ? '15-minute time slots' : 'Plan and organize team assignments'}
+              Plan and organize team assignments
             </CardDescription>
           </div>
-          <CalendarViewSelector 
-            view={view} 
-            onViewChange={(v) => setView(v as PlannerViewType)} 
-          />
+          <Tabs defaultValue="daily" value={view} onValueChange={setView}>
+            <TabsList className="bg-black/60">
+              <TabsTrigger value="daily">Daily</TabsTrigger>
+              <TabsTrigger value="weekly">Weekly</TabsTrigger>
+              <TabsTrigger value="monthly">Monthly</TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col md:flex-row gap-4">
-          {view !== 'daily' && (
-            <CalendarDatePicker 
-              date={date}
-              onDateChange={setDate}
-              refreshKey={refreshKey}
+          <div className="w-full md:w-auto" key={refreshKey}>
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={setDate}
+              className="bg-black/30 border border-gold/30 rounded-md"
+              modifiers={{
+                highlighted: hasBookingsOnDate
+              }}
+              modifiersClassNames={{
+                highlighted: "font-bold text-gold"
+              }}
             />
-          )}
+          </div>
           
           <BookingsCalendarContent
             date={date}
