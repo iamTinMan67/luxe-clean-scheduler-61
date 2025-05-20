@@ -6,7 +6,11 @@ import { useFeedbackFilter } from "./useFeedbackFilter";
 import { useMockFeedback } from "./useMockFeedback";
 import { useFeedbackManager } from "@/hooks/useFeedbackManager";
 
-const FeedbackSnippet = () => {
+interface FeedbackSnippetProps {
+  dashboardMode?: boolean;
+}
+
+const FeedbackSnippet = ({ dashboardMode = false }: FeedbackSnippetProps) => {
   const { feedback, loading } = useFeedbackManager();
   const { displayFeedback } = useFeedbackFilter(feedback);
   const { combinedFeedback } = useMockFeedback(displayFeedback);
@@ -17,8 +21,10 @@ const FeedbackSnippet = () => {
   if (loading || snippetFeedback.length === 0) return null;
 
   return (
-    <div className="mb-10 pb-8 border-b border-gray-800">
-      <h3 className="text-lg font-semibold text-white mb-5">Recent Customer Feedback</h3>
+    <div className={dashboardMode ? "" : "mb-10 pb-8 border-b border-gray-800"}>
+      <h3 className="text-lg font-semibold text-white mb-5">
+        {dashboardMode ? "Recent Customer Feedback" : "Recent Customer Feedback"}
+      </h3>
       <div className="space-y-4">
         {snippetFeedback.map((item, index) => (
           <motion.div

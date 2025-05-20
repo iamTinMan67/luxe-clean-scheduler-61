@@ -19,6 +19,7 @@ const Navbar = () => {
   const [showContact, setShowContact] = useState(false);
   const location = useLocation();
   const isHomePage = location.pathname === '/';
+  const isAdminDashboard = location.pathname === '/admin/dashboard';
 
   const handleToggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleContact = () => setShowContact(!showContact);
@@ -87,21 +88,23 @@ const Navbar = () => {
             />
           </Link>
           
-          {/* Quick Contact - Visible on medium and larger screens */}
-          <div className="hidden md:block mt-1">
-            <button 
-              onClick={toggleContact}
-              className="text-gold hover:text-white text-sm flex items-center transition-colors"
-            >
-              Contact Us {showContact ? '▲' : '▼'}
-            </button>
-            
-            {showContact && (
-              <div className="absolute bg-black/90 p-3 rounded-md shadow-lg border border-gold/20 mt-1">
-                <ContactInfo />
-              </div>
-            )}
-          </div>
+          {/* Quick Contact - Hide on Admin Dashboard */}
+          {!isAdminDashboard && (
+            <div className="hidden md:block mt-1">
+              <button 
+                onClick={toggleContact}
+                className="text-gold hover:text-white text-sm flex items-center transition-colors"
+              >
+                Contact Us {showContact ? '▲' : '▼'}
+              </button>
+              
+              {showContact && (
+                <div className="absolute bg-black/90 p-3 rounded-md shadow-lg border border-gold/20 mt-1">
+                  <ContactInfo />
+                </div>
+              )}
+            </div>
+          )}
         </div>
         
         <DesktopMenu adminRoutes={adminRoutes} />

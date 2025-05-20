@@ -1,6 +1,7 @@
 
 import { StatsCard, RevenueChart, PackageDistribution, FeedbackDistribution, InventoryAlerts, RecentBookings } from '@/components/dashboard';
 import { statsData, revenueData, packageData, inventoryAlerts, recentBookings } from '@/components/dashboard/DashboardData';
+import FeedbackSnippet from "../home/feedback/FeedbackSnippet";
 
 const DashboardContent = () => {
   return (
@@ -36,8 +37,13 @@ const DashboardContent = () => {
         {/* Package Distribution Chart */}
         <PackageDistribution data={packageData} />
         
-        {/* Feedback Distribution Chart (replacing Vehicle Types) */}
+        {/* Feedback Distribution Chart */}
         <FeedbackDistribution />
+        
+        {/* Recent Feedback Section - Below Feedback Distribution */}
+        <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
+          <FeedbackSnippet dashboardMode={true} />
+        </div>
       </div>
     </>
   );
