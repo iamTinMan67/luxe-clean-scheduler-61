@@ -29,13 +29,14 @@ export default function Index() {
       
       {/* Migration Component - Only show if needed */}
       {showMigration && <DataMigrationTrigger />}
-      
+
+      {/* Call to Action Section */}
+      <CTASection />
+
       {/* Features Section */}
       <FeaturesSection />
       
-      {/* Call to Action Section */}
-      <CTASection />
-      
+    
       {/* Customer Feedback Section - Now shows 6 items */}
       <FeedbackSection />
       
