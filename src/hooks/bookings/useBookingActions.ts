@@ -62,7 +62,7 @@ export const useBookingActions = (
     }
     
     toast.success("Booking confirmed", {
-      description: `Booking for ${booking.customer} has now been accepted. Please check your email and find our link.`
+      description: `${booking.packageType} Package for ${booking.customer} has now been accepted. Please check your email and find our link.`
     });
   };
 
@@ -91,7 +91,7 @@ export const useBookingActions = (
     }
     
     toast.success("Booking deleted", {
-      description: `Booking for ${booking.customer} has been deleted.`
+      description: `${booking.packageType} Package for ${booking.customer} has been deleted.`
     });
   };
 
@@ -126,7 +126,7 @@ export const useBookingActions = (
     sendNotification(updatedBooking, "completion");
     
     toast.success("Booking completed", {
-      description: `Service for ${updatedBooking.customer} has been marked as completed.`
+      description: `${updatedBooking.packageType} Package service for ${updatedBooking.customer} has been marked as completed.`
     });
   };
 

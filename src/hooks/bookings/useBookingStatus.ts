@@ -20,7 +20,7 @@ export const useBookingStatus = (
   };
 
   // Handler for updating booking status
-  const updateBookingStatus = (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished" | "cancelled" | "pending") => {
+  const updateBookingStatus = (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished" | "pending" | "cancelled") => {
     // If the booking is pending and we're confirming it, use the special confirmation handler
     if (booking.status === "pending" && newStatus === "confirmed") {
       confirmBooking(booking);
@@ -47,7 +47,7 @@ export const useBookingStatus = (
         break;
     }
     
-    toast.success(`${booking.customer}'s booking has been updated to ${newStatus}.`);
+    toast.success(`${booking.customer}'s ${booking.packageType} Package has been updated to ${newStatus}.`);
   };
   
   // Handler for confirming a booking (special case)
@@ -68,7 +68,7 @@ export const useBookingStatus = (
     // Generate invoice
     generateInvoice(updatedBooking);
     
-    toast.success(`${booking.customer}'s booking has been confirmed.`);
+    toast.success(`${booking.customer}'s ${booking.packageType} Package has been confirmed.`);
   };
   
   // Helper function to populate To-Do list
@@ -110,7 +110,7 @@ export const useBookingStatus = (
       const existingTasks = JSON.parse(localStorage.getItem('serviceTasks') || '[]');
       localStorage.setItem('serviceTasks', JSON.stringify([...existingTasks, ...serviceTasks]));
       
-      toast.success(`${serviceTasks.length} tasks added to the To-Do list.`);
+      toast.success(`${serviceTasks.length} tasks added to the To-Do list for ${booking.packageType} Package.`);
     }
   };
   

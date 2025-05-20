@@ -51,7 +51,7 @@ export const useBookingManagement = (
     // Create invoice
     generateInvoice(confirmedBooking);
     
-    toast.success(`Booking confirmed successfully for ${confirmedBooking.customer}`);
+    toast.success(`${confirmedBooking.packageType} Package confirmed successfully for ${confirmedBooking.customer}`);
   };
   
   // Function to cancel a booking
@@ -86,7 +86,7 @@ export const useBookingManagement = (
       cancelledBooking
     ]));
     
-    toast.success(`Booking cancelled for ${cancelledBooking.customer}`);
+    toast.success(`${cancelledBooking.packageType} Package cancelled for ${cancelledBooking.customer}`);
   };
   
   // Function to get background color based on booking status
