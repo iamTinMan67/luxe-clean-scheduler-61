@@ -177,7 +177,7 @@ const InspectionChecklist = ({
         
         <div className="mt-8">
           <Button 
-            className="w-full gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg"
+            className="w-sm gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg"
             onClick={handleSubmit}
             disabled={isSubmitting}
           >
