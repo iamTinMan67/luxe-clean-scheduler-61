@@ -9,20 +9,6 @@ import ImageUploadSection from "@/components/admin/preinspection/ImageUploadSect
 import InspectionChecklist from "@/components/admin/preinspection/InspectionChecklist";
 import { submitPreInspectionReport } from "@/services/inspectionService";
 import { Booking } from "@/types/booking";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { sendEmail, generateEmailTemplate } from "@/utils/emailUtils";
-import { sendNotification } from "@/utils/bookingUtils";
 
 const PreInspection = () => {
   const navigate = useNavigate();
@@ -37,12 +23,6 @@ const PreInspection = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { appointments, loading } = useScheduledAppointments();
   
-  // Decline booking state
-  const [isDeclineDialogOpen, setIsDeclineDialogOpen] = useState(false);
-  const [sendEmailNotification, setSendEmailNotification] = useState(false);
-  const [sendSmsNotification, setSendSmsNotification] = useState(false);
-  const [declineReason, setDeclineReason] = useState("");
-
   // Update booking details when a booking is selected
   useEffect(() => {
     if (selectedBooking) {
@@ -99,51 +79,6 @@ const PreInspection = () => {
     return 'car';
   };
 
-  // Handle declining the booking
-  const handleDeclineBooking = async () => {
-    if (!bookingDetails) {
-      toast.error("No booking selected");
-      return;
-    }
-    
-    try {
-      // Update the booking status to cancelled in a real app
-      // For demo purposes, we'll just show a success message
-      
-      // Send email notification if selected
-      if (sendEmailNotification && bookingDetails.email) {
-        const emailTemplate = generateEmailTemplate(bookingDetails, "update");
-        await sendEmail(bookingDetails.email, {
-          subject: "Your Booking Has Been Cancelled",
-          body: `Dear ${bookingDetails.customer},\n\nWe regret to inform you that your booking (ID: ${bookingDetails.id}) has been cancelled.\n\nReason: ${declineReason || "Unable to provide service at this time"}\n\nPlease contact us if you have any questions.\n\nRegards,\nThe Luxe Clean Team`
-        });
-      }
-      
-      // Send SMS notification if selected
-      if (sendSmsNotification) {
-        sendNotification(bookingDetails, "update");
-      }
-      
-      // Show success toast
-      toast.success("Booking cancelled successfully", {
-        description: "The customer has been notified"
-      });
-      
-      // Reset form and navigate back
-      setImages([]);
-      setExteriorNotes("");
-      setInteriorNotes("");
-      setIsDeclineDialogOpen(false);
-      
-      // Navigate back to the calendar
-      navigate("/admin/planner-calendar");
-      
-    } catch (error) {
-      console.error("Error declining booking:", error);
-      toast.error("Failed to cancel booking");
-    }
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -182,93 +117,8 @@ const PreInspection = () => {
             vehicleType={getVehicleType()}
             isSubmitting={isSubmitting}
           />
-          
-          {/* Add Decline Button */}
-          <div className="mt-6 text-center">
-            <Button 
-              variant="destructive" 
-              onClick={() => setIsDeclineDialogOpen(true)} 
-              disabled={!bookingDetails || isSubmitting}
-              className="w-full"
-            >
-              Decline Booking
-            </Button>
-          </div>
         </div>
       </div>
-      
-      {/* Decline Booking Dialog */}
-      <AlertDialog open={isDeclineDialogOpen} onOpenChange={setIsDeclineDialogOpen}>
-        <AlertDialogContent className="bg-gray-900 border border-gold/30 text-white">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-xl">Decline Booking</AlertDialogTitle>
-            <AlertDialogDescription className="text-gray-300">
-              This will cancel the booking and notify the customer. Please select notification method(s).
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          
-          <div className="space-y-4 py-4">
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="send-email" 
-                checked={sendEmailNotification}
-                onCheckedChange={(checked) => setSendEmailNotification(!!checked)}
-              />
-              <label htmlFor="send-email" className="text-sm font-medium leading-none cursor-pointer text-white">
-                Send email notification
-              </label>
-            </div>
-            
-            {sendEmailNotification && bookingDetails?.email && (
-              <div className="ml-6 p-2 bg-gray-800 rounded text-sm">
-                <p>Email will be sent to: <span className="font-semibold text-gold">{bookingDetails.email}</span></p>
-              </div>
-            )}
-            
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="send-sms" 
-                checked={sendSmsNotification}
-                onCheckedChange={(checked) => setSendSmsNotification(!!checked)}
-              />
-              <label htmlFor="send-sms" className="text-sm font-medium leading-none cursor-pointer text-white">
-                Send SMS notification
-              </label>
-            </div>
-            
-            {sendSmsNotification && bookingDetails?.contact && (
-              <div className="ml-6 p-2 bg-gray-800 rounded text-sm">
-                <p>SMS will be sent to: <span className="font-semibold text-gold">{bookingDetails.contact}</span></p>
-              </div>
-            )}
-            
-            <div className="pt-2">
-              <label htmlFor="decline-reason" className="text-sm font-medium mb-1 block text-white">
-                Reason for declining (optional)
-              </label>
-              <textarea 
-                id="decline-reason"
-                className="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white text-sm"
-                rows={3}
-                value={declineReason}
-                onChange={(e) => setDeclineReason(e.target.value)}
-                placeholder="Enter reason for declining this booking"
-              />
-            </div>
-          </div>
-          
-          <AlertDialogFooter>
-            <AlertDialogCancel className="bg-gray-800 text-white hover:bg-gray-700">Cancel</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={handleDeclineBooking} 
-              className="bg-red-600 text-white hover:bg-red-700"
-              disabled={!sendEmailNotification && !sendSmsNotification}
-            >
-              Decline Booking
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </motion.div>
   );
 };
