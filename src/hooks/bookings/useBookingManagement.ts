@@ -1,13 +1,13 @@
 
 import { Booking } from '@/types/booking';
-import { useBookingStateManager } from './useBookingStateManager';
+import { useBookingMutations } from './useBookingMutations';
 import { useBookingStatus } from './useBookingStatus';
 
 export const useBookingManagement = () => {
   const { 
     updateBooking,
     moveBookingToConfirmed
-  } = useBookingStateManager();
+  } = useBookingMutations();
   
   // Use the new centralized status hook
   const { 
