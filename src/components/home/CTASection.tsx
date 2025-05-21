@@ -16,7 +16,7 @@ const CTASection = () => {
             </div>
             <h3 className="text-xl font-bold text-white mb-2">Quick Book A Slot</h3>
             <p className="text-gray-400 mb-6 flex-grow">
-              Private. Main Package, No extras, No Notes. 
+              Private. Main Package Only. Any Time. No Notes.
               Cash on completion. Just need contact details.
             </p>
             <Link to="/booking">
