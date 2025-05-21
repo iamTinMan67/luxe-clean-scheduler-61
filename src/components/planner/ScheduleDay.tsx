@@ -1,8 +1,9 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { Booking } from '@/types/booking';
-import { Clock, MapPin, Phone, FileText } from 'lucide-react';
+import { Clock, MapPin, Phone, FileText, ChevronDown, ChevronUp } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface ScheduleDayProps {
   date: Date;
@@ -60,29 +61,40 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({ date, bookings, getBookingBac
                 <span>{booking.startTime || booking.time || "09:00"} - {booking.endTime || "11:00"}</span>
               </div>
               
-              {/* Add location information if available */}
-              {booking.location && (
-                <div className="flex items-center text-gray-300 text-sm mt-1">
-                  <MapPin className="w-3 h-3 mr-1 text-gold" />
-                  <span>{booking.location}</span>
-                </div>
-              )}
-              
-              {/* Add contact information if available */}
-              {booking.contact && (
-                <div className="flex items-center text-gray-300 text-sm mt-1">
-                  <Phone className="w-3 h-3 mr-1 text-gold" />
-                  <span>{booking.contact}</span>
-                </div>
-              )}
-              
-              {/* Add notes if available */}
-              {booking.notes && (
-                <div className="flex items-start text-gray-300 text-sm mt-1">
-                  <FileText className="w-3 h-3 mr-1 mt-0.5 text-gold" />
-                  <span className="flex-1">{booking.notes}</span>
-                </div>
-              )}
+              {/* Replace direct contact details with collapsible section */}
+              <Collapsible className="mt-2 pt-2 border-t border-gray-700">
+                <CollapsibleTrigger className="flex w-full items-center justify-between text-sm text-gray-400 hover:text-white">
+                  <span>Contact Details</span>
+                  <span className="ml-2">
+                    {({ open }) => open ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                  </span>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="pt-2 space-y-2">
+                  {/* Location information if available */}
+                  {booking.location && (
+                    <div className="flex items-center text-gray-300 text-sm">
+                      <MapPin className="w-3 h-3 mr-1 text-gold" />
+                      <span>{booking.location}</span>
+                    </div>
+                  )}
+                  
+                  {/* Contact information if available */}
+                  {booking.contact && (
+                    <div className="flex items-center text-gray-300 text-sm">
+                      <Phone className="w-3 h-3 mr-1 text-gold" />
+                      <span>{booking.contact}</span>
+                    </div>
+                  )}
+                  
+                  {/* Add notes if available */}
+                  {booking.notes && (
+                    <div className="flex items-start text-gray-300 text-sm">
+                      <FileText className="w-3 h-3 mr-1 mt-0.5 text-gold" />
+                      <span className="flex-1">{booking.notes}</span>
+                    </div>
+                  )}
+                </CollapsibleContent>
+              </Collapsible>
               
               {booking.staff && booking.staff.length > 0 && (
                 <div className="mt-2 pt-2 border-t border-gray-700">
