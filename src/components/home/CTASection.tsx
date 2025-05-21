@@ -14,7 +14,7 @@ const CTASection = () => {
             <div className="mb-4 bg-gold/10 p-3 rounded-full w-fit">
               <Calendar className="w-6 h-6 text-gold" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">Quick Book</h3>
+            <h3 className="text-xl font-bold text-white mb-2">Quick Book A Slot</h3>
             <p className="text-gray-400 mb-6 flex-grow">
               Main Package, No extras, No Notes.
             </p>
