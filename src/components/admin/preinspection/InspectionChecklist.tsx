@@ -51,7 +51,7 @@ const InspectionChecklist = ({
     const newItem: CustomChecklistItem = {
       id: `custom-${Date.now()}`,
       label: newCustomItem,
-      completed: false
+      completed: true
     };
     
     setCustomItems([...customItems, newItem]);
@@ -71,7 +71,7 @@ const InspectionChecklist = ({
         <div className="space-y-3">
           {/* Standard checklist items based on vehicle type */}
           <div className="mb-4">
-            <h3 className="text-white text-sm font-medium mb-2">Standard Checklist</h3>
+            <h3 className="text-white text-sm font-medium mb-2">Standards Accepted</h3>
             {checklistItems.map((item) => (
               <div key={item.id} className="flex items-start gap-3 p-2 rounded hover:bg-white/5">
                 <Checkbox
