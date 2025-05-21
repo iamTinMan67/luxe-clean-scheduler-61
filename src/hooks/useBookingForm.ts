@@ -27,7 +27,27 @@ export const useBookingForm = ({ onSubmit }: UseBookingFormProps) => {
     e.preventDefault();
     
     if (!yourName || !postcode || !phone || !email) {
-      toast.error("Oops! Check Again");
+      toast.error("Oops! Check Again", {
+        description: "Please fill in all required fields"
+      });
+      return;
+    }
+    
+    // Validate phone format
+    const phoneRegex = /^[0-9+\s()-]{10,15}$/;
+    if (!phoneRegex.test(phone)) {
+      toast.error("Invalid Phone Number", {
+        description: "Please enter a valid phone number"
+      });
+      return;
+    }
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error("Invalid Email", {
+        description: "Please enter a valid email address"
+      });
       return;
     }
     

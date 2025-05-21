@@ -8,6 +8,7 @@ import { DatePicker } from "@/components/ui/date-picker";
 import BookingForm from "@/components/booking/BookingForm";
 import DateTimeSelector from "@/components/booking/DateTimeSelector";
 import ConditionSlider from "@/components/ui/ConditionSlider";
+import { Vehicle } from "@/lib/types";
 
 const Booking = () => {
   const navigate = useNavigate();
@@ -62,22 +63,36 @@ const Booking = () => {
   const handleFormSubmit = (formData: any) => {
     // Get saved vehicle details including package type and client type
     const savedVehicleDetails = localStorage.getItem('vehicleDetails');
-    let packageType = "TBC";
+    let packageType = "medium"; // Default to medium package
     let vehicleType = "car";
     let clientType = "private";
+    let additionalServicesInfo: any[] = [];
+    let packageDetails = null;
     
     if (savedVehicleDetails) {
       try {
-        const vehicles = JSON.parse(savedVehicleDetails);
+        const vehicles: Vehicle[] = JSON.parse(savedVehicleDetails);
         if (vehicles && vehicles.length > 0) {
           // Get details from the first vehicle
-          packageType = vehicles[0].package || "TBC";
+          packageType = vehicles[0].package || "medium";
           vehicleType = vehicles[0].type || "car";
           clientType = vehicles[0].clientType || "private";
+          additionalServicesInfo = vehicles[0].additionalServices || [];
         }
       } catch (error) {
         console.error('Error parsing vehicle details:', error);
       }
+    }
+    
+    // Get package details from packageOptions
+    try {
+      const packageOptionsData = localStorage.getItem('packageOptions');
+      if (packageOptionsData) {
+        const packageOptions = JSON.parse(packageOptionsData);
+        packageDetails = packageOptions.find((pkg: any) => pkg.type === packageType);
+      }
+    } catch (error) {
+      console.error('Error parsing package options:', error);
     }
     
     const bookingData = {
@@ -95,6 +110,18 @@ const Booking = () => {
     // Generate a unique ID for the new booking
     const bookingId = Math.random().toString(36).substring(2, 15);
     
+    // Calculate total price
+    let totalPrice = 0;
+    if (packageDetails) {
+      totalPrice = packageDetails.basePrice;
+      // Add cost of additional services
+      if (additionalServicesInfo && additionalServicesInfo.length > 0) {
+        additionalServicesInfo.forEach((service) => {
+          totalPrice += service.price || 0;
+        });
+      }
+    }
+    
     // Add the new booking to the array
     bookings.push({
       id: bookingId,
@@ -108,14 +135,22 @@ const Booking = () => {
       contact: formData.phone,
       email: formData.email,
       notes: formData.notes,
-      condition: vehicleCondition
+      condition: vehicleCondition,
+      additionalServices: additionalServicesInfo,
+      totalPrice: totalPrice
     });
     
     // Save the updated bookings array back to localStorage
     localStorage.setItem('pendingBookings', JSON.stringify(bookings));
     
+    // Create a more detailed notification
+    let packageInfo = packageType.charAt(0).toUpperCase() + packageType.slice(1);
+    let additionalInfo = additionalServicesInfo.length > 0 
+      ? `with ${additionalServicesInfo.length} additional services` 
+      : '';
+    
     toast.success("Booking request submitted!", {
-      description: "We'll check our planner and get back to you soon.",
+      description: `${packageInfo} Package ${additionalInfo} for ${formData.yourName}. Total: £${totalPrice}`,
     });
     
     // Change redirection to gallery page instead
