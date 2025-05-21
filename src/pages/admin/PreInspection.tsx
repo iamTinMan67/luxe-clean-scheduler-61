@@ -6,7 +6,6 @@ import { toast } from "sonner";
 import { useScheduledAppointments } from "@/hooks/useScheduledAppointments";
 import VehicleInfoForm from "@/components/admin/preinspection/VehicleInfoForm";
 import ImageUploadSection from "@/components/admin/preinspection/ImageUploadSection";
-import InspectionChecklist from "@/components/admin/preinspection/InspectionChecklist";
 import { submitPreInspectionReport } from "@/services/inspectionService";
 import { Booking } from "@/types/booking";
 import { useCustomerNotifications } from "@/hooks/progress/useCustomerNotifications";
@@ -117,14 +116,6 @@ const PreInspection = () => {
     }
   };
 
-  // Extract vehicle type from booking details
-  const getVehicleType = (): string => {
-    if (bookingDetails?.vehicle?.toLowerCase().includes('van')) {
-      return 'van';
-    }
-    return 'car';
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -137,55 +128,43 @@ const PreInspection = () => {
         <p className="text-gold">Document the vehicle condition before commencement</p>
       </div>
 
-      {/* Updated grid layout with fixed side-by-side layout */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-        {/* Inspection Checklist - Left side, 5 columns */}
-        <div className="md:col-span-5">
-          <InspectionChecklist 
-            vehicleType={getVehicleType()}
+      {/* Updated layout without the inspection checklist */}
+      <div className="max-w-4xl mx-auto space-y-6">
+        <VehicleInfoForm
+          appointments={appointments}
+          loading={loading}
+          selectedBooking={selectedBooking}
+          bookingDetails={bookingDetails}
+          exteriorNotes={exteriorNotes}
+          interiorNotes={interiorNotes}
+          setSelectedBooking={setSelectedBooking}
+          setExteriorNotes={setExteriorNotes}
+          setInteriorNotes={setInteriorNotes}
+        />
+        
+        <div className="mt-6">
+          <ImageUploadSection 
+            images={images}
+            onImageUpload={handleImageUpload}
           />
         </div>
         
-        {/* Vehicle Info and Images - Right side, 7 columns */}
-        <div className="md:col-span-7 space-y-6">
-          <div className="sticky top-24">
-            <VehicleInfoForm
-              appointments={appointments}
-              loading={loading}
-              selectedBooking={selectedBooking}
-              bookingDetails={bookingDetails}
-              exteriorNotes={exteriorNotes}
-              interiorNotes={interiorNotes}
-              setSelectedBooking={setSelectedBooking}
-              setExteriorNotes={setExteriorNotes}
-              setInteriorNotes={setInteriorNotes}
-            />
-            
-            <div className="mt-6">
-              <ImageUploadSection 
-                images={images}
-                onImageUpload={handleImageUpload}
-              />
-            </div>
-            
-            {/* Submit and Decline buttons moved below the Image component */}
-            <div className="mt-6 flex gap-4">
-              <Button 
-                className="w-1/2 gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg"
-                onClick={handleSubmitReport}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Submitting..." : "Submit Report"}
-              </Button>
-              <Button 
-                className="w-1/2 bg-red-500 hover:bg-red-600 text-white"
-                onClick={handleDeclineService}
-                disabled={isSubmitting}
-              >
-                Decline Service
-              </Button>
-            </div>
-          </div>
+        {/* Submit and Decline buttons */}
+        <div className="mt-6 flex gap-4">
+          <Button 
+            className="w-1/2 gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg"
+            onClick={handleSubmitReport}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Submitting..." : "Submit Report"}
+          </Button>
+          <Button 
+            className="w-1/2 bg-red-500 hover:bg-red-600 text-white"
+            onClick={handleDeclineService}
+            disabled={isSubmitting}
+          >
+            Decline Service
+          </Button>
         </div>
       </div>
     </motion.div>
