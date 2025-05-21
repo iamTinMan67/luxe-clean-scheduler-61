@@ -103,6 +103,6 @@ export const usePlannerCalendar = () => {
     getBookingBackground,
     hasBookingsOnDate,
     checkTimeConflict: (checkDate: Date, time: string) => checkTimeConflict(checkDate, time, confirmedBookings),
-    conflictCount // New property to expose the conflict count
+    conflictCount
   };
 };

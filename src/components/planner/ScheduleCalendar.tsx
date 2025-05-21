@@ -5,21 +5,34 @@ import { Card } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
 import { Booking } from '@/types/booking';
 import ScheduleDay from './ScheduleDay';
+import { PlannerViewType } from '@/hooks/usePlannerCalendar';
 
 interface ScheduleCalendarProps {
   date: Date;
   setDate: (date: Date | undefined) => void;
+  view: PlannerViewType;
+  setView: (view: PlannerViewType) => void;
   schedule: Array<{date: Date, bookings: Booking[]}>;
   getBookingBackground: (booking: Booking) => string;
   hasBookingsOnDate?: (date: Date) => boolean;
+  checkTimeConflict?: (date: Date, time: string) => boolean;
+  navigatePrevious: () => void;
+  navigateNext: () => void;
+  navigateToday: () => void;
 }
 
 const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({
   date,
   setDate,
+  view,
+  setView,
   schedule,
   getBookingBackground,
-  hasBookingsOnDate
+  hasBookingsOnDate,
+  checkTimeConflict,
+  navigatePrevious,
+  navigateNext,
+  navigateToday
 }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

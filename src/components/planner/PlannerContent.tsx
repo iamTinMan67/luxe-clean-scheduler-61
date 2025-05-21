@@ -12,7 +12,7 @@ interface PlannerContentProps {
   setView: (view: PlannerViewType) => void;
   pendingBookings: Booking[];
   confirmedBookings: Booking[];
-  schedule: Record<string, any>[];
+  schedule: Array<{date: Date, bookings: Booking[]}>; // Explicitly typed to match ScheduleCalendar's expectations
   handleConfirmBooking: (bookingId: string, selectedStaff: string[], travelMinutes: number) => void;
   handleCancelBooking: (bookingId: string) => void;
   getBookingBackground: (booking: Booking) => string;
@@ -65,6 +65,7 @@ const PlannerContent: React.FC<PlannerContentProps> = ({
         navigateNext={navigateNext}
         navigateToday={navigateToday}
         setDate={setDate}
+        getBookingBackground={getBookingBackground} // Pass getBookingBackground to ScheduleCalendar
       />
     </>
   );
