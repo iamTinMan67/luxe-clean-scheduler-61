@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { CheckCircle2, AlertCircle, CalendarClock } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -62,7 +61,7 @@ const BookingActions: React.FC<BookingActionsProps> = ({
               className="flex-1 bg-green-600 hover:bg-green-700 text-white"
               size="sm"
             >
-              <CheckCircle2 className="w-4 h-4 mr-1" /> Schedule
+              Schedule
             </Button>
           </TooltipTrigger>
           <TooltipContent className="bg-gray-800 text-white border-gray-700">
@@ -91,7 +90,7 @@ const BookingActions: React.FC<BookingActionsProps> = ({
               variant="destructive"
               size="sm"
             >
-              <AlertCircle className="w-4 h-4 mr-1" /> Decline
+              Decline
             </Button>
           </TooltipTrigger>
           <TooltipContent className="bg-gray-800 text-white border-gray-700">

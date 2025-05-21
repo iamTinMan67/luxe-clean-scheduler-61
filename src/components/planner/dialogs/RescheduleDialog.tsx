@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarClock } from "lucide-react";
 import { Booking } from '@/types/booking';
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -92,7 +91,7 @@ const RescheduleDialog: React.FC<RescheduleDialogProps> = ({ booking, onReschedu
           variant="outline"
           className="flex-1 bg-blue-600 hover:bg-blue-700 text-white h-9"
         >
-          <CalendarClock className="w-4 h-4 mr-1" /> Reschedule
+          Reschedule
         </Button>
       </DialogTrigger>
       <DialogContent className="bg-gray-950 border-gray-800">
