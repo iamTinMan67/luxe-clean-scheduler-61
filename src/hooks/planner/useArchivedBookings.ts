@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Booking } from '@/types/booking';
+import { subDays, isAfter } from 'date-fns';
 
 export const useArchivedBookings = () => {
   const [archivedBookings, setArchivedBookings] = useState<Booking[]>([]);
@@ -34,26 +35,19 @@ export const useArchivedBookings = () => {
       }
     }
     
-    // Get archived bookings from storage
-    const archivedData = localStorage.getItem('archivedBookings');
-    if (archivedData) {
-      try {
-        const parsedArchived = JSON.parse(archivedData);
-        // Add to all bookings, avoiding duplicates
-        const existingIds = new Set(allBookings.map(b => b.id));
-        const uniqueArchived = parsedArchived.filter((b: Booking) => !existingIds.has(b.id));
-        allBookings = [...allBookings, ...uniqueArchived];
-      } catch (error) {
-        console.error('Error parsing archived bookings:', error);
-      }
-    }
+    // Get the date for 7 days ago
+    const archiveThreshold = subDays(new Date(), 7);
     
-    // Separate bookings into active and archived by status
+    // Separate bookings into active and archived
     const archived: Booking[] = [];
     const active: Booking[] = [];
     
     allBookings.forEach(booking => {
-      if (booking.status === 'finished') {
+      const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
+      
+      // Bookings that are finished and older than 7 days should be archived
+      if ((booking.status === 'finished' || booking.status === 'completed') && 
+          !isAfter(bookingDate, archiveThreshold)) {
         archived.push(booking);
       } else {
         active.push(booking);
@@ -63,7 +57,7 @@ export const useArchivedBookings = () => {
     setArchivedBookings(archived);
     setActiveBookings(active);
     
-    // Update localStorage with active bookings
+    // Update localStorage with only active bookings
     localStorage.setItem('confirmedBookings', JSON.stringify(active));
     localStorage.setItem('plannerCalendarBookings', JSON.stringify(active));
     
@@ -74,6 +68,17 @@ export const useArchivedBookings = () => {
   useEffect(() => {
     loadBookings();
   }, []);
+
+  // Load archived bookings from storage
+  const loadArchivedFromStorage = (): Booking[] => {
+    try {
+      const archivedData = localStorage.getItem('archivedBookings');
+      return archivedData ? JSON.parse(archivedData) : [];
+    } catch (error) {
+      console.error('Error loading archived bookings:', error);
+      return [];
+    }
+  };
 
   // Archive a specific booking
   const archiveBooking = (booking: Booking) => {

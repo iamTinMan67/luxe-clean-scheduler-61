@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { Booking } from '@/types/booking';
@@ -56,7 +57,7 @@ const ArchivedBookingsView: React.FC<ArchivedBookingsViewProps> = ({ archivedBoo
         <CardTitle className="flex items-center justify-between">
           <span className="text-white text-xl">Archived Jobs</span>
           <div className="text-sm text-gray-400">
-            {archivedBookings.length} finished jobs
+            {archivedBookings.length} completed jobs
           </div>
         </CardTitle>
         

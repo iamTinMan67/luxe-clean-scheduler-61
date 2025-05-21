@@ -30,7 +30,6 @@ import ManagePackages from '@/pages/admin/ManagePackages';
 import FeedbackManager from '@/pages/admin/FeedbackManager';
 import FeedbackForm from '@/pages/admin/FeedbackForm';
 import DeclinedJobs from '@/pages/admin/DeclinedJobs';
-import ArchivedJobs from '@/pages/admin/ArchivedJobs';
 
 // Import protected route
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
@@ -119,10 +118,6 @@ export const router = createBrowserRouter([
       {
         path: '/management/gallery',
         element: <ProtectedRoute requireAdmin element={<GalleryManager />} />,
-      },
-      {
-        path: '/management/archived-jobs',
-        element: <ProtectedRoute requireAdmin element={<ArchivedJobs />} />,
       },
       {
         path: '/management/van-inventory',
