@@ -8,7 +8,6 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
-import { Badge } from '@/components/ui/badge';
 import DeleteBookingDialog from './dialogs/DeleteBookingDialog';
 import EditPackageDialog from './dialogs/EditPackageDialog';
 import RescheduleDialog from './dialogs/RescheduleDialog';
@@ -33,9 +32,6 @@ const BookingHeader: React.FC<BookingHeaderProps> = ({
           <h3 className="text-base font-semibold text-white">
             {booking.customer}
           </h3>
-          <Badge variant="outline" className="text-xs bg-black/30">
-            {booking.status}
-          </Badge>
         </div>
         <div className="flex items-center mt-1 text-xs text-gray-400">
           <Package className="w-3 h-3 mr-1" />
