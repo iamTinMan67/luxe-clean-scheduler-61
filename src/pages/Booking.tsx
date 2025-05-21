@@ -100,7 +100,7 @@ const Booking = () => {
       customer: `${formData.yourName}`,
       vehicle: formData.vehicleReg || vehicleType, // Use vehicleReg if available
       packageType: packageType, // Use the saved package type
-      location: formData.postcode || "TBC",
+      location: formData.postcode,
       contact: formData.phone,
       email: formData.email,
       notes: formData.notes,
@@ -127,7 +127,7 @@ const Booking = () => {
           <h1 className="text-4xl font-bold mb-4">Book Your Valeting Service</h1>
           <p className="text-gray-300">
             Please use our simplified booking form. We will confirm
-            availability to your preferred option.
+            availability to your request.
           </p>
         </div>
         
