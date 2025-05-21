@@ -19,6 +19,17 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({ date, bookings, getBookingBac
     return timeA.localeCompare(timeB);
   });
 
+  // Track open state for collapsibles
+  const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
+
+  // Toggle open state for a specific booking
+  const toggleOpen = (bookingId: string) => {
+    setOpenItems(prev => ({
+      ...prev,
+      [bookingId]: !prev[bookingId]
+    }));
+  };
+
   return (
     <div className="col-span-1">
       <div className="text-center mb-3 py-2 border-b border-gray-800">
@@ -63,10 +74,13 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({ date, bookings, getBookingBac
               
               {/* Replace direct contact details with collapsible section */}
               <Collapsible className="mt-2 pt-2 border-t border-gray-700">
-                <CollapsibleTrigger className="flex w-full items-center justify-between text-sm text-gray-400 hover:text-white">
+                <CollapsibleTrigger 
+                  className="flex w-full items-center justify-between text-sm text-gray-400 hover:text-white"
+                  onClick={() => toggleOpen(booking.id)}
+                >
                   <span>Contact Details</span>
                   <span className="ml-2">
-                    {({ open }) => open ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                    {openItems[booking.id] ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                   </span>
                 </CollapsibleTrigger>
                 <CollapsibleContent className="pt-2 space-y-2">
