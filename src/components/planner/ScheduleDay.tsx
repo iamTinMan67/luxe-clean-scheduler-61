@@ -64,7 +64,8 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({ date, bookings, getBookingBac
               </div>
               
               <div className="text-gray-400 text-sm mb-1">
-                {booking.vehicle || "No vehicle info"} - {booking.packageType || "Standard Package"}
+                {booking.vehicle || "No vehicle info"}
+                {booking.packageType && booking.packageType !== "TBC" && ` - ${booking.packageType} Package`}
               </div>
               
               <div className="flex items-center text-gray-300 text-sm">
