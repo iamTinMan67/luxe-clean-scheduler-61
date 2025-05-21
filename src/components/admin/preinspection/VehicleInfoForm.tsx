@@ -108,7 +108,7 @@ const VehicleInfoForm = ({
         
         <div>
           <label htmlFor="exteriorNotes" className="text-white text-sm font-medium block mb-1">
-            Exterior Condition Notes
+            Exterior Condition Issues
           </label>
           <Textarea 
             id="exteriorNotes" 
@@ -121,7 +121,7 @@ const VehicleInfoForm = ({
         
         <div>
           <label htmlFor="interiorNotes" className="text-white text-sm font-medium block mb-1">
-            Interior Condition Notes
+            Interior Condition Issues
           </label>
           <Textarea 
             id="interiorNotes" 
