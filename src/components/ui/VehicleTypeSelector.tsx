@@ -18,9 +18,19 @@ const VehicleTypeSelector = ({
   onClientTypeChange,
   onVehicleTypeChange,
 }: VehicleTypeSelectorProps) => {
-  const clientTypes: Array<{ type: ClientType; label: string; icon: React.ReactNode }> = [
-    { type: "private", label: "Private", icon: <Home className="w-8 h-8" /> },
-    { type: "corporate", label: "Corporate", icon: <Building className="w-8 h-8" /> }
+  const clientTypes: Array<{ type: ClientType; label: string; description: string; icon: React.ReactNode }> = [
+    { 
+      type: "private", 
+      label: "Private", 
+      description: "For individual owners", 
+      icon: <Home className="w-8 h-8" /> 
+    },
+    { 
+      type: "corporate", 
+      label: "Corporate", 
+      description: "For business fleets", 
+      icon: <Building className="w-8 h-8" /> 
+    }
   ];
 
   const vehicleTypes: Array<{ type: VehicleType; label: string; icon: React.ReactNode }> = [
@@ -35,7 +45,7 @@ const VehicleTypeSelector = ({
       <div>
         <h3 className="text-lg font-semibold mb-3 text-white text-center">Select Client Type</h3>
         <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
-          {clientTypes.map(({ type, label, icon }) => (
+          {clientTypes.map(({ type, label, description, icon }) => (
             <button
               key={type}
               onClick={() => onClientTypeChange(type)}
@@ -48,7 +58,7 @@ const VehicleTypeSelector = ({
                 "absolute inset-0 flex flex-col items-center justify-center p-2 transition-colors bg-gray-900 group-hover:bg-gray-800",
                 selectedClientType === type ? "bg-black" : ""
               )}>
-                <div className="w-18 h-18 mb-3 flex items-center justify-center">
+                <div className="w-18 h-18 mb-2 flex items-center justify-center">
                   {icon}
                 </div>
                 <span className={cn(
@@ -56,6 +66,9 @@ const VehicleTypeSelector = ({
                   selectedClientType === type ? "text-gold" : "text-gray-300 group-hover:text-white"
                 )}>
                   {label}
+                </span>
+                <span className="text-xs text-gray-400 mt-1">
+                  {description}
                 </span>
                 {selectedClientType === type && (
                   <motion.div
