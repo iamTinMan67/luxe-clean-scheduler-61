@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -59,18 +60,20 @@ const Booking = () => {
   };
   
   const handleFormSubmit = (formData: any) => {
-    // Get saved vehicle details including package type
+    // Get saved vehicle details including package type and client type
     const savedVehicleDetails = localStorage.getItem('vehicleDetails');
     let packageType = "TBC";
     let vehicleType = "car";
+    let clientType = "private";
     
     if (savedVehicleDetails) {
       try {
         const vehicles = JSON.parse(savedVehicleDetails);
         if (vehicles && vehicles.length > 0) {
-          // Get package type from the first vehicle
+          // Get details from the first vehicle
           packageType = vehicles[0].package || "TBC";
           vehicleType = vehicles[0].type || "car";
+          clientType = vehicles[0].clientType || "private";
         }
       } catch (error) {
         console.error('Error parsing vehicle details:', error);
@@ -99,6 +102,7 @@ const Booking = () => {
       status: "pending",
       customer: `${formData.yourName}`,
       vehicle: formData.vehicleReg || vehicleType, // Use vehicleReg if available
+      clientType: clientType, // Add client type to booking
       packageType: packageType, // Use the saved package type
       location: formData.postcode,
       contact: formData.phone,

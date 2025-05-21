@@ -1,7 +1,7 @@
 
 import React from "react";
-import { Trash2, Plus } from "lucide-react";
-import { Vehicle } from "@/lib/types";
+import { Trash2, Plus, Building, Home, Car, Truck, Box } from "lucide-react";
+import { Vehicle, VehicleType, ClientType } from "@/lib/types";
 
 interface VehicleTabsProps {
   vehicles: Vehicle[];
@@ -18,6 +18,32 @@ const VehicleTabs: React.FC<VehicleTabsProps> = ({
   handleAddVehicle,
   handleRemoveVehicle,
 }) => {
+  // Helper function to get vehicle icon
+  const getVehicleIcon = (type: VehicleType) => {
+    switch (type) {
+      case "car":
+        return <Car size={14} />;
+      case "van":
+        return <Truck size={14} />;
+      case "other":
+        return <Box size={14} />;
+      default:
+        return <Car size={14} />;
+    }
+  };
+
+  // Helper function to get client icon
+  const getClientIcon = (type: ClientType) => {
+    switch (type) {
+      case "private":
+        return <Home size={14} />;
+      case "corporate":
+        return <Building size={14} />;
+      default:
+        return <Home size={14} />;
+    }
+  };
+
   return (
     <div className="flex flex-wrap gap-3 justify-center mb-8">
       {vehicles.map((vehicle, index) => (
@@ -30,6 +56,8 @@ const VehicleTabs: React.FC<VehicleTabsProps> = ({
           } flex items-center`}
           onClick={() => setCurrentVehicleIndex(index)}
         >
+          <span className="mr-1">{getClientIcon(vehicle.clientType)}</span>
+          <span className="mr-1">{getVehicleIcon(vehicle.type)}</span>
           Vehicle {index + 1}
           {vehicles.length > 1 && (
             <button

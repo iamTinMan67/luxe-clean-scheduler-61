@@ -34,10 +34,12 @@ const LocationVehicleFields = ({
       </div>
       
       <div>
-        <Label htmlFor="vehicleReg" className="text-white">Vehicle Reg/Job request</Label>
+        <Label htmlFor="vehicleReg" className="text-white">
+          Vehicle Reg/Details
+        </Label>
         <Input 
           id="vehicleReg" 
-          placeholder="Car registration or boat/vehicle details"
+          placeholder="Car registration or details for other vehicle types"
           value={vehicleReg}
           onChange={(e) => setVehicleReg(e.target.value)}
           className="bg-gray-800 border-gray-700 text-white"

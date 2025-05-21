@@ -23,6 +23,7 @@ const ServicePackage = () => {
     currentVehicleIndex,
     setCurrentVehicleIndex,
     currentVehicle,
+    handleClientTypeChange,
     handleVehicleTypeChange,
     handleConditionChange,
     handlePackageSelect,
@@ -71,6 +72,19 @@ const ServicePackage = () => {
           {/* Hero Content */}
           <ServiceHero />
           
+          {/* Vehicle Customization - Moved up to select client/vehicle type first */}
+          <VehicleCustomization 
+            vehicles={vehicles}
+            currentVehicleIndex={currentVehicleIndex}
+            setCurrentVehicleIndex={setCurrentVehicleIndex}
+            currentVehicle={currentVehicle}
+            handleClientTypeChange={handleClientTypeChange}
+            handleVehicleTypeChange={handleVehicleTypeChange}
+            handleConditionChange={handleConditionChange}
+            handleAddVehicle={handleAddVehicle}
+            handleRemoveVehicle={handleRemoveVehicle}
+          />
+          
           {/* Package Selection */}
           <PackageSelection
             packageOptions={packageOptions}
@@ -84,18 +98,6 @@ const ServicePackage = () => {
             additionalServices={additionalServices}
             selectedServices={currentVehicle.additionalServices}
             onToggleService={handleAdditionalServiceToggle}
-          />
-          
-          {/* Vehicle Customization */}
-          <VehicleCustomization 
-            vehicles={vehicles}
-            currentVehicleIndex={currentVehicleIndex}
-            setCurrentVehicleIndex={setCurrentVehicleIndex}
-            currentVehicle={currentVehicle}
-            handleVehicleTypeChange={handleVehicleTypeChange}
-            handleConditionChange={handleConditionChange}
-            handleAddVehicle={handleAddVehicle}
-            handleRemoveVehicle={handleRemoveVehicle}
           />
           
           {/* Price Summary */}

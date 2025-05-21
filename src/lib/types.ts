@@ -1,7 +1,9 @@
 
 export type PackageType = "main" | "medium" | "elite";
 
-export type VehicleType = "car" | "van";
+export type ClientType = "private" | "corporate";
+
+export type VehicleType = "car" | "van" | "other";
 
 export interface AdditionalService {
   id: string;
@@ -33,6 +35,7 @@ export interface ServiceTask {
 
 export interface Vehicle {
   id: string;
+  clientType: ClientType;
   type: VehicleType;
   condition: number;
   package: PackageType;

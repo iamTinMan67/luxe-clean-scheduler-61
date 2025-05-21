@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Vehicle, VehicleType, PackageType, AdditionalService } from "@/lib/types";
+import { Vehicle, VehicleType, ClientType, PackageType, AdditionalService } from "@/lib/types";
 import { toast } from "sonner";
 
 export const useVehicleState = (additionalServices: AdditionalService[]) => {
@@ -8,6 +8,7 @@ export const useVehicleState = (additionalServices: AdditionalService[]) => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([
     {
       id: "1",
+      clientType: "private",
       type: "car",
       condition: 5,
       package: "medium" as PackageType,
@@ -17,6 +18,18 @@ export const useVehicleState = (additionalServices: AdditionalService[]) => {
   
   const [currentVehicleIndex, setCurrentVehicleIndex] = useState(0);
   const currentVehicle = vehicles[currentVehicleIndex];
+  
+  // Update client type
+  const handleClientTypeChange = (clientType: ClientType) => {
+    setVehicles(prev => {
+      const updated = [...prev];
+      updated[currentVehicleIndex] = {
+        ...updated[currentVehicleIndex],
+        clientType
+      };
+      return updated;
+    });
+  };
   
   // Update vehicle type
   const handleVehicleTypeChange = (type: VehicleType) => {
@@ -86,6 +99,7 @@ export const useVehicleState = (additionalServices: AdditionalService[]) => {
   const handleAddVehicle = () => {
     const newVehicle: Vehicle = {
       id: `${vehicles.length + 1}`,
+      clientType: "private", // Default client type
       type: "car",
       condition: 5,
       package: "medium" as PackageType,
@@ -129,6 +143,7 @@ export const useVehicleState = (additionalServices: AdditionalService[]) => {
     currentVehicleIndex,
     setCurrentVehicleIndex,
     currentVehicle,
+    handleClientTypeChange,
     handleVehicleTypeChange,
     handleConditionChange,
     handlePackageSelect,
