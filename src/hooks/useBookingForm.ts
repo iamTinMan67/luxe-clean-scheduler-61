@@ -8,7 +8,7 @@ interface BookingFormData {
   phone: string;
   email: string;
   notes: string;
-  vehicleReg: string;
+  vehicleReg: string; // We're keeping the same property name for backward compatibility
 }
 
 interface UseBookingFormProps {

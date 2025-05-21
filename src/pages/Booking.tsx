@@ -85,7 +85,7 @@ const Booking = () => {
       date: selectedDate,
       time: selectedTime,
       vehicleCondition: vehicleCondition,
-      vehicleReg: formData.vehicleReg // Use the vehicleReg from the form
+      vehicleReg: formData.vehicleReg // Keep variable name for compatibility
     };
     
     // Retrieve existing bookings from localStorage
@@ -101,9 +101,9 @@ const Booking = () => {
       ...bookingData,
       status: "pending",
       customer: `${formData.yourName}`,
-      vehicle: formData.vehicleReg || vehicleType, // Use vehicleReg if available
-      clientType: clientType, // Add client type to booking
-      packageType: packageType, // Use the saved package type
+      vehicle: formData.vehicleReg || vehicleType, // Use the job details here
+      clientType: clientType,
+      packageType: packageType,
       location: formData.postcode,
       contact: formData.phone,
       email: formData.email,

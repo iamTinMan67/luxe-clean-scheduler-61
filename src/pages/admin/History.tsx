@@ -69,7 +69,7 @@ const History = () => {
             <TableRow className="border-gray-700 bg-black/50">
               <TableHead className="text-gray-300">Date</TableHead>
               <TableHead className="text-gray-300">Customer</TableHead>
-              <TableHead className="text-gray-300">Vehicle</TableHead>
+              <TableHead className="text-gray-300">Vehicle/Job Details</TableHead>
               <TableHead className="text-gray-300">Package</TableHead>
               <TableHead className="text-gray-300">Location</TableHead>
               <TableHead className="text-gray-300">Price</TableHead>
