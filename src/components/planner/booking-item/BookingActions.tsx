@@ -1,10 +1,17 @@
+
 import React, { useState } from 'react';
-import { CheckCircle2, AlertCircle } from 'lucide-react';
+import { CheckCircle2, AlertCircle, CalendarClock } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Booking } from '@/types/booking';
 import StaffAllocationDialog from '../StaffAllocationDialog';
 import RescheduleDialog from '../dialogs/RescheduleDialog';
 import { staffMembers } from "@/data/staffData";
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from "@/components/ui/tooltip";
 
 interface BookingActionsProps {
   booking: Booking;
@@ -46,42 +53,65 @@ const BookingActions: React.FC<BookingActionsProps> = ({
   };
 
   return (
-    <div className="flex gap-2">
-      <Button 
-        onClick={handleConfirmClick}
-        className="flex-1 bg-green-600 hover:bg-green-700 text-white"
-        size="sm"
-      >
-        <CheckCircle2 className="w-4 h-4 mr-1" /> Schedule
-      </Button>
-      
-      {/* Add Reschedule Button */}
-      <RescheduleDialog 
-        booking={booking}
-        onReschedule={handleReschedule}
-      />
-      
-      <Button 
-        onClick={() => onCancel(booking.id)}
-        className="flex-1 bg-red-600 hover:bg-red-700 text-white"
-        variant="destructive"
-        size="sm"
-      >
-        <AlertCircle className="w-4 h-4 mr-1" /> Decline
-      </Button>
+    <TooltipProvider>
+      <div className="flex gap-2">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button 
+              onClick={handleConfirmClick}
+              className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+              size="sm"
+            >
+              <CheckCircle2 className="w-4 h-4 mr-1" /> Schedule
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent className="bg-gray-800 text-white border-gray-700">
+            <p>Schedule this booking and assign staff members</p>
+          </TooltipContent>
+        </Tooltip>
+        
+        {/* Add Reschedule Button with Tooltip */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <RescheduleDialog 
+              booking={booking}
+              onReschedule={handleReschedule}
+            />
+          </TooltipTrigger>
+          <TooltipContent className="bg-gray-800 text-white border-gray-700">
+            <p>Change the date or time for this booking</p>
+          </TooltipContent>
+        </Tooltip>
+        
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button 
+              onClick={() => onCancel(booking.id)}
+              className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+              variant="destructive"
+              size="sm"
+            >
+              <AlertCircle className="w-4 h-4 mr-1" /> Decline
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent className="bg-gray-800 text-white border-gray-700">
+            <p>Cancel this booking request</p>
+          </TooltipContent>
+        </Tooltip>
 
-      {/* Only show staff dialog if there are more than 2 staff members */}
-      {staffMembers.length > 2 && (
-        <StaffAllocationDialog
-          open={showStaffDialog}
-          onClose={() => setShowStaffDialog(false)}
-          booking={booking}
-          onConfirm={handleStaffConfirm}
-          estimatedDuration={estimatedDuration}
-          defaultStaff={defaultStaff}
-        />
-      )}
-    </div>
+        {/* Only show staff dialog if there are more than 2 staff members */}
+        {staffMembers.length > 2 && (
+          <StaffAllocationDialog
+            open={showStaffDialog}
+            onClose={() => setShowStaffDialog(false)}
+            booking={booking}
+            onConfirm={handleStaffConfirm}
+            estimatedDuration={estimatedDuration}
+            defaultStaff={defaultStaff}
+          />
+        )}
+      </div>
+    </TooltipProvider>
   );
 };
 
