@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Booking, validateBookingStatus } from "@/types/booking";
-import { submitPreInspectionReport } from "@/services/inspectionService";
+import { submitPreInspectionReport } from "@/services/inspection";
 import { useCustomerNotifications } from "@/hooks/progress/useCustomerNotifications";
 import { sendTrackingInfo } from "@/utils/emailUtils";
 import { bookingToProgressBooking } from "@/utils/bookingTypeAdapter";
