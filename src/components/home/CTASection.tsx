@@ -14,9 +14,9 @@ const CTASection = () => {
             <div className="mb-4 bg-gold/10 p-3 rounded-full w-fit">
               <Calendar className="w-6 h-6 text-gold" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">Book Your Valet</h3>
+            <h3 className="text-xl font-bold text-white mb-2">Quick Book</h3>
             <p className="text-gray-400 mb-6 flex-grow">
-              Quick Book With Us.
+              Main Package, No extras, No Notes.
             </p>
             <Link to="/booking">
               <Button className="w-full gold-gradient text-black hover:shadow-xl hover:shadow-gold/20 transition-all">
@@ -32,11 +32,11 @@ const CTASection = () => {
             </div>
             <h3 className="text-xl font-bold text-white mb-2">Our Packages</h3>
             <p className="text-gray-400 mb-6 flex-grow">
-              Explore our range of valeting packages tailored to your needs.
+              Explore our range of valeting packages tailored to your specific needs.
             </p>
             <Link to="/services">
               <Button className="w-full gold-gradient text-black hover:shadow-xl hover:shadow-gold/20 transition-all">
-                View Packages <ArrowRight className="ml-2 w-4 h-4" />
+                View Our Packages <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </Link>
           </div>
@@ -48,11 +48,11 @@ const CTASection = () => {
             </div>
             <h3 className="text-xl font-bold text-white mb-2">Track Your Valet</h3>
             <p className="text-gray-400 mb-6 flex-grow">
-              Enter the booking reference to track the real-time progress of your service.
+              Check-up on our progress.
             </p>
             <Link to="/track">
               <Button className="w-full gold-gradient text-black hover:shadow-xl hover:shadow-gold/20 transition-all">
-                Track Now <ArrowRight className="ml-2 w-4 h-4" />
+                Track Us Now <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </Link>
           </div>
