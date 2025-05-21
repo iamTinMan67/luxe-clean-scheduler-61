@@ -16,7 +16,7 @@ const CTASection = () => {
             </div>
             <h3 className="text-xl font-bold text-white mb-2">Quick Book A Slot</h3>
             <p className="text-gray-400 mb-6 flex-grow">
-              Main Package, No extras, No Notes.
+              Main Package, No extras, No Notes. Just add contact details.
             </p>
             <Link to="/booking">
               <Button className="w-full gold-gradient text-black hover:shadow-xl hover:shadow-gold/20 transition-all">
