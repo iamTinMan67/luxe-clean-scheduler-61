@@ -1,11 +1,13 @@
+
 import React, { useState, useEffect } from 'react';
 import { format } from "date-fns";
 import { Booking } from '@/types/booking';
 import { Button } from "@/components/ui/button";
 import { 
-  Car, Clock, MapPin, User, CheckCircle2, AlertCircle, Mail, Phone, Package
+  Car, Clock, MapPin, User, CheckCircle2, AlertCircle, Mail, Phone, Package, CalendarClock
 } from "lucide-react";
 import StaffAllocationDialog from './StaffAllocationDialog';
+import RescheduleDialog from './dialogs/RescheduleDialog';
 import { packageOptions } from "@/data/servicePackageData";
 import { additionalServices } from "@/data/servicePackageData";
 import { calculateTotalBookingTime } from "@/utils/priceCalculator";
@@ -53,6 +55,13 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
       }
     }
   }, [booking]);
+
+  // Handle rescheduling
+  const handleReschedule = (booking: Booking, newDate: Date, newTime?: string) => {
+    // This would typically update the booking in a real implementation
+    console.log("Booking rescheduled:", booking.id, newDate, newTime);
+    // For now, we'll just log it since we don't have a direct reschedule function passed down
+  };
 
   // Get default staff (first two staff members)
   const defaultStaff = staffMembers.slice(0, 2).map(staff => staff.name);
@@ -168,6 +177,18 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
             </ul>
           </div>
         )}
+        
+        {/* Display second vehicle details if available */}
+        {booking.secondVehicle && (
+          <div className="mt-2 pt-2 border-t border-gray-800">
+            <h4 className="text-sm font-medium text-gold mb-1">Second Vehicle:</h4>
+            <div className="text-sm text-gray-300 flex items-center">
+              <Car className="w-3 h-3 mr-1 text-gold" />
+              <span>{booking.secondVehicle}</span>
+              {booking.secondVehicleReg && <span className="ml-1">({booking.secondVehicleReg})</span>}
+            </div>
+          </div>
+        )}
       </div>
       
       <div className="flex gap-2">
@@ -179,13 +200,19 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
           <CheckCircle2 className="w-4 h-4 mr-1" /> Schedule
         </Button>
         
+        {/* Add Reschedule Button */}
+        <RescheduleDialog 
+          booking={booking}
+          onReschedule={handleReschedule}
+        />
+        
         <Button 
           onClick={() => onCancel(booking.id)}
           className="flex-1 bg-red-600 hover:bg-red-700 text-white"
           variant="destructive"
           size="sm"
         >
-          <AlertCircle className="w-4 h-4 mr-1" /> Cancel
+          <AlertCircle className="w-4 h-4 mr-1" /> Decline
         </Button>
       </div>
 

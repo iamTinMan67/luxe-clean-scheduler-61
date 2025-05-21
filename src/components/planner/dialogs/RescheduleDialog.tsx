@@ -90,9 +90,9 @@ const RescheduleDialog: React.FC<RescheduleDialogProps> = ({ booking, onReschedu
         <Button 
           size="sm" 
           variant="outline"
-          className="h-8 px-2 text-xs"
+          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white h-9"
         >
-          <CalendarClock className="h-3 w-3 mr-1" /> Reschedule
+          <CalendarClock className="w-4 h-4 mr-1" /> Reschedule
         </Button>
       </DialogTrigger>
       <DialogContent className="bg-gray-950 border-gray-800">

@@ -5,6 +5,8 @@ export interface Booking {
   customer: string;
   vehicle: string;
   vehicleReg?: string;
+  secondVehicle?: string;
+  secondVehicleReg?: string;
   packageType: string;
   date: Date | string;
   time?: string;
