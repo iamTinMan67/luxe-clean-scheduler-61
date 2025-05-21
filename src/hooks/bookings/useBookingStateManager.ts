@@ -8,43 +8,18 @@ import { useCalendarState } from './useCalendarState';
  */
 export const useBookingStateManager = () => {
   // Get storage-related state and functions
-  const {
-    pendingBookings,
-    setPendingBookings,
-    confirmedBookings,
-    setConfirmedBookings,
-    saveBookingsToStorage,
-    loadBookingsFromStorage
-  } = useBookingsStorage();
-
+  const storageProps = useBookingsStorage();
+  
   // Get calendar-related state
-  const {
-    date,
-    setDate,
-    view,
-    setView
-  } = useCalendarState();
-
+  const calendarProps = useCalendarState();
+  
   // Get booking mutation functions
-  const {
-    updateBooking,
-    moveBookingToConfirmed,
-    deleteBooking
-  } = useBookingMutations();
+  const mutationProps = useBookingMutations();
 
+  // Return a consolidated interface with all booking-related functionality
   return {
-    pendingBookings,
-    setPendingBookings,
-    confirmedBookings,
-    setConfirmedBookings,
-    date,
-    setDate,
-    view,
-    setView,
-    updateBooking,
-    moveBookingToConfirmed,
-    deleteBooking,
-    saveBookingsToStorage,
-    loadBookingsFromStorage
+    ...storageProps,
+    ...calendarProps,
+    ...mutationProps
   };
 };
