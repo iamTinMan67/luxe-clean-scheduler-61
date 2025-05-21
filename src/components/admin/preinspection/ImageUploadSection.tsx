@@ -12,7 +12,7 @@ const ImageUploadSection = ({ images, onImageUpload }: ImageUploadSectionProps) 
   return (
     <Card className="bg-black/60 border-gold/30">
       <CardHeader>
-        <CardTitle className="text-white">Snapshot Anything Notable</CardTitle>
+        <CardTitle className="text-white">Upload Photos</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="mb-4">
@@ -40,7 +40,7 @@ const ImageUploadSection = ({ images, onImageUpload }: ImageUploadSectionProps) 
             <div className="col-span-full flex flex-col items-center justify-center text-white/60 p-8 border border-dashed border-gold/20 rounded-md">
               <ImageIcon size={48} className="mb-2 opacity-50" />
               <p>No images uploaded yet</p>
-              <p className="text-sm">Snap anything noted</p>
+              <p className="text-sm">Upload Photos</p>
             </div>
           )}
         </div>
