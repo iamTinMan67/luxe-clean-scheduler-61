@@ -25,8 +25,9 @@ const BookingActions: React.FC<BookingActionsProps> = ({
 }) => {
   const statusInfo = getStatusInfo(booking.status);
   
-  // If there's no next status, don't render any action buttons
-  if (!statusInfo.nextStatus) {
+  // If there's no next status or the booking is confirmed, don't render any action buttons
+  // This removes the "Start Service" button for confirmed bookings
+  if (!statusInfo.nextStatus || booking.status === "confirmed") {
     return null;
   }
   

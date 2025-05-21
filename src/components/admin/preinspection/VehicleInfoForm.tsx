@@ -24,6 +24,7 @@ interface VehicleInfoFormProps {
   setExteriorNotes: (value: string) => void;
   setInteriorNotes: (value: string) => void;
   showDeclineNotes: boolean;
+  onBookingSelected: (booking: Booking) => void;
 }
 
 const VehicleInfoForm = ({
@@ -37,17 +38,28 @@ const VehicleInfoForm = ({
   setExteriorNotes,
   setInteriorNotes,
   showDeclineNotes,
+  onBookingSelected,
 }: VehicleInfoFormProps) => {
-  // Filter appointments to only show today's bookings
+  // Filter appointments to only show today's bookings with confirmed status
   const todayAppointments = appointments.filter(booking => {
     const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
     const today = new Date();
     return (
       bookingDate.getDate() === today.getDate() &&
       bookingDate.getMonth() === today.getMonth() &&
-      bookingDate.getFullYear() === today.getFullYear()
+      bookingDate.getFullYear() === today.getFullYear() &&
+      booking.status === "confirmed"
     );
   });
+
+  // Handle booking selection and trigger status update
+  const handleBookingChange = (value: string) => {
+    setSelectedBooking(value);
+    const selected = appointments.find(booking => booking.id === value);
+    if (selected) {
+      onBookingSelected(selected);
+    }
+  };
 
   // Display booking details if available
   const displayBookingInfo = () => {
@@ -84,7 +96,7 @@ const VehicleInfoForm = ({
           </label>
           <Select
             value={selectedBooking}
-            onValueChange={(value) => setSelectedBooking(value)}
+            onValueChange={handleBookingChange}
           >
             <SelectTrigger className="bg-black/40 border-gold/30 text-white">
               <SelectValue placeholder="Select today's appointment" />

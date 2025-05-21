@@ -12,6 +12,8 @@ import { useCustomerNotifications } from "@/hooks/progress/useCustomerNotificati
 import { sendTrackingInfo } from "@/utils/emailUtils";
 import { bookingToProgressBooking } from "@/utils/bookingTypeAdapter";
 import { Button } from "@/components/ui/button";
+import { useBookingStatus } from "@/hooks/bookings/useBookingStatus";
+import { useBookingStateManager } from "@/hooks/bookings/useBookingStateManager";
 
 const PreInspection = () => {
   const navigate = useNavigate();
@@ -28,6 +30,10 @@ const PreInspection = () => {
   const [showDeclineNotes, setShowDeclineNotes] = useState(false);
   const { appointments, loading } = useScheduledAppointments();
   
+  // Initialize the booking state manager and status hooks
+  const { updateBooking, moveBookingToConfirmed } = useBookingStateManager();
+  const { updateBookingStatus } = useBookingStatus(updateBooking, moveBookingToConfirmed);
+  
   // Update booking details when a booking is selected
   useEffect(() => {
     if (selectedBooking) {
@@ -39,6 +45,15 @@ const PreInspection = () => {
       setBookingDetails(null);
     }
   }, [selectedBooking, appointments]);
+  
+  // Handle booking selection and status update
+  const handleBookingSelected = (booking: Booking) => {
+    if (booking.status === "confirmed") {
+      // Update the booking status to in-progress
+      updateBookingStatus(booking, "in-progress");
+      toast.success(`${booking.customer}'s appointment is now in progress.`);
+    }
+  };
   
   // Placeholder function for image upload
   const handleImageUpload = () => {
@@ -174,6 +189,7 @@ const PreInspection = () => {
           setExteriorNotes={setExteriorNotes}
           setInteriorNotes={setInteriorNotes}
           showDeclineNotes={showDeclineNotes}
+          onBookingSelected={handleBookingSelected}
         />
         
         {/* Accept and Decline buttons moved above the form fields */}
