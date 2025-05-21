@@ -110,10 +110,7 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
       <div className="space-y-2 mb-4">
         <div className="flex items-center text-gray-300">
           <Car className="w-4 h-4 mr-2 text-gold" />
-          <span>
-            {booking.vehicle} 
-            {booking.vehicleReg && ` (${booking.vehicleReg})`}
-          </span>
+          <span>{booking.vehicle}</span>
         </div>
 
         <div className="flex items-center text-gray-300">
@@ -135,11 +132,6 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
             {estimatedDuration > 0 && ` (Est. duration: ${formatDuration(estimatedDuration)})`}
           </span>
         </div>
-        
-        <div className="flex items-center text-gray-300">
-          <MapPin className="w-4 h-4 mr-2 text-gold" />
-          <span>{booking.location}</span>
-        </div>
 
         {/* Contact information collapsible section */}
         <Collapsible 
@@ -156,6 +148,12 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
             )}
           </CollapsibleTrigger>
           <CollapsibleContent className="space-y-2 pt-2">
+            {/* Add location/postcode to contact details */}
+            <div className="flex items-center text-gray-300">
+              <MapPin className="w-4 h-4 mr-2 text-gold" />
+              <span>{booking.location}</span>
+            </div>
+            
             {booking.notes && (
               <div className="flex items-center text-gray-300">
                 <User className="w-4 h-4 mr-2 text-gold" />
@@ -177,6 +175,14 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
               </div>
             )}
             
+            {/* Add vehicle registration if available */}
+            {booking.vehicleReg && (
+              <div className="flex items-center text-gray-300">
+                <Car className="w-4 h-4 mr-2 text-gold" />
+                <span>Reg: {booking.vehicleReg}</span>
+              </div>
+            )}
+            
             {/* Add vehicle condition indicator */}
             {booking.condition !== undefined && (
               <div className="flex items-center text-gray-300">
@@ -188,7 +194,7 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
           </CollapsibleContent>
         </Collapsible>
 
-        {/* Show additional services if any - Updated display */}
+        {/* Show additional services if any */}
         {additionalServiceDetails.length > 0 && (
           <div className="mt-2 pt-2 border-t border-gray-800">
             <h4 className="text-sm font-medium text-gold mb-1">Additional Services:</h4>
@@ -211,7 +217,9 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
             <div className="text-sm text-gray-300 flex items-center">
               <Car className="w-3 h-3 mr-1 text-gold" />
               <span>{booking.secondVehicle}</span>
-              {booking.secondVehicleReg && <span className="ml-1">({booking.secondVehicleReg})</span>}
+              {booking.secondVehicleReg && 
+                <span className="ml-1 text-xs text-gray-400">(Reg: {booking.secondVehicleReg})</span>
+              }
             </div>
           </div>
         )}
