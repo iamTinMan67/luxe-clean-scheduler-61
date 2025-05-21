@@ -25,6 +25,7 @@ const PreInspection = () => {
   const [exteriorNotes, setExteriorNotes] = useState("");
   const [interiorNotes, setInteriorNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showDeclineNotes, setShowDeclineNotes] = useState(false);
   const { appointments, loading } = useScheduledAppointments();
   
   // Update booking details when a booking is selected
@@ -88,10 +89,40 @@ const PreInspection = () => {
 
   // Handle decline service
   const handleDeclineService = () => {
+    if (!showDeclineNotes) {
+      setShowDeclineNotes(true);
+      return;
+    }
+    
     if (!bookingDetails) {
       toast.error("Please select a booking first");
       return;
     }
+    
+    if (exteriorNotes.trim() === "" && interiorNotes.trim() === "") {
+      toast.error("Please provide a reason for declining the service");
+      return;
+    }
+    
+    // Store the declined job report
+    const declinedJob = {
+      id: bookingDetails.id,
+      customer: bookingDetails.customer,
+      vehicle: bookingDetails.vehicle,
+      date: bookingDetails.date,
+      time: bookingDetails.time,
+      images: images,
+      exteriorNotes: exteriorNotes,
+      interiorNotes: interiorNotes,
+      declinedAt: new Date(),
+      reason: exteriorNotes + "\n" + interiorNotes
+    };
+    
+    // Save to localStorage (in a real app, this would go to Supabase)
+    const declinedJobs = localStorage.getItem('declinedJobs') 
+      ? JSON.parse(localStorage.getItem('declinedJobs') || '[]') 
+      : [];
+    localStorage.setItem('declinedJobs', JSON.stringify([...declinedJobs, declinedJob]));
     
     // Send notification to customer
     if (bookingDetails) {
@@ -110,6 +141,9 @@ const PreInspection = () => {
       setImages([]);
       setExteriorNotes("");
       setInteriorNotes("");
+      setShowDeclineNotes(false);
+      
+      toast.success("Job declined and customer notified");
       
       // Redirect to planner
       navigate("/admin/planner-calendar");
@@ -128,7 +162,6 @@ const PreInspection = () => {
         <p className="text-gold">Document the vehicle condition before commencement</p>
       </div>
 
-      {/* Updated layout without the inspection checklist */}
       <div className="max-w-4xl mx-auto space-y-6">
         <VehicleInfoForm
           appointments={appointments}
@@ -140,31 +173,32 @@ const PreInspection = () => {
           setSelectedBooking={setSelectedBooking}
           setExteriorNotes={setExteriorNotes}
           setInteriorNotes={setInteriorNotes}
+          showDeclineNotes={showDeclineNotes}
         />
         
-        <div className="mt-6">
-          <ImageUploadSection 
-            images={images}
-            onImageUpload={handleImageUpload}
-          />
-        </div>
-        
-        {/* Submit and Decline buttons */}
-        <div className="mt-6 flex gap-4">
+        {/* Accept and Decline buttons moved above the form fields */}
+        <div className="mt-4 mb-6 flex gap-4">
           <Button 
-            className="w-1/2 gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg"
+            className="w-1/2 bg-green-500 hover:bg-green-600 text-white hover:shadow-lg"
             onClick={handleSubmitReport}
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Submitting..." : "Submit Report"}
+            {isSubmitting ? "Submitting..." : "Accept"}
           </Button>
           <Button 
             className="w-1/2 bg-red-500 hover:bg-red-600 text-white"
             onClick={handleDeclineService}
             disabled={isSubmitting}
           >
-            Decline Service
+            Decline
           </Button>
+        </div>
+        
+        <div className="mt-6">
+          <ImageUploadSection 
+            images={images}
+            onImageUpload={handleImageUpload}
+          />
         </div>
       </div>
     </motion.div>

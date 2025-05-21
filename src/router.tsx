@@ -1,3 +1,4 @@
+
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 // Import layout
@@ -28,6 +29,7 @@ import PreInspection from '@/pages/admin/PreInspection';
 import ManagePackages from '@/pages/admin/ManagePackages';
 import FeedbackManager from '@/pages/admin/FeedbackManager';
 import FeedbackForm from '@/pages/admin/FeedbackForm';
+import DeclinedJobs from '@/pages/admin/DeclinedJobs';
 
 // Import protected route
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
@@ -91,6 +93,10 @@ export const router = createBrowserRouter([
       {
         path: '/admin/todo',
         element: <ProtectedRoute requireAdmin element={<TodoList />} />,
+      },
+      {
+        path: '/admin/declined-jobs',
+        element: <ProtectedRoute requireAdmin element={<DeclinedJobs />} />,
       },
       // Management section routes
       {
