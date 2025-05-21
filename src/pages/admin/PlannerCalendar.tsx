@@ -33,7 +33,8 @@ const PlannerCalendar = () => {
     handleCancelBooking,
     getBookingBackground,
     hasBookingsOnDate,
-    checkTimeConflict
+    checkTimeConflict,
+    conflictCount
   } = usePlannerCalendar();
 
   // Staff planner functionality
@@ -82,6 +83,7 @@ const PlannerCalendar = () => {
             navigatePrevious={navigatePrevious}
             navigateNext={navigateNext}
             navigateToday={navigateToday}
+            conflictCount={conflictCount}
           />
           
           {/* Staff Planner section */}

@@ -10,13 +10,15 @@ interface PendingBookingsListProps {
   handleConfirmBooking: (bookingId: string, selectedStaff: string[], travelMinutes: number) => void;
   handleCancelBooking: (bookingId: string) => void;
   getBookingBackground: (booking: Booking) => string;
+  conflictCount?: number; // New prop for the conflict count
 }
 
 const PendingBookingsList: React.FC<PendingBookingsListProps> = ({
   pendingBookings,
   handleConfirmBooking,
   handleCancelBooking,
-  getBookingBackground
+  getBookingBackground,
+  conflictCount = 0 // Default to 0 if not provided
 }) => {
   return (
     <motion.div
@@ -28,8 +30,15 @@ const PendingBookingsList: React.FC<PendingBookingsListProps> = ({
       <Card className="bg-gray-900 border-gray-800 p-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-white">Pending Bookings</h2>
-          <div className="px-3 py-1 rounded-full bg-red-900/30 text-red-400 border border-red-700 text-xs font-medium">
-            {pendingBookings.length} pending
+          <div className="flex items-center space-x-2">
+            <div className="px-3 py-1 rounded-full bg-red-900/30 text-red-400 border border-red-700 text-xs font-medium">
+              {pendingBookings.length} pending
+            </div>
+            {conflictCount > 0 && (
+              <div className="px-3 py-1 rounded-full bg-orange-900/30 text-orange-400 border border-orange-700 text-xs font-medium">
+                {conflictCount} conflicts
+              </div>
+            )}
           </div>
         </div>
         

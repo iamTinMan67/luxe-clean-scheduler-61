@@ -4,6 +4,7 @@ import { navigatePrevious, navigateNext, hasTimeConflict as checkTimeConflict } 
 import { useBookingsStorage } from './planner/useBookingsStorage';
 import { useBookingManagement } from './planner/useBookingManagement';
 import { useScheduleFiltering } from './planner/useScheduleFiltering';
+import { Booking } from '@/types/booking';
 
 // Update the view type to remove "monthly"
 export type PlannerViewType = "daily" | "weekly";
@@ -53,6 +54,38 @@ export const usePlannerCalendar = () => {
     });
   };
 
+  // Calculate conflicts between pending bookings and existing bookings
+  const calculateConflictCount = (): number => {
+    if (pendingBookings.length === 0) return 0;
+    
+    let conflicts = 0;
+    
+    // Get all active bookings (confirmed, in-progress, completed, finished)
+    const activeBookings = confirmedBookings.filter(booking => 
+      booking.status === 'confirmed' || 
+      booking.status === 'in-progress' || 
+      booking.status === 'completed' || 
+      booking.status === 'finished'
+    );
+    
+    // Check each pending booking against active bookings for time conflicts
+    pendingBookings.forEach(pendingBooking => {
+      const pendingDate = pendingBooking.date instanceof Date ? 
+        pendingBooking.date : new Date(pendingBooking.date);
+      
+      const pendingTime = pendingBooking.time || '';
+      
+      // If this pending booking conflicts with any active booking, increment conflicts
+      if (checkTimeConflict(pendingDate, pendingTime, activeBookings)) {
+        conflicts++;
+      }
+    });
+    
+    return conflicts;
+  };
+
+  const conflictCount = calculateConflictCount();
+
   return {
     date,
     setDate,
@@ -69,6 +102,7 @@ export const usePlannerCalendar = () => {
     handleCancelBooking,
     getBookingBackground,
     hasBookingsOnDate,
-    checkTimeConflict: (checkDate: Date, time: string) => checkTimeConflict(checkDate, time, confirmedBookings)
+    checkTimeConflict: (checkDate: Date, time: string) => checkTimeConflict(checkDate, time, confirmedBookings),
+    conflictCount // New property to expose the conflict count
   };
 };

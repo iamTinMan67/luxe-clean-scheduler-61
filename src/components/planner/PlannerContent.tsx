@@ -1,13 +1,9 @@
 
-import React from "react";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import PendingBookingsList from './PendingBookingsList';
-import WeeklyPlanner from './WeeklyPlanner';
-import DailyPlanner from './DailyPlanner';
+import React from 'react';
 import { PlannerViewType } from '@/hooks/usePlannerCalendar';
+import PendingBookingsList from './PendingBookingsList';
+import ScheduleCalendar from './ScheduleCalendar';
 import { Booking } from '@/types/booking';
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 
 interface PlannerContentProps {
   date: Date;
@@ -16,7 +12,7 @@ interface PlannerContentProps {
   setView: (view: PlannerViewType) => void;
   pendingBookings: Booking[];
   confirmedBookings: Booking[];
-  schedule: Array<{date: Date, bookings: Booking[]}>;
+  schedule: Record<string, any>[];
   handleConfirmBooking: (bookingId: string, selectedStaff: string[], travelMinutes: number) => void;
   handleCancelBooking: (bookingId: string) => void;
   getBookingBackground: (booking: Booking) => string;
@@ -25,6 +21,7 @@ interface PlannerContentProps {
   navigatePrevious: () => void;
   navigateNext: () => void;
   navigateToday: () => void;
+  conflictCount?: number; // New prop for conflict count
 }
 
 const PlannerContent: React.FC<PlannerContentProps> = ({
@@ -42,84 +39,34 @@ const PlannerContent: React.FC<PlannerContentProps> = ({
   checkTimeConflict,
   navigatePrevious,
   navigateNext,
-  navigateToday
+  navigateToday,
+  conflictCount = 0 // Default to 0 if not provided
 }) => {
   return (
-    <div className="container mx-auto px-4">
+    <>
       {/* Pending Bookings List */}
-      <PendingBookingsList 
+      <PendingBookingsList
         pendingBookings={pendingBookings}
         handleConfirmBooking={handleConfirmBooking}
         handleCancelBooking={handleCancelBooking}
         getBookingBackground={getBookingBackground}
+        conflictCount={conflictCount}
       />
       
-      {/* Today control and view selector buttons */}
-      <div className="flex justify-between items-center my-4">
-        <div className="flex items-center rounded-md border border-gray-800">
-          <Button 
-            variant="outline" 
-            size="icon"
-            className="rounded-r-none border-gray-800 text-white hover:text-gold"
-            onClick={navigatePrevious}
-          >
-            {view === 'daily' ? <ChevronLeft className="h-4 w-4" /> : <ChevronsLeft className="h-4 w-4" />}
-          </Button>
-          <Button
-            variant="outline"
-            className="rounded-none border-l-0 border-r-0 border-gray-800 text-white"
-            onClick={navigateToday}
-          >
-            Today
-          </Button>
-          <Button 
-            variant="outline" 
-            size="icon"
-            className="rounded-l-none border-gray-800 text-white hover:text-gold"
-            onClick={navigateNext}
-          >
-            {view === 'daily' ? <ChevronRight className="h-4 w-4" /> : <ChevronsRight className="h-4 w-4" />}
-          </Button>
-        </div>
-        
-        <div className="flex items-center rounded-md border border-gray-800">
-          <Button
-            variant="ghost"
-            className={`text-white hover:text-gold ${view === 'daily' ? 'bg-gray-800' : ''}`}
-            onClick={() => setView('daily')}
-          >
-            Daily
-          </Button>
-          <Button
-            variant="ghost"
-            className={`text-white hover:text-gold ${view === 'weekly' ? 'bg-gray-800' : ''}`}
-            onClick={() => setView('weekly')}
-          >
-            Weekly
-          </Button>
-        </div>
-      </div>
-      
-      {/* View Specific Planners */}
-      {view === "daily" && (
-        <DailyPlanner
-          date={date}
-          setDate={setDate}
-          schedule={schedule}
-          getBookingBackground={getBookingBackground}
-        />
-      )}
-      
-      {view === "weekly" && (
-        <WeeklyPlanner
-          date={date}
-          setDate={setDate}
-          schedule={schedule}
-          getBookingBackground={getBookingBackground}
-          checkTimeConflict={checkTimeConflict}
-        />
-      )}
-    </div>
+      {/* Schedule Calendar */}
+      <ScheduleCalendar 
+        date={date}
+        view={view}
+        setView={setView}
+        schedule={schedule}
+        hasBookingsOnDate={hasBookingsOnDate}
+        checkTimeConflict={checkTimeConflict}
+        navigatePrevious={navigatePrevious}
+        navigateNext={navigateNext}
+        navigateToday={navigateToday}
+        setDate={setDate}
+      />
+    </>
   );
 };
 
