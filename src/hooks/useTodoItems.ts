@@ -1,6 +1,12 @@
 
 import { useState } from 'react';
-import { TodoTask } from '@/types/task';
+
+// Define the TodoTask interface locally since it's not exported from @/types/task
+export interface TodoTask {
+  id: number;
+  text: string;
+  completed: boolean;
+}
 
 export const useTodoItems = () => {
   const [todos, setTodos] = useState<TodoTask[]>([
@@ -42,9 +48,3 @@ export const useTodoItems = () => {
     handleDeleteTodo
   };
 };
-
-export interface TodoTask {
-  id: number;
-  text: string;
-  completed: boolean;
-}
