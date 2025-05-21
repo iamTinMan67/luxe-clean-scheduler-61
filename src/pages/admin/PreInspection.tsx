@@ -58,8 +58,14 @@ const PreInspection = () => {
         return;
       }
       
+      // Update the booking status to "inspected"
+      const updatedBooking = {
+        ...bookingDetails,
+        status: "inspected"  // Change status from "confirmed" to "inspected"
+      };
+      
       const success = await submitPreInspectionReport(
-        bookingDetails,
+        updatedBooking,
         images,
         exteriorNotes,
         interiorNotes

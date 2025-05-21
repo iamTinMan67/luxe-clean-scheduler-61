@@ -100,13 +100,13 @@ export const submitPreInspectionReport = async (
       if (customItemsError) throw customItemsError;
     }
 
-    // 4. Update booking status to "in-progress" in localStorage
+    // 4. Update booking status to "inspected" in localStorage
     const confirmedBookings = JSON.parse(localStorage.getItem('confirmedBookings') || '[]');
     const updatedBookings = confirmedBookings.map((booking: Booking) => {
       if (booking.id === bookingDetails.id) {
         return {
           ...booking,
-          status: "in-progress"
+          status: "inspected" // Change status to "inspected" instead of "in-progress"
         };
       }
       return booking;
@@ -120,7 +120,7 @@ export const submitPreInspectionReport = async (
       if (booking.id === bookingDetails.id) {
         return {
           ...booking,
-          status: "in-progress"
+          status: "inspected" // Change status to "inspected" instead of "in-progress"
         };
       }
       return booking;
@@ -128,7 +128,7 @@ export const submitPreInspectionReport = async (
     
     localStorage.setItem('plannerCalendarBookings', JSON.stringify(updatedPlannerBookings));
 
-    toast.success("Pre-inspection report has been saved and booking status updated to 'In Progress'");
+    toast.success("Pre-inspection report has been saved and booking status updated to 'Inspected'");
     return true;
   } catch (error: any) {
     console.error("Error submitting inspection report:", error);
