@@ -4,7 +4,8 @@ import { format } from "date-fns";
 import { Booking } from '@/types/booking';
 import { Button } from "@/components/ui/button";
 import { 
-  Car, Clock, MapPin, User, CheckCircle2, AlertCircle, Mail, Phone, Package, CalendarClock
+  Car, Clock, MapPin, User, CheckCircle2, AlertCircle, Mail, Phone, Package, CalendarClock,
+  ChevronDown, ChevronUp
 } from "lucide-react";
 import StaffAllocationDialog from './StaffAllocationDialog';
 import RescheduleDialog from './dialogs/RescheduleDialog';
@@ -12,6 +13,7 @@ import { packageOptions } from "@/data/servicePackageData";
 import { additionalServices } from "@/data/servicePackageData";
 import { calculateTotalBookingTime } from "@/utils/priceCalculator";
 import { staffMembers } from "@/data/staffData";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface PendingBookingItemProps {
   booking: Booking;
@@ -28,6 +30,7 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
 }) => {
   const [showStaffDialog, setShowStaffDialog] = useState(false);
   const [estimatedDuration, setEstimatedDuration] = useState<number>(0);
+  const [isContactDetailsOpen, setIsContactDetailsOpen] = useState(false);
 
   // Calculate estimated duration based on package and additional services
   useEffect(() => {
@@ -138,29 +141,52 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
           <span>{booking.location}</span>
         </div>
 
-        <div className="flex items-center text-gray-300">
-          <User className="w-4 h-4 mr-2 text-gold" />
-          <span>{booking.notes || "No notes provided"}</span>
-        </div>
-        
-        <div className="flex items-center text-gray-300">
-          <Mail className="w-4 h-4 mr-2 text-gold" />
-          <span>{booking.email || "No email provided"}</span>
-        </div>
-        
-        <div className="flex items-center text-gray-300">
-          <Phone className="w-4 h-4 mr-2 text-gold" />
-          <span>{booking.contact || "No phone provided"}</span>
-        </div>
-        
-        {/* Add vehicle condition indicator */}
-        {booking.condition !== undefined && (
-          <div className="flex items-center text-gray-300">
-            <span className={`text-sm ${booking.condition < 5 ? "text-orange-400" : "text-green-400"}`}>
-              Vehicle Condition: {booking.condition}/10
-            </span>
-          </div>
-        )}
+        {/* Contact information collapsible section */}
+        <Collapsible 
+          open={isContactDetailsOpen} 
+          onOpenChange={setIsContactDetailsOpen}
+          className="mt-2"
+        >
+          <CollapsibleTrigger className="flex w-full items-center justify-between py-2 text-sm text-gray-400 hover:text-white">
+            <span>Contact Details</span>
+            {isContactDetailsOpen ? (
+              <ChevronUp className="h-4 w-4" />
+            ) : (
+              <ChevronDown className="h-4 w-4" />
+            )}
+          </CollapsibleTrigger>
+          <CollapsibleContent className="space-y-2 pt-2">
+            {booking.notes && (
+              <div className="flex items-center text-gray-300">
+                <User className="w-4 h-4 mr-2 text-gold" />
+                <span>{booking.notes}</span>
+              </div>
+            )}
+            
+            {booking.email && (
+              <div className="flex items-center text-gray-300">
+                <Mail className="w-4 h-4 mr-2 text-gold" />
+                <span>{booking.email}</span>
+              </div>
+            )}
+            
+            {booking.contact && (
+              <div className="flex items-center text-gray-300">
+                <Phone className="w-4 h-4 mr-2 text-gold" />
+                <span>{booking.contact}</span>
+              </div>
+            )}
+            
+            {/* Add vehicle condition indicator */}
+            {booking.condition !== undefined && (
+              <div className="flex items-center text-gray-300">
+                <span className={`text-sm ${booking.condition < 5 ? "text-orange-400" : "text-green-400"}`}>
+                  Vehicle Condition: {booking.condition}/10
+                </span>
+              </div>
+            )}
+          </CollapsibleContent>
+        </Collapsible>
 
         {/* Show additional services if any - Updated display */}
         {additionalServiceDetails.length > 0 && (
