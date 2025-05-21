@@ -60,6 +60,7 @@ const Navbar = () => {
       path: "#",
       subRoutes: [
         { path: "/management/invoices", label: "Invoices" },
+        { path: "/management/history", label: "History" },
         { path: "/management/brochure", label: "Brochure" },
         { path: "/management/packages", label: "Manage Packages" },
         { path: "/management/gallery", label: "Gallery Manager" },

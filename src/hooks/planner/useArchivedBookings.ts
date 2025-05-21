@@ -11,8 +11,20 @@ export const useArchivedBookings = () => {
     // Get all bookings from localStorage
     const confirmedBookingsData = localStorage.getItem('confirmedBookings');
     const plannerBookingsData = localStorage.getItem('plannerCalendarBookings');
+    const archivedBookingsData = localStorage.getItem('archivedBookings');
     
     let allBookings: Booking[] = [];
+    let alreadyArchivedBookings: Booking[] = [];
+    
+    // Load already archived bookings first
+    if (archivedBookingsData) {
+      try {
+        alreadyArchivedBookings = JSON.parse(archivedBookingsData);
+      } catch (error) {
+        console.error('Error parsing archived bookings:', error);
+        alreadyArchivedBookings = [];
+      }
+    }
     
     if (confirmedBookingsData) {
       try {
@@ -45,16 +57,23 @@ export const useArchivedBookings = () => {
     allBookings.forEach(booking => {
       const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
       
-      // Bookings that are finished and older than 7 days should be archived
-      if ((booking.status === 'finished' || booking.status === 'completed') && 
-          !isAfter(bookingDate, archiveThreshold)) {
+      // Bookings that are finished should be archived
+      if (booking.status === 'finished') {
         archived.push(booking);
       } else {
         active.push(booking);
       }
     });
     
-    setArchivedBookings(archived);
+    // Combine with previously archived bookings
+    const combinedArchived = [...archived, ...alreadyArchivedBookings];
+    
+    // Remove duplicates from combined archived bookings
+    const uniqueArchived = combinedArchived.filter((booking, index, self) => 
+      index === self.findIndex(b => b.id === booking.id)
+    );
+    
+    setArchivedBookings(uniqueArchived);
     setActiveBookings(active);
     
     // Update localStorage with only active bookings
@@ -62,7 +81,7 @@ export const useArchivedBookings = () => {
     localStorage.setItem('plannerCalendarBookings', JSON.stringify(active));
     
     // Store archived bookings separately
-    localStorage.setItem('archivedBookings', JSON.stringify(archived));
+    localStorage.setItem('archivedBookings', JSON.stringify(uniqueArchived));
   };
 
   useEffect(() => {

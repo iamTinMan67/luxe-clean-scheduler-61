@@ -30,6 +30,7 @@ import ManagePackages from '@/pages/admin/ManagePackages';
 import FeedbackManager from '@/pages/admin/FeedbackManager';
 import FeedbackForm from '@/pages/admin/FeedbackForm';
 import DeclinedJobs from '@/pages/admin/DeclinedJobs';
+import History from '@/pages/admin/History';
 
 // Import protected route
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
@@ -106,6 +107,10 @@ export const router = createBrowserRouter([
       {
         path: '/management/invoice-report',
         element: <ProtectedRoute requireAdmin element={<InvoiceReport />} />,
+      },
+      {
+        path: '/management/history',
+        element: <ProtectedRoute requireAdmin element={<History />} />,
       },
       {
         path: '/management/brochure',
