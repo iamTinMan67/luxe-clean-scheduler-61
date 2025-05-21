@@ -63,6 +63,7 @@ const Navbar = () => {
         { path: "/management/brochure", label: "Brochure" },
         { path: "/management/packages", label: "Manage Packages" },
         { path: "/management/gallery", label: "Gallery Manager" },
+        { path: "/management/archived-jobs", label: "Archived Jobs" },
         { path: "/management/van-inventory", label: "Van Inventory" },
         { path: "/management/warehouse-inventory", label: "Warehouse Inventory" }
       ]
