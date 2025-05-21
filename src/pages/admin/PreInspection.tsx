@@ -7,7 +7,7 @@ import { useScheduledAppointments } from "@/hooks/useScheduledAppointments";
 import VehicleInfoForm from "@/components/admin/preinspection/VehicleInfoForm";
 import ImageUploadSection from "@/components/admin/preinspection/ImageUploadSection";
 import { submitPreInspectionReport } from "@/services/inspectionService";
-import { Booking } from "@/types/booking";
+import { Booking, validateBookingStatus } from "@/types/booking";
 import { useCustomerNotifications } from "@/hooks/progress/useCustomerNotifications";
 import { sendTrackingInfo } from "@/utils/emailUtils";
 import { bookingToProgressBooking } from "@/utils/bookingTypeAdapter";
@@ -58,10 +58,10 @@ const PreInspection = () => {
         return;
       }
       
-      // Update the booking status to "inspected"
+      // Update the booking status to "inspected" with proper typing
       const updatedBooking = {
         ...bookingDetails,
-        status: "inspected"  // Change status from "confirmed" to "inspected"
+        status: validateBookingStatus("inspected")
       };
       
       const success = await submitPreInspectionReport(
