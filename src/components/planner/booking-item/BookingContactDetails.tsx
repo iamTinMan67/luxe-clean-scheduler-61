@@ -9,7 +9,7 @@ interface BookingContactDetailsProps {
   notes?: string;
   email?: string;
   contact?: string;
-  vehicleReg?: string;
+  jobDetails?: string;
   condition?: number;
 }
 
@@ -18,7 +18,7 @@ const BookingContactDetails: React.FC<BookingContactDetailsProps> = ({
   notes,
   email,
   contact,
-  vehicleReg,
+  jobDetails,
   condition
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -64,10 +64,10 @@ const BookingContactDetails: React.FC<BookingContactDetailsProps> = ({
           </div>
         )}
         
-        {vehicleReg && (
+        {jobDetails && (
           <div className="flex items-center text-gray-300">
             <Car className="w-4 h-4 mr-2 text-gold" />
-            <span>Reg: {vehicleReg}</span>
+            <span>Details: {jobDetails}</span>
           </div>
         )}
         

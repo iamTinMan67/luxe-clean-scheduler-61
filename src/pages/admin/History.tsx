@@ -3,15 +3,25 @@ import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import AdminPageTitle from "@/components/admin/AdminPageTitle";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, FileSearch } from "lucide-react";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { useArchivedBookings } from "@/hooks/planner/useArchivedBookings";
 import { Booking } from "@/types/booking";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle,
+  DialogTrigger,
+  DialogDescription 
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 const History = () => {
   const { archivedBookings } = useArchivedBookings();
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredBookings, setFilteredBookings] = useState<Booking[]>([]);
+  const [selectedReport, setSelectedReport] = useState<any>(null);
   
   // Filter bookings based on search query and finished status
   useEffect(() => {
@@ -22,7 +32,7 @@ const History = () => {
         return (
           booking.customer?.toLowerCase().includes(query) ||
           booking.vehicle?.toLowerCase().includes(query) ||
-          booking.vehicleReg?.toLowerCase().includes(query) ||
+          booking.jobDetails?.toLowerCase().includes(query) ||
           booking.packageType?.toLowerCase().includes(query) ||
           booking.location?.toLowerCase().includes(query) ||
           booking.email?.toLowerCase().includes(query) ||
@@ -44,6 +54,34 @@ const History = () => {
     }
   };
 
+  // Function to load pre-inspection report
+  const loadPreInspectionReport = (bookingId: string) => {
+    // Try to find pre-inspection report from localStorage
+    const reportsStr = localStorage.getItem('inspectionReports');
+    if (reportsStr) {
+      try {
+        const reports = JSON.parse(reportsStr);
+        const report = reports.find((r: any) => r.bookingId === bookingId);
+        
+        if (report) {
+          setSelectedReport(report);
+          return;
+        }
+      } catch (error) {
+        console.error("Error loading pre-inspection report:", error);
+      }
+    }
+    
+    // If no report found, set a default message
+    setSelectedReport({
+      bookingId,
+      images: [],
+      exteriorNotes: "No exterior notes found",
+      interiorNotes: "No interior notes found",
+      date: new Date().toISOString()
+    });
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <AdminPageTitle 
@@ -55,7 +93,7 @@ const History = () => {
       <div className="mb-6 relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
         <Input
-          placeholder="Search by customer, vehicle, location, etc..."
+          placeholder="Search by contact, vehicle, location, etc..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="pl-10 bg-black/20 border-gray-700 text-white"
@@ -68,11 +106,12 @@ const History = () => {
           <TableHeader>
             <TableRow className="border-gray-700 bg-black/50">
               <TableHead className="text-gray-300">Date</TableHead>
-              <TableHead className="text-gray-300">Customer</TableHead>
+              <TableHead className="text-gray-300">Contact Details</TableHead>
               <TableHead className="text-gray-300">Vehicle/Job Details</TableHead>
               <TableHead className="text-gray-300">Package</TableHead>
               <TableHead className="text-gray-300">Location</TableHead>
               <TableHead className="text-gray-300">Price</TableHead>
+              <TableHead className="text-gray-300">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -83,16 +122,79 @@ const History = () => {
                   <TableCell>{booking.customer}</TableCell>
                   <TableCell>
                     {booking.vehicle}
-                    {booking.vehicleReg && <span className="block text-xs text-gray-400">{booking.vehicleReg}</span>}
+                    {booking.jobDetails && <span className="block text-xs text-gray-400">{booking.jobDetails}</span>}
                   </TableCell>
                   <TableCell>{booking.packageType}</TableCell>
                   <TableCell>{booking.location}</TableCell>
                   <TableCell>£{booking.totalPrice?.toFixed(2) || "N/A"}</TableCell>
+                  <TableCell>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          className="flex items-center space-x-1"
+                          onClick={() => loadPreInspectionReport(booking.id)}
+                        >
+                          <FileSearch size={14} />
+                          <span>Report</span>
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[600px] bg-black border-gray-700">
+                        <DialogHeader>
+                          <DialogTitle className="text-xl text-white">Pre-Inspection Report</DialogTitle>
+                          <DialogDescription className="text-gray-400">
+                            {booking.customer} - {formatDate(booking.date)}
+                          </DialogDescription>
+                        </DialogHeader>
+                        
+                        {selectedReport && (
+                          <div className="space-y-4">
+                            {/* Images gallery */}
+                            {selectedReport.images?.length > 0 ? (
+                              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                {selectedReport.images.map((img: string, idx: number) => (
+                                  <div key={idx} className="relative aspect-square">
+                                    <img 
+                                      src={img} 
+                                      alt={`Pre-inspection ${idx + 1}`} 
+                                      className="rounded-md w-full h-full object-cover"
+                                    />
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <div className="text-center py-8 bg-gray-900/30 rounded-md">
+                                <p className="text-gray-400">No images available</p>
+                              </div>
+                            )}
+                            
+                            {/* Inspection notes */}
+                            <div className="space-y-3">
+                              <div>
+                                <h4 className="text-gold font-medium mb-1">Exterior Condition</h4>
+                                <p className="text-gray-300 bg-gray-900/30 p-3 rounded-md">
+                                  {selectedReport.exteriorNotes || "No notes recorded"}
+                                </p>
+                              </div>
+                              
+                              <div>
+                                <h4 className="text-gold font-medium mb-1">Interior Condition</h4>
+                                <p className="text-gray-300 bg-gray-900/30 p-3 rounded-md">
+                                  {selectedReport.interiorNotes || "No notes recorded"}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </DialogContent>
+                    </Dialog>
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-6 text-gray-400">
+                <TableCell colSpan={7} className="text-center py-6 text-gray-400">
                   {searchQuery ? "No matching records found" : "No finished bookings available"}
                 </TableCell>
               </TableRow>

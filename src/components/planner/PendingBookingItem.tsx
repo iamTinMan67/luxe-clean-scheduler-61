@@ -90,7 +90,7 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
           notes={booking.notes}
           email={booking.email}
           contact={booking.contact}
-          vehicleReg={booking.vehicleReg} // Keep field name for compatibility
+          jobDetails={booking.jobDetails}
           condition={booking.condition}
         />
 

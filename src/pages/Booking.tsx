@@ -15,7 +15,7 @@ const Booking = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedTime, setSelectedTime] = useState("");
   const [vehicleCondition, setVehicleCondition] = useState<number>(5);
-  const [vehicleReg, setVehicleReg] = useState("");
+  const [jobDetails, setJobDetails] = useState("");
   
   const timeOptions = [
     "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"
@@ -85,7 +85,7 @@ const Booking = () => {
       date: selectedDate,
       time: selectedTime,
       vehicleCondition: vehicleCondition,
-      vehicleReg: formData.vehicleReg // Keep variable name for compatibility
+      jobDetails: formData.jobDetails
     };
     
     // Retrieve existing bookings from localStorage
@@ -101,7 +101,7 @@ const Booking = () => {
       ...bookingData,
       status: "pending",
       customer: `${formData.yourName}`,
-      vehicle: formData.vehicleReg || vehicleType, // Use the job details here
+      vehicle: formData.jobDetails || vehicleType,
       clientType: clientType,
       packageType: packageType,
       location: formData.postcode,

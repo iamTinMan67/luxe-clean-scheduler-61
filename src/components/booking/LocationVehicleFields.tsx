@@ -5,8 +5,8 @@ import { Label } from "@/components/ui/label";
 interface LocationVehicleFieldsProps {
   postcode: string;
   setPostcode: (value: string) => void;
-  vehicleReg: string;
-  setVehicleReg: (value: string) => void;
+  jobDetails: string;
+  setJobDetails: (value: string) => void;
   notes: string;
   setNotes: (value: string) => void;
 }
@@ -14,8 +14,8 @@ interface LocationVehicleFieldsProps {
 const LocationVehicleFields = ({
   postcode,
   setPostcode,
-  vehicleReg,
-  setVehicleReg,
+  jobDetails,
+  setJobDetails,
   notes,
   setNotes
 }: LocationVehicleFieldsProps) => {
@@ -34,14 +34,14 @@ const LocationVehicleFields = ({
       </div>
       
       <div>
-        <Label htmlFor="vehicleReg" className="text-white">
+        <Label htmlFor="jobDetails" className="text-white">
           Job Details
         </Label>
         <Input 
-          id="vehicleReg" 
+          id="jobDetails" 
           placeholder="Vehicle type, registration or other relevant details"
-          value={vehicleReg}
-          onChange={(e) => setVehicleReg(e.target.value)}
+          value={jobDetails}
+          onChange={(e) => setJobDetails(e.target.value)}
           className="bg-gray-800 border-gray-700 text-white"
         />
       </div>

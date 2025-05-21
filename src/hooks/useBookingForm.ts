@@ -8,7 +8,7 @@ interface BookingFormData {
   phone: string;
   email: string;
   notes: string;
-  vehicleReg: string; // We're keeping the same property name for backward compatibility
+  jobDetails: string;
 }
 
 interface UseBookingFormProps {
@@ -21,7 +21,7 @@ export const useBookingForm = ({ onSubmit }: UseBookingFormProps) => {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [notes, setNotes] = useState("");
-  const [vehicleReg, setVehicleReg] = useState("");
+  const [jobDetails, setJobDetails] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,7 +37,7 @@ export const useBookingForm = ({ onSubmit }: UseBookingFormProps) => {
       phone,
       email,
       notes,
-      vehicleReg,
+      jobDetails,
     });
   };
 
@@ -52,8 +52,8 @@ export const useBookingForm = ({ onSubmit }: UseBookingFormProps) => {
     setEmail,
     notes,
     setNotes,
-    vehicleReg,
-    setVehicleReg,
+    jobDetails,
+    setJobDetails,
     handleSubmit,
   };
 };

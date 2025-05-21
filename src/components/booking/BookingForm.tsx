@@ -12,7 +12,7 @@ interface BookingFormProps {
     phone: string;
     email: string;
     notes: string;
-    vehicleReg: string;
+    jobDetails: string;
   }) => void;
 }
 
@@ -28,8 +28,8 @@ const BookingForm = ({ onSubmit }: BookingFormProps) => {
     setEmail,
     notes,
     setNotes,
-    vehicleReg,
-    setVehicleReg,
+    jobDetails,
+    setJobDetails,
     handleSubmit,
   } = useBookingForm({ onSubmit });
 
@@ -48,8 +48,8 @@ const BookingForm = ({ onSubmit }: BookingFormProps) => {
         <LocationVehicleFields 
           postcode={postcode}
           setPostcode={setPostcode}
-          vehicleReg={vehicleReg}
-          setVehicleReg={setVehicleReg}
+          jobDetails={jobDetails}
+          setJobDetails={setJobDetails}
           notes={notes}
           setNotes={setNotes}
         />
