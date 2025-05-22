@@ -31,12 +31,12 @@ export const useScheduledAppointments = () => {
           allAppointments = [...allAppointments, ...uniquePlannerBookings];
         }
         
-        // Filter to only include confirmed bookings
-        const confirmedAppointments = allAppointments.filter(
-          booking => booking.status === "confirmed" || booking.status === "in-progress"
+        // Filter to only include in-progress bookings
+        const inProgressAppointments = allAppointments.filter(
+          booking => booking.status === "in-progress"
         );
         
-        setAppointments(confirmedAppointments);
+        setAppointments(inProgressAppointments);
       } catch (error) {
         console.error('Error loading scheduled appointments:', error);
         setAppointments([]);

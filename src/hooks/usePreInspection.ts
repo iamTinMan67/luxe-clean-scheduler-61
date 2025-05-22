@@ -69,6 +69,11 @@ export const usePreInspection = () => {
         return;
       }
       
+      // Ensure the booking status is set to in-progress
+      if (bookingDetails.status !== "in-progress") {
+        updateBookingStatus(bookingDetails, "in-progress");
+      }
+      
       const success = await submitPreInspectionReport(
         bookingDetails,
         images,
