@@ -1,16 +1,23 @@
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import TrackingForm from "@/components/tracking/TrackingForm";
 
 const TrackBooking = () => {
   const [reference, setReference] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { bookingId } = useParams();
+  
+  // If bookingId is provided in URL, verify and display the tracking form
+  if (bookingId) {
+    return <TrackingValidation bookingId={bookingId} />;
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,30 +31,47 @@ const TrackBooking = () => {
     
     // Check if the booking exists in localStorage
     const confirmedBookingsStr = localStorage.getItem('confirmedBookings');
-    const invoicesStr = localStorage.getItem('invoices');
+    const plannerBookingsStr = localStorage.getItem('plannerCalendarBookings');
     
     let found = false;
+    let isValidStatus = false;
     
     try {
       // Check in confirmed bookings
       if (confirmedBookingsStr) {
         const confirmedBookings = JSON.parse(confirmedBookingsStr);
-        if (confirmedBookings.some((booking: any) => booking.id === reference)) {
+        const booking = confirmedBookings.find((booking: any) => booking.id === reference);
+        
+        if (booking) {
           found = true;
+          // Only allow tracking if status is "inspected" or "in-progress"
+          if (booking.status === "inspected" || booking.status === "in-progress") {
+            isValidStatus = true;
+          }
         }
       }
       
-      // Check in invoices
-      if (!found && invoicesStr) {
-        const invoices = JSON.parse(invoicesStr);
-        if (invoices.some((invoice: any) => invoice.id === reference)) {
+      // Check in planner bookings
+      if (!found && plannerBookingsStr) {
+        const plannerBookings = JSON.parse(plannerBookingsStr);
+        const booking = plannerBookings.find((booking: any) => booking.id === reference);
+        
+        if (booking) {
           found = true;
+          // Only allow tracking if status is "inspected" or "in-progress"
+          if (booking.status === "inspected" || booking.status === "in-progress") {
+            isValidStatus = true;
+          }
         }
       }
       
-      if (found) {
+      if (found && isValidStatus) {
         // Navigate to the progress page with the reference
-        navigate(`/progress?invoiceId=${reference}`);
+        navigate(`/track/${reference}`);
+      } else if (found) {
+        toast.error("This booking cannot be tracked", {
+          description: "Only bookings in the 'inspected' or 'in progress' state can be tracked."
+        });
       } else {
         toast.error("Booking reference not found", {
           description: "Please check the reference and try again."
@@ -114,6 +138,94 @@ const TrackBooking = () => {
       </div>
     </div>
   );
+};
+
+// Component to validate a booking ID from URL params
+const TrackingValidation = ({ bookingId }: { bookingId: string }) => {
+  const navigate = useNavigate();
+  const [isValidBooking, setIsValidBooking] = useState<boolean | null>(null);
+  
+  useState(() => {
+    // Validate the booking ID
+    const validateBooking = () => {
+      const confirmedBookingsStr = localStorage.getItem('confirmedBookings');
+      const plannerBookingsStr = localStorage.getItem('plannerCalendarBookings');
+      
+      let found = false;
+      let isValidStatus = false;
+      
+      try {
+        // Check in confirmed bookings
+        if (confirmedBookingsStr) {
+          const confirmedBookings = JSON.parse(confirmedBookingsStr);
+          const booking = confirmedBookings.find((booking: any) => booking.id === bookingId);
+          
+          if (booking) {
+            found = true;
+            // Only allow tracking if status is "inspected" or "in-progress"
+            if (booking.status === "inspected" || booking.status === "in-progress") {
+              isValidStatus = true;
+            }
+          }
+        }
+        
+        // Check in planner bookings
+        if (!found && plannerBookingsStr) {
+          const plannerBookings = JSON.parse(plannerBookingsStr);
+          const booking = plannerBookings.find((booking: any) => booking.id === bookingId);
+          
+          if (booking) {
+            found = true;
+            // Only allow tracking if status is "inspected" or "in-progress"
+            if (booking.status === "inspected" || booking.status === "in-progress") {
+              isValidStatus = true;
+            }
+          }
+        }
+        
+        if (found && isValidStatus) {
+          setIsValidBooking(true);
+        } else {
+          setIsValidBooking(false);
+          setTimeout(() => {
+            navigate("/track");
+          }, 3000);
+        }
+      } catch (error) {
+        console.error("Error validating booking:", error);
+        setIsValidBooking(false);
+        setTimeout(() => {
+          navigate("/track");
+        }, 3000);
+      }
+    };
+    
+    validateBooking();
+  });
+  
+  if (isValidBooking === null) {
+    return (
+      <div className="min-h-screen bg-black text-white py-20">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-xl font-medium text-white">Validating booking...</h2>
+        </div>
+      </div>
+    );
+  }
+  
+  if (isValidBooking === false) {
+    return (
+      <div className="min-h-screen bg-black text-white py-20">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-xl font-medium text-white mb-2">Invalid Booking</h2>
+          <p className="text-gray-400">The booking reference is invalid or cannot be tracked.</p>
+          <p className="text-gray-400 mt-4">Redirecting to tracking page...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  return <TrackingForm bookingId={bookingId} />;
 };
 
 export default TrackBooking;

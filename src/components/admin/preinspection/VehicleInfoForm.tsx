@@ -79,6 +79,9 @@ const VehicleInfoForm = ({
           
           <div className="text-gold/70">Time:</div>
           <div className="text-white font-medium">{bookingDetails.time}</div>
+          
+          <div className="text-gold/70">Status:</div>
+          <div className="text-white font-medium">{bookingDetails.status}</div>
         </div>
       </div>
     );

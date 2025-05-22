@@ -121,13 +121,13 @@ export const submitPreInspectionReport = async (
     // Save the updated reports
     localStorage.setItem('inspectionReports', JSON.stringify(reports));
     
-    // Make sure the booking is marked as in-progress and maintain that status
+    // Make sure the booking is marked as inspected and maintain that status
     const confirmedBookingsStr = localStorage.getItem('confirmedBookings');
     if (confirmedBookingsStr) {
       const confirmedBookings = JSON.parse(confirmedBookingsStr);
       const updatedBookings = confirmedBookings.map((b: Booking) => {
         if (b.id === booking.id) {
-          return { ...b, status: 'in-progress', inspectionReportId: reportId };
+          return { ...b, status: 'inspected', inspectionReportId: reportId };
         }
         return b;
       });
@@ -141,7 +141,7 @@ export const submitPreInspectionReport = async (
       const plannerBookings = JSON.parse(plannerBookingsStr);
       const updatedBookings = plannerBookings.map((b: Booking) => {
         if (b.id === booking.id) {
-          return { ...b, status: 'in-progress', inspectionReportId: reportId };
+          return { ...b, status: 'inspected', inspectionReportId: reportId };
         }
         return b;
       });

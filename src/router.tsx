@@ -1,145 +1,222 @@
+import { createBrowserRouter, Navigate } from "react-router-dom";
+import Layout from "./components/layout/Layout";
+import Index from "./pages/Index";
+import Login from "./pages/Login";
+import NotFound from "./pages/NotFound";
+import Booking from "./pages/Booking";
+import ServicePackage from "./pages/ServicePackage";
+import Feedback from "./pages/Feedback";
+import Gallery from "./pages/Gallery";
+import Dashboard from "./pages/admin/Dashboard";
+import InvoiceReport from "./pages/admin/InvoiceReport";
+import PlannerCalendar from "./pages/admin/PlannerCalendar";
+import ManagePackages from "./pages/admin/ManagePackages";
+import ManageAdditionalServices from "./pages/admin/ManageAdditionalServices";
+import FeedbackManager from "./pages/admin/FeedbackManager";
+import GalleryManager from "./pages/admin/GalleryManager";
+import BrochurePage from "./pages/admin/Brochure";
+import VanInventory from "./pages/admin/VanInventory";
+import WarehouseInventory from "./pages/admin/WarehouseInventory";
+import Invoices from "./pages/admin/Invoices";
+import History from "./pages/admin/History";
+import FeedbackForm from "./pages/admin/FeedbackForm";
+import PreInspection from "./pages/admin/PreInspection";
+import DeclinedJobs from "./pages/admin/DeclinedJobs";
+import TodoList from "./pages/admin/TodoList";
+import Progress from "./pages/Progress";
+import TrackBooking from "./pages/TrackBooking";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+import DataMigration from "@/components/DataMigration";
+import DataMigrationTrigger from "@/components/DataMigrationTrigger";
 
-import { createBrowserRouter, Navigate } from 'react-router-dom';
-
-// Import layout
-import Layout from '@/components/layout/Layout';
-
-// Import pages
-import Index from '@/pages/Index';
-import NotFound from '@/pages/NotFound';
-import ServicePackage from '@/pages/ServicePackage';
-import Gallery from '@/pages/Gallery';
-import Booking from '@/pages/Booking';
-import Login from '@/pages/Login';
-import TrackBooking from '@/pages/TrackBooking';
-import Feedback from '@/pages/Feedback';
-import Progress from '@/pages/Progress';
-
-// Admin Pages
-import Dashboard from '@/pages/admin/Dashboard';
-import PlannerCalendar from '@/pages/admin/PlannerCalendar';
-import Brochure from '@/pages/admin/Brochure';
-import GalleryManager from '@/pages/admin/GalleryManager';
-import TodoList from '@/pages/admin/TodoList';
-import Invoices from '@/pages/admin/Invoices';
-import InvoiceReport from '@/pages/admin/InvoiceReport';
-import WarehouseInventory from '@/pages/admin/WarehouseInventory';
-import VanInventory from '@/pages/admin/VanInventory';
-import PreInspection from '@/pages/admin/PreInspection';
-import ManagePackages from '@/pages/admin/ManagePackages';
-import FeedbackManager from '@/pages/admin/FeedbackManager';
-import FeedbackForm from '@/pages/admin/FeedbackForm';
-import DeclinedJobs from '@/pages/admin/DeclinedJobs';
-import History from '@/pages/admin/History';
-
-// Import protected route
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
-
-export const router = createBrowserRouter([
+const router = createBrowserRouter([
   {
-    element: <Layout />,
+    path: "/",
+    element: (
+      <>
+        <DataMigrationTrigger />
+        <Layout />
+      </>
+    ),
+    errorElement: <NotFound />,
     children: [
       {
-        path: '/',
+        path: "/",
         element: <Index />,
       },
       {
-        path: '/services',
-        element: <ServicePackage />,
-      },
-      {
-        path: '/gallery',
-        element: <Gallery />,
-      },
-      {
-        path: '/booking',
-        element: <Booking />,
-      },
-      {
-        path: '/login',
+        path: "/login",
         element: <Login />,
       },
       {
-        path: '/track/:bookingId',
-        element: <TrackBooking />,
+        path: "/booking",
+        element: <Booking />,
       },
       {
-        path: '/feedback/:invoiceId',
+        path: "/services",
+        element: <ServicePackage />,
+      },
+      {
+        path: "/feedback",
         element: <Feedback />,
       },
       {
-        path: '/feedback/new',
-        element: <ProtectedRoute requireAdmin element={<FeedbackForm />} />,
+        path: "/gallery",
+        element: <Gallery />,
       },
       {
-        path: '/progress/:bookingId',
+        path: "/progress",
         element: <Progress />,
       },
+      // New route for TrackBooking without bookingId
       {
-        path: '/admin',
+        path: "/track",
+        element: <TrackBooking />,
+      },
+      // Route for TrackBooking with bookingId
+      {
+        path: "/track/:bookingId",
+        element: <TrackBooking />,
+      },
+      // Admin routes
+      {
+        path: "/admin",
         element: <Navigate to="/admin/dashboard" replace />,
       },
       {
-        path: '/admin/dashboard',
-        element: <ProtectedRoute requireAdmin element={<Dashboard />} />,
+        path: "/admin/dashboard",
+        element: (
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: '/admin/planner',
-        element: <ProtectedRoute requireAdmin element={<PlannerCalendar />} />,
+        path: "/admin/invoice-report",
+        element: (
+          <ProtectedRoute>
+            <InvoiceReport />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: '/admin/pre-inspection',
-        element: <ProtectedRoute requireAdmin element={<PreInspection />} />,
+        path: "/admin/planner-calendar",
+        element: (
+          <ProtectedRoute>
+            <PlannerCalendar />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: '/admin/todo',
-        element: <ProtectedRoute requireAdmin element={<TodoList />} />,
+        path: "/admin/manage-packages",
+        element: (
+          <ProtectedRoute>
+            <ManagePackages />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: '/admin/declined-jobs',
-        element: <ProtectedRoute requireAdmin element={<DeclinedJobs />} />,
-      },
-      // Management section routes
-      {
-        path: '/management/invoices',
-        element: <ProtectedRoute requireAdmin element={<Invoices />} />,
-      },
-      {
-        path: '/management/invoice-report',
-        element: <ProtectedRoute requireAdmin element={<InvoiceReport />} />,
+        path: "/admin/manage-additional-services",
+        element: (
+          <ProtectedRoute>
+            <ManageAdditionalServices />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: '/management/history',
-        element: <ProtectedRoute requireAdmin element={<History />} />,
+        path: "/admin/feedback-manager",
+        element: (
+          <ProtectedRoute>
+            <FeedbackManager />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: '/management/brochure',
-        element: <ProtectedRoute requireAdmin element={<Brochure />} />,
+        path: "/admin/gallery-manager",
+        element: (
+          <ProtectedRoute>
+            <GalleryManager />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: '/management/packages',
-        element: <ProtectedRoute requireAdmin element={<ManagePackages />} />,
+        path: "/admin/brochure",
+        element: (
+          <ProtectedRoute>
+            <BrochurePage />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: '/management/gallery',
-        element: <ProtectedRoute requireAdmin element={<GalleryManager />} />,
+        path: "/admin/van-inventory",
+        element: (
+          <ProtectedRoute>
+            <VanInventory />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: '/management/van-inventory',
-        element: <ProtectedRoute requireAdmin element={<VanInventory />} />,
+        path: "/admin/warehouse-inventory",
+        element: (
+          <ProtectedRoute>
+            <WarehouseInventory />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: '/management/warehouse-inventory',
-        element: <ProtectedRoute requireAdmin element={<WarehouseInventory />} />,
+        path: "/admin/invoices",
+        element: (
+          <ProtectedRoute>
+            <Invoices />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: '/admin/feedback',
-        element: <ProtectedRoute requireAdmin element={<FeedbackManager />} />,
+        path: "/admin/history",
+        element: (
+          <ProtectedRoute>
+            <History />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: '*',
-        element: <NotFound />,
-      }
-    ]
-  }
+        path: "/admin/feedback-form",
+        element: (
+          <ProtectedRoute>
+            <FeedbackForm />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/pre-inspection",
+        element: (
+          <ProtectedRoute>
+            <PreInspection />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/declined-jobs",
+        element: (
+          <ProtectedRoute>
+            <DeclinedJobs />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/todo-list",
+        element: (
+          <ProtectedRoute>
+            <TodoList />
+          </ProtectedRoute>
+        ),
+      },
+    ],
+  },
+  {
+    path: "/data-migration",
+    element: <DataMigration />,
+  },
 ]);
+
+export default router;

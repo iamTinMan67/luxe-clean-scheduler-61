@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -45,9 +44,9 @@ export const usePreInspection = () => {
   // Handle booking selection and status update
   const handleBookingSelected = (booking: Booking) => {
     if (booking.status === "confirmed") {
-      // Update the booking status to in-progress
-      updateBookingStatus(booking, "in-progress");
-      toast.success(`${booking.customer}'s appointment is now in progress.`);
+      // Update the booking status to inspecting
+      updateBookingStatus(booking, "inspecting");
+      toast.success(`${booking.customer}'s appointment is now being inspected.`);
     }
   };
   
@@ -69,9 +68,9 @@ export const usePreInspection = () => {
         return;
       }
       
-      // Ensure the booking status is set to in-progress
-      if (bookingDetails.status !== "in-progress") {
-        updateBookingStatus(bookingDetails, "in-progress");
+      // Ensure the booking status is set to inspected
+      if (bookingDetails.status !== "inspected") {
+        updateBookingStatus(bookingDetails, "inspected");
       }
       
       const success = await submitPreInspectionReport(

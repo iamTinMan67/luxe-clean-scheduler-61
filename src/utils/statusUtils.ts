@@ -18,6 +18,24 @@ export const getStatusInfo = (status: string) => {
         label: "Confirmed",
         badgeColor: "orange-600", 
         textColor: "text-orange-400",
+        nextStatus: "inspecting",
+        nextLabel: "Start Inspection"
+      };
+    case "inspecting":
+      return {
+        color: "border-yellow-500 bg-yellow-950/30",
+        label: "Inspecting",
+        badgeColor: "yellow-600",
+        textColor: "text-yellow-400",
+        nextStatus: "inspected",
+        nextLabel: "Complete Inspection"
+      };
+    case "inspected":
+      return {
+        color: "border-teal-500 bg-teal-950/30",
+        label: "Inspected",
+        badgeColor: "teal-600",
+        textColor: "text-teal-400",
         nextStatus: "in-progress",
         nextLabel: "Start Service"
       };
