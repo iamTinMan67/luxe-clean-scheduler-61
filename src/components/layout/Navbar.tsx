@@ -52,28 +52,28 @@ const Navbar = () => {
 
   const adminRoutes: AdminRoute[] = [
     { path: "/admin/dashboard", label: "Dashboard" },
-    { path: "/admin/planner", label: "Planners" },
+    { path: "/admin/planner-calendar", label: "Planners" },
     { path: "/admin/pre-inspection", label: "Pre-Inspection" },
-    { path: "/admin/todo", label: "To-do List" },
+    { path: "/admin/todo-list", label: "To-do List" },
     { 
       label: "Management",
       path: "#",
       subRoutes: [
-        { path: "/management/invoices", label: "Invoices" },
-        { path: "/management/history", label: "History" },
-        { path: "/management/brochure", label: "Brochure" },
-        { path: "/management/packages", label: "Manage Packages" },
-        { path: "/management/gallery", label: "Gallery Manager" },
-        { path: "/management/van-inventory", label: "Van Inventory" },
-        { path: "/management/warehouse-inventory", label: "Warehouse Inventory" }
+        { path: "/admin/invoices", label: "Invoices" },
+        { path: "/admin/history", label: "History" },
+        { path: "/admin/brochure", label: "Brochure" },
+        { path: "/admin/manage-packages", label: "Manage Packages" },
+        { path: "/admin/gallery-manager", label: "Gallery Manager" },
+        { path: "/admin/van-inventory", label: "Van Inventory" },
+        { path: "/admin/warehouse-inventory", label: "Warehouse Inventory" }
       ]
     },
     { 
       label: "Feedback",
       path: "#",
       subRoutes: [
-        { path: "/feedback/new", label: "Feedback Form" },
-        { path: "/admin/feedback", label: "Feedback Manager" }
+        { path: "/admin/feedback-form", label: "Feedback Form" },
+        { path: "/admin/feedback-manager", label: "Feedback Manager" }
       ]
     },
   ];
