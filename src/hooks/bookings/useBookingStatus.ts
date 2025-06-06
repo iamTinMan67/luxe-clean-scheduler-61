@@ -1,9 +1,9 @@
-
 import { Booking } from "@/types/booking";
 import { toast } from "sonner";
 import { packageOptions, additionalServices } from "@/data/servicePackageData";
 import { generateInvoice } from "@/utils/bookingUtils";
 import { getStatusInfo } from "@/utils/statusUtils";
+import { sendArrivalNotification, sendFinishedNotification } from "@/utils/emailUtils";
 
 export const useBookingStatus = (
   updateBooking: (booking: Booking) => Booking[],
@@ -20,7 +20,7 @@ export const useBookingStatus = (
   };
 
   // Handler for updating booking status
-  const updateBookingStatus = (booking: Booking, newStatus: "pending" | "confirmed" | "cancelled" | "inspecting" | "inspected" | "in-progress" | "completed" | "finished") => {
+  const updateBookingStatus = (booking: Booking, newStatus: "pending" | "confirmed" | "cancelled" | "inspecting" | "inspected" | "in-progress" | "finished") => {
     // If the booking is pending and we're confirming it, use the special confirmation handler
     if (booking.status === "pending" && newStatus === "confirmed") {
       confirmBooking(booking);
@@ -37,8 +37,14 @@ export const useBookingStatus = (
     
     // Status-specific actions
     switch(newStatus) {
+      case "inspecting":
+        // Send arrival notification when status changes to inspecting
+        sendArrivalNotification(booking);
+        break;
       case "finished":
+        // Generate invoice and send finished notification
         generateInvoice(booking);
+        sendFinishedNotification(booking);
         break;
       case "in-progress":
         populateToDoList(booking);
@@ -50,7 +56,7 @@ export const useBookingStatus = (
     toast.success(`${booking.customer}'s ${booking.packageType} Package has been updated to ${newStatus}.`);
   };
   
-  // Handler for confirming a booking (special case)
+  // Handler for confirming a booking (special case) - NO LONGER GENERATES INVOICE
   const confirmBooking = (booking: Booking) => {
     // Update booking status to confirmed
     const updatedBooking = {
@@ -58,15 +64,14 @@ export const useBookingStatus = (
       status: 'confirmed' as const,
       // Default staff assignment if not already assigned
       staff: booking.staff || ['Karl', 'Salleah'],
-      // Default travel time if not set
+      // Keep the travel time as set during confirmation (default handled in UI)
       travelMinutes: booking.travelMinutes || 15
     };
     
     // Move from pending to confirmed
     moveBookingToConfirmed(updatedBooking);
     
-    // Generate invoice
-    generateInvoice(updatedBooking);
+    // REMOVED: No longer generate invoice here - only happens in finished status
     
     toast.success(`${booking.customer}'s ${booking.packageType} Package has been confirmed.`);
   };
@@ -114,9 +119,9 @@ export const useBookingStatus = (
     }
   };
   
-  // Complete a booking (transition to completed state)
-  const completeBooking = (booking: Booking) => {
-    updateBookingStatus(booking, 'completed');
+  // Finish a booking (transition to finished state)
+  const finishBooking = (booking: Booking) => {
+    updateBookingStatus(booking, 'finished');
   };
 
   return {
@@ -124,6 +129,6 @@ export const useBookingStatus = (
     getNextStatusLabel,
     updateBookingStatus,
     confirmBooking,
-    completeBooking
+    finishBooking
   };
 };

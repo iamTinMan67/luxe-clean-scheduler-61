@@ -45,17 +45,8 @@ export const getStatusInfo = (status: string) => {
         label: "In Progress",
         badgeColor: "blue-600",
         textColor: "text-blue-400",
-        nextStatus: "completed",
-        nextLabel: "Complete"
-      };
-    case "completed":
-      return {
-        color: "border-purple-500 bg-purple-950/30",
-        label: "Completed",
-        badgeColor: "purple-600",
-        textColor: "text-purple-400",
         nextStatus: "finished",
-        nextLabel: "Finalize"
+        nextLabel: "Finish Service"
       };
     case "finished":
       return {

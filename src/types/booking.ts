@@ -17,7 +17,7 @@ export interface Booking {
   contact?: string;
   email?: string;
   notes?: string;
-  status: "pending" | "confirmed" | "cancelled" | "inspecting" | "inspected" | "in-progress" | "completed" | "finished";
+  status: "pending" | "confirmed" | "cancelled" | "inspecting" | "inspected" | "in-progress" | "finished";
   condition?: number;
   staff?: string[];
   createdAt?: string;
@@ -27,9 +27,9 @@ export interface Booking {
 }
 
 // Helper function to validate booking status
-export const validateBookingStatus = (status: string): "pending" | "confirmed" | "cancelled" | "inspecting" | "inspected" | "in-progress" | "completed" | "finished" => {
-  const validStatuses = ["pending", "confirmed", "cancelled", "inspecting", "inspected", "in-progress", "completed", "finished"];
+export const validateBookingStatus = (status: string): "pending" | "confirmed" | "cancelled" | "inspecting" | "inspected" | "in-progress" | "finished" => {
+  const validStatuses = ["pending", "confirmed", "cancelled", "inspecting", "inspected", "in-progress", "finished"];
   return validStatuses.includes(status) 
-    ? (status as "pending" | "confirmed" | "cancelled" | "inspecting" | "inspected" | "in-progress" | "completed" | "finished") 
+    ? (status as "pending" | "confirmed" | "cancelled" | "inspecting" | "inspected" | "in-progress" | "finished") 
     : "pending"; // Default to pending if invalid status
 };

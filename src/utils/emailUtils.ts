@@ -17,7 +17,7 @@ export const generateTrackingLink = (bookingId: string): string => {
 // Function to generate email templates for different purposes
 export const generateEmailTemplate = (
   booking: Booking, 
-  type: "confirmation" | "update" | "tracking"
+  type: "confirmation" | "update" | "tracking" | "arrival" | "finished"
 ): EmailTemplate => {
   // Get the tracking link
   const trackingLink = generateTrackingLink(booking.id);
@@ -100,6 +100,55 @@ export const generateEmailTemplate = (
           The Luxe Clean Team
         `
       };
+
+    case "arrival":
+      return {
+        subject: `We've Arrived - ${booking.id}`,
+        body: `
+          Hi ${booking.customer},
+
+          Great news! Our team has arrived at your location and will begin the pre-inspection process for your ${booking.vehicle}.
+          
+          Booking Details:
+          - Reference: ${booking.id}
+          - Vehicle: ${booking.vehicle}
+          - Package: ${booking.packageType}
+          - Location: ${booking.location}
+          
+          Track your service progress:
+          1. Visit: ${trackingLink}
+          2. Enter your booking reference: ${trackingReference}
+          
+          Our team will keep you updated throughout the process.
+          
+          The Luxe Clean Team
+        `
+      };
+
+    case "finished":
+      return {
+        subject: `Service Complete - ${booking.id}`,
+        body: `
+          Hi ${booking.customer},
+
+          Your valet service has been completed! Thank you for choosing our service.
+          
+          Booking Details:
+          - Reference: ${booking.id}
+          - Vehicle: ${booking.vehicle}
+          - Package: ${booking.packageType}
+          
+          Your invoice is now ready:
+          📄 View Invoice: ${window.location.origin}/track/${booking.id}
+          
+          We'd love your feedback:
+          ⭐ Leave Feedback: ${window.location.origin}/feedback/${booking.id}
+          
+          Thank you for your business!
+          
+          The Luxe Clean Team
+        `
+      };
   }
 };
 
@@ -136,5 +185,31 @@ export const sendTrackingInfo = (booking: Booking) => {
   const template = generateEmailTemplate(booking, "tracking");
   
   // Send the email
+  return sendEmail(booking.email, template);
+};
+
+// Function to send arrival notification
+export const sendArrivalNotification = (booking: Booking) => {
+  if (!booking.email) {
+    toast.error("Cannot send arrival notification", {
+      description: "No email address available for this booking."
+    });
+    return Promise.reject("No email address available");
+  }
+  
+  const template = generateEmailTemplate(booking, "arrival");
+  return sendEmail(booking.email, template);
+};
+
+// Function to send finished notification with invoice and feedback links
+export const sendFinishedNotification = (booking: Booking) => {
+  if (!booking.email) {
+    toast.error("Cannot send finished notification", {
+      description: "No email address available for this booking."
+    });
+    return Promise.reject("No email address available");
+  }
+  
+  const template = generateEmailTemplate(booking, "finished");
   return sendEmail(booking.email, template);
 };

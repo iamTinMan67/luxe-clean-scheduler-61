@@ -22,7 +22,7 @@ export const useBookings = () => {
   
   const { 
     handleConfirmBooking,
-    handleCompleteBooking,
+    handleFinishBooking,
     handleUpdateStatus
   } = useBookingManagement();
   
@@ -52,7 +52,7 @@ export const useBookings = () => {
     handleDeleteBooking,
     handlePackageChange,
     handleReschedule,
-    handleCompleteBooking,
+    handleCompleteBooking: handleFinishBooking, // Map to new finish function
     handleUpdateStatus,
     getBookingBackground
   };

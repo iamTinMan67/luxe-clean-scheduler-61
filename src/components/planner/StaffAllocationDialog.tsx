@@ -34,9 +34,10 @@ const StaffAllocationDialog: React.FC<StaffAllocationDialogProps> = ({
     if (open) {
       // Initialize with default staff if provided
       setSelectedStaff(defaultStaff);
-      setTravelTime(15);
+      // Use existing travel time from booking or default to 15 minutes
+      setTravelTime(booking.travelMinutes || 15);
     }
-  }, [open, defaultStaff]);
+  }, [open, defaultStaff, booking.travelMinutes]);
   
   const handleStaffToggle = (staffName: string) => {
     setSelectedStaff(prev => {
@@ -113,10 +114,15 @@ const StaffAllocationDialog: React.FC<StaffAllocationDialogProps> = ({
                 id="travel-time"
                 type="number"
                 min="0"
+                max="120"
                 value={travelTime}
-                onChange={(e) => setTravelTime(parseInt(e.target.value) || 0)}
+                onChange={(e) => setTravelTime(parseInt(e.target.value) || 15)}
                 className="bg-black/40 border-gold/30 text-white"
+                placeholder="15"
               />
+              <p className="text-gray-400 text-sm mt-1">
+                Default is 15 minutes. Adjust as needed for this booking.
+              </p>
             </div>
           </div>
         </div>

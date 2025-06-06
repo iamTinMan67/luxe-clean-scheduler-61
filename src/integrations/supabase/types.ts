@@ -428,7 +428,6 @@ export type Database = {
           stock_out: number
           supplier: string | null
           updated_at: string | null
-          van_id: string | null
         }
         Insert: {
           allocated_stock?: Json | null
@@ -442,7 +441,6 @@ export type Database = {
           stock_out?: number
           supplier?: string | null
           updated_at?: string | null
-          van_id?: string | null
         }
         Update: {
           allocated_stock?: Json | null
@@ -456,7 +454,6 @@ export type Database = {
           stock_out?: number
           supplier?: string | null
           updated_at?: string | null
-          van_id?: string | null
         }
         Relationships: []
       }
@@ -635,30 +632,21 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string | null
-          display_name: string | null
-          first_name: string | null
           id: string
-          last_name: string | null
           role: string | null
-          updated_at: string | null
+          updated_at: string
         }
         Insert: {
           created_at?: string | null
-          display_name?: string | null
-          first_name?: string | null
           id: string
-          last_name?: string | null
           role?: string | null
-          updated_at?: string | null
+          updated_at?: string
         }
         Update: {
           created_at?: string | null
-          display_name?: string | null
-          first_name?: string | null
           id?: string
-          last_name?: string | null
           role?: string | null
-          updated_at?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -709,31 +697,52 @@ export type Database = {
           id: string
           name: string
           position: string | null
-          specialty: string | null
+          role: string | null
           updated_at: string | null
-          user_id: string | null
         }
         Insert: {
           created_at?: string | null
           id?: string
           name: string
           position?: string | null
-          specialty?: string | null
+          role?: string | null
           updated_at?: string | null
-          user_id?: string | null
         }
         Update: {
           created_at?: string | null
           id?: string
           name?: string
           position?: string | null
-          specialty?: string | null
+          role?: string | null
           updated_at?: string | null
-          user_id?: string | null
         }
         Relationships: []
       }
-      staff_availability: {
+      vans: {
+        Row: {
+          created_at: string | null
+          id: string
+          mot_date: string | null
+          registration: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          mot_date?: string | null
+          registration: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          mot_date?: string | null
+          registration?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      z_staff_availability: {
         Row: {
           created_at: string | null
           day_of_week: number
@@ -770,30 +779,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      vans: {
-        Row: {
-          created_at: string | null
-          id: string
-          name: string
-          registration: string
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          name: string
-          registration: string
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          name?: string
-          registration?: string
-          updated_at?: string | null
-        }
-        Relationships: []
       }
     }
     Views: {

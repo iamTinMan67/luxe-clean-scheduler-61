@@ -13,11 +13,11 @@ export const useBookingManagement = () => {
   const { 
     updateBookingStatus,
     confirmBooking,
-    completeBooking
+    finishBooking
   } = useBookingStatus(updateBooking, moveBookingToConfirmed);
 
-  // Handler for updating booking status with proper type constraints
-  const handleUpdateStatus = (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished" | "pending" | "cancelled") => {
+  // Handler for updating booking status with proper type constraints (removed "completed")
+  const handleUpdateStatus = (booking: Booking, newStatus: "confirmed" | "in-progress" | "finished" | "pending" | "cancelled" | "inspecting" | "inspected") => {
     updateBookingStatus(booking, newStatus);
   };
   
@@ -26,14 +26,14 @@ export const useBookingManagement = () => {
     confirmBooking(booking);
   };
   
-  // Handler for completing a booking
-  const handleCompleteBooking = (booking: Booking) => {
-    completeBooking(booking);
+  // Handler for finishing a booking (replaces complete)
+  const handleFinishBooking = (booking: Booking) => {
+    finishBooking(booking);
   };
 
   return {
     handleConfirmBooking,
-    handleCompleteBooking,
+    handleFinishBooking,
     handleUpdateStatus
   };
 };

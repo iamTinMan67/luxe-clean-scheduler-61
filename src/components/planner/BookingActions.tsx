@@ -14,7 +14,7 @@ interface BookingActionsProps {
   booking: Booking;
   onConfirm: (booking: Booking) => void;
   onComplete: (booking: Booking) => void;
-  onUpdateStatus: (booking: Booking, newStatus: "confirmed" | "in-progress" | "completed" | "finished" | "pending" | "cancelled") => void;
+  onUpdateStatus: (booking: Booking, newStatus: "confirmed" | "in-progress" | "finished" | "pending" | "cancelled" | "inspecting" | "inspected") => void;
 }
 
 const BookingActions: React.FC<BookingActionsProps> = ({ 
@@ -38,15 +38,16 @@ const BookingActions: React.FC<BookingActionsProps> = ({
           size="sm"
           className={`bg-${statusInfo.badgeColor} hover:bg-${statusInfo.badgeColor}/80 text-white`}
           onClick={() => {
-            // Cast nextStatus to the valid type to ensure compatibility
-            const typedNextStatus = statusInfo.nextStatus as "confirmed" | "in-progress" | "completed" | "finished" | "pending" | "cancelled";
+            // Cast nextStatus to the valid type to ensure compatibility (removed "completed")
+            const typedNextStatus = statusInfo.nextStatus as "confirmed" | "in-progress" | "finished" | "pending" | "cancelled" | "inspecting" | "inspected";
             onUpdateStatus(booking, typedNextStatus);
           }}
         >
           {booking.status === "pending" && <CheckCircle className="h-4 w-4 mr-1" />}
           {booking.status === "confirmed" && <PlayCircle className="h-4 w-4 mr-1" />}
           {booking.status === "in-progress" && <CheckSquare className="h-4 w-4 mr-1" />}
-          {booking.status === "completed" && <FileText className="h-4 w-4 mr-1" />}
+          {booking.status === "inspecting" && <CheckSquare className="h-4 w-4 mr-1" />}
+          {booking.status === "inspected" && <PlayCircle className="h-4 w-4 mr-1" />}
           {statusInfo.nextLabel}
         </Button>
       )}
