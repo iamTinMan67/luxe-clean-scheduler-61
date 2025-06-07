@@ -5,8 +5,6 @@ import { usePlannerCalendar } from "@/hooks/usePlannerCalendar";
 import CalendarHeader from "@/components/planner/CalendarHeader";
 import PlannerContent from "@/components/planner/PlannerContent";
 import { Card } from "@/components/ui/card";
-import { useBookings } from "@/hooks/useBookings";
-import BookingsCalendar from "@/components/planner/BookingsCalendar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ArchivedBookingsView from "@/components/planner/ArchivedBookingsView";
 import { useArchivedBookings } from "@/hooks/planner/useArchivedBookings";
@@ -40,23 +38,6 @@ const PlannerCalendar = () => {
     checkTimeConflict,
     conflictCount
   } = usePlannerCalendar();
-
-  // Staff planner functionality
-  const {
-    pendingBookings: staffPendingBookings,
-    confirmedBookings: staffConfirmedBookings,
-    date: staffDate,
-    setDate: setStaffDate,
-    view: staffView,
-    setView: setStaffView,
-    getBookingsForDate,
-    handleConfirmBooking: staffHandleConfirmBooking,
-    handleDeleteBooking,
-    handlePackageChange,
-    handleReschedule,
-    handleCompleteBooking,
-    handleUpdateStatus
-  } = useBookings();
 
   // Archived bookings functionality
   const { archivedBookings } = useArchivedBookings();
@@ -108,24 +89,6 @@ const PlannerCalendar = () => {
                 navigateToday={navigateToday}
                 conflictCount={conflictCount}
               />
-              
-              {/* Staff Planner section */}
-              <div className="mt-8">
-                <h2 className="text-2xl font-bold text-white mb-4">Staff Planner</h2>
-                <BookingsCalendar 
-                  date={staffDate}
-                  setDate={setStaffDate}
-                  view={staffView as "daily" | "weekly"}
-                  setView={setStaffView as (view: "daily" | "weekly") => void}
-                  bookingsForDate={getBookingsForDate()}
-                  onConfirmBooking={staffHandleConfirmBooking}
-                  onCompleteBooking={handleCompleteBooking}
-                  onDeleteBooking={handleDeleteBooking}
-                  onPackageChange={handlePackageChange}
-                  onReschedule={handleReschedule}
-                  onUpdateStatus={handleUpdateStatus}
-                />
-              </div>
             </TabsContent>
             
             <TabsContent value="archived" className="mt-4">

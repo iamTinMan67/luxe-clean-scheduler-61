@@ -44,9 +44,9 @@ export const usePlannerCalendar = () => {
     setDate(new Date());
   };
 
-  // Check if a date has bookings
+  // Check if a date has bookings - only check confirmed bookings for calendar highlighting
   const hasBookingsOnDate = (checkDate: Date) => {
-    return [...confirmedBookings, ...pendingBookings].some(booking => {
+    return confirmedBookings.filter(booking => booking.status !== 'pending').some(booking => {
       const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
       return bookingDate.getDate() === checkDate.getDate() &&
              bookingDate.getMonth() === checkDate.getMonth() &&

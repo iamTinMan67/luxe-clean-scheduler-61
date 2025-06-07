@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { Booking } from '@/types/booking';
@@ -111,21 +110,7 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({ date, bookings, getBookingBac
                 </CollapsibleContent>
               </Collapsible>
               
-              {booking.staff && booking.staff.length > 0 && (
-                <div className="mt-2 pt-2 border-t border-gray-700">
-                  <p className="text-xs text-gray-400 mb-1">Assigned Staff:</p>
-                  <div className="flex flex-wrap gap-1">
-                    {booking.staff.map((staffMember, idx) => (
-                      <span 
-                        key={idx} 
-                        className="text-xs bg-gray-700 px-2 py-0.5 rounded-full text-white"
-                      >
-                        {staffMember}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
+              {/* Staff assignment section is now hidden - removed from the component */}
             </div>
           ))}
         </div>
