@@ -9,7 +9,7 @@ export const useAuthManagement = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // Function to update user profile
-  const updateProfile = async (userData: { display_name?: string }) => {
+  const updateProfile = async (userData: { role?: string }) => {
     if (!user) return { success: false, error: 'Not authenticated' };
     
     setIsLoading(true);
@@ -17,7 +17,7 @@ export const useAuthManagement = () => {
     try {
       const { error } = await supabase
         .from('profiles')
-        .update({ display_name: userData.display_name })
+        .update({ role: userData.role })
         .eq('id', user.id);
         
       if (error) throw error;
