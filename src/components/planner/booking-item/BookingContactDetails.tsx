@@ -43,13 +43,6 @@ const BookingContactDetails: React.FC<BookingContactDetailsProps> = ({
           <span>{location}</span>
         </div>
         
-        {notes && (
-          <div className="flex items-center text-gray-300">
-            <User className="w-4 h-4 mr-2 text-gold" />
-            <span>{notes}</span>
-          </div>
-        )}
-        
         {email && (
           <div className="flex items-center text-gray-300">
             <Mail className="w-4 h-4 mr-2 text-gold" />
@@ -61,6 +54,13 @@ const BookingContactDetails: React.FC<BookingContactDetailsProps> = ({
           <div className="flex items-center text-gray-300">
             <Phone className="w-4 h-4 mr-2 text-gold" />
             <span>{contact}</span>
+          </div>
+        )}
+        
+        {notes && (
+          <div className="flex items-center text-gray-300">
+            <User className="w-4 h-4 mr-2 text-gold" />
+            <span>{notes}</span>
           </div>
         )}
         

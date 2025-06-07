@@ -27,10 +27,10 @@ const DailyPlanner: React.FC<DailyPlannerProps> = ({
     day.date.getFullYear() === date.getFullYear()
   );
 
-  // Generate time slots in 15-minute increments from 08:00 to 17:00
+  // Generate time slots in 15-minute increments from 09:00 to 17:00
   const generateTimeSlots = () => {
     const slots = [];
-    for (let hour = 8; hour <= 17; hour++) {
+    for (let hour = 9; hour <= 17; hour++) {
       for (let minute = 0; minute < 60; minute += 15) {
         if (hour === 17 && minute > 0) break; // Stop at 17:00
         const formattedHour = hour.toString().padStart(2, '0');
@@ -136,7 +136,9 @@ const DailyPlanner: React.FC<DailyPlannerProps> = ({
                               className={`${getTimeSlotClass(timeSlot, booking)} p-2 rounded-t-md border-t`}
                             >
                               <div className="flex flex-col">
-                                <div className="font-medium text-white truncate">{booking.customer}</div>
+                                <div className="font-medium text-white truncate">
+                                  {booking.customer} - {booking.id}
+                                </div>
                                 <p className="text-gray-400 text-xs truncate">
                                   {booking.packageType}
                                   {booking.travelMinutes && booking.travelMinutes > 0 && 
@@ -146,6 +148,16 @@ const DailyPlanner: React.FC<DailyPlannerProps> = ({
                                 <p className="text-xs text-gray-300">
                                   {(booking.startTime || booking.time)} - {booking.endTime || 'N/A'}
                                 </p>
+                                {booking.jobDetails && (
+                                  <p className="text-xs text-blue-300 mt-1">
+                                    Job: {booking.jobDetails}
+                                  </p>
+                                )}
+                                {booking.notes && (
+                                  <p className="text-xs text-yellow-300 mt-1">
+                                    Notes: {booking.notes}
+                                  </p>
+                                )}
                                 {booking.vehicleReg && (
                                   <Badge variant="outline" className="mt-1 text-xs bg-black/30 truncate">
                                     {booking.vehicleReg}

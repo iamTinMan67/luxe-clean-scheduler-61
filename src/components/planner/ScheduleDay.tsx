@@ -1,7 +1,8 @@
+
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { Booking } from '@/types/booking';
-import { Clock, MapPin, Phone, FileText, ChevronDown, ChevronUp } from 'lucide-react';
+import { Clock, MapPin, Phone, FileText, ChevronDown, ChevronUp, Mail } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface ScheduleDayProps {
@@ -45,7 +46,7 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({ date, bookings, getBookingBac
             >
               <div className="flex justify-between items-start mb-1">
                 <h4 className="font-medium text-white">
-                  {booking.customer}
+                  {booking.customer} - {booking.id}
                 </h4>
                 <span className={`text-xs px-2 py-0.5 rounded-full ${
                   booking.status === "pending" 
@@ -67,10 +68,24 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({ date, bookings, getBookingBac
                 {booking.packageType && booking.packageType !== "TBC" && ` - ${booking.packageType} Package`}
               </div>
               
-              <div className="flex items-center text-gray-300 text-sm">
+              <div className="flex items-center text-gray-300 text-sm mb-2">
                 <Clock className="w-3 h-3 mr-1 text-gold" />
                 <span>{booking.startTime || booking.time || "09:00"} - {booking.endTime || "11:00"}</span>
               </div>
+
+              {/* Job description display */}
+              {booking.jobDetails && (
+                <div className="text-blue-300 text-sm mb-1">
+                  <strong>Job:</strong> {booking.jobDetails}
+                </div>
+              )}
+
+              {/* Notes display */}
+              {booking.notes && (
+                <div className="text-yellow-300 text-sm mb-2">
+                  <strong>Notes:</strong> {booking.notes}
+                </div>
+              )}
               
               {/* Replace direct contact details with collapsible section */}
               <Collapsible className="mt-2 pt-2 border-t border-gray-700">
@@ -92,6 +107,14 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({ date, bookings, getBookingBac
                     </div>
                   )}
                   
+                  {/* Email information if available */}
+                  {booking.email && (
+                    <div className="flex items-center text-gray-300 text-sm">
+                      <Mail className="w-3 h-3 mr-1 text-gold" />
+                      <span>{booking.email}</span>
+                    </div>
+                  )}
+                  
                   {/* Contact information if available */}
                   {booking.contact && (
                     <div className="flex items-center text-gray-300 text-sm">
@@ -99,18 +122,8 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({ date, bookings, getBookingBac
                       <span>{booking.contact}</span>
                     </div>
                   )}
-                  
-                  {/* Add notes if available */}
-                  {booking.notes && (
-                    <div className="flex items-start text-gray-300 text-sm">
-                      <FileText className="w-3 h-3 mr-1 mt-0.5 text-gold" />
-                      <span className="flex-1">{booking.notes}</span>
-                    </div>
-                  )}
                 </CollapsibleContent>
               </Collapsible>
-              
-              {/* Staff assignment section is now hidden - removed from the component */}
             </div>
           ))}
         </div>

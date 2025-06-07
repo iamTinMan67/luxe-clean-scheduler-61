@@ -3,6 +3,8 @@ import React from 'react';
 import { PlannerViewType } from '@/hooks/usePlannerCalendar';
 import PendingBookingsList from './PendingBookingsList';
 import ScheduleCalendar from './ScheduleCalendar';
+import DailyPlanner from './DailyPlanner';
+import WeeklyPlanner from './WeeklyPlanner';
 import { Booking } from '@/types/booking';
 
 interface PlannerContentProps {
@@ -67,6 +69,26 @@ const PlannerContent: React.FC<PlannerContentProps> = ({
         setDate={setDate}
         getBookingBackground={getBookingBackground} // Pass getBookingBackground to ScheduleCalendar
       />
+
+      {/* Detailed View Components */}
+      {view === 'daily' && (
+        <DailyPlanner
+          date={date}
+          setDate={setDate}
+          schedule={schedule}
+          getBookingBackground={getBookingBackground}
+        />
+      )}
+
+      {view === 'weekly' && (
+        <WeeklyPlanner
+          date={date}
+          setDate={setDate}
+          schedule={schedule}
+          getBookingBackground={getBookingBackground}
+          checkTimeConflict={checkTimeConflict}
+        />
+      )}
     </>
   );
 };
