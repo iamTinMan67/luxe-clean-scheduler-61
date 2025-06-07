@@ -60,12 +60,13 @@ export const usePlannerCalendar = () => {
     
     let conflicts = 0;
     
-    // Get all active bookings (confirmed, in-progress, completed, finished)
+    // Get all active bookings (confirmed, in-progress, finished)
     const activeBookings = confirmedBookings.filter(booking => 
       booking.status === 'confirmed' || 
       booking.status === 'in-progress' || 
-      booking.status === 'completed' || 
-      booking.status === 'finished'
+      booking.status === 'finished' ||
+      booking.status === 'inspecting' ||
+      booking.status === 'inspected'
     );
     
     // Check each pending booking against active bookings for time conflicts

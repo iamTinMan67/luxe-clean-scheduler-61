@@ -98,7 +98,7 @@ export const useBookingManagement = (
         return "border-green-500 bg-green-950/30";
       case "in-progress":
         return "border-blue-500 bg-blue-950/30";
-      case "completed":
+      case "finished":
         return "border-purple-500 bg-purple-950/30";
       case "cancelled":
         return "border-red-500 bg-red-950/30";

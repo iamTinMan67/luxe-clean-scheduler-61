@@ -46,7 +46,7 @@ export const fetchStaffFromDatabase = async (): Promise<StaffMember[]> => {
       id: staff.id,
       name: staff.name,
       position: staff.position,
-      specialty: staff.specialty,
+      specialty: staff.position, // Use position as specialty since specialty doesn't exist in DB
     }));
   } catch (err) {
     console.error('Failed to fetch staff:', err);
@@ -73,7 +73,6 @@ export const initializeStaffData = async (): Promise<void> => {
         .insert(staffMembers.map(staff => ({
           name: staff.name,
           position: staff.position,
-          specialty: staff.specialty,
         })));
         
       if (insertError) {

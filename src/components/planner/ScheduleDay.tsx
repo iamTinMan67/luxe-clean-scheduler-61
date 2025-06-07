@@ -55,7 +55,7 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({ date, bookings, getBookingBac
                     ? "bg-green-900/30 text-green-400 border border-green-700"
                     : booking.status === "in-progress"
                     ? "bg-blue-900/30 text-blue-400 border border-blue-700"
-                    : booking.status === "completed"
+                    : booking.status === "finished"
                     ? "bg-purple-900/30 text-purple-400 border border-purple-700"
                     : "bg-gray-900/30 text-gray-400 border border-gray-700"
                 }`}>

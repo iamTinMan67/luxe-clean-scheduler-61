@@ -14,7 +14,7 @@ export const bookingToProgressBooking = (booking: Booking): ProgressBooking => {
     date: booking.date instanceof Date ? booking.date.toISOString() : booking.date as string,
     time: booking.time || "",
     location: booking.location,
-    status: booking.status === "completed" ? "completed" : 
+    status: booking.status === "finished" ? "completed" : 
            booking.status === "in-progress" ? "in-progress" : 
            booking.status === "confirmed" ? "confirmed" : "pending",
     progressPercentage: 0,

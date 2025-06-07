@@ -123,7 +123,7 @@ export const useBookingState = () => {
         startTime: "11:00",
         endTime: "14:00",
         location: "Customer's Location",
-        status: "completed",
+        status: "finished",
         totalPrice: 199,
         notes: "Vehicle has heavy scratching on driver's side",
         staff: ["Sarah Johnson", "Michael Brown"],

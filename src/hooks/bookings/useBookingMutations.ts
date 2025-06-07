@@ -18,8 +18,9 @@ export const useBookingMutations = () => {
   const updateBooking = (booking: Booking): Booking[] => {
     const isConfirmed = booking.status === 'confirmed' || 
                         booking.status === 'in-progress' || 
-                        booking.status === 'completed' ||
-                        booking.status === 'finished';
+                        booking.status === 'finished' ||
+                        booking.status === 'inspecting' ||
+                        booking.status === 'inspected';
                         
     if (isConfirmed) {
       const updatedBookings = confirmedBookings.map(b => 
@@ -53,8 +54,9 @@ export const useBookingMutations = () => {
   const deleteBooking = (booking: Booking): void => {
     const isConfirmed = booking.status === 'confirmed' || 
                        booking.status === 'in-progress' || 
-                       booking.status === 'completed' ||
-                       booking.status === 'finished';
+                       booking.status === 'finished' ||
+                       booking.status === 'inspecting' ||
+                       booking.status === 'inspected';
                        
     if (isConfirmed) {
       const updatedBookings = confirmedBookings.filter(b => b.id !== booking.id);

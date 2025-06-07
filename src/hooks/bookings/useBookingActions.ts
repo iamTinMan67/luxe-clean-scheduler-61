@@ -95,12 +95,12 @@ export const useBookingActions = (
     });
   };
 
-  // Mark booking as completed
+  // Mark booking as finished (replaced completed)
   const handleCompleteBooking = (booking: Booking) => {
     // Update the booking
     const updatedBooking: Booking = {
       ...booking,
-      status: "completed"
+      status: "finished"
     };
     
     // Update in confirmed bookings
@@ -125,8 +125,8 @@ export const useBookingActions = (
     // Send completion notification with feedback link
     sendNotification(updatedBooking, "completion");
     
-    toast.success("Booking completed", {
-      description: `${updatedBooking.packageType} Package service for ${updatedBooking.customer} has been marked as completed.`
+    toast.success("Booking finished", {
+      description: `${updatedBooking.packageType} Package service for ${updatedBooking.customer} has been marked as finished.`
     });
   };
 
