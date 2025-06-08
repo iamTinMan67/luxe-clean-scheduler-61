@@ -18,18 +18,20 @@ const VehicleTypeSelector = ({
   onClientTypeChange,
   onVehicleTypeChange,
 }: VehicleTypeSelectorProps) => {
-  const clientTypes: Array<{ type: ClientType; label: string; description: string; icon: React.ReactNode }> = [
+  const clientTypes: Array<{ type: ClientType; label: string; description: string; icon: React.ReactNode; color: string }> = [
     { 
       type: "private", 
       label: "Private", 
       description: "For individual owners", 
-      icon: <Home className="w-8 h-8" /> 
+      icon: <Home className="w-8 h-8" />,
+      color: "border-blue-500 bg-blue-950/30"
     },
     { 
       type: "corporate", 
-      label: "Corporate", 
+      label: "Commercial", 
       description: "For business fleets", 
-      icon: <Building className="w-8 h-8" /> 
+      icon: <Building className="w-8 h-8" />,
+      color: "border-green-500 bg-green-950/30"
     }
   ];
 
@@ -39,31 +41,30 @@ const VehicleTypeSelector = ({
     { type: "other", label: "Other", icon: <Box className="w-8 h-8" /> }
   ];
 
+  const selectedClientConfig = clientTypes.find(c => c.type === selectedClientType);
+
   return (
     <div className="space-y-8">
       {/* Client Type Selection */}
       <div>
         <h3 className="text-lg font-semibold mb-3 text-white text-center">Select Client Type</h3>
         <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
-          {clientTypes.map(({ type, label, description, icon }) => (
+          {clientTypes.map(({ type, label, description, icon, color }) => (
             <button
               key={type}
               onClick={() => onClientTypeChange(type)}
               className={cn(
-                "relative aspect-square rounded-lg overflow-hidden group",
-                selectedClientType === type ? "ring-2 ring-gold" : "ring-1 ring-gray-800"
+                "relative aspect-square rounded-lg overflow-hidden group border-2 transition-all",
+                selectedClientType === type ? color : "border-gray-800 bg-gray-900 hover:bg-gray-800"
               )}
             >
-              <div className={cn(
-                "absolute inset-0 flex flex-col items-center justify-center p-2 transition-colors bg-gray-900 group-hover:bg-gray-800",
-                selectedClientType === type ? "bg-black" : ""
-              )}>
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-2">
                 <div className="w-18 h-18 mb-2 flex items-center justify-center">
                   {icon}
                 </div>
                 <span className={cn(
                   "text-base font-medium transition-colors",
-                  selectedClientType === type ? "text-gold" : "text-gray-300 group-hover:text-white"
+                  selectedClientType === type ? "text-white" : "text-gray-300 group-hover:text-white"
                 )}>
                   {label}
                 </span>
@@ -85,29 +86,28 @@ const VehicleTypeSelector = ({
         </div>
       </div>
 
-      {/* Vehicle Type Selection */}
+      {/* Job Type Selection */}
       <div>
-        <h3 className="text-lg font-semibold mb-3 text-white text-center">Select Vehicle Type</h3>
+        <h3 className="text-lg font-semibold mb-3 text-white text-center">Select Job Type</h3>
         <div className="grid grid-cols-3 gap-3 max-w-md mx-auto">
           {vehicleTypes.map(({ type, label, icon }) => (
             <button
               key={type}
               onClick={() => onVehicleTypeChange(type)}
               className={cn(
-                "relative aspect-square rounded-lg overflow-hidden group",
-                selectedVehicleType === type ? "ring-2 ring-gold" : "ring-1 ring-gray-800"
+                "relative aspect-square rounded-lg overflow-hidden group border-2 transition-all",
+                selectedVehicleType === type ? 
+                  selectedClientConfig?.color || "border-gold bg-black" : 
+                  "border-gray-800 bg-gray-900 hover:bg-gray-800"
               )}
             >
-              <div className={cn(
-                "absolute inset-0 flex flex-col items-center justify-center p-2 transition-colors bg-gray-900 group-hover:bg-gray-800",
-                selectedVehicleType === type ? "bg-black" : ""
-              )}>
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-2">
                 <div className="w-18 h-18 mb-3 flex items-center justify-center">
                   {icon}
                 </div>
                 <span className={cn(
                   "text-base font-medium transition-colors",
-                  selectedVehicleType === type ? "text-gold" : "text-gray-300 group-hover:text-white"
+                  selectedVehicleType === type ? "text-white" : "text-gray-300 group-hover:text-white"
                 )}>
                   {label}
                 </span>

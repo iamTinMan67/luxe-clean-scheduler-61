@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { Booking } from '@/types/booking';
-import { Clock, MapPin, Phone, FileText, ChevronDown, ChevronUp, Mail } from 'lucide-react';
+import { Clock, MapPin, Phone, FileText, ChevronDown, ChevronUp, Mail, Building, Home } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface ScheduleDayProps {
@@ -28,6 +28,40 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({ date, bookings, getBookingBac
       ...prev,
       [bookingId]: !prev[bookingId]
     }));
+  };
+
+  // Helper functions for client type styling
+  const getClientCategoryStyling = (type?: string) => {
+    switch (type) {
+      case "private":
+        return "text-blue-400 border-blue-400";
+      case "corporate":
+        return "text-green-400 border-green-400";
+      default:
+        return "text-gray-400 border-gray-400";
+    }
+  };
+
+  const getClientIcon = (type?: string) => {
+    switch (type) {
+      case "private":
+        return <Home className="w-3 h-3 mr-1" />;
+      case "corporate":
+        return <Building className="w-3 h-3 mr-1" />;
+      default:
+        return null;
+    }
+  };
+
+  const getClientLabel = (type?: string) => {
+    switch (type) {
+      case "private":
+        return "Private";
+      case "corporate":
+        return "Commercial";
+      default:
+        return null;
+    }
   };
 
   return (
@@ -62,6 +96,23 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({ date, bookings, getBookingBac
                   {booking.status}
                 </span>
               </div>
+
+              {/* Client Type and Job Type Display */}
+              {(booking.clientType || booking.vehicleType) && (
+                <div className="flex items-center justify-between mb-2">
+                  {booking.clientType && (
+                    <div className={`flex items-center px-2 py-1 rounded-full border text-xs ${getClientCategoryStyling(booking.clientType)}`}>
+                      {getClientIcon(booking.clientType)}
+                      <span>{getClientLabel(booking.clientType)}</span>
+                    </div>
+                  )}
+                  {booking.vehicleType && (
+                    <div className="text-gray-400 text-xs">
+                      Job: {booking.vehicleType}
+                    </div>
+                  )}
+                </div>
+              )}
               
               <div className="text-gray-400 text-sm mb-1">
                 {booking.vehicle || "No vehicle info"}

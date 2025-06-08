@@ -4,9 +4,16 @@ import { Button } from "@/components/ui/button";
 import { migrateAllData, checkMigrationStatus } from "@/utils/migrationUtils";
 import { toast } from "sonner";
 import { DatabaseBackup } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 export default function DataMigrationTrigger() {
   const [isMigrating, setIsMigrating] = useState(false);
+  const { isAdmin } = useAuth();
+  
+  // Only show for admin users
+  if (!isAdmin) {
+    return null;
+  }
   
   const handleMigrate = async () => {
     try {

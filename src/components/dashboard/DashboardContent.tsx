@@ -2,10 +2,14 @@
 import { StatsCard, RevenueChart, PackageDistribution, FeedbackDistribution, InventoryAlerts, RecentBookings } from '@/components/dashboard';
 import { statsData, revenueData, packageData, inventoryAlerts, recentBookings } from '@/components/dashboard/DashboardData';
 import FeedbackSnippet from "../home/feedback/FeedbackSnippet";
+import DataMigrationTrigger from "@/components/DataMigrationTrigger";
 
 const DashboardContent = () => {
   return (
     <>
+      {/* Data Migration - At the top for admin users */}
+      <DataMigrationTrigger />
+      
       {/* Recent Bookings - At the top */}
       <RecentBookings bookings={recentBookings} />
       

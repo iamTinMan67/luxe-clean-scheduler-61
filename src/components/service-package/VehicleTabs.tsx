@@ -44,16 +44,22 @@ const VehicleTabs: React.FC<VehicleTabsProps> = ({
     }
   };
 
+  // Helper function to get client-specific styling
+  const getClientStyling = (clientType: ClientType, isSelected: boolean) => {
+    if (isSelected) {
+      return clientType === "private" 
+        ? "bg-blue-600 text-white border-blue-500"
+        : "bg-green-600 text-white border-green-500";
+    }
+    return "bg-gray-800 text-white hover:bg-gray-700";
+  };
+
   return (
     <div className="flex flex-wrap gap-3 justify-center mb-8">
       {vehicles.map((vehicle, index) => (
         <button
           key={index}
-          className={`px-4 py-2 rounded-full ${
-            currentVehicleIndex === index
-              ? "gold-gradient text-black"
-              : "bg-gray-800 text-white hover:bg-gray-700"
-          } flex items-center`}
+          className={`px-4 py-2 rounded-full border transition-all ${getClientStyling(vehicle.clientType, currentVehicleIndex === index)} flex items-center`}
           onClick={() => setCurrentVehicleIndex(index)}
         >
           <span className="mr-1">{getClientIcon(vehicle.clientType)}</span>
@@ -61,7 +67,7 @@ const VehicleTabs: React.FC<VehicleTabsProps> = ({
           Vehicle {index + 1}
           {vehicles.length > 1 && (
             <button
-              className="ml-2 p-1 text-black rounded-full hover:bg-black/20"
+              className="ml-2 p-1 rounded-full hover:bg-black/20"
               onClick={(e) => {
                 e.stopPropagation();
                 handleRemoveVehicle(index);
@@ -74,7 +80,7 @@ const VehicleTabs: React.FC<VehicleTabsProps> = ({
       ))}
       
       <button
-        className="px-4 py-2 rounded-full bg-gray-800 text-white hover:bg-gray-700 flex items-center"
+        className="px-4 py-2 rounded-full bg-gray-800 text-white hover:bg-gray-700 flex items-center border border-gray-700"
         onClick={handleAddVehicle}
       >
         <Plus size={16} className="mr-1" />

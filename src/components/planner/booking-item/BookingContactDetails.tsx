@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { MapPin, User, Mail, Phone, Car } from 'lucide-react';
+import { MapPin, User, Mail, Phone, Car, Building, Home } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
@@ -11,6 +11,8 @@ interface BookingContactDetailsProps {
   contact?: string;
   jobDetails?: string;
   condition?: number;
+  clientType?: "private" | "corporate";
+  vehicleType?: string;
 }
 
 const BookingContactDetails: React.FC<BookingContactDetailsProps> = ({
@@ -19,9 +21,45 @@ const BookingContactDetails: React.FC<BookingContactDetailsProps> = ({
   email,
   contact,
   jobDetails,
-  condition
+  condition,
+  clientType,
+  vehicleType
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
+
+  // Get client category styling
+  const getClientCategoryStyling = (type?: string) => {
+    switch (type) {
+      case "private":
+        return "text-blue-400 border-blue-400";
+      case "corporate":
+        return "text-green-400 border-green-400";
+      default:
+        return "text-gray-400 border-gray-400";
+    }
+  };
+
+  const getClientIcon = (type?: string) => {
+    switch (type) {
+      case "private":
+        return <Home className="w-4 h-4 mr-1" />;
+      case "corporate":
+        return <Building className="w-4 h-4 mr-1" />;
+      default:
+        return <User className="w-4 h-4 mr-1" />;
+    }
+  };
+
+  const getClientLabel = (type?: string) => {
+    switch (type) {
+      case "private":
+        return "Private";
+      case "corporate":
+        return "Commercial";
+      default:
+        return "Unknown";
+    }
+  };
 
   return (
     <Collapsible 
@@ -38,6 +76,23 @@ const BookingContactDetails: React.FC<BookingContactDetailsProps> = ({
         )}
       </CollapsibleTrigger>
       <CollapsibleContent className="space-y-2 pt-2">
+        {/* Client Category and Job Type */}
+        {(clientType || vehicleType) && (
+          <div className="flex items-center justify-between">
+            {clientType && (
+              <div className={`flex items-center px-2 py-1 rounded-full border text-xs ${getClientCategoryStyling(clientType)}`}>
+                {getClientIcon(clientType)}
+                <span>{getClientLabel(clientType)}</span>
+              </div>
+            )}
+            {vehicleType && (
+              <div className="text-gray-300 text-xs">
+                Job Type: {vehicleType}
+              </div>
+            )}
+          </div>
+        )}
+        
         <div className="flex items-center text-gray-300">
           <MapPin className="w-4 h-4 mr-2 text-gold" />
           <span>{location}</span>

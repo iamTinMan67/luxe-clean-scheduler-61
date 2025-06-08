@@ -92,6 +92,8 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
           contact={booking.contact}
           jobDetails={booking.jobDetails}
           condition={booking.condition}
+          clientType={booking.clientType}
+          vehicleType={booking.vehicleType}
         />
 
         <BookingAdditionalInfo 
