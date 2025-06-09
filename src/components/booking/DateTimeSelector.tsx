@@ -25,12 +25,12 @@ const DateTimeSelector = ({
   // Get all scheduled appointments
   const { appointments, loading } = useScheduledAppointments();
   
-  // Check if a time slot is reserved by a CONFIRMED booking
+  // Check if a time slot is reserved by a CONFIRMED booking (should be hidden)
   const isTimeSlotReserved = (timeSlot: string) => {
     if (!date) return false;
     
     return appointments.some(booking => {
-      // Only check confirmed bookings for reservations
+      // Only check confirmed bookings for reservations (not cancelled)
       if (booking.status !== 'confirmed' && 
           booking.status !== 'in-progress' && 
           booking.status !== 'finished' &&
@@ -80,7 +80,7 @@ const DateTimeSelector = ({
     });
   };
 
-  // Check if a time slot has a pending booking (shows as conflict warning)
+  // Check if a time slot has a pending booking (shows in green with red dot)
   const hasPendingConflict = (timeSlot: string) => {
     if (!date) return false;
     
@@ -109,7 +109,7 @@ const DateTimeSelector = ({
   // Function to check if a day has bookings
   const dayHasBookings = (checkDate: Date) => {
     return appointments.some(booking => {
-      // Only show indicators for confirmed bookings
+      // Only show indicators for confirmed bookings (not cancelled)
       if (booking.status !== 'confirmed' && 
           booking.status !== 'in-progress' && 
           booking.status !== 'finished' &&
@@ -126,6 +126,9 @@ const DateTimeSelector = ({
       );
     });
   };
+
+  // Filter out reserved time slots - they won't be shown at all
+  const availableTimeSlots = timeSlots.filter(slot => !isTimeSlotReserved(slot));
 
   return (
     <>
@@ -161,50 +164,43 @@ const DateTimeSelector = ({
             Available Times for {format(date, "EEEE, MMMM d, yyyy")}
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {timeSlots.map((slot) => {
-              const reserved = isTimeSlotReserved(slot);
+            {availableTimeSlots.map((slot) => {
               const pendingConflict = hasPendingConflict(slot);
               
               return (
                 <button
                   key={slot}
                   type="button"
-                  onClick={() => !reserved && onTimeChange(slot)}
-                  disabled={reserved}
+                  onClick={() => onTimeChange(slot)}
                   className={`py-2 px-3 rounded-md text-sm transition-colors ${
                     time === slot
                       ? pendingConflict
-                        ? "bg-yellow-700 text-white" // Selected with pending conflict
+                        ? "bg-green-700 text-white" // Selected with pending conflict
                         : "gold-gradient text-black" // Normal selection
-                      : reserved 
-                        ? "bg-red-900/40 text-gray-500 cursor-not-allowed" // Reserved (unavailable)
-                        : pendingConflict
-                          ? "bg-yellow-900/40 text-yellow-300 hover:bg-yellow-800/60" // Pending conflict warning
-                          : "bg-gray-800 text-white hover:bg-gray-700" // Available slot
+                      : pendingConflict
+                        ? "bg-green-900/40 text-green-300 hover:bg-green-800/60" // Pending conflict - green with red dot
+                        : "bg-gray-800 text-white hover:bg-gray-700" // Available slot
                   }`}
                 >
                   {slot}
-                  {reserved && <span className="ml-2 text-red-400">●</span>}
-                  {!reserved && pendingConflict && <span className="ml-2 text-yellow-400">⚠</span>}
+                  {pendingConflict && <span className="ml-2 text-red-400">●</span>}
                 </button>
               );
             })}
           </div>
           
+          {/* Helpful message */}
+          <div className="mt-4 p-3 bg-blue-900/20 border border-blue-800 rounded-md">
+            <p className="text-blue-300 text-sm">
+              <strong>Can't see the time you'd really like?</strong> Give us a call and we'll see if we can juggle our diary & fit you in!
+            </p>
+          </div>
+          
           {time && (
             <div className="mt-4">
-              {isTimeSlotReserved(time) && (
-                <div className="p-3 bg-red-900/20 border border-red-800 rounded-md text-sm">
-                  <p className="text-red-300">
-                    <strong>Time Unavailable:</strong> This time slot is already reserved by a confirmed booking.
-                    Please select a different time.
-                  </p>
-                </div>
-              )}
-              
-              {!isTimeSlotReserved(time) && hasPendingConflict(time) && (
-                <div className="p-3 bg-yellow-900/20 border border-yellow-800 rounded-md text-sm">
-                  <p className="text-yellow-300">
+              {hasPendingConflict(time) && (
+                <div className="p-3 bg-green-900/20 border border-green-800 rounded-md text-sm">
+                  <p className="text-green-300">
                     <strong>Pending Conflict:</strong> There is a pending booking for this time slot.
                     You can still book this time, but it may cause a scheduling conflict if the other booking gets confirmed.
                   </p>
