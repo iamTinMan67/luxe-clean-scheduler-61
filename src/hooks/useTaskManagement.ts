@@ -17,13 +17,17 @@ export const useTaskManagement = () => {
     handleDeleteTodo
   } = useTodoItems();
   
-  // Use the specialized hook for booking selection
+  // Use the specialized hook for booking selection with enhanced features
   const {
     selectedAppointment,
     setSelectedAppointment,
     currentBooking,
     appointments,
-    loading
+    loading,
+    selectedDate,
+    setSelectedDate,
+    searchTerm,
+    setSearchTerm
   } = useBookingSelection();
   
   // Use the specialized hook for service tasks management
@@ -45,6 +49,10 @@ export const useTaskManagement = () => {
     serviceTasks,
     loading,
     appointments,
+    selectedDate,
+    setSelectedDate,
+    searchTerm,
+    setSearchTerm,
     handleAddTodo,
     handleCompleteTodo,
     handleDeleteTodo,

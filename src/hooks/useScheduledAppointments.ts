@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Booking } from '@/types/booking';
 
-export const useScheduledAppointments = () => {
+export const useScheduledAppointments = (statusFilter?: string[]) => {
   const [appointments, setAppointments] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -33,7 +33,12 @@ export const useScheduledAppointments = () => {
           date: booking.date instanceof Date ? booking.date : new Date(booking.date)
         }));
         
-        setAppointments(processedBookings);
+        // Apply status filter if provided
+        const filteredBookings = statusFilter && statusFilter.length > 0 
+          ? processedBookings.filter(booking => statusFilter.includes(booking.status))
+          : processedBookings;
+        
+        setAppointments(filteredBookings);
       } catch (error) {
         console.error('Error loading appointments:', error);
         setAppointments([]);
@@ -64,7 +69,7 @@ export const useScheduledAppointments = () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('bookingsUpdated', handleBookingUpdate);
     };
-  }, []);
+  }, [statusFilter]);
 
   return { appointments, loading };
 };

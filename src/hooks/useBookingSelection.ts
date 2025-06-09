@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Booking } from "@/types/booking";
-import { useScheduledAppointments } from "@/hooks/useScheduledAppointments";
+import { useTodoAppointments } from "./useTodoAppointments";
 
 export const useBookingSelection = () => {
   const location = useLocation();
@@ -11,35 +11,48 @@ export const useBookingSelection = () => {
   
   const [selectedAppointment, setSelectedAppointment] = useState<string>("");
   const [currentBooking, setCurrentBooking] = useState<Booking | null>(null);
-  const { appointments, loading } = useScheduledAppointments();
+  
+  const {
+    appointments,
+    allAppointments,
+    loading,
+    selectedDate,
+    setSelectedDate,
+    searchTerm,
+    setSearchTerm
+  } = useTodoAppointments();
 
   // Auto-select the booking from URL if available
   useEffect(() => {
-    if (bookingIdFromUrl && appointments.length > 0) {
-      const booking = appointments.find(app => app.id === bookingIdFromUrl);
+    if (bookingIdFromUrl && allAppointments.length > 0) {
+      const booking = allAppointments.find(app => app.id === bookingIdFromUrl);
       if (booking) {
         setSelectedAppointment(bookingIdFromUrl);
       }
     }
-  }, [bookingIdFromUrl, appointments]);
+  }, [bookingIdFromUrl, allAppointments]);
 
   // Handle appointment selection
   useEffect(() => {
     if (selectedAppointment) {
-      const booking = appointments.find(app => app.id === selectedAppointment);
+      const booking = allAppointments.find(app => app.id === selectedAppointment);
       if (booking) {
         setCurrentBooking(booking);
       }
     } else {
       setCurrentBooking(null);
     }
-  }, [selectedAppointment, appointments]);
+  }, [selectedAppointment, allAppointments]);
 
   return {
     selectedAppointment,
     setSelectedAppointment,
     currentBooking,
     appointments,
-    loading
+    loading,
+    selectedDate,
+    setSelectedDate,
+    searchTerm,
+    setSearchTerm
   };
 };

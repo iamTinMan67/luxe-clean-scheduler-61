@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTaskManagement } from "@/hooks/useTaskManagement";
-import BookingSelector from "@/components/admin/todo/BookingSelector";
+import EnhancedBookingSelector from "@/components/admin/todo/EnhancedBookingSelector";
 import ServiceTaskList from "@/components/admin/todo/ServiceTaskList";
 import TodoListComponent from "@/components/admin/todo/TodoListComponent";
 
@@ -17,6 +17,10 @@ const TodoList = () => {
     serviceTasks,
     loading,
     appointments,
+    selectedDate,
+    setSelectedDate,
+    searchTerm,
+    setSearchTerm,
     handleAddTodo,
     handleCompleteTodo,
     handleDeleteTodo,
@@ -40,13 +44,17 @@ const TodoList = () => {
         <div className="md:col-span-2">
           <Card className="bg-black/60 border-gold/30 mb-8">
             <CardHeader>
-              <CardTitle className="flex items-center justify-between text-white">
+              <CardTitle className="flex flex-col space-y-4 text-white">
                 <span>Service Tasks</span>
-                <BookingSelector
+                <EnhancedBookingSelector
                   value={selectedAppointment}
                   onChange={setSelectedAppointment}
                   appointments={appointments}
                   loading={loading}
+                  selectedDate={selectedDate}
+                  onDateChange={setSelectedDate}
+                  searchTerm={searchTerm}
+                  onSearchChange={setSearchTerm}
                 />
               </CardTitle>
             </CardHeader>
