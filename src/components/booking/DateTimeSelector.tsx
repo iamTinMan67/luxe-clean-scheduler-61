@@ -25,11 +25,20 @@ const DateTimeSelector = ({
   // Get all scheduled appointments
   const { appointments, loading } = useScheduledAppointments();
   
-  // Check if a time slot is already reserved for the selected date
+  // Check if a time slot is reserved by a CONFIRMED booking
   const isTimeSlotReserved = (timeSlot: string) => {
     if (!date) return false;
     
     return appointments.some(booking => {
+      // Only check confirmed bookings for reservations
+      if (booking.status !== 'confirmed' && 
+          booking.status !== 'in-progress' && 
+          booking.status !== 'finished' &&
+          booking.status !== 'inspecting' &&
+          booking.status !== 'inspected') {
+        return false;
+      }
+      
       const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
       
       // Check if dates match (same day, month, and year)
@@ -71,9 +80,44 @@ const DateTimeSelector = ({
     });
   };
 
+  // Check if a time slot has a pending booking (shows as conflict warning)
+  const hasPendingConflict = (timeSlot: string) => {
+    if (!date) return false;
+    
+    return appointments.some(booking => {
+      // Only check pending bookings for conflicts
+      if (booking.status !== 'pending') {
+        return false;
+      }
+      
+      const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
+      
+      // Check if dates match
+      const datesMatch = 
+        bookingDate.getDate() === date.getDate() &&
+        bookingDate.getMonth() === date.getMonth() &&
+        bookingDate.getFullYear() === date.getFullYear();
+        
+      if (!datesMatch) return false;
+      
+      // Check if time matches
+      const bookingTime = booking.time || booking.startTime;
+      return bookingTime === timeSlot;
+    });
+  };
+
   // Function to check if a day has bookings
   const dayHasBookings = (checkDate: Date) => {
     return appointments.some(booking => {
+      // Only show indicators for confirmed bookings
+      if (booking.status !== 'confirmed' && 
+          booking.status !== 'in-progress' && 
+          booking.status !== 'finished' &&
+          booking.status !== 'inspecting' &&
+          booking.status !== 'inspected') {
+        return false;
+      }
+      
       const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
       return (
         bookingDate.getDate() === checkDate.getDate() &&
@@ -81,31 +125,6 @@ const DateTimeSelector = ({
         bookingDate.getFullYear() === checkDate.getFullYear()
       );
     });
-  };
-
-  // Handle selecting a reserved time slot
-  const handleReservedTimeClick = (reservedTimeSlot: string) => {
-    // Find the conflicting booking
-    const conflictingBooking = appointments.find(booking => {
-      const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
-      const datesMatch = 
-        date && 
-        bookingDate.getDate() === date.getDate() &&
-        bookingDate.getMonth() === date.getMonth() &&
-        bookingDate.getFullYear() === date.getFullYear();
-        
-      if (!datesMatch) return false;
-      
-      const bookingTime = booking.time || booking.startTime;
-      return bookingTime === reservedTimeSlot;
-    });
-    
-    // Show a prompt or modal for handling the conflict
-    // For now, we'll just log it
-    console.log("Conflict with booking:", conflictingBooking);
-    
-    // Still select the time but mark it as conflicting
-    onTimeChange(reservedTimeSlot);
   };
 
   return (
@@ -119,15 +138,13 @@ const DateTimeSelector = ({
           classNames={{
             day_selected: "bg-gold text-black",
             day_today: "bg-gray-800 text-white",
-            // Fix: Use a string instead of a function for basic styling
             day: "text-white hover:bg-gray-800"
           }}
           modifiers={{
-            // Use modifiers instead for conditional styling
             highlighted: (day) => dayHasBookings(day)
           }}
           modifiersClassNames={{
-            highlighted: "font-bold"
+            highlighted: "font-bold text-gold"
           }}
           disabled={(date) => {
             // Disable past dates and Sundays
@@ -146,34 +163,53 @@ const DateTimeSelector = ({
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {timeSlots.map((slot) => {
               const reserved = isTimeSlotReserved(slot);
+              const pendingConflict = hasPendingConflict(slot);
+              
               return (
                 <button
                   key={slot}
                   type="button"
-                  onClick={() => reserved ? handleReservedTimeClick(slot) : onTimeChange(slot)}
+                  onClick={() => !reserved && onTimeChange(slot)}
+                  disabled={reserved}
                   className={`py-2 px-3 rounded-md text-sm transition-colors ${
                     time === slot
-                      ? reserved
-                        ? "bg-red-700 text-white" // Conflicting selection
+                      ? pendingConflict
+                        ? "bg-yellow-700 text-white" // Selected with pending conflict
                         : "gold-gradient text-black" // Normal selection
                       : reserved 
-                        ? "bg-red-900/40 text-gray-300" // Reserved slot
-                        : "bg-gray-800 text-white hover:bg-gray-700" // Available slot
+                        ? "bg-red-900/40 text-gray-500 cursor-not-allowed" // Reserved (unavailable)
+                        : pendingConflict
+                          ? "bg-yellow-900/40 text-yellow-300 hover:bg-yellow-800/60" // Pending conflict warning
+                          : "bg-gray-800 text-white hover:bg-gray-700" // Available slot
                   }`}
                 >
                   {slot}
                   {reserved && <span className="ml-2 text-red-400">●</span>}
+                  {!reserved && pendingConflict && <span className="ml-2 text-yellow-400">⚠</span>}
                 </button>
               );
             })}
           </div>
           
-          {time && isTimeSlotReserved(time) && (
-            <div className="mt-4 p-3 bg-red-900/20 border border-red-800 rounded-md text-sm">
-              <p className="text-red-300">
-                <strong>Booking Conflict:</strong> This time slot already has a confirmed booking.
-                Consider selecting another time or click "Submit" to request this slot anyway.
-              </p>
+          {time && (
+            <div className="mt-4">
+              {isTimeSlotReserved(time) && (
+                <div className="p-3 bg-red-900/20 border border-red-800 rounded-md text-sm">
+                  <p className="text-red-300">
+                    <strong>Time Unavailable:</strong> This time slot is already reserved by a confirmed booking.
+                    Please select a different time.
+                  </p>
+                </div>
+              )}
+              
+              {!isTimeSlotReserved(time) && hasPendingConflict(time) && (
+                <div className="p-3 bg-yellow-900/20 border border-yellow-800 rounded-md text-sm">
+                  <p className="text-yellow-300">
+                    <strong>Pending Conflict:</strong> There is a pending booking for this time slot.
+                    You can still book this time, but it may cause a scheduling conflict if the other booking gets confirmed.
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </div>

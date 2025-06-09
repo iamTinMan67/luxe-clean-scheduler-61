@@ -8,46 +8,63 @@ export const useScheduledAppointments = () => {
 
   useEffect(() => {
     const loadAppointments = () => {
-      setLoading(true);
       try {
-        // Load appointments from localStorage
-        const confirmedBookingsData = localStorage.getItem('confirmedBookings');
-        const plannerBookingsData = localStorage.getItem('plannerCalendarBookings');
+        // Get confirmed bookings from planner storage
+        const confirmedBookings = localStorage.getItem('confirmedBookings');
+        const pendingBookings = localStorage.getItem('pendingBookings');
         
-        let allAppointments: Booking[] = [];
+        let allBookings: Booking[] = [];
         
         // Parse confirmed bookings
-        if (confirmedBookingsData) {
-          const confirmedBookings = JSON.parse(confirmedBookingsData);
-          allAppointments = [...allAppointments, ...confirmedBookings];
+        if (confirmedBookings) {
+          const confirmed = JSON.parse(confirmedBookings);
+          allBookings = [...allBookings, ...confirmed];
         }
         
-        // Parse planner bookings
-        if (plannerBookingsData) {
-          const plannerBookings = JSON.parse(plannerBookingsData);
-          // Filter out duplicates by ID
-          const existingIds = new Set(allAppointments.map(b => b.id));
-          const uniquePlannerBookings = plannerBookings.filter((b: Booking) => !existingIds.has(b.id));
-          allAppointments = [...allAppointments, ...uniquePlannerBookings];
+        // Parse pending bookings
+        if (pendingBookings) {
+          const pending = JSON.parse(pendingBookings);
+          allBookings = [...allBookings, ...pending];
         }
         
-        // Filter to only include appointments with status "confirmed" for initial selection
-        // in the pre-inspection page
-        const confirmedAppointments = allAppointments.filter(
-          booking => booking.status === "confirmed"
-        );
+        // Convert date strings to Date objects
+        const processedBookings = allBookings.map(booking => ({
+          ...booking,
+          date: booking.date instanceof Date ? booking.date : new Date(booking.date)
+        }));
         
-        setAppointments(confirmedAppointments);
+        setAppointments(processedBookings);
       } catch (error) {
-        console.error('Error loading scheduled appointments:', error);
+        console.error('Error loading appointments:', error);
         setAppointments([]);
       } finally {
         setLoading(false);
       }
     };
-    
+
     loadAppointments();
+    
+    // Listen for storage changes to update in real-time
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'confirmedBookings' || e.key === 'pendingBookings') {
+        loadAppointments();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also listen for custom events when bookings are updated within the same tab
+    const handleBookingUpdate = () => {
+      loadAppointments();
+    };
+    
+    window.addEventListener('bookingsUpdated', handleBookingUpdate);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('bookingsUpdated', handleBookingUpdate);
+    };
   }, []);
-  
+
   return { appointments, loading };
 };
