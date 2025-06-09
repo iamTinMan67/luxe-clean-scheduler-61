@@ -19,11 +19,12 @@ const DashboardContent = () => {
       </div>
       
       {/* Feedback Distribution Chart */}
-        <FeedbackDistribution />
+      <FeedbackDistribution />
         
       {/* Recent Feedback Section - Below Feedback Distribution */}
-        <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
-          <FeedbackSnippet dashboardMode={true} />
+      <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
+        <FeedbackSnippet dashboardMode={true} />
+      </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -47,8 +48,6 @@ const DashboardContent = () => {
         
         {/* Package Distribution Chart */}
         <PackageDistribution data={packageData} />
-        
-        </div>
       </div>
     </>
   );

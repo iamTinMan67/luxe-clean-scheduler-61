@@ -19,7 +19,7 @@ const PackageSelection: React.FC<PackageSelectionProps> = ({
   return (
     <div className="mb-16">
       <h2 className="text-2xl font-bold mb-8 text-center text-white">
-        Browse our services amd select your <span className="text-gold">package</span>
+        Browse our services and select your <span className="text-gold">package</span>
       </h2>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

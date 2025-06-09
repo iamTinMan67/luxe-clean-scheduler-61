@@ -24,8 +24,8 @@ export interface Booking {
   totalPrice?: number;
   travelMinutes?: number;
   additionalServices?: string[]; // Added to track selected additional services
-  clientType?: "private" | "corporate"; // Added client type
-  vehicleType?: string; // Added vehicle/job type
+  clientType?: "private" | "corporate"; // Client type field
+  vehicleType?: string; // Vehicle/job type field
 }
 
 // Helper function to validate booking status

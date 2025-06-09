@@ -86,7 +86,7 @@ const VehicleTypeSelector = ({
         </div>
       </div>
 
-      {/* Job Type Selection */}
+      {/* Job Type Selection - Changed from "Vehicle Type" */}
       <div>
         <h3 className="text-lg font-semibold mb-3 text-white text-center">Select Job Type</h3>
         <div className="grid grid-cols-3 gap-3 max-w-md mx-auto">

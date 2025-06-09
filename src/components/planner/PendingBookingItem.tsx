@@ -4,6 +4,7 @@ import { Booking } from '@/types/booking';
 import { packageOptions } from "@/data/servicePackageData";
 import { additionalServices } from "@/data/servicePackageData";
 import { calculateTotalBookingTime } from "@/utils/priceCalculator";
+import { Building, Home, Car, Truck, Box } from "lucide-react";
 
 // Import refactored components
 import BookingVehicleInfo from './booking-item/BookingVehicleInfo';
@@ -62,13 +63,56 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
     booking.additionalServices.map(id => additionalServices.find(s => s.id === id)).filter(Boolean) : 
     [];
 
+  // Helper function to get client icon
+  const getClientIcon = (clientType?: string) => {
+    switch (clientType) {
+      case "private":
+        return <Home size={16} className="text-blue-400" />;
+      case "corporate":
+        return <Building size={16} className="text-green-400" />;
+      default:
+        return <Home size={16} className="text-gray-400" />;
+    }
+  };
+
+  // Helper function to get job type icon
+  const getJobTypeIcon = (vehicleType?: string) => {
+    switch (vehicleType) {
+      case "car":
+        return <Car size={16} className="text-gray-300" />;
+      case "van":
+        return <Truck size={16} className="text-gray-300" />;
+      case "other":
+        return <Box size={16} className="text-gray-300" />;
+      default:
+        return <Car size={16} className="text-gray-300" />;
+    }
+  };
+
   return (
     <div 
       key={booking.id}
       className={`rounded-lg p-4 border ${getBookingBackground(booking)}`}
     >
       <div className="flex justify-between items-start mb-3">
-        <h3 className="text-lg font-medium text-white">{booking.customer}</h3>
+        <div className="flex flex-col">
+          <h3 className="text-lg font-medium text-white">{booking.customer}</h3>
+          {/* Category indicators */}
+          <div className="flex items-center gap-3 mt-1">
+            {booking.clientType && (
+              <div className="flex items-center gap-1">
+                {getClientIcon(booking.clientType)}
+                <span className="text-xs text-gray-300 capitalize">{booking.clientType}</span>
+              </div>
+            )}
+            {booking.vehicleType && (
+              <div className="flex items-center gap-1">
+                {getJobTypeIcon(booking.vehicleType)}
+                <span className="text-xs text-gray-300 capitalize">{booking.vehicleType}</span>
+              </div>
+            )}
+          </div>
+        </div>
         <span className="text-xs text-gray-400">ID: {booking.id}</span>
       </div>
       
