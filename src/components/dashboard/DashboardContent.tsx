@@ -7,16 +7,15 @@ import DataMigrationTrigger from "@/components/DataMigrationTrigger";
 const DashboardContent = () => {
   return (
     <>
-    
-      {/* Recent Bookings - At the top */}
-      <RecentBookings bookings={recentBookings} />
-      
-      {/* Inventory Alerts - Below Recent Bookings */}
+      {/* Inventory Alerts - At the top */}
+      <InventoryAlerts alerts={inventoryAlerts} />
+       
+      {/* Recent Bookings - Below Inventory Alerts */}
       <div className="mb-8">
-        <InventoryAlerts alerts={inventoryAlerts} />
+        <RecentBookings bookings={recentBookings} />
       </div>
       
-      {/* Recent Feedback Section - Below Feedback Distribution */}
+      {/* Recent Feedback Section - Above Feedback Distribution */}
       <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
         <FeedbackSnippet dashboardMode={true} />
       </div>
