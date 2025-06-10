@@ -18,13 +18,6 @@ export const statsData = [
     icon: <Users className="h-5 w-5 text-green-500" />
   },
   { 
-    title: "Vehicles Serviced", 
-    value: "312", 
-    change: "+15%", 
-    trend: "up",
-    icon: <Car className="h-5 w-5 text-purple-500" />
-  },
-  { 
     title: "Revenue", 
     value: "£29,482", 
     change: "+21%", 
@@ -54,14 +47,6 @@ export const packageData = [
   { name: "Basic", value: 35 },
   { name: "Medium", value: 40 },
   { name: "Elite", value: 25 }
-];
-
-// Vehicle type distribution
-export const vehicleData = [
-  { name: "Car", count: 65 },
-  { name: "SUV", count: 45 },
-  { name: "Van", count: 25 },
-  { name: "Truck", count: 15 }
 ];
 
 // Recent bookings

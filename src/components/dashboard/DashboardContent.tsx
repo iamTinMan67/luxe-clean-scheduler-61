@@ -7,9 +7,7 @@ import DataMigrationTrigger from "@/components/DataMigrationTrigger";
 const DashboardContent = () => {
   return (
     <>
-      {/* Data Migration - At the top for admin users */}
-      <DataMigrationTrigger />
-      
+    
       {/* Recent Bookings - At the top */}
       <RecentBookings bookings={recentBookings} />
       
