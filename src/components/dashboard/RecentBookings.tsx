@@ -42,7 +42,7 @@ const RecentBookings = ({ bookings }: RecentBookingsProps) => {
     >
       <Card className="bg-gray-900 border-gray-800 p-6">
         <div className="flex justify-between items-center mb-6">
-          <h3 className="text-lg font-bold text-white">Recent Bookings</h3>
+          <h3 className="text-lg font-bold text-white">Current Bookings</h3>
           <button className="text-gold text-sm hover:underline">View All</button>
         </div>
         
