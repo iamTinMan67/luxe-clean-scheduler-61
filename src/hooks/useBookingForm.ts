@@ -33,24 +33,6 @@ export const useBookingForm = ({ onSubmit }: UseBookingFormProps) => {
       return;
     }
     
-    // Validate phone format
-    const phoneRegex = /^[0-9+\s()-]{10,15}$/;
-    if (!phoneRegex.test(phone)) {
-      toast.error("Invalid Phone Number", {
-        description: "Please enter a valid phone number"
-      });
-      return;
-    }
-    
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      toast.error("Invalid Email", {
-        description: "Please enter a valid email address"
-      });
-      return;
-    }
-    
     onSubmit({
       yourName,
       postcode,
