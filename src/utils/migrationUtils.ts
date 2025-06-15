@@ -47,7 +47,7 @@ export const migrateWarehouseInventory = async (): Promise<void> => {
     
     // Transform data for Supabase
     const transformedItems = inventoryItems.map(item => ({
-      id: item.id, // Note: may need to generate UUID if id isn't valid
+      id: item.id,
       name: item.name,
       category: item.category,
       stock_in: item.stockIn,
@@ -55,7 +55,7 @@ export const migrateWarehouseInventory = async (): Promise<void> => {
       supplier: item.supplier,
       reorder_point: item.reorderPoint,
       allocated_stock: item.allocatedStock || {},
-      location: "Warehouse", // Default location
+      location: "Warehouse",
       created_at: new Date(item.dateAdded).toISOString(),
       updated_at: new Date(item.lastUpdated).toISOString()
     }));
@@ -69,10 +69,10 @@ export const migrateWarehouseInventory = async (): Promise<void> => {
       throw error;
     }
     
-    toast.success("Warehouse inventory migrated to database");
+    console.log("Warehouse inventory migrated to database");
   } catch (error) {
     console.error("Error migrating warehouse inventory:", error);
-    toast.error("Failed to migrate warehouse inventory");
+    throw error;
   }
 };
 
@@ -94,114 +94,299 @@ export const migrateGalleryItems = async (): Promise<void> => {
     const savedGallery = localStorage.getItem('galleryItems');
     let galleryItems = savedGallery ? JSON.parse(savedGallery) : getDefaultItems();
     
+    // Transform gallery items for Supabase
+    const transformedGalleryItems = galleryItems.map(item => ({
+      category: item.category,
+      images: Array.isArray(item.images) ? item.images : [item.images],
+      title: item.title || null,
+      description: item.description || null
+    }));
+    
+    if (transformedGalleryItems.length > 0) {
+      // Insert data into Supabase
+      const { error } = await supabase
+        .from("gallery_items")
+        .insert(transformedGalleryItems);
+        
+      if (error) {
+        throw error;
+      }
+    }
+    
+    console.log("Gallery items migrated to database");
+  } catch (error) {
+    console.error("Error migrating gallery items:", error);
+    throw error;
+  }
+};
+
+// Migrate testimonials
+export const migrateTestimonials = async (): Promise<void> => {
+  try {
+    // First check if we already have testimonials in the database
+    const { data: existingTestimonials } = await supabase
+      .from("testimonials")
+      .select("id")
+      .limit(1);
+    
+    if (existingTestimonials && existingTestimonials.length > 0) {
+      console.log("Testimonials already migrated, skipping");
+      return;
+    }
+    
     // Get testimonials from localStorage or use defaults
     const savedTestimonials = localStorage.getItem('testimonials');
     const testimonials = savedTestimonials ? JSON.parse(savedTestimonials) : getTestimonials();
     
-    // Combine items and testimonials
-    const allItems = [
-      ...galleryItems.map(item => ({
-        category: item.category,
-        images: Array.isArray(item.images) ? item.images : [item.images],
-        title: item.title || null,
-        description: item.description || null
-      })),
-      ...testimonials.map(item => ({
-        category: "testimonial",
-        images: [item.image],
-        title: item.name,
-        description: `${item.vehicle} - ${item.text}`
-      }))
-    ];
-    
-    if (allItems.length === 0) {
-      return; // No items to migrate
+    if (testimonials.length > 0) {
+      // Insert testimonials into Supabase
+      const { error } = await supabase
+        .from("testimonials")
+        .insert(testimonials);
+        
+      if (error) {
+        throw error;
+      }
     }
     
-    // Insert data into Supabase
+    console.log("Testimonials migrated to database");
+  } catch (error) {
+    console.error("Error migrating testimonials:", error);
+    throw error;
+  }
+};
+
+// Migrate bookings
+export const migrateBookings = async (): Promise<void> => {
+  try {
+    // First check if we already have bookings in the database
+    const { data: existingBookings } = await supabase
+      .from("bookings")
+      .select("id")
+      .limit(1);
+    
+    if (existingBookings && existingBookings.length > 0) {
+      console.log("Bookings already migrated, skipping");
+      return;
+    }
+    
+    // Get bookings from localStorage
+    const confirmedBookings = localStorage.getItem('confirmedBookings');
+    const pendingBookings = localStorage.getItem('pendingBookings');
+    
+    let allBookings = [];
+    
+    if (confirmedBookings) {
+      try {
+        const confirmed = JSON.parse(confirmedBookings);
+        allBookings = [...allBookings, ...confirmed];
+      } catch (error) {
+        console.error('Error parsing confirmed bookings:', error);
+      }
+    }
+    
+    if (pendingBookings) {
+      try {
+        const pending = JSON.parse(pendingBookings);
+        allBookings = [...allBookings, ...pending];
+      } catch (error) {
+        console.error('Error parsing pending bookings:', error);
+      }
+    }
+    
+    if (allBookings.length === 0) {
+      return; // No bookings to migrate
+    }
+    
+    // Transform bookings for Supabase
+    const transformedBookings = allBookings.map(booking => ({
+      id: booking.id,
+      customer_name: booking.yourName || booking.customerName,
+      customer_email: booking.email || booking.customerEmail,
+      customer_phone: booking.phone || booking.customerPhone,
+      location: booking.postcode || booking.location,
+      vehicle_type: booking.vehicleType,
+      package_type: booking.packageType,
+      date: new Date(booking.date).toISOString().split('T')[0],
+      time: booking.timeSlot || booking.time,
+      start_time: booking.startTime,
+      end_time: booking.endTime,
+      status: booking.status,
+      progress_percentage: booking.progressPercentage || 0,
+      total_price: booking.totalPrice || 0,
+      notes: booking.notes || booking.jobDetails,
+      staff: booking.staff || [],
+      condition: booking.condition || 5
+    }));
+    
+    // Insert bookings into Supabase
     const { error } = await supabase
-      .from("gallery_items")
-      .insert(allItems);
+      .from("bookings")
+      .insert(transformedBookings);
       
     if (error) {
       throw error;
     }
     
-    toast.success("Gallery items migrated to database");
+    console.log("Bookings migrated to database");
   } catch (error) {
-    console.error("Error migrating gallery items:", error);
-    toast.error("Failed to migrate gallery items");
+    console.error("Error migrating bookings:", error);
+    throw error;
   }
 };
 
-// Migrate appointment tasks
-export const migrateAppointmentTasks = async (): Promise<void> => {
+// Migrate customer feedback
+export const migrateFeedback = async (): Promise<void> => {
   try {
-    // First check if we already have appointment tasks in the database
-    const { data: existingTasks } = await supabase
-      .from("appointment_tasks")
+    // First check if we already have feedback in the database
+    const { data: existingFeedback } = await supabase
+      .from("customer_feedback")
       .select("id")
       .limit(1);
     
-    if (existingTasks && existingTasks.length > 0) {
-      console.log("Appointment tasks already migrated, skipping");
+    if (existingFeedback && existingFeedback.length > 0) {
+      console.log("Customer feedback already migrated, skipping");
       return;
     }
     
-    // Get appointment tasks from localStorage
-    const savedTasks = localStorage.getItem('appointmentTasks');
-    if (!savedTasks) {
-      return; // No tasks to migrate
+    // Get feedback from localStorage
+    const savedFeedback = localStorage.getItem('customerFeedback');
+    
+    if (!savedFeedback) {
+      return; // No feedback to migrate
     }
     
-    const appointmentTasks = JSON.parse(savedTasks);
+    const feedback = JSON.parse(savedFeedback);
     
-    // Process each appointment and its service tasks
-    for (const appointment of appointmentTasks) {
-      // Insert the appointment
-      const { data: appointmentData, error: appointmentError } = await supabase
-        .from("appointment_tasks")
-        .insert({
-          appointment_name: appointment.appointmentName,
-          customer: appointment.customer,
-          vehicle: appointment.vehicle,
-          date_scheduled: appointment.dateScheduled,
-          time_slot: appointment.timeSlot,
-          completed: appointment.completed || false
-        })
-        .select();
-        
-      if (appointmentError || !appointmentData) {
-        console.error("Error migrating appointment:", appointmentError);
-        continue;
-      }
+    if (feedback.length === 0) {
+      return;
+    }
+    
+    // Transform feedback for Supabase
+    const transformedFeedback = feedback.map(item => ({
+      booking_id: item.bookingId || '',
+      customer_name: item.name || item.customerName,
+      email: item.email || '',
+      rating: item.rating,
+      comment: item.comment,
+      images: item.images || [],
+      responded: item.responded || false,
+      date: item.date ? new Date(item.date).toISOString() : new Date().toISOString()
+    }));
+    
+    // Insert feedback into Supabase
+    const { error } = await supabase
+      .from("customer_feedback")
+      .insert(transformedFeedback);
       
-      const appointmentId = appointmentData[0].id;
+    if (error) {
+      throw error;
+    }
+    
+    console.log("Customer feedback migrated to database");
+  } catch (error) {
+    console.error("Error migrating customer feedback:", error);
+    throw error;
+  }
+};
+
+// Migrate service progress
+export const migrateServiceProgress = async (): Promise<void> => {
+  try {
+    // Get service progress from localStorage
+    const savedProgress = localStorage.getItem('serviceProgress');
+    
+    if (!savedProgress) {
+      return; // No service progress to migrate
+    }
+    
+    const progressData = JSON.parse(savedProgress);
+    
+    if (progressData.length === 0) {
+      return;
+    }
+    
+    // Insert service progress into Supabase
+    const { error } = await supabase
+      .from("service_progress")
+      .insert(progressData.map(item => ({
+        booking_id: item.bookingId,
+        tasks: item.tasks,
+        last_updated: item.lastUpdated || new Date().toISOString()
+      })));
       
-      // Insert all service tasks for this appointment
-      if (appointment.services && appointment.services.length > 0) {
-        const serviceTasks = appointment.services.map(service => ({
-          appointment_id: appointmentId,
-          name: service.name,
-          allocated_time: service.allocatedTime,
-          time_spent: service.timeSpent,
-          completed: service.completed
-        }));
+    if (error) {
+      throw error;
+    }
+    
+    console.log("Service progress migrated to database");
+  } catch (error) {
+    console.error("Error migrating service progress:", error);
+    throw error;
+  }
+};
+
+// Migrate van inventory
+export const migrateVanInventory = async (): Promise<void> => {
+  try {
+    // Get van inventory from localStorage
+    const savedVanInventory = localStorage.getItem('vanInventory');
+    
+    if (!savedVanInventory) {
+      return; // No van inventory to migrate
+    }
+    
+    const vanInventory = JSON.parse(savedVanInventory);
+    
+    // First ensure vans exist
+    for (const vanData of Object.keys(vanInventory)) {
+      const { data: existingVan } = await supabase
+        .from("vans")
+        .select("id")
+        .eq("registration", vanData)
+        .maybeSingle();
+      
+      if (!existingVan) {
+        // Create van entry
+        const { data: newVan, error } = await supabase
+          .from("vans")
+          .insert({ registration: vanData })
+          .select()
+          .single();
         
-        const { error: serviceError } = await supabase
-          .from("service_tasks")
-          .insert(serviceTasks);
+        if (error) {
+          console.error("Error creating van:", error);
+          continue;
+        }
+        
+        // Migrate inventory items for this van
+        const items = vanInventory[vanData];
+        if (items && items.length > 0) {
+          const transformedItems = items.map(item => ({
+            van_id: newVan.id,
+            name: item.name,
+            category: item.category,
+            quantity: item.quantity,
+            unit: item.unit || 'units',
+            threshold: item.threshold || 5,
+            last_restocked: item.lastRestocked ? new Date(item.lastRestocked).toISOString().split('T')[0] : null
+          }));
           
-        if (serviceError) {
-          console.error("Error migrating service tasks:", serviceError);
+          const { error: itemsError } = await supabase
+            .from("van_inventory_items")
+            .insert(transformedItems);
+          
+          if (itemsError) {
+            console.error("Error migrating van inventory items:", itemsError);
+          }
         }
       }
     }
     
-    toast.success("Appointment tasks migrated to database");
+    console.log("Van inventory migrated to database");
   } catch (error) {
-    console.error("Error migrating appointment tasks:", error);
-    toast.error("Failed to migrate appointment tasks");
+    console.error("Error migrating van inventory:", error);
+    throw error;
   }
 };
 
@@ -215,13 +400,23 @@ export const migrateAllData = async (): Promise<void> => {
   
   toast.info("Starting data migration to database...");
   
-  // Migrate data in sequence
-  await migrateWarehouseInventory();
-  await migrateGalleryItems();
-  await migrateAppointmentTasks();
-  
-  // Mark migration as complete
-  localStorage.setItem('dataMigrationComplete', 'true');
-  
-  toast.success("Data migration complete!");
+  try {
+    // Migrate data in sequence
+    await migrateWarehouseInventory();
+    await migrateGalleryItems();
+    await migrateTestimonials();
+    await migrateBookings();
+    await migrateFeedback();
+    await migrateServiceProgress();
+    await migrateVanInventory();
+    
+    // Mark migration as complete
+    localStorage.setItem('dataMigrationComplete', 'true');
+    
+    toast.success("Data migration complete!");
+  } catch (error) {
+    console.error("Migration failed:", error);
+    toast.error("Migration failed. Please try again.");
+    throw error;
+  }
 };

@@ -14,7 +14,7 @@ export default function useInventoryStorage() {
     const fetchInventory = async () => {
       setLoading(true);
       try {
-        // Try to get data from Supabase
+        // Get data from Supabase
         const { data, error } = await supabase
           .from("inventory_items")
           .select("*")
@@ -55,42 +55,39 @@ export default function useInventoryStorage() {
           
           setInventory(transformedItems);
         } else {
-          // Fallback to localStorage if no data in Supabase
-          const savedInventory = localStorage.getItem('warehouseInventory');
-          if (savedInventory) {
-            try {
-              const parsedInventory = JSON.parse(savedInventory);
-              // Ensure all items have allocatedStock property
-              const updatedInventory = parsedInventory.map((item: WarehouseItem) => ({
-                ...item,
-                allocatedStock: item.allocatedStock || {},
-              }));
-              setInventory(updatedInventory);
-            } catch (error) {
-              console.error('Error parsing warehouse inventory:', error);
-              // Set default data if error
-              setInventory(getDefaultInventory());
-            }
-          } else {
-            // Set default data if none exists
-            setInventory(getDefaultInventory());
+          // If no data in Supabase, initialize with default data
+          const defaultItems = getDefaultInventory();
+          setInventory(defaultItems);
+          
+          // Save default data to Supabase
+          const transformedForDb = defaultItems.map(item => ({
+            id: item.id,
+            name: item.name,
+            category: item.category,
+            stock_in: item.stockIn,
+            stock_out: item.stockOut,
+            supplier: item.supplier,
+            reorder_point: item.reorderPoint,
+            allocated_stock: item.allocatedStock || {},
+            location: "Warehouse",
+            created_at: new Date(item.dateAdded).toISOString(),
+            updated_at: new Date(item.lastUpdated).toISOString()
+          }));
+          
+          const { error: insertError } = await supabase
+            .from("inventory_items")
+            .insert(transformedForDb);
+          
+          if (insertError) {
+            console.error('Error saving default inventory:', insertError);
           }
         }
       } catch (error) {
         console.error('Error fetching inventory from database:', error);
         toast.error("Failed to load inventory data");
         
-        // Fall back to localStorage
-        const savedInventory = localStorage.getItem('warehouseInventory');
-        if (savedInventory) {
-          try {
-            setInventory(JSON.parse(savedInventory));
-          } catch (e) {
-            setInventory(getDefaultInventory());
-          }
-        } else {
-          setInventory(getDefaultInventory());
-        }
+        // Fallback to default data
+        setInventory(getDefaultInventory());
       } finally {
         setLoading(false);
       }
@@ -99,7 +96,7 @@ export default function useInventoryStorage() {
     fetchInventory();
   }, []);
 
-  // Save to Supabase whenever inventory changes
+  // Save to Supabase whenever inventory changes (but not on initial load)
   useEffect(() => {
     const saveInventory = async () => {
       if (inventory.length === 0 || loading) return;
@@ -119,7 +116,7 @@ export default function useInventoryStorage() {
           updated_at: new Date().toISOString()
         }));
 
-        // First try to upsert to Supabase
+        // Upsert to Supabase
         const { error } = await supabase
           .from("inventory_items")
           .upsert(items, { onConflict: 'id' });
@@ -127,17 +124,16 @@ export default function useInventoryStorage() {
         if (error) {
           throw error;
         }
-
-        // Also save to localStorage as backup
-        localStorage.setItem('warehouseInventory', JSON.stringify(inventory));
       } catch (error) {
         console.error('Error saving inventory to database:', error);
-        // At least save to localStorage
-        localStorage.setItem('warehouseInventory', JSON.stringify(inventory));
+        toast.error("Failed to save inventory changes");
       }
     };
 
-    saveInventory();
+    // Only save if not loading (to avoid saving during initial fetch)
+    if (!loading) {
+      saveInventory();
+    }
   }, [inventory, loading]);
 
   return {

@@ -189,18 +189,52 @@ export type Database = {
           },
         ]
       }
+      booking_tracking: {
+        Row: {
+          booking_id: string
+          created_at: string
+          current_step: string | null
+          estimated_completion: string | null
+          id: string
+          last_updated: string
+          progress_percentage: number | null
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          current_step?: string | null
+          estimated_completion?: string | null
+          id?: string
+          last_updated?: string
+          progress_percentage?: number | null
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          current_step?: string | null
+          estimated_completion?: string | null
+          id?: string
+          last_updated?: string
+          progress_percentage?: number | null
+        }
+        Relationships: []
+      }
       bookings: {
         Row: {
+          condition: number | null
           created_at: string | null
           customer_email: string | null
           customer_name: string
           customer_phone: string | null
           date: string
+          end_time: string | null
           id: string
           location: string
           notes: string | null
           package_type: string
           progress_percentage: number | null
+          staff: Json | null
+          start_time: string | null
           status: string
           time: string
           total_price: number
@@ -208,16 +242,20 @@ export type Database = {
           vehicle_type: string
         }
         Insert: {
+          condition?: number | null
           created_at?: string | null
           customer_email?: string | null
           customer_name: string
           customer_phone?: string | null
           date: string
+          end_time?: string | null
           id?: string
           location: string
           notes?: string | null
           package_type: string
           progress_percentage?: number | null
+          staff?: Json | null
+          start_time?: string | null
           status: string
           time: string
           total_price: number
@@ -225,16 +263,20 @@ export type Database = {
           vehicle_type: string
         }
         Update: {
+          condition?: number | null
           created_at?: string | null
           customer_email?: string | null
           customer_name?: string
           customer_phone?: string | null
           date?: string
+          end_time?: string | null
           id?: string
           location?: string
           notes?: string | null
           package_type?: string
           progress_percentage?: number | null
+          staff?: Json | null
+          start_time?: string | null
           status?: string
           time?: string
           total_price?: number
@@ -314,41 +356,6 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
-      }
-      inspection_checklist_items: {
-        Row: {
-          completed: boolean | null
-          id: string
-          item_id: number
-          label: string
-          report_id: string | null
-          required: boolean | null
-        }
-        Insert: {
-          completed?: boolean | null
-          id?: string
-          item_id: number
-          label: string
-          report_id?: string | null
-          required?: boolean | null
-        }
-        Update: {
-          completed?: boolean | null
-          id?: string
-          item_id?: number
-          label?: string
-          report_id?: string | null
-          required?: boolean | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "inspection_checklist_items_report_id_fkey"
-            columns: ["report_id"]
-            isOneToOne: false
-            referencedRelation: "inspection_reports"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       inspection_custom_items: {
         Row: {
@@ -539,96 +546,6 @@ export type Database = {
           },
         ]
       }
-      migrated_bookings: {
-        Row: {
-          condition: number | null
-          created_at: string | null
-          customer: string
-          date: string
-          end_time: string | null
-          id: string
-          location: string
-          notes: string | null
-          package_type: string
-          staff: string[] | null
-          start_time: string | null
-          status: string
-          time: string
-          total_price: number
-          travel_minutes: number | null
-          updated_at: string | null
-          vehicle: string
-        }
-        Insert: {
-          condition?: number | null
-          created_at?: string | null
-          customer: string
-          date: string
-          end_time?: string | null
-          id: string
-          location: string
-          notes?: string | null
-          package_type: string
-          staff?: string[] | null
-          start_time?: string | null
-          status: string
-          time: string
-          total_price: number
-          travel_minutes?: number | null
-          updated_at?: string | null
-          vehicle: string
-        }
-        Update: {
-          condition?: number | null
-          created_at?: string | null
-          customer?: string
-          date?: string
-          end_time?: string | null
-          id?: string
-          location?: string
-          notes?: string | null
-          package_type?: string
-          staff?: string[] | null
-          start_time?: string | null
-          status?: string
-          time?: string
-          total_price?: number
-          travel_minutes?: number | null
-          updated_at?: string | null
-          vehicle?: string
-        }
-        Relationships: []
-      }
-      migrated_invoices: {
-        Row: {
-          created_at: string | null
-          date: string
-          id: string
-          paid: boolean | null
-          payment_date: string | null
-          total: number
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          date: string
-          id: string
-          paid?: boolean | null
-          payment_date?: string | null
-          total: number
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          date?: string
-          id?: string
-          paid?: boolean | null
-          payment_date?: string | null
-          total?: number
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
       profiles: {
         Row: {
           created_at: string | null
@@ -647,6 +564,30 @@ export type Database = {
           id?: string
           role?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      service_progress: {
+        Row: {
+          booking_id: string
+          created_at: string
+          id: string
+          last_updated: string
+          tasks: Json
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          id?: string
+          last_updated?: string
+          tasks?: Json
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          id?: string
+          last_updated?: string
+          tasks?: Json
         }
         Relationships: []
       }
@@ -717,6 +658,83 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      testimonials: {
+        Row: {
+          created_at: string
+          id: string
+          image: string | null
+          name: string
+          rating: number | null
+          text: string
+          vehicle: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image?: string | null
+          name: string
+          rating?: number | null
+          text: string
+          vehicle: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image?: string | null
+          name?: string
+          rating?: number | null
+          text?: string
+          vehicle?: string
+        }
+        Relationships: []
+      }
+      van_inventory_items: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          last_restocked: string | null
+          name: string
+          quantity: number
+          threshold: number | null
+          unit: string | null
+          updated_at: string
+          van_id: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          last_restocked?: string | null
+          name: string
+          quantity?: number
+          threshold?: number | null
+          unit?: string | null
+          updated_at?: string
+          van_id?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          last_restocked?: string | null
+          name?: string
+          quantity?: number
+          threshold?: number | null
+          unit?: string | null
+          updated_at?: string
+          van_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "van_inventory_items_van_id_fkey"
+            columns: ["van_id"]
+            isOneToOne: false
+            referencedRelation: "vans"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       vans: {
         Row: {
