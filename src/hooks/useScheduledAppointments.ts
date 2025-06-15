@@ -31,28 +31,30 @@ export const useScheduledAppointments = (statusFilter?: string[]) => {
           // Transform data to match Booking type
           const transformedBookings: Booking[] = data.map(booking => ({
             id: booking.id,
-            yourName: booking.customer_name,
-            customerName: booking.customer_name,
-            email: booking.customer_email,
-            customerEmail: booking.customer_email,
-            phone: booking.customer_phone,
-            customerPhone: booking.customer_phone,
-            postcode: booking.location,
-            location: booking.location,
-            vehicleType: booking.vehicle_type,
+            customer: booking.customer_name, // Map to customer property
+            vehicle: booking.vehicle_type, // Map to vehicle property  
+            vehicleReg: '', // Default empty string since not in database
+            jobDetails: booking.notes,
+            secondVehicle: '', // Default empty string since not in database
+            secondVehicleReg: '', // Default empty string since not in database
             packageType: booking.package_type,
             date: new Date(booking.date + 'T' + (booking.time || '09:00')),
-            timeSlot: booking.time,
             time: booking.time,
             startTime: booking.start_time,
             endTime: booking.end_time,
-            status: booking.status,
-            progressPercentage: booking.progress_percentage || 0,
-            totalPrice: booking.total_price,
+            location: booking.location,
+            contact: booking.customer_phone,
+            email: booking.customer_email,
             notes: booking.notes,
-            jobDetails: booking.notes,
+            status: booking.status,
+            condition: booking.condition || 5,
             staff: booking.staff || [],
-            condition: booking.condition || 5
+            createdAt: booking.created_at,
+            totalPrice: booking.total_price,
+            travelMinutes: 0, // Default value since not in database
+            additionalServices: [], // Default empty array since not in database
+            clientType: "private", // Default value since not in database
+            vehicleType: booking.vehicle_type
           }));
           
           setAppointments(transformedBookings);
