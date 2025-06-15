@@ -29,33 +29,41 @@ export const useScheduledAppointments = (statusFilter?: string[]) => {
 
         if (data) {
           // Transform data to match Booking type
-          const transformedBookings: Booking[] = data.map(booking => ({
-            id: booking.id,
-            customer: booking.customer_name, // Map to customer property
-            vehicle: booking.vehicle_type, // Map to vehicle property  
-            vehicleReg: '', // Default empty string since not in database
-            jobDetails: booking.notes,
-            secondVehicle: '', // Default empty string since not in database
-            secondVehicleReg: '', // Default empty string since not in database
-            packageType: booking.package_type,
-            date: new Date(booking.date + 'T' + (booking.time || '09:00')),
-            time: booking.time,
-            startTime: booking.start_time,
-            endTime: booking.end_time,
-            location: booking.location,
-            contact: booking.customer_phone,
-            email: booking.customer_email,
-            notes: booking.notes,
-            status: validateBookingStatus(booking.status),
-            condition: booking.condition || 5,
-            staff: booking.staff || [],
-            createdAt: booking.created_at,
-            totalPrice: booking.total_price,
-            travelMinutes: 0, // Default value since not in database
-            additionalServices: [], // Default empty array since not in database
-            clientType: "private", // Default value since not in database
-            vehicleType: booking.vehicle_type
-          }));
+          const transformedBookings: Booking[] = data.map(booking => {
+            // Safely convert staff JSONB to string array
+            let staff: string[] = [];
+            if (Array.isArray(booking.staff)) {
+              staff = booking.staff.filter((item): item is string => typeof item === 'string');
+            }
+
+            return {
+              id: booking.id,
+              customer: booking.customer_name, // Map to customer property
+              vehicle: booking.vehicle_type, // Map to vehicle property  
+              vehicleReg: '', // Default empty string since not in database
+              jobDetails: booking.notes,
+              secondVehicle: '', // Default empty string since not in database
+              secondVehicleReg: '', // Default empty string since not in database
+              packageType: booking.package_type,
+              date: new Date(booking.date + 'T' + (booking.time || '09:00')),
+              time: booking.time,
+              startTime: booking.start_time,
+              endTime: booking.end_time,
+              location: booking.location,
+              contact: booking.customer_phone,
+              email: booking.customer_email,
+              notes: booking.notes,
+              status: validateBookingStatus(booking.status),
+              condition: booking.condition || 5,
+              staff: staff,
+              createdAt: booking.created_at,
+              totalPrice: booking.total_price,
+              travelMinutes: 0, // Default value since not in database
+              additionalServices: [], // Default empty array since not in database
+              clientType: "private", // Default value since not in database
+              vehicleType: booking.vehicle_type
+            };
+          });
           
           setAppointments(transformedBookings);
         } else {
