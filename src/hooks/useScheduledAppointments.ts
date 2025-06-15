@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Booking } from '@/types/booking';
+import { Booking, validateBookingStatus } from '@/types/booking';
 import { supabase } from '@/integrations/supabase/client';
 
 export const useScheduledAppointments = (statusFilter?: string[]) => {
@@ -46,7 +46,7 @@ export const useScheduledAppointments = (statusFilter?: string[]) => {
             contact: booking.customer_phone,
             email: booking.customer_email,
             notes: booking.notes,
-            status: booking.status,
+            status: validateBookingStatus(booking.status),
             condition: booking.condition || 5,
             staff: booking.staff || [],
             createdAt: booking.created_at,
