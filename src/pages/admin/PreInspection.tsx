@@ -18,6 +18,8 @@ const PreInspection = () => {
     showDeclineNotes,
     appointments,
     loading,
+    selectedDate,
+    setSelectedDate,
     setSelectedBooking,
     setExteriorNotes,
     setInteriorNotes,
@@ -52,6 +54,7 @@ const PreInspection = () => {
     showStartInspection,
     showInspectionComplete,
     appointmentsCount: appointments.length,
+    selectedDate: selectedDate.toDateString(),
     loading
   });
 
@@ -75,6 +78,8 @@ const PreInspection = () => {
           bookingDetails={bookingDetails}
           exteriorNotes={exteriorNotes}
           interiorNotes={interiorNotes}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
           setSelectedBooking={setSelectedBooking}
           setExteriorNotes={setExteriorNotes}
           setInteriorNotes={setInteriorNotes}

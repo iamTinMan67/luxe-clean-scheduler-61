@@ -2,11 +2,14 @@
 import { useEffect } from "react";
 import { useScheduledAppointments } from "@/hooks/useScheduledAppointments";
 import { usePreInspectionState } from "@/hooks/preinspection/usePreInspectionState";
+import { usePreInspectionFilters } from "@/hooks/preinspection/usePreInspectionFilters";
 import { useImageUpload } from "@/hooks/preinspection/useImageUpload";
 import { useBookingSelection } from "@/hooks/preinspection/useBookingSelection";
 import { useReportSubmission } from "@/hooks/preinspection/useReportSubmission";
 import { useServiceDecline } from "@/hooks/preinspection/useServiceDecline";
 import { syncLocalStorageToSupabase } from "@/utils/dataSyncUtils";
+import { Booking } from "@/types/booking";
+import { isSameDay } from "@/utils/dateParsingUtils";
 
 export const usePreInspection = () => {
   const {
@@ -27,9 +30,17 @@ export const usePreInspection = () => {
     initialBookingId
   } = usePreInspectionState();
 
+  const { selectedDate, setSelectedDate } = usePreInspectionFilters();
+
   // Get appointments with confirmed and inspecting status for pre-inspection
-  const { appointments, loading } = useScheduledAppointments(['confirmed', 'inspecting']);
+  const { appointments: allAppointments, loading } = useScheduledAppointments(['confirmed', 'inspecting']);
   
+  // Filter appointments by selected date
+  const appointments = allAppointments.filter(booking => {
+    const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
+    return isSameDay(bookingDate, selectedDate);
+  });
+
   const { handleImageUpload: uploadImage } = useImageUpload();
   const { updateBookingDetails, handleBookingSelected, handleStartInspection: startInspection } = useBookingSelection();
   const { handleSubmitReport: submitReport } = useReportSubmission();
@@ -50,7 +61,9 @@ export const usePreInspection = () => {
   
   // Enhanced debug logging for appointments
   console.log("=== usePreInspection Debug ===");
-  console.log("Appointments received:", appointments.length);
+  console.log("All appointments received:", allAppointments.length);
+  console.log("Filtered appointments for date:", appointments.length);
+  console.log("Selected date:", selectedDate.toDateString());
   console.log("Loading state:", loading);
   console.log("Selected booking ID:", selectedBooking);
   console.log("Initial booking ID from URL:", initialBookingId);
@@ -115,6 +128,8 @@ export const usePreInspection = () => {
     showDeclineNotes,
     appointments,
     loading,
+    selectedDate,
+    setSelectedDate,
     setSelectedBooking,
     setExteriorNotes,
     setInteriorNotes,
