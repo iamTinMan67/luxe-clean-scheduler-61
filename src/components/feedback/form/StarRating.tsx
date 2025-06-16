@@ -4,11 +4,10 @@ import React from "react";
 
 interface StarRatingProps {
   rating: number;
-  setRating: (rating: number) => void;
-  setFormValue?: (value: number) => void;
+  onRatingChange: (rating: number) => void;
 }
 
-const StarRating = ({ rating, setRating, setFormValue }: StarRatingProps) => {
+const StarRating = ({ rating, onRatingChange }: StarRatingProps) => {
   const [hoveredRating, setHoveredRating] = React.useState<number>(0);
 
   const getRatingText = (rating: number): string => {
@@ -35,10 +34,7 @@ const StarRating = ({ rating, setRating, setFormValue }: StarRatingProps) => {
           <button
             key={star}
             type="button"
-            onClick={() => {
-              setRating(star);
-              if (setFormValue) setFormValue(star);
-            }}
+            onClick={() => onRatingChange(star)}
             onMouseEnter={() => setHoveredRating(star)}
             onMouseLeave={() => setHoveredRating(0)}
             className="focus:outline-none transition duration-150"

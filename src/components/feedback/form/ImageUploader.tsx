@@ -5,11 +5,11 @@ import { FormLabel } from "@/components/ui/form";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface ImageUploaderProps {
-  uploadedImages: string[];
-  setUploadedImages: (images: string[]) => void;
+  images: string[];
+  onImagesChange: (images: string[]) => void;
 }
 
-const ImageUploader = ({ uploadedImages, setUploadedImages }: ImageUploaderProps) => {
+const ImageUploader = ({ images, onImagesChange }: ImageUploaderProps) => {
   const [uploading, setUploading] = useState(false);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,14 +21,14 @@ const ImageUploader = ({ uploadedImages, setUploadedImages }: ImageUploaderProps
     // In a real implementation, you'd upload these to storage
     // For this demo, we'll use URL.createObjectURL to preview them
     const newImages = Array.from(files).map(file => URL.createObjectURL(file));
-    setUploadedImages([...uploadedImages, ...newImages]);
+    onImagesChange([...images, ...newImages]);
     setUploading(false);
   };
 
   const removeImage = (index: number) => {
-    const newImages = [...uploadedImages];
+    const newImages = [...images];
     newImages.splice(index, 1);
-    setUploadedImages(newImages);
+    onImagesChange(newImages);
   };
 
   return (
@@ -66,11 +66,11 @@ const ImageUploader = ({ uploadedImages, setUploadedImages }: ImageUploaderProps
         </div>
       )}
 
-      {uploadedImages.length > 0 && (
+      {images.length > 0 && (
         <div className="mt-4">
           <h3 className="text-white text-sm mb-2">Uploaded Images:</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {uploadedImages.map((src, index) => (
+            {images.map((src, index) => (
               <div key={index} className="relative group h-24">
                 <img
                   src={src}

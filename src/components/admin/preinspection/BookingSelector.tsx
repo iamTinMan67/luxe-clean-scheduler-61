@@ -33,8 +33,9 @@ const BookingSelector = ({
     return d1.toDateString() === d2.toDateString();
   };
 
-  // Filter appointments with enhanced logic and debugging
+  // Enhanced filtering with more comprehensive status checking
   const todayAppointments = appointments.filter(booking => {
+    console.log("=== BookingSelector Filter Debug ===");
     console.log("Processing booking:", {
       id: booking.id,
       customer: booking.customer,
@@ -48,23 +49,30 @@ const BookingSelector = ({
     const today = new Date();
     
     const isToday = isSameDay(bookingDate, today);
-    const isConfirmed = booking.status === "confirmed";
+    // More flexible status checking - include various confirmed statuses
+    const isValidStatus = booking.status === "confirmed" || 
+                         booking.status === "inspecting" || 
+                         booking.status === "inspected" ||
+                         booking.status === "in-progress";
     
     console.log("Booking filter check:", {
       id: booking.id,
+      customer: booking.customer,
       isToday,
-      isConfirmed,
-      shouldInclude: isToday && isConfirmed
+      isValidStatus,
+      status: booking.status,
+      shouldInclude: isToday && isValidStatus
     });
 
-    return isToday && isConfirmed;
+    return isToday && isValidStatus;
   });
 
-  console.log("=== BookingSelector Debug ===");
+  console.log("=== BookingSelector Final Results ===");
   console.log("Total appointments received:", appointments.length);
-  console.log("Today's confirmed appointments:", todayAppointments.length);
+  console.log("All appointment statuses:", appointments.map(a => `${a.customer}:${a.status}`));
+  console.log("Today's valid appointments:", todayAppointments.length);
   console.log("Today's date:", getTodayString());
-  console.log("Confirmed appointments for today:", todayAppointments.map(a => ({
+  console.log("Valid appointments for today:", todayAppointments.map(a => ({
     id: a.id,
     customer: a.customer,
     status: a.status,
@@ -89,7 +97,7 @@ const BookingSelector = ({
           ) : todayAppointments.length > 0 ? (
             todayAppointments.map((booking) => (
               <SelectItem key={booking.id} value={booking.id}>
-                {booking.customer} - {booking.time} - {booking.packageType}
+                {booking.customer} - {booking.time} - {booking.packageType} ({booking.status})
               </SelectItem>
             ))
           ) : (
@@ -100,12 +108,13 @@ const BookingSelector = ({
         </SelectContent>
       </Select>
       
-      {/* Debug information - only shown in development */}
+      {/* Enhanced debug information */}
       {process.env.NODE_ENV === 'development' && (
-        <div className="mt-2 text-xs text-gray-400">
-          Debug: {appointments.length} total, {todayAppointments.length} today confirmed
-          <br />
-          All statuses: {appointments.map(a => `${a.customer}:${a.status}`).join(', ')}
+        <div className="mt-2 text-xs text-gray-400 space-y-1">
+          <div>Debug: {appointments.length} total, {todayAppointments.length} today valid</div>
+          <div>All statuses: {appointments.map(a => `${a.customer}:${a.status}`).join(', ')}</div>
+          <div>Today filter: {appointments.filter(a => isSameDay(a.date, new Date())).length} appointments today</div>
+          <div>Confirmed filter: {appointments.filter(a => a.status === 'confirmed').length} confirmed appointments</div>
         </div>
       )}
     </div>

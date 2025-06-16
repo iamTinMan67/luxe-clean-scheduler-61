@@ -5,28 +5,58 @@ import { toast } from 'sonner';
 
 export const syncLocalStorageToSupabase = async (): Promise<void> => {
   try {
-    console.log('Starting localStorage to Supabase sync...');
+    console.log('=== Starting localStorage to Supabase sync ===');
     
-    // Get all confirmed bookings from localStorage
+    // Collect all bookings from different localStorage sources
+    let allBookingsToSync: Booking[] = [];
+    
+    // Get confirmed bookings
     const confirmedBookings = localStorage.getItem('confirmedBookings') 
       ? JSON.parse(localStorage.getItem('confirmedBookings') || '[]') 
       : [];
     
-    if (confirmedBookings.length === 0) {
-      console.log('No confirmed bookings to sync');
+    // Get planner calendar bookings
+    const plannerCalendarBookings = localStorage.getItem('plannerCalendarBookings') 
+      ? JSON.parse(localStorage.getItem('plannerCalendarBookings') || '[]') 
+      : [];
+    
+    // Merge all bookings, avoiding duplicates
+    const existingIds = new Set();
+    
+    [...confirmedBookings, ...plannerCalendarBookings].forEach((booking: any) => {
+      if (!existingIds.has(booking.id)) {
+        // Ensure the booking has proper date format
+        const normalizedBooking: Booking = {
+          ...booking,
+          date: booking.date instanceof Date ? booking.date : new Date(booking.date),
+          status: booking.status || 'confirmed'
+        };
+        allBookingsToSync.push(normalizedBooking);
+        existingIds.add(booking.id);
+      }
+    });
+    
+    console.log(`Found ${allBookingsToSync.length} unique bookings to sync from localStorage`);
+    console.log('Bookings to sync:', allBookingsToSync.map(b => ({
+      id: b.id,
+      customer: b.customer,
+      status: b.status,
+      date: b.date
+    })));
+    
+    if (allBookingsToSync.length === 0) {
+      console.log('No bookings to sync');
       return;
     }
     
-    console.log(`Found ${confirmedBookings.length} confirmed bookings to sync`);
-    
-    // Sync all confirmed bookings to Supabase
-    const syncSuccess = await syncMultipleBookingsToSupabase(confirmedBookings);
+    // Sync all bookings to Supabase
+    const syncSuccess = await syncMultipleBookingsToSupabase(allBookingsToSync);
     
     if (syncSuccess) {
-      console.log('All bookings successfully synced to Supabase');
+      console.log('=== Sync completed successfully ===');
       toast.success('Local data synchronized with database');
     } else {
-      console.warn('Some bookings failed to sync');
+      console.warn('=== Partial sync completed ===');
       toast.warning('Partial sync completed - some data may not be synchronized');
     }
     
