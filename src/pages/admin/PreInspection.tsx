@@ -24,6 +24,7 @@ const PreInspection = () => {
     handleBookingSelected,
     handleSubmitReport,
     handleDeclineService,
+    handleStartInspection,
     updateBookingDetails
   } = usePreInspection();
   
@@ -36,6 +37,10 @@ const PreInspection = () => {
   const handleImageUpdate = (newImages: string[]) => {
     setImages(newImages);
   };
+
+  // Determine which buttons to show based on booking status
+  const showStartInspection = bookingDetails && bookingDetails.status === "confirmed";
+  const showInspectionComplete = bookingDetails && bookingDetails.status === "in-progress";
 
   return (
     <motion.div
@@ -64,11 +69,14 @@ const PreInspection = () => {
           onBookingSelected={handleBookingSelected}
         />
         
-        {/* Accept and Decline buttons */}
+        {/* Start Inspection and Decline buttons */}
         <ActionButtons 
           isSubmitting={isSubmitting}
           onAccept={handleSubmitReport}
           onDecline={handleDeclineService}
+          onStartInspection={handleStartInspection}
+          showStartInspection={showStartInspection}
+          showInspectionComplete={false}
         />
         
         <div className="mt-6">
@@ -78,6 +86,16 @@ const PreInspection = () => {
             bookingId={bookingDetails?.id}
           />
         </div>
+        
+        {/* Inspection Complete button - shown at the bottom */}
+        <ActionButtons 
+          isSubmitting={isSubmitting}
+          onAccept={handleSubmitReport}
+          onDecline={handleDeclineService}
+          onStartInspection={handleStartInspection}
+          showStartInspection={false}
+          showInspectionComplete={showInspectionComplete}
+        />
       </div>
     </motion.div>
   );

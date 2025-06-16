@@ -31,7 +31,7 @@ export const usePreInspection = () => {
   const { appointments, loading } = useScheduledAppointments(['confirmed']);
   
   const { handleImageUpload: uploadImage } = useImageUpload();
-  const { updateBookingDetails, handleBookingSelected } = useBookingSelection();
+  const { updateBookingDetails, handleBookingSelected, handleStartInspection: startInspection } = useBookingSelection();
   const { handleSubmitReport: submitReport } = useReportSubmission();
   const { handleDeclineService: declineService } = useServiceDecline();
   
@@ -93,6 +93,15 @@ export const usePreInspection = () => {
       setInteriorNotes
     );
   };
+
+  // Handle start inspection
+  const handleStartInspection = async () => {
+    if (bookingDetails) {
+      await startInspection(bookingDetails);
+      // Refresh booking details to show updated status
+      handleUpdateBookingDetails();
+    }
+  };
   
   return {
     images,
@@ -112,6 +121,7 @@ export const usePreInspection = () => {
     handleImageUpload,
     handleSubmitReport,
     handleDeclineService,
+    handleStartInspection,
     updateBookingDetails: handleUpdateBookingDetails
   };
 };

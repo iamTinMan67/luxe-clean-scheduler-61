@@ -30,15 +30,22 @@ export const useBookingSelection = () => {
 
   const handleBookingSelected = async (booking: Booking) => {
     console.log("Booking selected for inspection:", booking);
+    // Note: We no longer automatically change status here, it's done via Start Inspection button
+    toast.success(`${booking.customer}'s appointment selected for inspection.`);
+  };
+
+  const handleStartInspection = async (booking: Booking) => {
+    console.log("Starting inspection for booking:", booking);
     if (booking.status === "confirmed") {
-      const updatedBooking = { ...booking, status: "inspecting" as const };
+      const updatedBooking = { ...booking, status: "in-progress" as const };
       await updateBooking(updatedBooking);
-      toast.success(`${booking.customer}'s appointment is now being inspected.`);
+      toast.success(`Inspection started for ${booking.customer}'s appointment.`);
     }
   };
 
   return {
     updateBookingDetails,
-    handleBookingSelected
+    handleBookingSelected,
+    handleStartInspection
   };
 };
