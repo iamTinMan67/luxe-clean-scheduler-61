@@ -29,14 +29,21 @@ export const loadBookingsFromLocalStorage = (statusFilter?: string[]): Booking[]
               const normalizedBooking: Booking = {
                 ...booking,
                 date: booking.date instanceof Date ? booking.date : new Date(booking.date),
-                status: booking.status || 'pending'
+                status: booking.status || 'pending',
+                // Ensure required fields have fallback values
+                customer: booking.customer || booking.yourName || 'Unknown Customer',
+                vehicle: booking.vehicle || booking.jobDetails || 'Unknown Vehicle',
+                packageType: booking.packageType || 'standard',
+                time: booking.time || booking.startTime || '00:00',
+                location: booking.location || booking.postcode || 'Unknown Location',
+                contact: booking.contact || booking.phone || ''
               };
               
               // Apply status filter if provided
               if (!statusFilter || statusFilter.includes(normalizedBooking.status)) {
                 allBookings.push(normalizedBooking);
                 existingIds.add(booking.id);
-                console.log(`Added booking: ${normalizedBooking.customer} (${normalizedBooking.status})`);
+                console.log(`Added booking: ${normalizedBooking.customer} (${normalizedBooking.status}) - Time: ${normalizedBooking.time}, Package: ${normalizedBooking.packageType}`);
               }
             }
           });
@@ -57,7 +64,9 @@ export const loadBookingsFromLocalStorage = (statusFilter?: string[]): Booking[]
     id: b.id,
     customer: b.customer,
     status: b.status,
-    date: b.date
+    date: b.date,
+    time: b.time,
+    packageType: b.packageType
   })));
   
   return allBookings;
