@@ -1,54 +1,62 @@
 
-import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Booking } from "@/types/booking";
-import { useTodoAppointments } from "./useTodoAppointments";
+import { useState, useEffect, useMemo } from 'react';
+import { Booking } from '@/types/booking';
+import { useTodoAppointments } from './useTodoAppointments';
 
 export const useBookingSelection = () => {
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const bookingIdFromUrl = queryParams.get('bookingId');
+  const [selectedAppointment, setSelectedAppointment] = useState<string>('');
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [searchTerm, setSearchTerm] = useState('');
   
-  const [selectedAppointment, setSelectedAppointment] = useState<string>("");
-  const [currentBooking, setCurrentBooking] = useState<Booking | null>(null);
-  
-  const {
-    appointments,
-    allAppointments,
-    loading,
-    selectedDate,
-    setSelectedDate,
-    searchTerm,
-    setSearchTerm
+  // Get inspected appointments for todo list
+  const { 
+    appointments, 
+    loading 
   } = useTodoAppointments();
 
-  // Auto-select the booking from URL if available
-  useEffect(() => {
-    if (bookingIdFromUrl && allAppointments.length > 0) {
-      const booking = allAppointments.find(app => app.id === bookingIdFromUrl);
-      if (booking) {
-        setSelectedAppointment(bookingIdFromUrl);
-      }
-    }
-  }, [bookingIdFromUrl, allAppointments]);
+  // Filter appointments by date and search term
+  const filteredAppointments = useMemo(() => {
+    return appointments.filter(booking => {
+      // Date filter
+      const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
+      const dateMatches = 
+        bookingDate.getDate() === selectedDate.getDate() &&
+        bookingDate.getMonth() === selectedDate.getMonth() &&
+        bookingDate.getFullYear() === selectedDate.getFullYear();
 
-  // Handle appointment selection
+      // Search filter (customer name)
+      const searchMatches = searchTerm === '' || 
+        booking.customer.toLowerCase().includes(searchTerm.toLowerCase());
+
+      return dateMatches && searchMatches;
+    });
+  }, [appointments, selectedDate, searchTerm]);
+
+  // Find current booking from selection
+  const currentBooking = useMemo(() => {
+    return filteredAppointments.find(booking => booking.id === selectedAppointment) || null;
+  }, [filteredAppointments, selectedAppointment]);
+
+  // Auto-select booking from URL parameter
   useEffect(() => {
-    if (selectedAppointment) {
-      const booking = allAppointments.find(app => app.id === selectedAppointment);
-      if (booking) {
-        setCurrentBooking(booking);
+    const urlParams = new URLSearchParams(window.location.search);
+    const bookingIdFromUrl = urlParams.get('bookingId');
+    
+    if (bookingIdFromUrl && !selectedAppointment) {
+      // Check if this booking exists in our appointments
+      const bookingExists = filteredAppointments.find(booking => booking.id === bookingIdFromUrl);
+      if (bookingExists) {
+        setSelectedAppointment(bookingIdFromUrl);
+        console.log('Auto-selected booking from URL:', bookingIdFromUrl);
       }
-    } else {
-      setCurrentBooking(null);
     }
-  }, [selectedAppointment, allAppointments]);
+  }, [filteredAppointments, selectedAppointment]);
 
   return {
     selectedAppointment,
     setSelectedAppointment,
     currentBooking,
-    appointments,
+    appointments: filteredAppointments,
     loading,
     selectedDate,
     setSelectedDate,
