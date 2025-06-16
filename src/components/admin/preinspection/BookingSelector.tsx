@@ -26,6 +26,30 @@ const BookingSelector = ({
   onBookingChange,
 }: BookingSelectorProps) => {
   const todayAppointments = filterTodayAppointments(appointments);
+  
+  // Determine the actual state based on data availability
+  const isActuallyLoading = loading || (!appointments.length && loading !== false);
+  const hasAppointments = todayAppointments.length > 0;
+
+  // Determine placeholder text
+  const getPlaceholderText = () => {
+    if (isActuallyLoading) {
+      return "Loading appointments...";
+    }
+    if (hasAppointments) {
+      return "Select today's appointment";
+    }
+    return "No appointments available for today";
+  };
+
+  console.log("BookingSelector render state:", {
+    loading,
+    isActuallyLoading,
+    appointmentsLength: appointments.length,
+    todayAppointmentsLength: todayAppointments.length,
+    hasAppointments,
+    placeholderText: getPlaceholderText()
+  });
 
   return (
     <div>
@@ -35,20 +59,15 @@ const BookingSelector = ({
       <Select
         value={selectedBooking}
         onValueChange={onBookingChange}
+        disabled={isActuallyLoading}
       >
         <SelectTrigger className="bg-black/40 border-gold/30 text-white">
-          <SelectValue placeholder={
-            loading 
-              ? "Loading appointments..." 
-              : todayAppointments.length > 0 
-                ? "Select today's appointment" 
-                : "No appointments available for today"
-          } />
+          <SelectValue placeholder={getPlaceholderText()} />
         </SelectTrigger>
         <SelectContent className="bg-gray-900 border-gold/30 text-white max-h-[300px] overflow-y-auto z-[100]">
-          {loading ? (
+          {isActuallyLoading ? (
             <SelectItem value="loading" disabled>Loading appointments...</SelectItem>
-          ) : todayAppointments.length > 0 ? (
+          ) : hasAppointments ? (
             todayAppointments.map((booking) => (
               <BookingSelectItem key={booking.id} booking={booking} />
             ))

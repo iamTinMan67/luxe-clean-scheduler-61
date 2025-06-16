@@ -10,13 +10,18 @@ import { syncLocalStorageToSupabase } from '@/utils/dataSyncUtils';
 export const useScheduledAppointments = (statusFilter?: string[]) => {
   const [appointments, setAppointments] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
   const loadAppointments = useCallback(async () => {
-    setLoading(true);
+    // Only show loading on initial load, not on subsequent updates
+    if (!initialLoadComplete) {
+      setLoading(true);
+    }
     
     try {
       console.log("=== Loading Appointments Debug ===");
       console.log("Status filter:", statusFilter);
+      console.log("Initial load complete:", initialLoadComplete);
       
       // First, try to sync localStorage data to Supabase
       await syncLocalStorageToSupabase();
@@ -63,8 +68,9 @@ export const useScheduledAppointments = (statusFilter?: string[]) => {
       setAppointments(fallbackBookings);
     } finally {
       setLoading(false);
+      setInitialLoadComplete(true);
     }
-  }, [statusFilter]);
+  }, [statusFilter, initialLoadComplete]);
 
   useEffect(() => {
     loadAppointments();
