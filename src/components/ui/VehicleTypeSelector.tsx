@@ -2,21 +2,21 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { ClientType, VehicleType } from "@/lib/types";
+import { ClientType, JobType } from "@/lib/types";
 import { Building, Home, Car, Truck, Box } from "lucide-react";
 
 interface VehicleTypeSelectorProps {
   selectedClientType: ClientType;
-  selectedVehicleType: VehicleType;
+  selectedJobType: JobType; // Changed from selectedVehicleType
   onClientTypeChange: (type: ClientType) => void;
-  onVehicleTypeChange: (type: VehicleType) => void;
+  onJobTypeChange: (type: JobType) => void; // Changed from onVehicleTypeChange
 }
 
 const VehicleTypeSelector = ({
   selectedClientType,
-  selectedVehicleType,
+  selectedJobType, // Changed from selectedVehicleType
   onClientTypeChange,
-  onVehicleTypeChange,
+  onJobTypeChange, // Changed from onVehicleTypeChange
 }: VehicleTypeSelectorProps) => {
   const clientTypes: Array<{ type: ClientType; label: string; description: string; icon: React.ReactNode; color: string }> = [
     { 
@@ -35,7 +35,7 @@ const VehicleTypeSelector = ({
     }
   ];
 
-  const vehicleTypes: Array<{ type: VehicleType; label: string; icon: React.ReactNode }> = [
+  const jobTypes: Array<{ type: JobType; label: string; icon: React.ReactNode }> = [
     { type: "car", label: "Car", icon: <Car className="w-8 h-8" /> },
     { type: "van", label: "Van", icon: <Truck className="w-8 h-8" /> },
     { type: "other", label: "Other", icon: <Box className="w-8 h-8" /> }
@@ -86,17 +86,17 @@ const VehicleTypeSelector = ({
         </div>
       </div>
 
-      {/* Job Type Selection - Changed from "Vehicle Type" */}
+      {/* Job Type Selection */}
       <div>
         <h3 className="text-lg font-semibold mb-3 text-white text-center">Select Job Type</h3>
         <div className="grid grid-cols-3 gap-3 max-w-md mx-auto">
-          {vehicleTypes.map(({ type, label, icon }) => (
+          {jobTypes.map(({ type, label, icon }) => (
             <button
               key={type}
-              onClick={() => onVehicleTypeChange(type)}
+              onClick={() => onJobTypeChange(type)}
               className={cn(
                 "relative aspect-square rounded-lg overflow-hidden group border-2 transition-all",
-                selectedVehicleType === type ? 
+                selectedJobType === type ? 
                   selectedClientConfig?.color || "border-gold bg-black" : 
                   "border-gray-800 bg-gray-900 hover:bg-gray-800"
               )}
@@ -107,13 +107,13 @@ const VehicleTypeSelector = ({
                 </div>
                 <span className={cn(
                   "text-base font-medium transition-colors",
-                  selectedVehicleType === type ? "text-white" : "text-gray-300 group-hover:text-white"
+                  selectedJobType === type ? "text-white" : "text-gray-300 group-hover:text-white"
                 )}>
                   {label}
                 </span>
-                {selectedVehicleType === type && (
+                {selectedJobType === type && (
                   <motion.div
-                    layoutId="selectedVehicle"
+                    layoutId="selectedJob"
                     className="absolute bottom-0 h-0.5 w-full bg-gold"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}

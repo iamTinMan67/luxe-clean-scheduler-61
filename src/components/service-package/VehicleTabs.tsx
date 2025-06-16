@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Trash2, Plus, Building, Home, Car, Truck, Box } from "lucide-react";
-import { Vehicle, VehicleType, ClientType } from "@/lib/types";
+import { Vehicle, JobType, ClientType } from "@/lib/types";
 
 interface VehicleTabsProps {
   vehicles: Vehicle[];
@@ -18,8 +18,8 @@ const VehicleTabs: React.FC<VehicleTabsProps> = ({
   handleAddVehicle,
   handleRemoveVehicle,
 }) => {
-  // Helper function to get vehicle icon
-  const getVehicleIcon = (type: VehicleType) => {
+  // Helper function to get job type icon
+  const getJobTypeIcon = (type: JobType) => {
     switch (type) {
       case "car":
         return <Car size={14} />;
@@ -63,7 +63,7 @@ const VehicleTabs: React.FC<VehicleTabsProps> = ({
           onClick={() => setCurrentVehicleIndex(index)}
         >
           <span className="mr-1">{getClientIcon(vehicle.clientType)}</span>
-          <span className="mr-1">{getVehicleIcon(vehicle.type)}</span>
+          <span className="mr-1">{getJobTypeIcon(vehicle.type)}</span>
           Vehicle {index + 1}
           {vehicles.length > 1 && (
             <button

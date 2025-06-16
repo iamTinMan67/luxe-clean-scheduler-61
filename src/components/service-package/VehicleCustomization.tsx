@@ -1,5 +1,5 @@
 
-import { Vehicle, VehicleType, ClientType } from "@/lib/types";
+import { Vehicle, JobType, ClientType } from "@/lib/types";
 import VehicleTypeSelector from "@/components/ui/VehicleTypeSelector";
 import VehicleTabs from "@/components/service-package/VehicleTabs";
 
@@ -9,7 +9,7 @@ interface VehicleCustomizationProps {
   setCurrentVehicleIndex: (index: number) => void;
   currentVehicle: Vehicle;
   handleClientTypeChange: (type: ClientType) => void;
-  handleVehicleTypeChange: (type: VehicleType) => void;
+  handleJobTypeChange: (type: JobType) => void; // Changed from handleVehicleTypeChange
   handleConditionChange: (condition: number) => void;
   handleAddVehicle: () => void;
   handleRemoveVehicle: (index: number) => void;
@@ -21,7 +21,7 @@ const VehicleCustomization: React.FC<VehicleCustomizationProps> = ({
   setCurrentVehicleIndex,
   currentVehicle,
   handleClientTypeChange,
-  handleVehicleTypeChange,
+  handleJobTypeChange, // Changed from handleVehicleTypeChange
   handleAddVehicle,
   handleRemoveVehicle
 }) => {
@@ -31,9 +31,9 @@ const VehicleCustomization: React.FC<VehicleCustomizationProps> = ({
       <div className="mb-16 text-center">
         <VehicleTypeSelector
           selectedClientType={currentVehicle.clientType}
-          selectedVehicleType={currentVehicle.type}
+          selectedJobType={currentVehicle.type} // Changed from selectedVehicleType
           onClientTypeChange={handleClientTypeChange}
-          onVehicleTypeChange={handleVehicleTypeChange}
+          onJobTypeChange={handleJobTypeChange} // Changed from onVehicleTypeChange
         />
       </div>
       

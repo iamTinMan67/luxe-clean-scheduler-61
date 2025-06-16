@@ -3,7 +3,7 @@ export type PackageType = "main" | "medium" | "elite";
 
 export type ClientType = "private" | "corporate";
 
-export type VehicleType = "car" | "van" | "other";
+export type JobType = "car" | "van" | "other";
 
 export interface AdditionalService {
   id: string;
@@ -36,7 +36,7 @@ export interface ServiceTask {
 export interface Vehicle {
   id: string;
   clientType: ClientType;
-  type: VehicleType;
+  type: JobType; // Changed from VehicleType to JobType
   condition: number;
   package: PackageType;
   additionalServices: AdditionalService[];

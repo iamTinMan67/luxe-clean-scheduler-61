@@ -24,7 +24,7 @@ const ServicePackage = () => {
     setCurrentVehicleIndex,
     currentVehicle,
     handleClientTypeChange,
-    handleVehicleTypeChange,
+    handleJobTypeChange, // Changed from handleVehicleTypeChange
     handleConditionChange,
     handlePackageSelect,
     handleAdditionalServiceToggle,
@@ -79,7 +79,7 @@ const ServicePackage = () => {
             setCurrentVehicleIndex={setCurrentVehicleIndex}
             currentVehicle={currentVehicle}
             handleClientTypeChange={handleClientTypeChange}
-            handleVehicleTypeChange={handleVehicleTypeChange}
+            handleJobTypeChange={handleJobTypeChange} // Changed from handleVehicleTypeChange
             handleConditionChange={handleConditionChange}
             handleAddVehicle={handleAddVehicle}
             handleRemoveVehicle={handleRemoveVehicle}

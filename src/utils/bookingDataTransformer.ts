@@ -1,3 +1,4 @@
+
 import { Booking, validateBookingStatus } from '@/types/booking';
 
 export interface SupabaseBookingData {
@@ -63,7 +64,7 @@ export const transformSupabaseBooking = (booking: SupabaseBookingData): Booking 
     travelMinutes: 0,
     additionalServices: [],
     clientType: "private",
-    vehicleType: booking.vehicle_type
+    jobType: booking.vehicle_type // Changed from vehicleType to jobType
   };
 
   return transformedBooking;

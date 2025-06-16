@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Vehicle, VehicleType, ClientType, PackageType, AdditionalService } from "@/lib/types";
+import { Vehicle, JobType, ClientType, PackageType, AdditionalService } from "@/lib/types";
 import { toast } from "sonner";
 
 export const useVehicleState = (additionalServices: AdditionalService[]) => {
@@ -31,8 +31,8 @@ export const useVehicleState = (additionalServices: AdditionalService[]) => {
     });
   };
   
-  // Update vehicle type
-  const handleVehicleTypeChange = (type: VehicleType) => {
+  // Update job type (renamed from vehicle type)
+  const handleJobTypeChange = (type: JobType) => {
     setVehicles(prev => {
       const updated = [...prev];
       updated[currentVehicleIndex] = {
@@ -144,7 +144,7 @@ export const useVehicleState = (additionalServices: AdditionalService[]) => {
     setCurrentVehicleIndex,
     currentVehicle,
     handleClientTypeChange,
-    handleVehicleTypeChange,
+    handleJobTypeChange, // Changed from handleVehicleTypeChange
     handleConditionChange,
     handlePackageSelect,
     handleAdditionalServiceToggle,
