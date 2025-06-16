@@ -18,7 +18,7 @@ export const filterTodayAppointments = (appointments: Booking[]): Booking[] => {
     try {
       const today = new Date();
       const isToday = isSameDay(booking.date, today);
-      // More flexible status checking - include various confirmed statuses
+      // Include all confirmed and progressed statuses for pre-inspection
       const isValidStatus = booking.status === "confirmed" || 
                            booking.status === "inspecting" || 
                            booking.status === "inspected" ||

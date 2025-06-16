@@ -27,12 +27,19 @@ export const useScheduledAppointments = (statusFilter?: string[]) => {
       await syncLocalStorageToSupabase();
       console.log("Data sync completed");
       
+      // Expand status filter to include progression statuses
+      let expandedStatusFilter = statusFilter;
+      if (statusFilter && statusFilter.includes('confirmed')) {
+        expandedStatusFilter = [...statusFilter, 'inspecting', 'inspected', 'in-progress'];
+        console.log("Expanded status filter to include progression statuses:", expandedStatusFilter);
+      }
+      
       // Then fetch from Supabase
-      const supabaseBookings = await fetchBookingsFromSupabase(statusFilter);
+      const supabaseBookings = await fetchBookingsFromSupabase(expandedStatusFilter);
       console.log("Supabase bookings loaded:", supabaseBookings.length);
       
       // Also load from localStorage as fallback/supplement
-      const localBookings = loadBookingsFromLocalStorage(statusFilter);
+      const localBookings = loadBookingsFromLocalStorage(expandedStatusFilter);
       console.log("Local bookings loaded:", localBookings.length);
       
       // Merge bookings, avoiding duplicates by ID
@@ -61,9 +68,13 @@ export const useScheduledAppointments = (statusFilter?: string[]) => {
     } catch (error) {
       console.error('Error loading appointments:', error);
       
-      // Complete fallback to localStorage
+      // Complete fallback to localStorage with expanded filter
       console.log("Using complete localStorage fallback");
-      const fallbackBookings = loadBookingsFromLocalStorage(statusFilter);
+      let expandedStatusFilter = statusFilter;
+      if (statusFilter && statusFilter.includes('confirmed')) {
+        expandedStatusFilter = [...statusFilter, 'inspecting', 'inspected', 'in-progress'];
+      }
+      const fallbackBookings = loadBookingsFromLocalStorage(expandedStatusFilter);
       console.log("Fallback bookings loaded:", fallbackBookings.length);
       setAppointments(fallbackBookings);
     } finally {
