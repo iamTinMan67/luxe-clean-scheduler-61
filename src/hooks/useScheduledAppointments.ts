@@ -23,9 +23,13 @@ export const useScheduledAppointments = (statusFilter?: string[]) => {
       console.log("Status filter:", statusFilter);
       console.log("Initial load complete:", initialLoadComplete);
       
-      // First, try to sync localStorage data to Supabase
-      await syncLocalStorageToSupabase();
-      console.log("Data sync completed");
+      // First, try to sync localStorage data to Supabase (with improved error handling)
+      try {
+        await syncLocalStorageToSupabase();
+        console.log("Data sync completed");
+      } catch (syncError) {
+        console.warn("Data sync failed, continuing with local data:", syncError);
+      }
       
       // Expand status filter to include progression statuses
       let expandedStatusFilter = statusFilter;
@@ -34,11 +38,22 @@ export const useScheduledAppointments = (statusFilter?: string[]) => {
         console.log("Expanded status filter to include progression statuses:", expandedStatusFilter);
       }
       
-      // Then fetch from Supabase
-      const supabaseBookings = await fetchBookingsFromSupabase(expandedStatusFilter);
-      console.log("Supabase bookings loaded:", supabaseBookings.length);
+      // Also expand 'inspected' filter to ensure we catch all relevant bookings
+      if (statusFilter && statusFilter.includes('inspected')) {
+        expandedStatusFilter = [...(expandedStatusFilter || statusFilter), 'confirmed', 'inspecting', 'in-progress'];
+        console.log("Expanded 'inspected' filter to include related statuses:", expandedStatusFilter);
+      }
       
-      // Also load from localStorage as fallback/supplement
+      // Try to fetch from Supabase first
+      let supabaseBookings: Booking[] = [];
+      try {
+        supabaseBookings = await fetchBookingsFromSupabase(expandedStatusFilter);
+        console.log("Supabase bookings loaded:", supabaseBookings.length);
+      } catch (supabaseError) {
+        console.warn("Supabase fetch failed, using localStorage only:", supabaseError);
+      }
+      
+      // Always load from localStorage as fallback/supplement
       const localBookings = loadBookingsFromLocalStorage(expandedStatusFilter);
       console.log("Local bookings loaded:", localBookings.length);
       
@@ -73,6 +88,9 @@ export const useScheduledAppointments = (statusFilter?: string[]) => {
       let expandedStatusFilter = statusFilter;
       if (statusFilter && statusFilter.includes('confirmed')) {
         expandedStatusFilter = [...statusFilter, 'inspecting', 'inspected', 'in-progress'];
+      }
+      if (statusFilter && statusFilter.includes('inspected')) {
+        expandedStatusFilter = [...(expandedStatusFilter || statusFilter), 'confirmed', 'inspecting', 'in-progress'];
       }
       const fallbackBookings = loadBookingsFromLocalStorage(expandedStatusFilter);
       console.log("Fallback bookings loaded:", fallbackBookings.length);

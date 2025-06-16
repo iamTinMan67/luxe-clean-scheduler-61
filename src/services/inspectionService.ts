@@ -1,4 +1,3 @@
-
 import { Booking } from "@/types/booking";
 import { packageOptions, additionalServices } from "@/data/servicePackageData";
 
@@ -17,7 +16,6 @@ export interface InspectionReport {
 
 // Helper function to populate ToDo list based on booking package and additional services
 const populateToDoList = (booking: Booking) => {
-  // Find the package
   const packageOption = packageOptions.find(p => p.type === booking.packageType);
   
   if (packageOption) {
@@ -121,7 +119,7 @@ export const submitPreInspectionReport = async (
     // Save the updated reports
     localStorage.setItem('inspectionReports', JSON.stringify(reports));
     
-    // Make sure the booking is marked as inspected and maintain that status
+    // FIXED: Set status to "inspected" (not "in-progress") to match ToDo list expectations
     const confirmedBookingsStr = localStorage.getItem('confirmedBookings');
     if (confirmedBookingsStr) {
       const confirmedBookings = JSON.parse(confirmedBookingsStr);

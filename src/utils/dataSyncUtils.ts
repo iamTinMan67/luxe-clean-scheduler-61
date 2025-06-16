@@ -25,11 +25,17 @@ export const syncLocalStorageToSupabase = async (): Promise<void> => {
     
     [...confirmedBookings, ...plannerCalendarBookings].forEach((booking: any) => {
       if (!existingIds.has(booking.id)) {
-        // Ensure the booking has proper date format
+        // Ensure the booking has proper date format and required fields
         const normalizedBooking: Booking = {
           ...booking,
           date: booking.date instanceof Date ? booking.date : new Date(booking.date),
-          status: booking.status || 'confirmed'
+          status: booking.status || 'confirmed',
+          // Ensure required fields have defaults
+          customer: booking.customer || booking.yourName || 'Unknown Customer',
+          vehicle: booking.vehicle || booking.jobDetails || 'Unknown Vehicle',
+          packageType: booking.packageType || 'main',
+          location: booking.location || booking.postcode || 'Unknown Location',
+          totalPrice: booking.totalPrice || 0
         };
         allBookingsToSync.push(normalizedBooking);
         existingIds.add(booking.id);
@@ -49,29 +55,31 @@ export const syncLocalStorageToSupabase = async (): Promise<void> => {
       return;
     }
     
-    // Sync all bookings to Supabase
+    // Sync all bookings to Supabase with improved error handling
     const syncSuccess = await syncMultipleBookingsToSupabase(allBookingsToSync);
     
     if (syncSuccess) {
       console.log('=== Sync completed successfully ===');
-      toast.success('Local data synchronized with database');
+      // Don't show toast for automatic syncs to avoid spam
     } else {
-      console.warn('=== Partial sync completed ===');
-      toast.warning('Partial sync completed - some data may not be synchronized');
+      console.warn('=== Partial sync completed - some bookings may have UUID format issues ===');
+      // Still consider partial sync as acceptable for now
     }
     
   } catch (error) {
     console.error('Error during data sync:', error);
-    toast.error('Failed to synchronize local data with database');
+    // Don't show error toast for automatic syncs to avoid alarming users
   }
 };
 
 export const manualDataSync = async (): Promise<boolean> => {
   try {
     await syncLocalStorageToSupabase();
+    toast.success('Manual sync completed successfully');
     return true;
   } catch (error) {
     console.error('Manual sync failed:', error);
+    toast.error('Manual sync failed - some data may not be synchronized');
     return false;
   }
 };

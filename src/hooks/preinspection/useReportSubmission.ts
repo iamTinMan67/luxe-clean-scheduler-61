@@ -9,7 +9,7 @@ import { syncBookingToSupabase } from "@/services/bookingSyncService";
 
 export const useReportSubmission = () => {
   const navigate = useNavigate();
-  const { updateBooking, moveBookingToConfirmed } = useBookingStateManager();
+  const { updateBooking } = useBookingStateManager();
 
   const handleSubmitReport = async (
     bookingDetails: Booking | null,
@@ -30,27 +30,7 @@ export const useReportSubmission = () => {
         return;
       }
       
-      // Update the booking status from "confirmed" to "in-progress" upon inspection completion
-      if (bookingDetails.status === "confirmed") {
-        const updatedBooking: Booking = {
-          ...bookingDetails,
-          status: "in-progress"
-        };
-        
-        // Update status locally
-        await updateBooking(updatedBooking);
-        
-        // Sync the status change to Supabase
-        try {
-          await syncBookingToSupabase(updatedBooking);
-          console.log('Status change synced to database');
-        } catch (error) {
-          console.error('Failed to sync status change to database:', error);
-        }
-        
-        toast.success(`${bookingDetails.customer}'s appointment is now in progress.`);
-      }
-      
+      // Submit the inspection report first - this will handle the status update to "inspected"
       const success = await submitPreInspectionReport(
         bookingDetails,
         images,
@@ -59,6 +39,26 @@ export const useReportSubmission = () => {
       );
       
       if (success) {
+        // FIXED: Get the updated booking with "inspected" status set by the inspection service
+        const updatedBooking: Booking = {
+          ...bookingDetails,
+          status: "inspected" // Ensure status is set to "inspected" for ToDo list compatibility
+        };
+        
+        // Update status locally
+        await updateBooking(updatedBooking);
+        
+        // Sync the status change to Supabase (with error handling for UUID issues)
+        try {
+          await syncBookingToSupabase(updatedBooking);
+          console.log('Status change synced to database');
+        } catch (error) {
+          console.error('Failed to sync status change to database:', error);
+          // Continue execution - localStorage update is sufficient for now
+        }
+        
+        toast.success(`${bookingDetails.customer}'s inspection completed. Booking is ready for service tasks.`);
+        
         // Send report to customer via email
         if (bookingDetails.email) {
           sendTrackingInfo(bookingDetails);
