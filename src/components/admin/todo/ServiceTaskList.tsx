@@ -12,7 +12,6 @@ interface ServiceTaskListProps {
   onToggleTask: (taskId: string) => void;
   onUpdateTimeAllocation: (taskId: string, newTime: number) => void;
   onSetActualTime: (taskId: string, time: number) => void;
-  onSaveProgress: () => void;
 }
 
 const ServiceTaskList = ({
@@ -20,8 +19,7 @@ const ServiceTaskList = ({
   serviceTasks,
   onToggleTask,
   onUpdateTimeAllocation,
-  onSetActualTime,
-  onSaveProgress
+  onSetActualTime
 }: ServiceTaskListProps) => {
   if (!currentBooking) {
     return (
@@ -42,6 +40,9 @@ const ServiceTaskList = ({
     );
   }
 
+  const completedTasks = serviceTasks.filter(task => task.completed).length;
+  const progressPercentage = Math.round((completedTasks / serviceTasks.length) * 100);
+
   return (
     <div>
       <div className="mb-4 p-4 border border-gold/20 rounded-md bg-black/40">
@@ -53,6 +54,20 @@ const ServiceTaskList = ({
           <p>Vehicle: {currentBooking.vehicle} {currentBooking.vehicleReg ? `(${currentBooking.vehicleReg})` : ''}</p>
           <p>Location: {currentBooking.location}</p>
           <p>Date: {new Date(currentBooking.date).toLocaleDateString()} {currentBooking.time}</p>
+        </div>
+        
+        {/* Progress bar */}
+        <div className="mt-3">
+          <div className="flex justify-between text-sm text-gray-400 mb-1">
+            <span>Progress</span>
+            <span>{completedTasks}/{serviceTasks.length} tasks completed ({progressPercentage}%)</span>
+          </div>
+          <div className="w-full bg-gray-700 rounded-full h-2">
+            <div 
+              className="bg-gold h-2 rounded-full transition-all duration-300" 
+              style={{ width: `${progressPercentage}%` }}
+            ></div>
+          </div>
         </div>
       </div>
 
@@ -130,15 +145,6 @@ const ServiceTaskList = ({
           </li>
         ))}
       </ul>
-      
-      <div className="mt-6 flex justify-end">
-        <Button 
-          onClick={onSaveProgress} 
-          className="gold-gradient text-black"
-        >
-          Update Service Progress
-        </Button>
-      </div>
     </div>
   );
 };
