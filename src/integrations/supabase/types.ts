@@ -285,6 +285,42 @@ export type Database = {
         }
         Relationships: []
       }
+      company_details: {
+        Row: {
+          address: string
+          company_name: string
+          created_at: string
+          email: string
+          id: string
+          phone: string
+          updated_at: string
+          vat_number: string | null
+          website: string | null
+        }
+        Insert: {
+          address?: string
+          company_name?: string
+          created_at?: string
+          email?: string
+          id?: string
+          phone?: string
+          updated_at?: string
+          vat_number?: string | null
+          website?: string | null
+        }
+        Update: {
+          address?: string
+          company_name?: string
+          created_at?: string
+          email?: string
+          id?: string
+          phone?: string
+          updated_at?: string
+          vat_number?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
       customer_feedback: {
         Row: {
           booking_id: string
@@ -506,9 +542,15 @@ export type Database = {
         Row: {
           booking_id: string
           created_at: string | null
+          customer_email: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          due_date: string | null
           id: string
+          issue_date: string | null
           paid: boolean | null
           payment_date: string | null
+          reference_id: string | null
           subtotal: number
           tax: number
           total: number
@@ -517,9 +559,15 @@ export type Database = {
         Insert: {
           booking_id: string
           created_at?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          due_date?: string | null
           id?: string
+          issue_date?: string | null
           paid?: boolean | null
           payment_date?: string | null
+          reference_id?: string | null
           subtotal: number
           tax: number
           total: number
@@ -528,9 +576,15 @@ export type Database = {
         Update: {
           booking_id?: string
           created_at?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          due_date?: string | null
           id?: string
+          issue_date?: string | null
           paid?: boolean | null
           payment_date?: string | null
+          reference_id?: string | null
           subtotal?: number
           tax?: number
           total?: number

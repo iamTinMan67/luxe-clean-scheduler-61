@@ -1,14 +1,22 @@
 
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
-import InvoiceList from "@/components/invoices/InvoiceList";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { useState } from "react";
+import InvoiceListWithDatabase from "@/components/invoices/InvoiceListWithDatabase";
+import CreateInvoiceForm from "@/components/invoices/CreateInvoiceForm";
 import InvoiceSummary from "@/components/invoices/InvoiceSummary";
-import { useInvoiceManagement } from "@/hooks/invoices/useInvoiceManagement";
 import AdminPageTitle from "@/components/admin/AdminPageTitle";
 
 const Invoices = () => {
-  const { invoices, markAsPaid, generateInvoicePDF } = useInvoiceManagement();
-  
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleInvoiceCreated = () => {
+    setRefreshKey(prev => prev + 1);
+  };
+
   return (
     <div className="min-h-screen bg-black pb-16">
       <section className="relative py-8">
@@ -28,20 +36,32 @@ const Invoices = () => {
             <Card className="bg-gray-900 border-gray-800 p-6">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-bold text-white">Invoices</h2>
-                <InvoiceSummary invoices={invoices} />
+                <div className="flex items-center space-x-4">
+                  <InvoiceSummary key={refreshKey} />
+                  <Button 
+                    onClick={() => setShowCreateForm(true)}
+                    className="bg-gold hover:bg-gold/80 text-black"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Create Invoice
+                  </Button>
+                </div>
               </div>
               
-              <InvoiceList 
-                invoices={invoices}
-                onMarkAsPaid={markAsPaid}
-                onViewPDF={generateInvoicePDF}
-                hideInvoiceIds={true}
-                showCustomerName={true}
+              <InvoiceListWithDatabase 
+                key={refreshKey}
+                onInvoiceUpdate={handleInvoiceCreated}
               />
             </Card>
           </motion.div>
         </div>
       </section>
+
+      <CreateInvoiceForm 
+        open={showCreateForm}
+        onOpenChange={setShowCreateForm}
+        onInvoiceCreated={handleInvoiceCreated}
+      />
     </div>
   );
 };
