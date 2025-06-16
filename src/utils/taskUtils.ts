@@ -1,4 +1,3 @@
-
 import { ServiceTaskItem } from "@/types/task";
 import { Booking } from "@/types/booking";
 
@@ -72,15 +71,17 @@ export const generateServiceTasksFromPackage = (booking: Booking, packageOptions
   // Add tasks from additional services if any
   if (booking.additionalServices && booking.additionalServices.length > 0) {
     booking.additionalServices.forEach((service, index) => {
-      // Type guard for service objects with name and duration properties
-      if (typeof service === 'object' && service && 'name' in service && typeof service.name === 'string') {
-        const serviceWithDuration = service as { name: string; duration?: number };
-        tasks.push({
-          id: `additional-${serviceWithDuration.name.toLowerCase().replace(/\s+/g, '-')}-${index}`,
-          name: serviceWithDuration.name,
-          completed: false,
-          allocatedTime: serviceWithDuration.duration || 30 // Default to 30 minutes if not specified
-        });
+      // Handle service objects with name property
+      if (typeof service === 'object' && service !== null && 'name' in service) {
+        const serviceObj = service as { name: string; duration?: number };
+        if (typeof serviceObj.name === 'string') {
+          tasks.push({
+            id: `additional-${serviceObj.name.toLowerCase().replace(/\s+/g, '-')}-${index}`,
+            name: serviceObj.name,
+            completed: false,
+            allocatedTime: serviceObj.duration || 30 // Default to 30 minutes if not specified
+          });
+        }
       } else if (typeof service === 'string' || typeof service === 'number') {
         // Handle legacy format where service might be just an ID
         const serviceDetail = additionalServices.find(s => s.id === service);
