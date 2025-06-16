@@ -1,9 +1,15 @@
 
+import { toast } from "sonner";
+
 export const useImageUpload = () => {
-  const handleImageUpload = (images: string[], setImages: (images: string[]) => void) => {
-    // In a real app, this would upload to a server
-    // For now, we'll just add a placeholder image
-    setImages([...images, "https://placeholder.pics/svg/300x200/DEDEDE/555555/Vehicle%20Image"]);
+  const handleImageUpload = (images: string[], setImages: (images: string[]) => void, newImages?: string[]) => {
+    if (newImages) {
+      // Handle multiple new images from camera capture
+      setImages(newImages);
+    } else {
+      // Placeholder for future file upload functionality if needed
+      toast.info("Use the camera to capture photos of the vehicle");
+    }
   };
 
   return { handleImageUpload };

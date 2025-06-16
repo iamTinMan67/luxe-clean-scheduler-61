@@ -31,9 +31,10 @@ export const useReportSubmission = () => {
         return;
       }
       
-      // Ensure the booking status is set to inspected
-      if (bookingDetails.status !== "inspected") {
-        updateBookingStatus(bookingDetails, "inspected");
+      // Update the booking status from "confirmed" to "in-progress" upon inspection completion
+      if (bookingDetails.status === "confirmed") {
+        updateBookingStatus(bookingDetails, "in-progress");
+        toast.success(`${bookingDetails.customer}'s appointment is now in progress.`);
       }
       
       const success = await submitPreInspectionReport(

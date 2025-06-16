@@ -9,6 +9,7 @@ import { usePreInspection } from "@/hooks/usePreInspection";
 const PreInspection = () => {
   const {
     images,
+    setImages,
     selectedBooking,
     bookingDetails,
     exteriorNotes,
@@ -21,7 +22,6 @@ const PreInspection = () => {
     setExteriorNotes,
     setInteriorNotes,
     handleBookingSelected,
-    handleImageUpload,
     handleSubmitReport,
     handleDeclineService,
     updateBookingDetails
@@ -31,6 +31,11 @@ const PreInspection = () => {
   useEffect(() => {
     updateBookingDetails();
   }, [selectedBooking, appointments]);
+
+  // Handle image updates from camera capture
+  const handleImageUpdate = (newImages: string[]) => {
+    setImages(newImages);
+  };
 
   return (
     <motion.div
@@ -69,7 +74,7 @@ const PreInspection = () => {
         <div className="mt-6">
           <ImageUploadSection 
             images={images}
-            onImageUpload={handleImageUpload}
+            onImageUpload={handleImageUpdate}
           />
         </div>
       </div>
