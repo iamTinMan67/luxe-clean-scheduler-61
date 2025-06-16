@@ -1,6 +1,6 @@
 
 import { useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Booking } from "@/types/booking";
 import BookingSelector from "./BookingSelector";
 import BookingDetailsDisplay from "./BookingDetailsDisplay";
@@ -54,10 +54,7 @@ const VehicleInfoForm = ({
 
   return (
     <Card className="bg-black/60 border-gold/30">
-      <CardHeader>
-        <CardTitle className="text-white">Vehicle Information</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 pt-6">
         <BookingSelector
           appointments={appointments}
           loading={loading}
