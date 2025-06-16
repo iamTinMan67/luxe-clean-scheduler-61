@@ -33,7 +33,7 @@ const BookingSelector = ({
     return d1.toDateString() === d2.toDateString();
   };
 
-  // Safe field access with fallbacks
+  // Safe field access with proper fallbacks
   const getDisplayTime = (booking: Booking): string => {
     return booking.time || booking.startTime || "Time TBD";
   };
@@ -46,12 +46,22 @@ const BookingSelector = ({
     return booking.status || "pending";
   };
 
+  const getDisplayCustomer = (booking: Booking): string => {
+    // Handle the customer name properly - remove any special characters
+    const customerName = booking.customer || booking.yourName || "Unknown Customer";
+    return customerName.replace(/^:/, '').replace(/:$/, ''); // Remove leading/trailing colons
+  };
+
+  const getDisplayVehicle = (booking: Booking): string => {
+    return booking.vehicle || booking.jobDetails || "Unknown Vehicle";
+  };
+
   // Enhanced filtering with more comprehensive status checking
   const todayAppointments = appointments.filter(booking => {
     console.log("=== BookingSelector Filter Debug ===");
     console.log("Processing booking:", {
       id: booking.id,
-      customer: booking.customer,
+      customer: getDisplayCustomer(booking),
       date: booking.date,
       status: booking.status,
       dateType: typeof booking.date,
@@ -71,7 +81,7 @@ const BookingSelector = ({
       
       console.log("Booking filter check:", {
         id: booking.id,
-        customer: booking.customer,
+        customer: getDisplayCustomer(booking),
         isToday,
         isValidStatus,
         status: booking.status,
@@ -87,16 +97,17 @@ const BookingSelector = ({
 
   console.log("=== BookingSelector Final Results ===");
   console.log("Total appointments received:", appointments.length);
-  console.log("All appointment statuses:", appointments.map(a => `${a.customer}:${a.status}`));
+  console.log("All appointment statuses:", appointments.map(a => `${getDisplayCustomer(a)}:${a.status}`));
   console.log("Today's valid appointments:", todayAppointments.length);
   console.log("Today's date:", getTodayString());
   console.log("Valid appointments for today:", todayAppointments.map(a => ({
     id: a.id,
-    customer: a.customer,
+    customer: getDisplayCustomer(a),
     status: a.status,
     date: a.date,
     time: getDisplayTime(a),
-    packageType: getDisplayPackage(a)
+    packageType: getDisplayPackage(a),
+    vehicle: getDisplayVehicle(a)
   })));
 
   return (
@@ -119,10 +130,10 @@ const BookingSelector = ({
               <SelectItem key={booking.id} value={booking.id}>
                 <div className="flex flex-col text-left">
                   <span className="font-medium">
-                    {booking.customer} - {getDisplayTime(booking)} - {getDisplayPackage(booking)}
+                    {getDisplayCustomer(booking)} - {getDisplayTime(booking)} - {getDisplayVehicle(booking)}
                   </span>
                   <span className="text-xs text-gray-400">
-                    Status: {getDisplayStatus(booking)}
+                    Package: {getDisplayPackage(booking)} | Status: {getDisplayStatus(booking)}
                   </span>
                 </div>
               </SelectItem>
@@ -139,7 +150,7 @@ const BookingSelector = ({
       {process.env.NODE_ENV === 'development' && (
         <div className="mt-2 text-xs text-gray-400 space-y-1">
           <div>Debug: {appointments.length} total, {todayAppointments.length} today valid</div>
-          <div>All statuses: {appointments.map(a => `${a.customer}:${a.status}`).join(', ')}</div>
+          <div>All statuses: {appointments.map(a => `${getDisplayCustomer(a)}:${a.status}`).join(', ')}</div>
           <div>Today filter: {appointments.filter(a => {
             try {
               return isSameDay(a.date, new Date());
