@@ -1,8 +1,7 @@
 
 import { useBookingForm } from "@/hooks/useBookingForm";
-import PersonalInfoFields from "./PersonalInfoFields";
-import LocationVehicleFields from "./LocationVehicleFields";
-import NotesField from "./NotesField";
+import ContactDetailsSection from "./ContactDetailsSection";
+import JobDetailsSection from "./JobDetailsSection";
 import SubmitButton from "./SubmitButton";
 import { useEffect, useState } from "react";
 
@@ -55,7 +54,7 @@ const BookingForm = ({ onSubmit }: BookingFormProps) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-4">
+      <div className="space-y-6">
         {/* Package summary display */}
         <div className="p-4 rounded-md bg-gold/10 border border-gold/30">
           <h3 className="font-medium text-gold mb-2">Your Selected Package</h3>
@@ -74,25 +73,20 @@ const BookingForm = ({ onSubmit }: BookingFormProps) => {
           )}
         </div>
         
-        <PersonalInfoFields 
+        <ContactDetailsSection 
           yourName={yourName}
           setYourName={setYourName}
           phone={phone}
           setPhone={setPhone}
           email={email}
           setEmail={setEmail}
-        />
-        
-        <LocationVehicleFields 
           postcode={postcode}
           setPostcode={setPostcode}
-          jobDetails={jobDetails}
-          setJobDetails={setJobDetails}
-          notes={notes}
-          setNotes={setNotes}
         />
         
-        <NotesField 
+        <JobDetailsSection 
+          jobDetails={jobDetails}
+          setJobDetails={setJobDetails}
           notes={notes}
           setNotes={setNotes}
         />

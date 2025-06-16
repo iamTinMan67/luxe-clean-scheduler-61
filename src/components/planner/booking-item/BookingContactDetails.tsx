@@ -1,29 +1,23 @@
 
 import React from 'react';
-import { MapPin, User, Mail, Phone, Car, Building, Home } from 'lucide-react';
+import { MapPin, Mail, Phone, Building, Home } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface BookingContactDetailsProps {
+  customer: string;
   location: string;
-  notes?: string;
   email?: string;
   contact?: string;
-  jobDetails?: string;
-  condition?: number;
   clientType?: "private" | "corporate";
-  vehicleType?: string;
 }
 
 const BookingContactDetails: React.FC<BookingContactDetailsProps> = ({
+  customer,
   location,
-  notes,
   email,
   contact,
-  jobDetails,
-  condition,
-  clientType,
-  vehicleType
+  clientType
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -46,7 +40,7 @@ const BookingContactDetails: React.FC<BookingContactDetailsProps> = ({
       case "corporate":
         return <Building className="w-4 h-4 mr-1" />;
       default:
-        return <User className="w-4 h-4 mr-1" />;
+        return null;
     }
   };
 
@@ -57,7 +51,7 @@ const BookingContactDetails: React.FC<BookingContactDetailsProps> = ({
       case "corporate":
         return "Commercial";
       default:
-        return "Unknown";
+        return null;
     }
   };
 
@@ -65,9 +59,9 @@ const BookingContactDetails: React.FC<BookingContactDetailsProps> = ({
     <Collapsible 
       open={isOpen} 
       onOpenChange={setIsOpen}
-      className="mt-2"
+      className="mt-4"
     >
-      <CollapsibleTrigger className="flex w-full items-center justify-between py-2 text-sm text-gray-400 hover:text-white">
+      <CollapsibleTrigger className="flex w-full items-center justify-between py-2 text-sm text-gray-400 hover:text-white border-t border-gray-700 pt-3">
         <span>Contact Details</span>
         {isOpen ? (
           <ChevronUp className="h-4 w-4" />
@@ -76,28 +70,23 @@ const BookingContactDetails: React.FC<BookingContactDetailsProps> = ({
         )}
       </CollapsibleTrigger>
       <CollapsibleContent className="space-y-2 pt-2">
-        {/* Client Category and Job Type */}
-        {(clientType || vehicleType) && (
-          <div className="flex items-center justify-between">
-            {clientType && (
-              <div className={`flex items-center px-2 py-1 rounded-full border text-xs ${getClientCategoryStyling(clientType)}`}>
-                {getClientIcon(clientType)}
-                <span>{getClientLabel(clientType)}</span>
-              </div>
-            )}
-            {vehicleType && (
-              <div className="text-gray-300 text-xs">
-                Job Type: {vehicleType}
-              </div>
-            )}
+        {/* Client Category */}
+        {clientType && (
+          <div className="flex items-center">
+            <div className={`flex items-center px-2 py-1 rounded-full border text-xs ${getClientCategoryStyling(clientType)}`}>
+              {getClientIcon(clientType)}
+              <span>{getClientLabel(clientType)}</span>
+            </div>
           </div>
         )}
         
+        {/* Location */}
         <div className="flex items-center text-gray-300">
           <MapPin className="w-4 h-4 mr-2 text-gold" />
           <span>{location}</span>
         </div>
         
+        {/* Email */}
         {email && (
           <div className="flex items-center text-gray-300">
             <Mail className="w-4 h-4 mr-2 text-gold" />
@@ -105,32 +94,11 @@ const BookingContactDetails: React.FC<BookingContactDetailsProps> = ({
           </div>
         )}
         
+        {/* Phone */}
         {contact && (
           <div className="flex items-center text-gray-300">
             <Phone className="w-4 h-4 mr-2 text-gold" />
             <span>{contact}</span>
-          </div>
-        )}
-        
-        {notes && (
-          <div className="flex items-center text-gray-300">
-            <User className="w-4 h-4 mr-2 text-gold" />
-            <span>{notes}</span>
-          </div>
-        )}
-        
-        {jobDetails && (
-          <div className="flex items-center text-gray-300">
-            <Car className="w-4 h-4 mr-2 text-gold" />
-            <span>Details: {jobDetails}</span>
-          </div>
-        )}
-        
-        {condition !== undefined && (
-          <div className="flex items-center text-gray-300">
-            <span className={`text-sm ${condition < 5 ? "text-orange-400" : "text-green-400"}`}>
-              Vehicle Condition: {condition}/10
-            </span>
           </div>
         )}
       </CollapsibleContent>
