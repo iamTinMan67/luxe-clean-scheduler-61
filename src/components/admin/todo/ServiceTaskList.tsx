@@ -61,6 +61,7 @@ const ServiceTaskList = ({
           <p>Vehicle: {currentBooking.vehicle} {currentBooking.vehicleReg ? `(${currentBooking.vehicleReg})` : ''}</p>
           <p>Location: {currentBooking.location}</p>
           <p>Date: {new Date(currentBooking.date).toLocaleDateString()} {currentBooking.time}</p>
+          <p>Status: <span className="capitalize text-gold">{currentBooking.status}</span></p>
         </div>
         
         {/* Progress bar */}
@@ -77,16 +78,26 @@ const ServiceTaskList = ({
           </div>
         </div>
 
-        {/* Finish Job Button */}
-        {allTasksCompleted && onFinishJob && (
+        {/* Finish Job Button - only show for in-progress bookings when all tasks are completed */}
+        {currentBooking.status === "in-progress" && allTasksCompleted && onFinishJob && (
           <div className="mt-4 text-center">
             <Button 
               onClick={onFinishJob}
               className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-medium"
             >
               <CheckCircle className="h-4 w-4 mr-2" />
-              Finish Job
+              Finish Job & Generate Invoice
             </Button>
+          </div>
+        )}
+
+        {/* Show completed status for finished jobs */}
+        {currentBooking.status === "finished" && (
+          <div className="mt-4 text-center">
+            <div className="bg-green-900/40 text-green-400 px-4 py-2 rounded-md">
+              <CheckCircle className="h-4 w-4 mr-2 inline" />
+              Job Completed & Invoice Generated
+            </div>
           </div>
         )}
       </div>
@@ -108,11 +119,12 @@ const ServiceTaskList = ({
                   id={`task-${task.id}`}
                   checked={task.completed}
                   onChange={(e) => handleCheckboxChange(task.id, e)}
-                  className="mr-3 h-4 w-4 text-gold bg-gray-900 border-gold/50 rounded focus:ring-gold focus:ring-2"
+                  disabled={currentBooking.status === "finished"}
+                  className="mr-3 h-4 w-4 text-gold bg-gray-900 border-gold/50 rounded focus:ring-gold focus:ring-2 disabled:opacity-50"
                 />
                 <label
                   htmlFor={`task-${task.id}`}
-                  className={`cursor-pointer ${task.completed ? 'line-through text-gray-500' : 'text-white'}`}
+                  className={`cursor-pointer ${task.completed ? 'line-through text-gray-500' : 'text-white'} ${currentBooking.status === "finished" ? 'cursor-not-allowed' : ''}`}
                 >
                   {task.name}
                 </label>
@@ -138,7 +150,8 @@ const ServiceTaskList = ({
                       const newTime = parseInt(e.target.value) || task.allocatedTime;
                       onUpdateTimeAllocation(task.id, newTime);
                     }}
-                    className="w-16 text-center bg-black/70 border-gray-700 text-white"
+                    disabled={currentBooking.status === "finished"}
+                    className="w-16 text-center bg-black/70 border-gray-700 text-white disabled:opacity-50"
                   />
                   <span className="ml-1 text-gray-400">min</span>
                 </div>
@@ -155,15 +168,17 @@ const ServiceTaskList = ({
                       const actualTime = parseInt(e.target.value) || 0;
                       onSetActualTime(task.id, actualTime);
                     }}
-                    className="w-16 text-center bg-black/70 border-gray-700 text-white"
+                    disabled={currentBooking.status === "finished"}
+                    className="w-16 text-center bg-black/70 border-gray-700 text-white disabled:opacity-50"
                   />
                   <span className="ml-1 text-gray-400">min</span>
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="ml-1 text-gold hover:text-gold/80 p-1"
+                    className="ml-1 text-gold hover:text-gold/80 p-1 disabled:opacity-50"
                     onClick={() => onSetActualTime(task.id, task.allocatedTime)}
                     title="Set to allocated time"
+                    disabled={currentBooking.status === "finished"}
                   >
                     <Clock className="h-4 w-4" />
                   </Button>

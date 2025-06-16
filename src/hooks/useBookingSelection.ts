@@ -1,62 +1,48 @@
 
 import { useState, useEffect, useMemo } from 'react';
-import { Booking } from '@/types/booking';
 import { useTodoAppointments } from './useTodoAppointments';
+import { Booking } from '@/types/booking';
+import { useBookingStateManager } from './bookings/useBookingStateManager';
+import { toast } from 'sonner';
 
 export const useBookingSelection = () => {
   const [selectedAppointment, setSelectedAppointment] = useState<string>('');
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [searchTerm, setSearchTerm] = useState('');
+  const { updateBooking } = useBookingStateManager();
   
-  // Get inspected appointments for todo list
-  const { 
-    appointments, 
-    loading 
+  const {
+    appointments,
+    loading,
+    selectedDate,
+    setSelectedDate,
+    searchTerm,
+    setSearchTerm
   } = useTodoAppointments();
 
-  // Filter appointments by date and search term
-  const filteredAppointments = useMemo(() => {
-    return appointments.filter(booking => {
-      // Date filter
-      const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
-      const dateMatches = 
-        bookingDate.getDate() === selectedDate.getDate() &&
-        bookingDate.getMonth() === selectedDate.getMonth() &&
-        bookingDate.getFullYear() === selectedDate.getFullYear();
-
-      // Search filter (customer name)
-      const searchMatches = searchTerm === '' || 
-        booking.customer.toLowerCase().includes(searchTerm.toLowerCase());
-
-      return dateMatches && searchMatches;
-    });
-  }, [appointments, selectedDate, searchTerm]);
-
-  // Find current booking from selection
+  // Find the current booking from the selected appointment ID
   const currentBooking = useMemo(() => {
-    return filteredAppointments.find(booking => booking.id === selectedAppointment) || null;
-  }, [filteredAppointments, selectedAppointment]);
+    if (!selectedAppointment) return null;
+    return appointments.find(booking => booking.id === selectedAppointment) || null;
+  }, [selectedAppointment, appointments]);
 
-  // Auto-select booking from URL parameter
+  // Effect to automatically change status from "inspected" to "in-progress" when booking is loaded
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const bookingIdFromUrl = urlParams.get('bookingId');
-    
-    if (bookingIdFromUrl && !selectedAppointment) {
-      // Check if this booking exists in our appointments
-      const bookingExists = filteredAppointments.find(booking => booking.id === bookingIdFromUrl);
-      if (bookingExists) {
-        setSelectedAppointment(bookingIdFromUrl);
-        console.log('Auto-selected booking from URL:', bookingIdFromUrl);
+    const handleStatusChange = async () => {
+      if (currentBooking && currentBooking.status === "inspected") {
+        console.log("Auto-changing status from inspected to in-progress for:", currentBooking.customer);
+        const updatedBooking = { ...currentBooking, status: "in-progress" as const };
+        await updateBooking(updatedBooking);
+        toast.success(`${currentBooking.customer}'s appointment status changed to In Progress.`);
       }
-    }
-  }, [filteredAppointments, selectedAppointment]);
+    };
+
+    handleStatusChange();
+  }, [currentBooking?.id, currentBooking?.status, updateBooking]);
 
   return {
     selectedAppointment,
     setSelectedAppointment,
     currentBooking,
-    appointments: filteredAppointments,
+    appointments,
     loading,
     selectedDate,
     setSelectedDate,

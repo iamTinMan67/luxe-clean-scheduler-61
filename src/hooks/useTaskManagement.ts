@@ -3,6 +3,7 @@ import { useBookingSelection } from "./useBookingSelection";
 import { useServiceTasks } from "./useServiceTasks";
 import { useBookingStateManager } from "./bookings/useBookingStateManager";
 import { syncBookingToSupabase } from "@/services/bookingSyncService";
+import { generateInvoice } from "@/utils/bookingUtils";
 import { toast } from "sonner";
 
 export const useTaskManagement = () => {
@@ -36,6 +37,8 @@ export const useTaskManagement = () => {
     if (!currentBooking) return;
 
     try {
+      console.log("Finishing job for booking:", currentBooking.customer);
+      
       // Update booking status to finished
       const finishedBooking = {
         ...currentBooking,
@@ -53,7 +56,16 @@ export const useTaskManagement = () => {
         console.error('Failed to sync job completion to database:', error);
       }
 
-      toast.success(`Job completed for ${currentBooking.customer}! Booking status updated to finished.`);
+      // Generate invoice for the finished job
+      try {
+        const invoice = generateInvoice(finishedBooking);
+        console.log('Invoice generated:', invoice);
+        toast.success(`Job completed for ${currentBooking.customer}! Invoice generated and booking status updated to finished.`);
+      } catch (error) {
+        console.error('Failed to generate invoice:', error);
+        toast.success(`Job completed for ${currentBooking.customer}! Booking status updated to finished.`);
+        toast.error('Failed to generate invoice. Please create manually.');
+      }
       
     } catch (error) {
       console.error('Error finishing job:', error);
