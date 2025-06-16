@@ -61,11 +61,10 @@ const VehicleInfoForm = ({
 
         {/* Booking Selector */}
         <BookingSelector
-          value={selectedBooking}
-          onChange={setSelectedBooking}
+          selectedBooking={selectedBooking}
+          onBookingChange={setSelectedBooking}
           appointments={appointments}
           loading={loading}
-          onBookingSelected={onBookingSelected}
         />
         
         {/* Booking Details Display */}

@@ -87,8 +87,8 @@ export const generateServiceTasksFromPackage = (booking: Booking, packageOptions
           }
         } else if (typeof service === 'string' || typeof service === 'number') {
           // Handle legacy format where service might be just an ID
-          const serviceDetail = additionalServices.find(s => s.id === service);
-          if (serviceDetail) {
+          const serviceDetail = additionalServices.find(s => s && s.id === service);
+          if (serviceDetail && serviceDetail.name) {
             tasks.push({
               id: `additional-${serviceDetail.name.toLowerCase().replace(/\s+/g, '-')}-${index}`,
               name: serviceDetail.name,
