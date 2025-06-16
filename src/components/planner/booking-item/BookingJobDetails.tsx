@@ -35,21 +35,23 @@ const BookingJobDetails: React.FC<BookingJobDetailsProps> = ({
 
   return (
     <div className="space-y-3">
-      {/* Customer Name - Prominent */}
-      <h3 className="text-lg font-medium text-white">{customer}</h3>
+      {/* Customer Name - Only show if provided */}
+      {customer && (
+        <h3 className="text-lg font-medium text-white">{customer}</h3>
+      )}
       
-      {/* Job Details */}
+      {/* Job Details - Prominent */}
       {jobDetails && (
         <div className="flex items-center text-gray-300">
           <StickyNote className="w-4 h-4 mr-2 text-gold" />
-          <span>Job: {jobDetails}</span>
+          <span className="text-lg font-medium text-white">Job: {jobDetails}</span>
         </div>
       )}
       
-      {/* Date and Time - Moved above Package Information */}
+      {/* Date and Time - Prominent and moved to top */}
       <div className="flex items-center text-gray-300">
         <Calendar className="w-4 h-4 mr-2 text-gold" />
-        <span>
+        <span className="text-lg font-medium text-white">
           {date instanceof Date 
             ? format(date, "MMM dd, yyyy") 
             : "Date not available"} 

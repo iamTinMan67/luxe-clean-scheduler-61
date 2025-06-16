@@ -4,7 +4,7 @@ import { Booking } from '@/types/booking';
 import { packageOptions } from "@/data/servicePackageData";
 import { additionalServices } from "@/data/servicePackageData";
 import { calculateTotalBookingTime } from "@/utils/priceCalculator";
-import { MapPin, Building, Home } from 'lucide-react';
+import { Building, Home } from 'lucide-react';
 
 // Import refactored components
 import BookingJobDetails from './booking-item/BookingJobDetails';
@@ -118,18 +118,9 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
       </div>
       
       <div className="space-y-4 mb-4">
-        {/* Customer Name and Post Code */}
-        <div className="space-y-2">
-          <h3 className="text-lg font-medium text-white">{booking.customer}</h3>
-          <div className="flex items-center text-gray-300">
-            <MapPin className="w-4 h-4 mr-2 text-gold" />
-            <span>{booking.location}</span>
-          </div>
-        </div>
-
-        {/* Job Details with reordered information */}
+        {/* Job Details - Now prominent at the top without customer name */}
         <BookingJobDetails 
-          customer={booking.customer}
+          customer=""
           packageType={booking.packageType}
           packageDetail={packageDetail}
           condition={booking.condition}
@@ -147,7 +138,7 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
           secondVehicleReg={booking.secondVehicleReg}
         />
 
-        {/* Contact Details - Collapsible */}
+        {/* Contact Details - Now includes customer name and location */}
         <BookingContactDetails 
           customer={booking.customer}
           location={booking.location}

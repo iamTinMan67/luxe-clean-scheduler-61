@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { MapPin, Mail, Phone } from 'lucide-react';
+import { MapPin, Mail, Phone, User } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
@@ -36,7 +36,13 @@ const BookingContactDetails: React.FC<BookingContactDetailsProps> = ({
         )}
       </CollapsibleTrigger>
       <CollapsibleContent className="space-y-2 pt-2">
-        {/* Location - Show Post Code below Customer Name */}
+        {/* Customer Name - Now prominently displayed */}
+        <div className="flex items-center text-gray-300">
+          <User className="w-4 h-4 mr-2 text-gold" />
+          <span className="font-medium text-white">{customer}</span>
+        </div>
+        
+        {/* Location - Post Code */}
         <div className="flex items-center text-gray-300">
           <MapPin className="w-4 h-4 mr-2 text-gold" />
           <span>{location}</span>
