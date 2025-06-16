@@ -18,6 +18,12 @@ const ActionButtons = ({
   showStartInspection,
   showInspectionComplete 
 }: ActionButtonsProps) => {
+  console.log("ActionButtons render:", { 
+    showStartInspection, 
+    showInspectionComplete,
+    isSubmitting 
+  });
+
   return (
     <div className="space-y-4">
       {/* Start Inspection button - shown when booking is selected and confirmed */}
@@ -35,7 +41,7 @@ const ActionButtons = ({
             onClick={onDecline}
             disabled={isSubmitting}
           >
-            Decline
+            Decline Job
           </Button>
         </div>
       )}

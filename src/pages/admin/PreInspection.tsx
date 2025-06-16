@@ -42,6 +42,17 @@ const PreInspection = () => {
   const showStartInspection = bookingDetails && bookingDetails.status === "confirmed";
   const showInspectionComplete = bookingDetails && bookingDetails.status === "in-progress";
 
+  console.log("PreInspection render state:", {
+    selectedBooking,
+    bookingDetails: bookingDetails ? {
+      id: bookingDetails.id,
+      customer: bookingDetails.customer,
+      status: bookingDetails.status
+    } : null,
+    showStartInspection,
+    showInspectionComplete
+  });
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -69,33 +80,28 @@ const PreInspection = () => {
           onBookingSelected={handleBookingSelected}
         />
         
-        {/* Start Inspection and Decline buttons */}
-        <ActionButtons 
-          isSubmitting={isSubmitting}
-          onAccept={handleSubmitReport}
-          onDecline={handleDeclineService}
-          onStartInspection={handleStartInspection}
-          showStartInspection={showStartInspection}
-          showInspectionComplete={false}
-        />
-        
-        <div className="mt-6">
-          <ImageUploadSection 
-            images={images}
-            onImageUpload={handleImageUpdate}
-            bookingId={bookingDetails?.id}
+        {/* Action buttons - only show one set based on booking status */}
+        {(showStartInspection || showInspectionComplete) && (
+          <ActionButtons 
+            isSubmitting={isSubmitting}
+            onAccept={handleSubmitReport}
+            onDecline={handleDeclineService}
+            onStartInspection={handleStartInspection}
+            showStartInspection={showStartInspection}
+            showInspectionComplete={showInspectionComplete}
           />
-        </div>
+        )}
         
-        {/* Inspection Complete button - shown at the bottom */}
-        <ActionButtons 
-          isSubmitting={isSubmitting}
-          onAccept={handleSubmitReport}
-          onDecline={handleDeclineService}
-          onStartInspection={handleStartInspection}
-          showStartInspection={false}
-          showInspectionComplete={showInspectionComplete}
-        />
+        {/* Image upload section - only show when booking is selected */}
+        {bookingDetails && (
+          <div className="mt-6">
+            <ImageUploadSection 
+              images={images}
+              onImageUpload={handleImageUpdate}
+              bookingId={bookingDetails.id}
+            />
+          </div>
+        )}
       </div>
     </motion.div>
   );

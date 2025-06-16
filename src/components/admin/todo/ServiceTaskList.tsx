@@ -1,6 +1,5 @@
 
 import { Clock, CalendarClock, CheckCircle } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ServiceTaskItem } from "@/types/task";
@@ -45,6 +44,11 @@ const ServiceTaskList = ({
   const completedTasks = serviceTasks.filter(task => task.completed).length;
   const progressPercentage = Math.round((completedTasks / serviceTasks.length) * 100);
   const allTasksCompleted = serviceTasks.length > 0 && serviceTasks.every(task => task.completed);
+
+  const handleCheckboxChange = (taskId: string, event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("Checkbox changed for task:", taskId, "checked:", event.target.checked);
+    onToggleTask(taskId);
+  };
 
   return (
     <div>
@@ -99,11 +103,12 @@ const ServiceTaskList = ({
           <li key={task.id} className="flex items-center border border-gray-800 p-3 rounded-md bg-gray-900/30">
             <div className="grid grid-cols-12 gap-2 w-full items-center">
               <div className="col-span-5 flex items-center">
-                <Checkbox
+                <input
+                  type="checkbox"
                   id={`task-${task.id}`}
                   checked={task.completed}
-                  onCheckedChange={(checked) => onToggleTask(task.id)}
-                  className="mr-3 border-gold/50"
+                  onChange={(e) => handleCheckboxChange(task.id, e)}
+                  className="mr-3 h-4 w-4 text-gold bg-gray-900 border-gold/50 rounded focus:ring-gold focus:ring-2"
                 />
                 <label
                   htmlFor={`task-${task.id}`}
