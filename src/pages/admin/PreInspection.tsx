@@ -40,7 +40,7 @@ const PreInspection = () => {
 
   // Determine which buttons to show based on booking status
   const showStartInspection = bookingDetails && bookingDetails.status === "confirmed";
-  const showInspectionComplete = bookingDetails && bookingDetails.status === "in-progress";
+  const showInspectionComplete = bookingDetails && bookingDetails.status === "inspecting";
 
   console.log("PreInspection render state:", {
     selectedBooking,
@@ -94,8 +94,8 @@ const PreInspection = () => {
           />
         )}
         
-        {/* Image upload section - only show when booking is selected */}
-        {bookingDetails && (
+        {/* Image upload section - only show when booking is inspecting */}
+        {bookingDetails && bookingDetails.status === "inspecting" && (
           <div className="mt-6">
             <ImageUploadSection 
               images={images}

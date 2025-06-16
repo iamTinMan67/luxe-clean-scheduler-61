@@ -46,7 +46,7 @@ const ActionButtons = ({
         </div>
       )}
       
-      {/* Inspection Complete button - shown when booking status is "in-progress" */}
+      {/* Inspection Complete button - shown when booking status is "inspecting" */}
       {showInspectionComplete && (
         <div className="mt-6 pt-6 border-t border-gold/30">
           <Button 

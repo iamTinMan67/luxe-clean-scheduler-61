@@ -7,8 +7,8 @@ export const useTodoAppointments = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [searchTerm, setSearchTerm] = useState('');
   
-  // Get inspected and in-progress bookings for task management
-  const { appointments, loading } = useScheduledAppointments(['inspected', 'in-progress']);
+  // Get only inspected bookings for task management (not in-progress)
+  const { appointments, loading } = useScheduledAppointments(['inspected']);
 
   console.log('=== TodoAppointments Debug ===');
   console.log('Raw appointments from useScheduledAppointments:', appointments.length);
