@@ -68,12 +68,15 @@ export const useScheduledAppointments = (statusFilter?: string[]) => {
               vehicleType: booking.vehicle_type
             };
 
+            // Properly convert date to Date object before calling toDateString
+            const bookingDate = transformedBooking.date instanceof Date ? transformedBooking.date : new Date(transformedBooking.date);
+            
             console.log("Transformed booking:", {
               id: transformedBooking.id,
               customer: transformedBooking.customer,
               status: transformedBooking.status,
               date: transformedBooking.date,
-              dateString: transformedBooking.date.toDateString()
+              dateString: bookingDate.toDateString()
             });
 
             return transformedBooking;
@@ -161,12 +164,15 @@ export const useScheduledAppointments = (statusFilter?: string[]) => {
     });
     
     console.log("Today's confirmed bookings:", todayConfirmed.length);
-    console.log("Today's confirmed booking details:", todayConfirmed.map(b => ({
-      id: b.id,
-      customer: b.customer,
-      status: b.status,
-      date: b.date.toDateString()
-    })));
+    console.log("Today's confirmed booking details:", todayConfirmed.map(b => {
+      const bookingDate = b.date instanceof Date ? b.date : new Date(b.date);
+      return {
+        id: b.id,
+        customer: b.customer,
+        status: b.status,
+        date: bookingDate.toDateString()
+      };
+    }));
   }, [appointments, loading, statusFilter]);
 
   return { appointments, loading };
