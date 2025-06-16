@@ -114,7 +114,7 @@ const BookingSelector = ({
     return isSame;
   };
 
-  // Safe field access with proper fallbacks
+  // Safe field access with proper fallbacks - handle both customer and yourName fields
   const getDisplayTime = (booking: Booking): string => {
     return booking.time || booking.startTime || "Time TBD";
   };
@@ -128,8 +128,8 @@ const BookingSelector = ({
   };
 
   const getDisplayCustomer = (booking: Booking): string => {
-    // Handle the customer name properly - remove any special characters
-    const customerName = booking.customer || "Unknown Customer";
+    // Handle both customer and yourName fields (legacy data compatibility)
+    const customerName = booking.customer || (booking as any).yourName || "Unknown Customer";
     return customerName.replace(/^:/, '').replace(/:$/, ''); // Remove leading/trailing colons
   };
 
@@ -199,28 +199,42 @@ const BookingSelector = ({
         onValueChange={onBookingChange}
       >
         <SelectTrigger className="bg-black/40 border-gold/30 text-white">
-          <SelectValue placeholder="Select today's appointment" />
+          <SelectValue placeholder={
+            loading 
+              ? "Loading appointments..." 
+              : todayAppointments.length > 0 
+                ? "Select today's appointment" 
+                : "No appointments available for today"
+          } />
         </SelectTrigger>
         <SelectContent className="bg-gray-900 border-gold/30 text-white max-h-[300px] overflow-y-auto z-[100]">
           {loading ? (
             <SelectItem value="loading" disabled>Loading appointments...</SelectItem>
           ) : todayAppointments.length > 0 ? (
-            todayAppointments.map((booking) => (
-              <SelectItem 
-                key={booking.id} 
-                value={booking.id}
-                className="focus:bg-gray-800 focus:text-white data-[highlighted]:bg-gray-800 data-[highlighted]:text-white"
-              >
-                <div className="flex flex-col text-left w-full min-w-0">
-                  <span className="font-medium text-white truncate">
-                    {getDisplayCustomer(booking)} - {getDisplayTime(booking)}
-                  </span>
-                  <span className="text-xs text-gray-300 truncate">
-                    {getDisplayVehicle(booking)} | {getDisplayPackage(booking)} | {getDisplayStatus(booking)}
-                  </span>
-                </div>
-              </SelectItem>
-            ))
+            todayAppointments.map((booking) => {
+              console.log("Rendering booking item:", {
+                id: booking.id,
+                customer: getDisplayCustomer(booking),
+                time: getDisplayTime(booking),
+                vehicle: getDisplayVehicle(booking)
+              });
+              return (
+                <SelectItem 
+                  key={booking.id} 
+                  value={booking.id}
+                  className="focus:bg-gray-800 focus:text-white data-[highlighted]:bg-gray-800 data-[highlighted]:text-white"
+                >
+                  <div className="flex flex-col text-left w-full min-w-0">
+                    <span className="font-medium text-white truncate">
+                      {getDisplayCustomer(booking)} - {getDisplayTime(booking)}
+                    </span>
+                    <span className="text-xs text-gray-300 truncate">
+                      {getDisplayVehicle(booking)} | {getDisplayPackage(booking)} | {getDisplayStatus(booking)}
+                    </span>
+                  </div>
+                </SelectItem>
+              );
+            })
           ) : (
             <SelectItem value="none" disabled>
               No confirmed appointments scheduled for today
@@ -242,7 +256,8 @@ const BookingSelector = ({
             }
           }).length} appointments today</div>
           <div>Confirmed filter: {appointments.filter(a => a.status === 'confirmed').length} confirmed appointments</div>
-          <div>Sample booking data: {JSON.stringify(appointments[0], null, 2)}</div>
+          <div>Sample booking IDs: {todayAppointments.map(a => a.id).join(', ')}</div>
+          <div>Rendering {todayAppointments.length} dropdown items</div>
         </div>
       )}
     </div>
