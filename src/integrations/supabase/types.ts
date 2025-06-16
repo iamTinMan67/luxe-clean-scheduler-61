@@ -221,6 +221,7 @@ export type Database = {
       }
       bookings: {
         Row: {
+          client_type: string | null
           condition: number | null
           created_at: string | null
           customer_email: string | null
@@ -229,19 +230,26 @@ export type Database = {
           date: string
           end_time: string | null
           id: string
+          job_details: string | null
+          job_type: string | null
           location: string
           notes: string | null
           package_type: string
           progress_percentage: number | null
+          second_vehicle: string | null
+          second_vehicle_reg: string | null
           staff: Json | null
           start_time: string | null
           status: string
           time: string
           total_price: number
+          travel_minutes: number | null
           updated_at: string | null
+          vehicle_reg: string | null
           vehicle_type: string
         }
         Insert: {
+          client_type?: string | null
           condition?: number | null
           created_at?: string | null
           customer_email?: string | null
@@ -250,19 +258,26 @@ export type Database = {
           date: string
           end_time?: string | null
           id?: string
+          job_details?: string | null
+          job_type?: string | null
           location: string
           notes?: string | null
           package_type: string
           progress_percentage?: number | null
+          second_vehicle?: string | null
+          second_vehicle_reg?: string | null
           staff?: Json | null
           start_time?: string | null
           status: string
           time: string
           total_price: number
+          travel_minutes?: number | null
           updated_at?: string | null
+          vehicle_reg?: string | null
           vehicle_type: string
         }
         Update: {
+          client_type?: string | null
           condition?: number | null
           created_at?: string | null
           customer_email?: string | null
@@ -271,16 +286,22 @@ export type Database = {
           date?: string
           end_time?: string | null
           id?: string
+          job_details?: string | null
+          job_type?: string | null
           location?: string
           notes?: string | null
           package_type?: string
           progress_percentage?: number | null
+          second_vehicle?: string | null
+          second_vehicle_reg?: string | null
           staff?: Json | null
           start_time?: string | null
           status?: string
           time?: string
           total_price?: number
+          travel_minutes?: number | null
           updated_at?: string | null
+          vehicle_reg?: string | null
           vehicle_type?: string
         }
         Relationships: []

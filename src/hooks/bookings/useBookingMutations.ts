@@ -1,6 +1,7 @@
 
 import { Booking } from '@/types/booking';
 import { useBookingsStorage } from './useBookingsStorage';
+import { syncBookingToSupabase, deleteBookingFromSupabase } from '@/services/bookingSyncService';
 
 /**
  * Hook for booking mutation operations (update, move, delete)
@@ -15,7 +16,7 @@ export const useBookingMutations = () => {
   } = useBookingsStorage();
 
   // Update booking in the appropriate list
-  const updateBooking = (booking: Booking): Booking[] => {
+  const updateBooking = async (booking: Booking): Promise<Booking[]> => {
     const isConfirmed = booking.status === 'confirmed' || 
                         booking.status === 'in-progress' || 
                         booking.status === 'finished' ||
@@ -28,6 +29,15 @@ export const useBookingMutations = () => {
       );
       setConfirmedBookings(updatedBookings);
       saveBookingsToStorage('confirmed', updatedBookings);
+      
+      // Sync to Supabase
+      try {
+        await syncBookingToSupabase(booking);
+        console.log('Booking update synced to database');
+      } catch (error) {
+        console.error('Failed to sync booking update to database:', error);
+      }
+      
       return updatedBookings;
     } else {
       const updatedBookings = pendingBookings.map(b => 
@@ -40,7 +50,7 @@ export const useBookingMutations = () => {
   };
 
   // Move booking from pending to confirmed
-  const moveBookingToConfirmed = (booking: Booking): void => {
+  const moveBookingToConfirmed = async (booking: Booking): Promise<void> => {
     const updatedPending = pendingBookings.filter(b => b.id !== booking.id);
     setPendingBookings(updatedPending);
     saveBookingsToStorage('pending', updatedPending);
@@ -48,10 +58,18 @@ export const useBookingMutations = () => {
     const updatedConfirmed = [...confirmedBookings, booking];
     setConfirmedBookings(updatedConfirmed);
     saveBookingsToStorage('confirmed', updatedConfirmed);
+    
+    // Sync to Supabase
+    try {
+      await syncBookingToSupabase(booking);
+      console.log('Booking move synced to database');
+    } catch (error) {
+      console.error('Failed to sync booking move to database:', error);
+    }
   };
 
   // Delete booking
-  const deleteBooking = (booking: Booking): void => {
+  const deleteBooking = async (booking: Booking): Promise<void> => {
     const isConfirmed = booking.status === 'confirmed' || 
                        booking.status === 'in-progress' || 
                        booking.status === 'finished' ||
@@ -66,6 +84,14 @@ export const useBookingMutations = () => {
       const updatedBookings = pendingBookings.filter(b => b.id !== booking.id);
       setPendingBookings(updatedBookings);
       saveBookingsToStorage('pending', updatedBookings);
+    }
+    
+    // Delete from Supabase
+    try {
+      await deleteBookingFromSupabase(booking.id);
+      console.log('Booking deletion synced to database');
+    } catch (error) {
+      console.error('Failed to sync booking deletion to database:', error);
     }
   };
 

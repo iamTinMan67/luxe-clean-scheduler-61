@@ -6,6 +6,7 @@ import { submitPreInspectionReport } from "@/services/inspectionService";
 import { sendTrackingInfo } from "@/utils/emailUtils";
 import { useBookingStatus } from "@/hooks/bookings/useBookingStatus";
 import { useBookingStateManager } from "@/hooks/bookings/useBookingStateManager";
+import { syncBookingToSupabase } from "@/services/bookingSyncService";
 
 export const useReportSubmission = () => {
   const navigate = useNavigate();
@@ -33,7 +34,22 @@ export const useReportSubmission = () => {
       
       // Update the booking status from "confirmed" to "in-progress" upon inspection completion
       if (bookingDetails.status === "confirmed") {
+        const updatedBooking: Booking = {
+          ...bookingDetails,
+          status: "in-progress"
+        };
+        
+        // Update status locally
         updateBookingStatus(bookingDetails, "in-progress");
+        
+        // Sync the status change to Supabase
+        try {
+          await syncBookingToSupabase(updatedBooking);
+          console.log('Status change synced to database');
+        } catch (error) {
+          console.error('Failed to sync status change to database:', error);
+        }
+        
         toast.success(`${bookingDetails.customer}'s appointment is now in progress.`);
       }
       

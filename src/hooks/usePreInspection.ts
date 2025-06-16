@@ -6,6 +6,7 @@ import { useImageUpload } from "@/hooks/preinspection/useImageUpload";
 import { useBookingSelection } from "@/hooks/preinspection/useBookingSelection";
 import { useReportSubmission } from "@/hooks/preinspection/useReportSubmission";
 import { useServiceDecline } from "@/hooks/preinspection/useServiceDecline";
+import { syncLocalStorageToSupabase } from "@/utils/dataSyncUtils";
 
 export const usePreInspection = () => {
   const {
@@ -33,6 +34,19 @@ export const usePreInspection = () => {
   const { updateBookingDetails, handleBookingSelected } = useBookingSelection();
   const { handleSubmitReport: submitReport } = useReportSubmission();
   const { handleDeclineService: declineService } = useServiceDecline();
+  
+  // Sync localStorage data to Supabase on component mount
+  useEffect(() => {
+    const syncData = async () => {
+      try {
+        await syncLocalStorageToSupabase();
+      } catch (error) {
+        console.error('Initial data sync failed:', error);
+      }
+    };
+    
+    syncData();
+  }, []);
   
   // Enhanced debug logging for appointments
   console.log("=== usePreInspection Debug ===");
