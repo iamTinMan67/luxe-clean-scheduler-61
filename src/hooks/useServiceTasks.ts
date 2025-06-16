@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Booking } from "@/types/booking";
 import { ServiceTaskItem } from "@/types/task";
 import { packageOptions, additionalServices } from "@/data/servicePackageData";
@@ -9,13 +9,15 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const useServiceTasks = (selectedBookingId: string, currentBooking: Booking | null) => {
   const [serviceTasks, setServiceTasks] = useState<ServiceTaskItem[]>([]);
-  const { saveServiceProgress, saveProgressWithNotification } = useServiceProgress();
+  const { saveServiceProgress } = useServiceProgress();
   
   // Generate service tasks when booking changes
   useEffect(() => {
     const loadTasks = async () => {
       if (currentBooking) {
-        // Generate tasks from package
+        console.log("Loading tasks for booking:", currentBooking.id);
+        
+        // Generate tasks from package with more stable IDs
         const generatedTasks = generateServiceTasksFromPackage(currentBooking, packageOptions, additionalServices);
         
         // Fetch additional services from database for this booking
@@ -26,9 +28,9 @@ export const useServiceTasks = (selectedBookingId: string, currentBooking: Booki
             .eq('booking_id', currentBooking.id);
           
           if (!error && bookingAdditionalServices) {
-            // Add additional services to the task list
-            const additionalServiceTasks = bookingAdditionalServices.map(service => ({
-              id: `additional-${service.id}-${Date.now()}`,
+            // Add additional services to the task list with stable IDs
+            const additionalServiceTasks = bookingAdditionalServices.map((service, index) => ({
+              id: `additional-${service.service_name.toLowerCase().replace(/\s+/g, '-')}-${index}`,
               name: service.service_name,
               completed: false,
               allocatedTime: 30 // Default to 30 minutes for additional services
@@ -41,6 +43,7 @@ export const useServiceTasks = (selectedBookingId: string, currentBooking: Booki
         }
         
         const tasksWithProgress = loadServiceTasksProgress(generatedTasks, currentBooking.id);
+        console.log("Loaded tasks:", tasksWithProgress);
         setServiceTasks(tasksWithProgress);
       } else {
         setServiceTasks([]);
@@ -48,53 +51,64 @@ export const useServiceTasks = (selectedBookingId: string, currentBooking: Booki
     };
 
     loadTasks();
-  }, [currentBooking]);
+  }, [currentBooking?.id]); // Only depend on booking ID to avoid unnecessary reloads
 
-  // Auto-save whenever serviceTasks change
+  // Debounced save function to prevent too frequent saves
+  const debouncedSave = useCallback((bookingId: string, tasks: ServiceTaskItem[]) => {
+    const timeoutId = setTimeout(() => {
+      saveServiceProgress(bookingId, tasks);
+      console.log('Auto-saved service progress');
+    }, 1000); // Increased debounce time
+
+    return () => clearTimeout(timeoutId);
+  }, [saveServiceProgress]);
+
+  // Auto-save whenever serviceTasks change, but debounced
   useEffect(() => {
     if (currentBooking && serviceTasks.length > 0) {
-      const timeoutId = setTimeout(() => {
-        saveServiceProgress(currentBooking.id, serviceTasks);
-        console.log('Auto-saved service progress');
-      }, 500); // Debounce to avoid too frequent saves
-
-      return () => clearTimeout(timeoutId);
+      const cleanup = debouncedSave(currentBooking.id, serviceTasks);
+      return cleanup;
     }
-  }, [serviceTasks, currentBooking, saveServiceProgress]);
+  }, [serviceTasks, currentBooking?.id, debouncedSave]);
 
   // Handle updating time allocation
-  const handleUpdateTimeAllocation = (taskId: string, newTime: number) => {
+  const handleUpdateTimeAllocation = useCallback((taskId: string, newTime: number) => {
+    console.log("Updating time allocation for task:", taskId, "to:", newTime);
     setServiceTasks(prevTasks => 
       prevTasks.map(task => 
         task.id === taskId ? { ...task, allocatedTime: newTime } : task
       )
     );
-  };
+  }, []);
 
   // Handle toggling task completion
-  const handleToggleTaskCompletion = (taskId: string) => {
-    setServiceTasks(prevTasks => 
-      prevTasks.map(task => 
+  const handleToggleTaskCompletion = useCallback((taskId: string) => {
+    console.log("Toggling task completion for:", taskId);
+    setServiceTasks(prevTasks => {
+      const newTasks = prevTasks.map(task => 
         task.id === taskId ? { ...task, completed: !task.completed } : task
-      )
-    );
-  };
+      );
+      console.log("Updated tasks after toggle:", newTasks);
+      return newTasks;
+    });
+  }, []);
 
   // Handle setting actual time spent
-  const handleSetActualTime = (taskId: string, time: number) => {
+  const handleSetActualTime = useCallback((taskId: string, time: number) => {
+    console.log("Setting actual time for task:", taskId, "to:", time);
     setServiceTasks(prevTasks => 
       prevTasks.map(task => 
         task.id === taskId ? { ...task, actualTime: time } : task
       )
     );
-  };
+  }, []);
 
   // Handle saving service progress with notification
-  const handleSaveServiceProgress = () => {
+  const handleSaveServiceProgress = useCallback(() => {
     if (currentBooking) {
-      saveProgressWithNotification(currentBooking.id, serviceTasks);
+      saveServiceProgress(currentBooking.id, serviceTasks);
     }
-  };
+  }, [currentBooking, serviceTasks, saveServiceProgress]);
 
   return {
     serviceTasks,

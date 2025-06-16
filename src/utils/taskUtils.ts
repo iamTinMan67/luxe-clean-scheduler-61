@@ -57,11 +57,11 @@ export const generateServiceTasksFromPackage = (booking: Booking, packageOptions
   // Find the package details
   const packageDetail = packageOptions.find(p => p.type === booking.packageType);
   
-  // Add tasks from the selected package
+  // Add tasks from the selected package with stable IDs
   if (packageDetail && packageDetail.tasks) {
-    packageDetail.tasks.forEach(task => {
+    packageDetail.tasks.forEach((task, index) => {
       tasks.push({
-        id: `${task.id}-${Date.now()}`,
+        id: `package-${booking.packageType}-${task.name.toLowerCase().replace(/\s+/g, '-')}-${index}`,
         name: task.name,
         completed: false,
         allocatedTime: task.duration
@@ -71,15 +71,25 @@ export const generateServiceTasksFromPackage = (booking: Booking, packageOptions
   
   // Add tasks from additional services if any
   if (booking.additionalServices && booking.additionalServices.length > 0) {
-    booking.additionalServices.forEach(serviceId => {
-      const service = additionalServices.find(s => s.id === serviceId);
-      if (service) {
+    booking.additionalServices.forEach((service, index) => {
+      if (typeof service === 'object' && service.name) {
         tasks.push({
-          id: `${service.id}-${Date.now()}`,
+          id: `additional-${service.name.toLowerCase().replace(/\s+/g, '-')}-${index}`,
           name: service.name,
           completed: false,
           allocatedTime: service.duration || 30 // Default to 30 minutes if not specified
         });
+      } else {
+        // Handle legacy format where service might be just an ID
+        const serviceDetail = additionalServices.find(s => s.id === service);
+        if (serviceDetail) {
+          tasks.push({
+            id: `additional-${serviceDetail.name.toLowerCase().replace(/\s+/g, '-')}-${index}`,
+            name: serviceDetail.name,
+            completed: false,
+            allocatedTime: serviceDetail.duration || 30
+          });
+        }
       }
     });
   }
@@ -93,10 +103,10 @@ export const loadServiceTasksProgress = (tasks: ServiceTaskItem[], bookingId: st
   const existingProgress = savedProgress.find((p: any) => p.bookingId === bookingId);
   
   if (existingProgress) {
-    // Merge saved progress with newly generated tasks
+    // Merge saved progress with newly generated tasks by matching task names (more stable than IDs)
     return tasks.map(task => {
       const savedTask = existingProgress.tasks.find((t: any) => t.name === task.name);
-      return savedTask ? { ...task, ...savedTask } : task;
+      return savedTask ? { ...task, completed: savedTask.completed, actualTime: savedTask.actualTime } : task;
     });
   }
   

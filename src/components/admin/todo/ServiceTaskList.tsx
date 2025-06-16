@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ServiceTaskItem } from "@/types/task";
 import { Booking } from "@/types/booking";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface ServiceTaskListProps {
   currentBooking: Booking | null;
@@ -45,9 +46,16 @@ const ServiceTaskList = ({
   const progressPercentage = Math.round((completedTasks / serviceTasks.length) * 100);
   const allTasksCompleted = serviceTasks.length > 0 && serviceTasks.every(task => task.completed);
 
-  const handleCheckboxChange = (taskId: string, event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("Checkbox changed for task:", taskId, "checked:", event.target.checked);
+  const handleCheckboxChange = (taskId: string, checked: boolean) => {
+    console.log("Checkbox changed for task:", taskId, "checked:", checked);
+    // Prevent the default event and handle the toggle directly
     onToggleTask(taskId);
+  };
+
+  const handleActualTimeChange = (taskId: string, value: string) => {
+    const actualTime = parseInt(value) || 0;
+    console.log("Setting actual time for task:", taskId, "time:", actualTime);
+    onSetActualTime(taskId, actualTime);
   };
 
   return (
@@ -114,14 +122,15 @@ const ServiceTaskList = ({
           <li key={task.id} className="flex items-center border border-gray-800 p-3 rounded-md bg-gray-900/30">
             <div className="grid grid-cols-12 gap-2 w-full items-center">
               <div className="col-span-5 flex items-center">
-                <input
-                  type="checkbox"
-                  id={`task-${task.id}`}
-                  checked={task.completed}
-                  onChange={(e) => handleCheckboxChange(task.id, e)}
-                  disabled={currentBooking.status === "finished"}
-                  className="mr-3 h-4 w-4 text-gold bg-gray-900 border-gold/50 rounded focus:ring-gold focus:ring-2 disabled:opacity-50"
-                />
+                <div className="mr-3">
+                  <Checkbox
+                    id={`task-${task.id}`}
+                    checked={task.completed}
+                    onCheckedChange={(checked) => handleCheckboxChange(task.id, checked === true)}
+                    disabled={currentBooking.status === "finished"}
+                    className="h-4 w-4"
+                  />
+                </div>
                 <label
                   htmlFor={`task-${task.id}`}
                   className={`cursor-pointer ${task.completed ? 'line-through text-gray-500' : 'text-white'} ${currentBooking.status === "finished" ? 'cursor-not-allowed' : ''}`}
@@ -164,10 +173,7 @@ const ServiceTaskList = ({
                     min="0"
                     value={task.actualTime || ''}
                     placeholder="0"
-                    onChange={(e) => {
-                      const actualTime = parseInt(e.target.value) || 0;
-                      onSetActualTime(task.id, actualTime);
-                    }}
+                    onChange={(e) => handleActualTimeChange(task.id, e.target.value)}
                     disabled={currentBooking.status === "finished"}
                     className="w-16 text-center bg-black/70 border-gray-700 text-white disabled:opacity-50"
                   />
