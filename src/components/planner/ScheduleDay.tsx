@@ -98,7 +98,7 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({ date, bookings, getBookingBac
               </div>
 
               {/* Client Type and Job Type Display */}
-              {(booking.clientType || booking.vehicleType) && (
+              {(booking.clientType || booking.jobType) && (
                 <div className="flex items-center justify-between mb-2">
                   {booking.clientType && (
                     <div className={`flex items-center px-2 py-1 rounded-full border text-xs ${getClientCategoryStyling(booking.clientType)}`}>
@@ -106,9 +106,9 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({ date, bookings, getBookingBac
                       <span>{getClientLabel(booking.clientType)}</span>
                     </div>
                   )}
-                  {booking.vehicleType && (
+                  {booking.jobType && (
                     <div className="text-gray-400 text-xs">
-                      Job: {booking.vehicleType}
+                      Job: {booking.jobType}
                     </div>
                   )}
                 </div>

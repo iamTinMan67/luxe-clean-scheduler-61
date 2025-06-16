@@ -2,13 +2,13 @@
 import { useState } from "react";
 import { Check, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { PackageOption, PackageType, VehicleType } from "@/lib/types";
+import { PackageOption, PackageType, JobType } from "@/lib/types";
 import { calculateTotalTime } from "@/utils/priceCalculator";
 
 interface ServiceCardProps {
   packageOption: PackageOption;
   selectedPackage: PackageType | null;
-  vehicleType: VehicleType;
+  vehicleType: JobType;
   onSelect: (packageType: PackageType) => void;
 }
 
