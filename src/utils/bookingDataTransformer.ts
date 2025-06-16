@@ -1,4 +1,3 @@
-
 import { Booking, validateBookingStatus } from '@/types/booking';
 
 export interface SupabaseBookingData {
@@ -16,7 +15,7 @@ export interface SupabaseBookingData {
   customer_email?: string;
   status: string;
   condition?: number;
-  staff?: any[];
+  staff?: any;
   created_at?: string;
   total_price?: number;
 }
@@ -24,8 +23,19 @@ export interface SupabaseBookingData {
 export const transformSupabaseBooking = (booking: SupabaseBookingData): Booking => {
   // Safely convert staff JSONB to string array
   let staff: string[] = [];
-  if (Array.isArray(booking.staff)) {
-    staff = booking.staff.filter((item): item is string => typeof item === 'string');
+  if (booking.staff) {
+    if (Array.isArray(booking.staff)) {
+      staff = booking.staff.filter((item): item is string => typeof item === 'string');
+    } else if (typeof booking.staff === 'string') {
+      try {
+        const parsed = JSON.parse(booking.staff);
+        if (Array.isArray(parsed)) {
+          staff = parsed.filter((item): item is string => typeof item === 'string');
+        }
+      } catch {
+        // If parsing fails, keep empty array
+      }
+    }
   }
 
   const transformedBooking: Booking = {
