@@ -23,7 +23,7 @@ export interface SupabaseBookingInsert {
   status: string;
   condition?: number;
   staff?: any;
-  total_price?: number;
+  total_price: number;
   travel_minutes?: number;
   client_type?: string;
   job_type?: string;
@@ -54,7 +54,7 @@ export const syncBookingToSupabase = async (booking: Booking): Promise<boolean> 
       status: booking.status,
       condition: booking.condition || 5,
       staff: booking.staff || [],
-      total_price: booking.totalPrice,
+      total_price: booking.totalPrice || 0, // Ensure this is always a number
       travel_minutes: booking.travelMinutes,
       client_type: booking.clientType,
       job_type: booking.jobType

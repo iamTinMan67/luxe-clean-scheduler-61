@@ -2,12 +2,10 @@
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { Booking } from "@/types/booking";
-import { useBookingStatus } from "@/hooks/bookings/useBookingStatus";
 import { useBookingStateManager } from "@/hooks/bookings/useBookingStateManager";
 
 export const useBookingSelection = () => {
   const { updateBooking, moveBookingToConfirmed } = useBookingStateManager();
-  const { updateBookingStatus } = useBookingStatus(updateBooking, moveBookingToConfirmed);
 
   const updateBookingDetails = (
     selectedBooking: string,
@@ -30,10 +28,11 @@ export const useBookingSelection = () => {
     }
   };
 
-  const handleBookingSelected = (booking: Booking) => {
+  const handleBookingSelected = async (booking: Booking) => {
     console.log("Booking selected for inspection:", booking);
     if (booking.status === "confirmed") {
-      updateBookingStatus(booking, "inspecting");
+      const updatedBooking = { ...booking, status: "inspecting" as const };
+      await updateBooking(updatedBooking);
       toast.success(`${booking.customer}'s appointment is now being inspected.`);
     }
   };

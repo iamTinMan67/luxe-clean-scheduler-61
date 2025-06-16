@@ -16,7 +16,7 @@ export const useBookingMutations = () => {
   } = useBookingsStorage();
 
   // Update booking in the appropriate list
-  const updateBooking = async (booking: Booking): Promise<Booking[]> => {
+  const updateBooking = async (booking: Booking): Promise<void> => {
     const isConfirmed = booking.status === 'confirmed' || 
                         booking.status === 'in-progress' || 
                         booking.status === 'finished' ||
@@ -37,15 +37,12 @@ export const useBookingMutations = () => {
       } catch (error) {
         console.error('Failed to sync booking update to database:', error);
       }
-      
-      return updatedBookings;
     } else {
       const updatedBookings = pendingBookings.map(b => 
         b.id === booking.id ? booking : b
       );
       setPendingBookings(updatedBookings);
       saveBookingsToStorage('pending', updatedBookings);
-      return updatedBookings;
     }
   };
 

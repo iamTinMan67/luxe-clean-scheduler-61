@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { Booking } from '@/types/booking';
@@ -7,7 +6,6 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import RescheduleDialog from './dialogs/RescheduleDialog';
-import { useBookingStatus } from "@/hooks/bookings/useBookingStatus";
 import { useBookingStateManager } from "@/hooks/bookings/useBookingStateManager";
 import { toast } from "sonner";
 
@@ -46,7 +44,6 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({
 
   // Booking management hooks
   const { updateBooking, deleteBooking } = useBookingStateManager();
-  const { updateBookingStatus } = useBookingStatus(updateBooking, () => {});
 
   // Helper functions for client type styling
   const getClientCategoryStyling = (type?: string) => {
@@ -83,7 +80,7 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({
   };
 
   // Handle rescheduling
-  const handleReschedule = (booking: Booking, newDate: Date, newTime?: string) => {
+  const handleReschedule = async (booking: Booking, newDate: Date, newTime?: string) => {
     const updatedBooking = {
       ...booking,
       date: newDate,
@@ -91,7 +88,7 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({
       startTime: newTime || booking.startTime
     };
     
-    updateBooking(updatedBooking);
+    await updateBooking(updatedBooking);
     if (onBookingUpdate) {
       onBookingUpdate(updatedBooking);
     }
@@ -99,8 +96,8 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({
   };
 
   // Handle deletion
-  const handleDelete = (booking: Booking) => {
-    deleteBooking(booking);
+  const handleDelete = async (booking: Booking) => {
+    await deleteBooking(booking);
     if (onBookingDelete) {
       onBookingDelete(booking.id);
     }

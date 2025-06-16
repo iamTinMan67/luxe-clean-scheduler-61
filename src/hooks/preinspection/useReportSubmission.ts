@@ -4,14 +4,12 @@ import { toast } from "sonner";
 import { Booking } from "@/types/booking";
 import { submitPreInspectionReport } from "@/services/inspectionService";
 import { sendTrackingInfo } from "@/utils/emailUtils";
-import { useBookingStatus } from "@/hooks/bookings/useBookingStatus";
 import { useBookingStateManager } from "@/hooks/bookings/useBookingStateManager";
 import { syncBookingToSupabase } from "@/services/bookingSyncService";
 
 export const useReportSubmission = () => {
   const navigate = useNavigate();
   const { updateBooking, moveBookingToConfirmed } = useBookingStateManager();
-  const { updateBookingStatus } = useBookingStatus(updateBooking, moveBookingToConfirmed);
 
   const handleSubmitReport = async (
     bookingDetails: Booking | null,
@@ -40,7 +38,7 @@ export const useReportSubmission = () => {
         };
         
         // Update status locally
-        updateBookingStatus(bookingDetails, "in-progress");
+        await updateBooking(updatedBooking);
         
         // Sync the status change to Supabase
         try {
