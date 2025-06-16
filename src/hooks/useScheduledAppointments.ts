@@ -10,6 +10,8 @@ export const useScheduledAppointments = (statusFilter?: string[]) => {
   useEffect(() => {
     const loadAppointments = async () => {
       setLoading(true);
+      console.log("Loading appointments with status filter:", statusFilter);
+      
       try {
         // Get bookings from Supabase
         let query = supabase
@@ -28,6 +30,8 @@ export const useScheduledAppointments = (statusFilter?: string[]) => {
         }
 
         if (data) {
+          console.log("Raw Supabase data:", data);
+          
           // Transform data to match Booking type
           const transformedBookings: Booking[] = data.map(booking => {
             // Safely convert staff JSONB to string array
@@ -36,7 +40,7 @@ export const useScheduledAppointments = (statusFilter?: string[]) => {
               staff = booking.staff.filter((item): item is string => typeof item === 'string');
             }
 
-            return {
+            const transformedBooking: Booking = {
               id: booking.id,
               customer: booking.customer_name, // Map to customer property
               vehicle: booking.vehicle_type, // Map to vehicle property  
@@ -63,10 +67,22 @@ export const useScheduledAppointments = (statusFilter?: string[]) => {
               clientType: "private", // Default value since not in database
               vehicleType: booking.vehicle_type
             };
+
+            console.log("Transformed booking:", {
+              id: transformedBooking.id,
+              customer: transformedBooking.customer,
+              status: transformedBooking.status,
+              date: transformedBooking.date,
+              dateString: transformedBooking.date.toDateString()
+            });
+
+            return transformedBooking;
           });
           
+          console.log("Total transformed bookings:", transformedBookings.length);
           setAppointments(transformedBookings);
         } else {
+          console.log("No data returned from Supabase");
           setAppointments([]);
         }
       } catch (error) {
@@ -74,6 +90,7 @@ export const useScheduledAppointments = (statusFilter?: string[]) => {
         
         // Fallback to localStorage for backward compatibility
         try {
+          console.log("Falling back to localStorage");
           const confirmedBookings = localStorage.getItem('confirmedBookings');
           const pendingBookings = localStorage.getItem('pendingBookings');
           
@@ -100,6 +117,7 @@ export const useScheduledAppointments = (statusFilter?: string[]) => {
             ? processedBookings.filter(booking => statusFilter.includes(booking.status))
             : processedBookings;
           
+          console.log("Loaded from localStorage:", filteredBookings.length, "bookings");
           setAppointments(filteredBookings);
         } catch (localError) {
           console.error('Error loading from localStorage:', localError);
@@ -112,13 +130,14 @@ export const useScheduledAppointments = (statusFilter?: string[]) => {
 
     loadAppointments();
     
-    // Set up real-time subscription
+    // Set up real-time subscription for immediate updates
     const subscription = supabase
       .channel('bookings-changes')
       .on('postgres_changes', 
         { event: '*', schema: 'public', table: 'bookings' }, 
-        () => {
-          loadAppointments();
+        (payload) => {
+          console.log('Real-time booking update:', payload);
+          loadAppointments(); // Reload data when changes occur
         }
       )
       .subscribe();
@@ -127,6 +146,28 @@ export const useScheduledAppointments = (statusFilter?: string[]) => {
       subscription.unsubscribe();
     };
   }, [statusFilter]);
+
+  // Additional debug logging
+  useEffect(() => {
+    console.log("=== useScheduledAppointments Debug ===");
+    console.log("Current appointments count:", appointments.length);
+    console.log("Loading state:", loading);
+    console.log("Status filter:", statusFilter);
+    
+    const todayString = new Date().toDateString();
+    const todayConfirmed = appointments.filter(booking => {
+      const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
+      return bookingDate.toDateString() === todayString && booking.status === "confirmed";
+    });
+    
+    console.log("Today's confirmed bookings:", todayConfirmed.length);
+    console.log("Today's confirmed booking details:", todayConfirmed.map(b => ({
+      id: b.id,
+      customer: b.customer,
+      status: b.status,
+      date: b.date.toDateString()
+    })));
+  }, [appointments, loading, statusFilter]);
 
   return { appointments, loading };
 };

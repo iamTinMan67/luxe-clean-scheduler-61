@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -23,26 +24,42 @@ export const usePreInspection = () => {
   const [interiorNotes, setInteriorNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDeclineNotes, setShowDeclineNotes] = useState(false);
-  const { appointments, loading } = useScheduledAppointments();
+  
+  // Get appointments with enhanced filtering - only confirmed bookings for pre-inspection
+  const { appointments, loading } = useScheduledAppointments(['confirmed']);
   
   // Initialize the booking state manager and status hooks
   const { updateBooking, moveBookingToConfirmed } = useBookingStateManager();
   const { updateBookingStatus } = useBookingStatus(updateBooking, moveBookingToConfirmed);
   
+  // Enhanced debug logging for appointments
+  console.log("=== usePreInspection Debug ===");
+  console.log("Appointments received:", appointments.length);
+  console.log("Loading state:", loading);
+  console.log("Selected booking ID:", selectedBooking);
+  console.log("Initial booking ID from URL:", initialBookingId);
+  
   // Update booking details when a booking is selected
   const updateBookingDetails = () => {
+    console.log("Updating booking details for:", selectedBooking);
     if (selectedBooking) {
       const selected = appointments.find(booking => booking.id === selectedBooking);
       if (selected) {
+        console.log("Found selected booking:", selected);
         setBookingDetails(selected);
+      } else {
+        console.log("No booking found with ID:", selectedBooking);
+        setBookingDetails(null);
       }
     } else {
+      console.log("No booking selected, clearing details");
       setBookingDetails(null);
     }
   };
   
   // Handle booking selection and status update
   const handleBookingSelected = (booking: Booking) => {
+    console.log("Booking selected for inspection:", booking);
     if (booking.status === "confirmed") {
       // Update the booking status to inspecting
       updateBookingStatus(booking, "inspecting");
