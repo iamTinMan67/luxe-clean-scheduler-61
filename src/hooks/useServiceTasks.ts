@@ -50,10 +50,22 @@ export const useServiceTasks = (selectedBookingId: string, currentBooking: Booki
     loadTasks();
   }, [currentBooking]);
 
+  // Auto-save whenever serviceTasks change
+  useEffect(() => {
+    if (currentBooking && serviceTasks.length > 0) {
+      const timeoutId = setTimeout(() => {
+        saveServiceProgress(currentBooking.id, serviceTasks);
+        console.log('Auto-saved service progress');
+      }, 500); // Debounce to avoid too frequent saves
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [serviceTasks, currentBooking, saveServiceProgress]);
+
   // Handle updating time allocation
   const handleUpdateTimeAllocation = (taskId: string, newTime: number) => {
-    setServiceTasks(
-      serviceTasks.map(task => 
+    setServiceTasks(prevTasks => 
+      prevTasks.map(task => 
         task.id === taskId ? { ...task, allocatedTime: newTime } : task
       )
     );
@@ -61,30 +73,20 @@ export const useServiceTasks = (selectedBookingId: string, currentBooking: Booki
 
   // Handle toggling task completion
   const handleToggleTaskCompletion = (taskId: string) => {
-    setServiceTasks(
-      serviceTasks.map(task => 
+    setServiceTasks(prevTasks => 
+      prevTasks.map(task => 
         task.id === taskId ? { ...task, completed: !task.completed } : task
       )
     );
-    
-    // Auto-save progress after each change
-    if (currentBooking) {
-      saveServiceProgress(currentBooking.id, serviceTasks);
-    }
   };
 
   // Handle setting actual time spent
   const handleSetActualTime = (taskId: string, time: number) => {
-    setServiceTasks(
-      serviceTasks.map(task => 
+    setServiceTasks(prevTasks => 
+      prevTasks.map(task => 
         task.id === taskId ? { ...task, actualTime: time } : task
       )
     );
-    
-    // Auto-save progress after each change
-    if (currentBooking) {
-      saveServiceProgress(currentBooking.id, serviceTasks);
-    }
   };
 
   // Handle saving service progress with notification

@@ -20,7 +20,8 @@ const TodoList = () => {
     setSearchTerm,
     handleUpdateTimeAllocation,
     handleToggleTaskCompletion,
-    handleSetActualTime
+    handleSetActualTime,
+    handleFinishJob
   } = useTaskManagement();
 
   // Check if all tasks are completed (job is finished)
@@ -59,6 +60,7 @@ const TodoList = () => {
               onToggleTask={handleToggleTaskCompletion}
               onUpdateTimeAllocation={handleUpdateTimeAllocation}
               onSetActualTime={handleSetActualTime}
+              onFinishJob={handleFinishJob}
             />
           </CardContent>
         </Card>

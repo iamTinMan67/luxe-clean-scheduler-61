@@ -1,5 +1,5 @@
 
-import { Clock, CalendarClock } from "lucide-react";
+import { Clock, CalendarClock, CheckCircle } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ interface ServiceTaskListProps {
   onToggleTask: (taskId: string) => void;
   onUpdateTimeAllocation: (taskId: string, newTime: number) => void;
   onSetActualTime: (taskId: string, time: number) => void;
+  onFinishJob?: () => void;
 }
 
 const ServiceTaskList = ({
@@ -19,7 +20,8 @@ const ServiceTaskList = ({
   serviceTasks,
   onToggleTask,
   onUpdateTimeAllocation,
-  onSetActualTime
+  onSetActualTime,
+  onFinishJob
 }: ServiceTaskListProps) => {
   if (!currentBooking) {
     return (
@@ -42,6 +44,7 @@ const ServiceTaskList = ({
 
   const completedTasks = serviceTasks.filter(task => task.completed).length;
   const progressPercentage = Math.round((completedTasks / serviceTasks.length) * 100);
+  const allTasksCompleted = serviceTasks.length > 0 && serviceTasks.every(task => task.completed);
 
   return (
     <div>
@@ -69,6 +72,19 @@ const ServiceTaskList = ({
             ></div>
           </div>
         </div>
+
+        {/* Finish Job Button */}
+        {allTasksCompleted && onFinishJob && (
+          <div className="mt-4 text-center">
+            <Button 
+              onClick={onFinishJob}
+              className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-medium"
+            >
+              <CheckCircle className="h-4 w-4 mr-2" />
+              Finish Job
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-12 gap-2 mb-2 text-sm font-medium text-gray-400 px-1">
@@ -86,12 +102,12 @@ const ServiceTaskList = ({
                 <Checkbox
                   id={`task-${task.id}`}
                   checked={task.completed}
-                  onCheckedChange={() => onToggleTask(task.id)}
+                  onCheckedChange={(checked) => onToggleTask(task.id)}
                   className="mr-3 border-gold/50"
                 />
                 <label
                   htmlFor={`task-${task.id}`}
-                  className={`${task.completed ? 'line-through text-gray-500' : 'text-white'}`}
+                  className={`cursor-pointer ${task.completed ? 'line-through text-gray-500' : 'text-white'}`}
                 >
                   {task.name}
                 </label>
@@ -113,7 +129,10 @@ const ServiceTaskList = ({
                     type="number"
                     min="1"
                     value={task.allocatedTime}
-                    onChange={(e) => onUpdateTimeAllocation(task.id, parseInt(e.target.value) || task.allocatedTime)}
+                    onChange={(e) => {
+                      const newTime = parseInt(e.target.value) || task.allocatedTime;
+                      onUpdateTimeAllocation(task.id, newTime);
+                    }}
                     className="w-16 text-center bg-black/70 border-gray-700 text-white"
                   />
                   <span className="ml-1 text-gray-400">min</span>
@@ -124,18 +143,22 @@ const ServiceTaskList = ({
                 <div className="flex items-center justify-center">
                   <Input
                     type="number"
-                    min="1"
+                    min="0"
                     value={task.actualTime || ''}
-                    placeholder="-"
-                    onChange={(e) => onSetActualTime(task.id, parseInt(e.target.value) || 0)}
+                    placeholder="0"
+                    onChange={(e) => {
+                      const actualTime = parseInt(e.target.value) || 0;
+                      onSetActualTime(task.id, actualTime);
+                    }}
                     className="w-16 text-center bg-black/70 border-gray-700 text-white"
                   />
                   <span className="ml-1 text-gray-400">min</span>
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="ml-1 text-gold hover:text-gold/80"
+                    className="ml-1 text-gold hover:text-gold/80 p-1"
                     onClick={() => onSetActualTime(task.id, task.allocatedTime)}
+                    title="Set to allocated time"
                   >
                     <Clock className="h-4 w-4" />
                   </Button>

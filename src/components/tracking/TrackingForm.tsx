@@ -70,7 +70,7 @@ const TrackingForm = ({ bookingId }: TrackingFormProps) => {
         if (bookingProgress && bookingProgress.tasks) {
           setTasks(bookingProgress.tasks);
           
-          // Calculate progress
+          // Calculate progress based on task completion
           const completedTasks = bookingProgress.tasks.filter((task: ServiceTaskItem) => task.completed).length;
           const totalTasks = bookingProgress.tasks.length;
           const calculatedProgress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
@@ -79,8 +79,19 @@ const TrackingForm = ({ bookingId }: TrackingFormProps) => {
       }
     };
     
-    loadBookingData();
-    loadTasks();
+    // Set up polling for real-time updates
+    const pollForUpdates = () => {
+      loadBookingData();
+      loadTasks();
+    };
+    
+    // Initial load
+    pollForUpdates();
+    
+    // Poll every 5 seconds for updates
+    const interval = setInterval(pollForUpdates, 5000);
+    
+    return () => clearInterval(interval);
   }, [bookingId, navigate]);
   
   // Start a session timeout of 15 minutes for finished bookings
@@ -99,6 +110,23 @@ const TrackingForm = ({ bookingId }: TrackingFormProps) => {
       navigate("/track");
     }
   }, [sessionExpired, navigate]);
+
+  // Calculate estimated completion time based on remaining tasks
+  const calculateEstimatedCompletion = () => {
+    if (!tasks.length) return null;
+    
+    const incompleteTasks = tasks.filter(task => !task.completed);
+    const remainingTime = incompleteTasks.reduce((total, task) => total + task.allocatedTime, 0);
+    
+    if (remainingTime === 0) return "Completed";
+    
+    const now = new Date();
+    const estimatedCompletion = new Date(now.getTime() + remainingTime * 60000);
+    return estimatedCompletion.toLocaleTimeString('en-US', { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+  };
   
   if (!booking) {
     return (
@@ -111,6 +139,8 @@ const TrackingForm = ({ bookingId }: TrackingFormProps) => {
       </div>
     );
   }
+
+  const estimatedCompletion = calculateEstimatedCompletion();
   
   return (
     <motion.div
@@ -143,12 +173,18 @@ const TrackingForm = ({ bookingId }: TrackingFormProps) => {
             </div>
             <div className="flex justify-between">
               <span className="text-gray-400">Status:</span>
-              <span className="text-gold">{booking.status}</span>
+              <span className="text-gold capitalize">{booking.status.replace('-', ' ')}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-400">Location:</span>
               <span className="text-white">{booking.location}</span>
             </div>
+            {estimatedCompletion && estimatedCompletion !== "Completed" && (
+              <div className="flex justify-between">
+                <span className="text-gray-400">Est. Completion:</span>
+                <span className="text-white">{estimatedCompletion}</span>
+              </div>
+            )}
           </div>
           
           <div className="mt-4">
@@ -157,6 +193,9 @@ const TrackingForm = ({ bookingId }: TrackingFormProps) => {
               <span className="text-white">{progress}%</span>
             </div>
             <Progress value={progress} className="h-2" />
+            {progress === 100 && (
+              <p className="text-green-400 text-sm mt-1 text-center">✓ Service Complete!</p>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -191,7 +230,12 @@ const TrackingForm = ({ bookingId }: TrackingFormProps) => {
                   </div>
                   <div className="flex items-center text-sm text-gray-400">
                     <Clock className="h-3.5 w-3.5 mr-1" />
-                    {task.allocatedTime} min
+                    <span>{task.allocatedTime} min</span>
+                    {task.actualTime && (
+                      <span className="ml-2 text-gold">
+                        (actual: {task.actualTime} min)
+                      </span>
+                    )}
                   </div>
                 </li>
               ))}
