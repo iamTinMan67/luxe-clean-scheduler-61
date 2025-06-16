@@ -28,7 +28,15 @@ const BookingSelector = ({
   };
 
   const isSameDay = (date1: Date | string, date2: Date) => {
-    const d1 = date1 instanceof Date ? date1 : new Date(date1);
+    let d1: Date;
+    if (typeof date1 === 'string') {
+      d1 = new Date(date1);
+    } else if (date1 instanceof Date) {
+      d1 = date1;
+    } else {
+      // Handle the complex date object structure from localStorage
+      d1 = new Date((date1 as any)?.value?.iso || (date1 as any)?.iso || date1);
+    }
     const d2 = date2;
     return d1.toDateString() === d2.toDateString();
   };
@@ -65,14 +73,12 @@ const BookingSelector = ({
       date: booking.date,
       status: booking.status,
       dateType: typeof booking.date,
-      dateString: booking.date instanceof Date ? booking.date.toDateString() : new Date(booking.date).toDateString()
+      rawDate: booking.date
     });
 
     try {
-      const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
       const today = new Date();
-      
-      const isToday = isSameDay(bookingDate, today);
+      const isToday = isSameDay(booking.date, today);
       // More flexible status checking - include various confirmed statuses
       const isValidStatus = booking.status === "confirmed" || 
                            booking.status === "inspecting" || 
@@ -128,12 +134,12 @@ const BookingSelector = ({
           ) : todayAppointments.length > 0 ? (
             todayAppointments.map((booking) => (
               <SelectItem key={booking.id} value={booking.id}>
-                <div className="flex flex-col text-left">
-                  <span className="font-medium">
-                    {getDisplayCustomer(booking)} - {getDisplayTime(booking)} - {getDisplayVehicle(booking)}
+                <div className="flex flex-col text-left w-full">
+                  <span className="font-medium text-white">
+                    {getDisplayCustomer(booking)} - {getDisplayTime(booking)}
                   </span>
-                  <span className="text-xs text-gray-400">
-                    Package: {getDisplayPackage(booking)} | Status: {getDisplayStatus(booking)}
+                  <span className="text-xs text-gray-300">
+                    {getDisplayVehicle(booking)} | {getDisplayPackage(booking)} | {getDisplayStatus(booking)}
                   </span>
                 </div>
               </SelectItem>
