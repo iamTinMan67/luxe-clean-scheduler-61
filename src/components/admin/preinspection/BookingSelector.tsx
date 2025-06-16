@@ -60,6 +60,17 @@ const BookingSelector = ({
     return isToday && isConfirmed;
   });
 
+  console.log("=== BookingSelector Debug ===");
+  console.log("Total appointments received:", appointments.length);
+  console.log("Today's confirmed appointments:", todayAppointments.length);
+  console.log("Today's date:", getTodayString());
+  console.log("Confirmed appointments for today:", todayAppointments.map(a => ({
+    id: a.id,
+    customer: a.customer,
+    status: a.status,
+    date: a.date
+  })));
+
   return (
     <div>
       <label htmlFor="customer" className="text-white text-sm font-medium block mb-1">
@@ -93,6 +104,8 @@ const BookingSelector = ({
       {process.env.NODE_ENV === 'development' && (
         <div className="mt-2 text-xs text-gray-400">
           Debug: {appointments.length} total, {todayAppointments.length} today confirmed
+          <br />
+          All statuses: {appointments.map(a => `${a.customer}:${a.status}`).join(', ')}
         </div>
       )}
     </div>

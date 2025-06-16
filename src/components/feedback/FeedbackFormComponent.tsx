@@ -76,6 +76,7 @@ const FeedbackFormComponent = ({
         serviceDate={serviceDate}
         uploadedImages={uploadedImages}
         setUploadedImages={setUploadedImages}
+        bookingId={bookingId}
       />
     </Card>
   );

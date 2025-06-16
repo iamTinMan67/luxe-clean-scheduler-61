@@ -75,6 +75,7 @@ const PreInspection = () => {
           <ImageUploadSection 
             images={images}
             onImageUpload={handleImageUpdate}
+            bookingId={bookingDetails?.id}
           />
         </div>
       </div>

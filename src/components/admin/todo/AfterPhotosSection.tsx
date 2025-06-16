@@ -2,22 +2,29 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Camera, ImageIcon, X, FolderOpen } from "lucide-react";
+import { Camera, ImageIcon, X, FolderOpen, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useJobPhotos } from "@/hooks/photos/useJobPhotos";
+import { useAuth } from "@/context/AuthContext";
 
-interface ImageUploadSectionProps {
-  images: string[];
-  onImageUpload: (newImages: string[]) => void;
-  bookingId?: string;
+interface AfterPhotosSectionProps {
+  bookingId: string;
+  isJobFinished: boolean;
 }
 
-const ImageUploadSection = ({ images, onImageUpload, bookingId }: ImageUploadSectionProps) => {
+const AfterPhotosSection = ({ bookingId, isJobFinished }: AfterPhotosSectionProps) => {
   const [isCapturing, setIsCapturing] = useState(false);
+  const [sessionPhotos, setSessionPhotos] = useState<string[]>([]);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   
-  const { photoFolder, addBeforePhoto } = useJobPhotos(bookingId || '');
+  const { user } = useAuth();
+  const isAdmin = user?.user_metadata?.role === 'admin';
+  const { photoFolder, addAfterPhoto, deletePhoto } = useJobPhotos(bookingId);
+
+  if (!isJobFinished || !isAdmin) {
+    return null;
+  }
 
   const startCamera = async () => {
     try {
@@ -66,29 +73,24 @@ const ImageUploadSection = ({ images, onImageUpload, bookingId }: ImageUploadSec
     
     const imageDataUrl = canvas.toDataURL('image/jpeg', 0.8);
     
-    // Save to both the legacy images array and the new photo management system
-    const newImages = [...images, imageDataUrl];
-    onImageUpload(newImages);
+    // Add to session photos
+    setSessionPhotos(prev => [...prev, imageDataUrl]);
     
-    // Save as "before" photo if bookingId is available
-    if (bookingId) {
-      addBeforePhoto(imageDataUrl, 'Pre-inspection photo');
-    }
-    
-    toast.success('Photo captured and saved to "Before" folder');
+    // Save as "after" photo
+    addAfterPhoto(imageDataUrl, 'Post-service completion photo');
   };
 
-  const removeImage = (indexToRemove: number) => {
-    const updatedImages = images.filter((_, index) => index !== indexToRemove);
-    onImageUpload(updatedImages);
+  const removeSessionPhoto = (indexToRemove: number) => {
+    setSessionPhotos(prev => prev.filter((_, index) => index !== indexToRemove));
   };
 
   return (
-    <Card className="bg-black/60 border-gold/30">
+    <Card className="bg-black/60 border-green-500/30">
       <CardHeader>
         <CardTitle className="text-white flex items-center gap-2">
           <FolderOpen size={20} />
-          Before Photos - Pre-Inspection
+          <CheckCircle size={16} className="text-green-500" />
+          After Photos - Job Completed
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -96,10 +98,10 @@ const ImageUploadSection = ({ images, onImageUpload, bookingId }: ImageUploadSec
           {!isCapturing ? (
             <Button 
               onClick={startCamera} 
-              className="gold-gradient text-black hover:shadow-gold/20 hover:shadow-lg"
+              className="bg-green-600 hover:bg-green-700 text-white"
             >
               <Camera size={16} className="mr-2" />
-              Take Before Photos
+              Take After Photos
             </Button>
           ) : (
             <div className="space-y-4">
@@ -135,52 +137,63 @@ const ImageUploadSection = ({ images, onImageUpload, bookingId }: ImageUploadSec
         </div>
 
         {/* Display current session photos */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
-          {images.map((image, index) => (
-            <div key={index} className="relative border border-gold/20 rounded overflow-hidden aspect-square group">
-              <img 
-                src={image} 
-                alt={`Before photo ${index + 1}`} 
-                className="w-full h-full object-cover"
-              />
-              <button
-                onClick={() => removeImage(index)}
-                className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <X size={16} />
-              </button>
+        {sessionPhotos.length > 0 && (
+          <div className="mb-4">
+            <h4 className="text-white text-sm font-medium mb-2">Current Session</h4>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {sessionPhotos.map((image, index) => (
+                <div key={index} className="relative border border-green-500/20 rounded overflow-hidden aspect-square group">
+                  <img 
+                    src={image} 
+                    alt={`After photo ${index + 1}`} 
+                    className="w-full h-full object-cover"
+                  />
+                  <button
+                    onClick={() => removeSessionPhoto(index)}
+                    className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        )}
 
-        {/* Display saved before photos from photo management system */}
-        {bookingId && photoFolder.beforePhotos.length > 0 && (
-          <div className="border-t border-gold/20 pt-4">
+        {/* Display saved after photos */}
+        {photoFolder.afterPhotos.length > 0 && (
+          <div className="border-t border-green-500/20 pt-4">
             <h4 className="text-white text-sm font-medium mb-2">
-              Saved Before Photos ({photoFolder.beforePhotos.length})
+              Saved After Photos ({photoFolder.afterPhotos.length})
             </h4>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-              {photoFolder.beforePhotos.map((photo) => (
-                <div key={photo.id} className="relative border border-green-500/30 rounded overflow-hidden aspect-square">
+              {photoFolder.afterPhotos.map((photo) => (
+                <div key={photo.id} className="relative border border-green-500/30 rounded overflow-hidden aspect-square group">
                   <img 
                     src={photo.imageUrl} 
-                    alt="Saved before photo" 
+                    alt="Saved after photo" 
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute bottom-0 left-0 right-0 bg-green-500/80 text-white text-xs p-1 text-center">
-                    Saved
+                    Completed
                   </div>
+                  <button
+                    onClick={() => deletePhoto(photo.id)}
+                    className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X size={16} />
+                  </button>
                 </div>
               ))}
             </div>
           </div>
         )}
         
-        {images.length === 0 && (!bookingId || photoFolder.beforePhotos.length === 0) && !isCapturing && (
-          <div className="col-span-full flex flex-col items-center justify-center text-white/60 p-8 border border-dashed border-gold/20 rounded-md">
+        {sessionPhotos.length === 0 && photoFolder.afterPhotos.length === 0 && !isCapturing && (
+          <div className="flex flex-col items-center justify-center text-white/60 p-8 border border-dashed border-green-500/20 rounded-md">
             <ImageIcon size={48} className="mb-2 opacity-50" />
-            <p>No before photos taken yet</p>
-            <p className="text-sm">Use camera to capture vehicle condition before service</p>
+            <p>No after photos taken yet</p>
+            <p className="text-sm">Document the completed work with photos</p>
           </div>
         )}
       </CardContent>
@@ -188,4 +201,4 @@ const ImageUploadSection = ({ images, onImageUpload, bookingId }: ImageUploadSec
   );
 };
 
-export default ImageUploadSection;
+export default AfterPhotosSection;

@@ -14,13 +14,18 @@ export const useScheduledAppointments = (statusFilter?: string[]) => {
     setLoading(true);
     
     try {
+      console.log("Loading appointments with statusFilter:", statusFilter);
       const bookings = await fetchBookingsFromSupabase(statusFilter);
+      console.log("Loaded bookings from Supabase:", bookings.length);
+      console.log("Bookings details:", bookings.map(b => ({ id: b.id, customer: b.customer, status: b.status, date: b.date })));
       setAppointments(bookings);
     } catch (error) {
       console.error('Error loading appointments from database:', error);
       
       // Fallback to localStorage for backward compatibility
+      console.log("Falling back to localStorage");
       const fallbackBookings = loadBookingsFromLocalStorage(statusFilter);
+      console.log("Loaded fallback bookings:", fallbackBookings.length);
       setAppointments(fallbackBookings);
     } finally {
       setLoading(false);
