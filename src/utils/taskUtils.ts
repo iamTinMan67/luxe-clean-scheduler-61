@@ -74,8 +74,8 @@ export const generateServiceTasksFromPackage = (booking: Booking, packageOptions
     booking.additionalServices.forEach((service, index) => {
       // First check if service is not null or undefined
       if (service != null) {
-        // Handle service objects with name property
-        if (typeof service === 'object' && 'name' in service) {
+        // Handle service objects with name property - add explicit type check
+        if (typeof service === 'object' && service !== null && typeof service === 'object' && 'name' in service) {
           const serviceObj = service as { name: string; duration?: number };
           if (typeof serviceObj.name === 'string') {
             tasks.push({
