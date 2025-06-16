@@ -48,7 +48,7 @@ const BookingSelector = ({
 
   const getDisplayCustomer = (booking: Booking): string => {
     // Handle the customer name properly - remove any special characters
-    const customerName = booking.customer || booking.yourName || "Unknown Customer";
+    const customerName = booking.customer || "Unknown Customer";
     return customerName.replace(/^:/, '').replace(/:$/, ''); // Remove leading/trailing colons
   };
 
