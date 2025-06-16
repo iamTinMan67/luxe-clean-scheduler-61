@@ -46,6 +46,17 @@ const BookingJobDetails: React.FC<BookingJobDetailsProps> = ({
         </div>
       )}
       
+      {/* Date and Time - Moved above Package Information */}
+      <div className="flex items-center text-gray-300">
+        <Calendar className="w-4 h-4 mr-2 text-gold" />
+        <span>
+          {date instanceof Date 
+            ? format(date, "MMM dd, yyyy") 
+            : "Date not available"} 
+          at {time || "Not specified"}
+        </span>
+      </div>
+
       {/* Package Information */}
       <div className="flex items-center text-gray-300">
         <Package className="w-4 h-4 mr-2 text-gold" />
@@ -66,30 +77,19 @@ const BookingJobDetails: React.FC<BookingJobDetailsProps> = ({
         </div>
       )}
 
-      {/* Date and Time */}
-      <div className="flex items-center text-gray-300">
-        <Calendar className="w-4 h-4 mr-2 text-gold" />
-        <span>
-          {date instanceof Date 
-            ? format(date, "MMM dd, yyyy") 
-            : "Date not available"} 
-          at {time || "Not specified"}
-        </span>
-      </div>
-
-      {/* Estimated Duration */}
-      {estimatedDuration > 0 && (
-        <div className="flex items-center text-gray-300">
-          <Clock className="w-4 h-4 mr-2 text-gold" />
-          <span>Duration: {formatDuration(estimatedDuration)}</span>
-        </div>
-      )}
-
       {/* Notes */}
       {notes && (
         <div className="flex items-start text-gray-300">
           <StickyNote className="w-4 h-4 mr-2 text-gold mt-0.5" />
           <span className="text-sm">{notes}</span>
+        </div>
+      )}
+
+      {/* Estimated Duration - Moved below Notes */}
+      {estimatedDuration > 0 && (
+        <div className="flex items-center text-gray-300">
+          <Clock className="w-4 h-4 mr-2 text-gold" />
+          <span>Duration: {formatDuration(estimatedDuration)}</span>
         </div>
       )}
     </div>

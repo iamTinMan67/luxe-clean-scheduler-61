@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { MapPin, Mail, Phone, Building, Home } from 'lucide-react';
+import { MapPin, Mail, Phone } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
@@ -21,40 +21,6 @@ const BookingContactDetails: React.FC<BookingContactDetailsProps> = ({
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
-  // Get client category styling
-  const getClientCategoryStyling = (type?: string) => {
-    switch (type) {
-      case "private":
-        return "text-blue-400 border-blue-400";
-      case "corporate":
-        return "text-green-400 border-green-400";
-      default:
-        return "text-gray-400 border-gray-400";
-    }
-  };
-
-  const getClientIcon = (type?: string) => {
-    switch (type) {
-      case "private":
-        return <Home className="w-4 h-4 mr-1" />;
-      case "corporate":
-        return <Building className="w-4 h-4 mr-1" />;
-      default:
-        return null;
-    }
-  };
-
-  const getClientLabel = (type?: string) => {
-    switch (type) {
-      case "private":
-        return "Private";
-      case "corporate":
-        return "Commercial";
-      default:
-        return null;
-    }
-  };
-
   return (
     <Collapsible 
       open={isOpen} 
@@ -70,17 +36,7 @@ const BookingContactDetails: React.FC<BookingContactDetailsProps> = ({
         )}
       </CollapsibleTrigger>
       <CollapsibleContent className="space-y-2 pt-2">
-        {/* Client Category */}
-        {clientType && (
-          <div className="flex items-center">
-            <div className={`flex items-center px-2 py-1 rounded-full border text-xs ${getClientCategoryStyling(clientType)}`}>
-              {getClientIcon(clientType)}
-              <span>{getClientLabel(clientType)}</span>
-            </div>
-          </div>
-        )}
-        
-        {/* Location */}
+        {/* Location - Show Post Code below Customer Name */}
         <div className="flex items-center text-gray-300">
           <MapPin className="w-4 h-4 mr-2 text-gold" />
           <span>{location}</span>

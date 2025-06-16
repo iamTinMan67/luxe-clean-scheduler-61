@@ -4,6 +4,7 @@ import { Booking } from '@/types/booking';
 import { packageOptions } from "@/data/servicePackageData";
 import { additionalServices } from "@/data/servicePackageData";
 import { calculateTotalBookingTime } from "@/utils/priceCalculator";
+import { MapPin, Building, Home } from 'lucide-react';
 
 // Import refactored components
 import BookingJobDetails from './booking-item/BookingJobDetails';
@@ -61,17 +62,72 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
     booking.additionalServices.map(id => additionalServices.find(s => s.id === id)).filter(Boolean) : 
     [];
 
+  // Get client category styling and components
+  const getClientCategoryStyling = (type?: string) => {
+    switch (type) {
+      case "private":
+        return "text-blue-400 border-blue-400";
+      case "corporate":
+        return "text-green-400 border-green-400";
+      default:
+        return "text-gray-400 border-gray-400";
+    }
+  };
+
+  const getClientIcon = (type?: string) => {
+    switch (type) {
+      case "private":
+        return <Home className="w-4 h-4 mr-1" />;
+      case "corporate":
+        return <Building className="w-4 h-4 mr-1" />;
+      default:
+        return null;
+    }
+  };
+
+  const getClientLabel = (type?: string) => {
+    switch (type) {
+      case "private":
+        return "Private";
+      case "corporate":
+        return "Commercial";
+      default:
+        return null;
+    }
+  };
+
   return (
     <div 
       key={booking.id}
-      className={`rounded-lg p-4 border ${getBookingBackground(booking)}`}
+      className={`rounded-lg p-4 border ${getBookingBackground(booking)} relative`}
     >
+      {/* Top row with booking ID (hidden for pending) and client type */}
       <div className="flex justify-between items-start mb-3">
-        <span className="text-xs text-gray-400">ID: {booking.id}</span>
+        {/* Only show booking ID if status is not pending */}
+        {booking.status !== 'pending' && (
+          <span className="text-xs text-gray-400">ID: {booking.id}</span>
+        )}
+        
+        {/* Client Category in top right corner */}
+        {booking.clientType && (
+          <div className={`flex items-center px-2 py-1 rounded-full border text-xs ${getClientCategoryStyling(booking.clientType)}`}>
+            {getClientIcon(booking.clientType)}
+            <span>{getClientLabel(booking.clientType)}</span>
+          </div>
+        )}
       </div>
       
       <div className="space-y-4 mb-4">
-        {/* Job Details - Prominently displayed at top */}
+        {/* Customer Name and Post Code */}
+        <div className="space-y-2">
+          <h3 className="text-lg font-medium text-white">{booking.customer}</h3>
+          <div className="flex items-center text-gray-300">
+            <MapPin className="w-4 h-4 mr-2 text-gold" />
+            <span>{booking.location}</span>
+          </div>
+        </div>
+
+        {/* Job Details with reordered information */}
         <BookingJobDetails 
           customer={booking.customer}
           packageType={booking.packageType}
