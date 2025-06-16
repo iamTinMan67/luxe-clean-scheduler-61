@@ -82,6 +82,7 @@ export const usePreInspection = () => {
   
   return {
     images,
+    setImages,
     selectedBooking,
     bookingDetails,
     exteriorNotes,

@@ -11,9 +11,10 @@ import { hasTimeConflict } from '@/utils/dateUtils';
 interface RescheduleDialogProps {
   booking: Booking;
   onReschedule: (booking: Booking, newDate: Date, newTime?: string) => void;
+  trigger?: React.ReactNode;
 }
 
-const RescheduleDialog: React.FC<RescheduleDialogProps> = ({ booking, onReschedule }) => {
+const RescheduleDialog: React.FC<RescheduleDialogProps> = ({ booking, onReschedule, trigger }) => {
   const [rescheduledDate, setRescheduledDate] = useState<Date | undefined>(
     booking.date instanceof Date ? booking.date : new Date(booking.date)
   );
@@ -86,13 +87,15 @@ const RescheduleDialog: React.FC<RescheduleDialogProps> = ({ booking, onReschedu
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button 
-          size="sm" 
-          variant="outline"
-          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white h-9"
-        >
-          Reschedule
-        </Button>
+        {trigger || (
+          <Button 
+            size="sm" 
+            variant="outline"
+            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white h-9"
+          >
+            Reschedule
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="bg-gray-950 border-gray-800">
         <DialogHeader>
