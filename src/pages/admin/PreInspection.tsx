@@ -50,7 +50,9 @@ const PreInspection = () => {
       status: bookingDetails.status
     } : null,
     showStartInspection,
-    showInspectionComplete
+    showInspectionComplete,
+    appointmentsCount: appointments.length,
+    loading
   });
 
   return (
@@ -80,8 +82,8 @@ const PreInspection = () => {
           onBookingSelected={handleBookingSelected}
         />
         
-        {/* Action buttons - only show one set based on booking status */}
-        {(showStartInspection || showInspectionComplete) && (
+        {/* Action buttons - show when booking is selected */}
+        {bookingDetails && (
           <ActionButtons 
             isSubmitting={isSubmitting}
             onAccept={handleSubmitReport}

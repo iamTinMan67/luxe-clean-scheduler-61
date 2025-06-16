@@ -26,7 +26,7 @@ const ActionButtons = ({
 
   return (
     <div className="space-y-4">
-      {/* Start Inspection button - shown when booking is selected and confirmed */}
+      {/* Start Inspection and Decline buttons - shown when booking status is "confirmed" */}
       {showStartInspection && (
         <div className="flex gap-4">
           <Button 
@@ -46,7 +46,7 @@ const ActionButtons = ({
         </div>
       )}
       
-      {/* Inspection Complete button - shown at bottom when inspection is in progress */}
+      {/* Inspection Complete button - shown when booking status is "in-progress" */}
       {showInspectionComplete && (
         <div className="mt-6 pt-6 border-t border-gold/30">
           <Button 

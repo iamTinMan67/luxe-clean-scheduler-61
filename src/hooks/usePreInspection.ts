@@ -27,7 +27,7 @@ export const usePreInspection = () => {
     initialBookingId
   } = usePreInspectionState();
 
-  // Get appointments with enhanced filtering - only confirmed bookings for pre-inspection
+  // Get appointments with confirmed status for pre-inspection - don't expand status filter
   const { appointments, loading } = useScheduledAppointments(['confirmed']);
   
   const { handleImageUpload: uploadImage } = useImageUpload();
@@ -54,6 +54,7 @@ export const usePreInspection = () => {
   console.log("Loading state:", loading);
   console.log("Selected booking ID:", selectedBooking);
   console.log("Initial booking ID from URL:", initialBookingId);
+  console.log("Booking details:", bookingDetails);
   
   // Update booking details when a booking is selected
   const handleUpdateBookingDetails = () => {
