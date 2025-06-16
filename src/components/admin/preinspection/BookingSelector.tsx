@@ -128,17 +128,21 @@ const BookingSelector = ({
         <SelectTrigger className="bg-black/40 border-gold/30 text-white">
           <SelectValue placeholder="Select today's appointment" />
         </SelectTrigger>
-        <SelectContent className="bg-gray-900 border-gold/30 text-white z-50">
+        <SelectContent className="bg-gray-900 border-gold/30 text-white max-h-[300px] overflow-y-auto z-[100]">
           {loading ? (
             <SelectItem value="loading" disabled>Loading appointments...</SelectItem>
           ) : todayAppointments.length > 0 ? (
             todayAppointments.map((booking) => (
-              <SelectItem key={booking.id} value={booking.id}>
-                <div className="flex flex-col text-left w-full">
-                  <span className="font-medium text-white">
+              <SelectItem 
+                key={booking.id} 
+                value={booking.id}
+                className="focus:bg-gray-800 focus:text-white data-[highlighted]:bg-gray-800 data-[highlighted]:text-white"
+              >
+                <div className="flex flex-col text-left w-full min-w-0">
+                  <span className="font-medium text-white truncate">
                     {getDisplayCustomer(booking)} - {getDisplayTime(booking)}
                   </span>
-                  <span className="text-xs text-gray-300">
+                  <span className="text-xs text-gray-300 truncate">
                     {getDisplayVehicle(booking)} | {getDisplayPackage(booking)} | {getDisplayStatus(booking)}
                   </span>
                 </div>
