@@ -1,6 +1,7 @@
 
 import React, { useEffect } from 'react';
 import SimpleBookingForm from '@/components/booking/simple/SimpleBookingForm';
+import BubblesEffect from '@/components/ui/BubblesEffect';
 
 const SimpleBooking = () => {
   useEffect(() => {
@@ -16,8 +17,9 @@ const SimpleBooking = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black py-12">
-      <div className="container mx-auto px-4 max-w-4xl">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black py-12 relative">
+      <BubblesEffect />
+      <div className="container mx-auto px-4 max-w-4xl relative z-10">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-4">
             Request Service
