@@ -23,6 +23,14 @@ const ConfirmedBookingItem: React.FC<ConfirmedBookingItemProps> = ({
     booking.additionalServices.map(id => additionalServices.find(s => s.id === id)).filter(Boolean) : 
     [];
 
+  // Calculate estimated duration from package tasks
+  const getEstimatedDuration = () => {
+    if (packageDetail && packageDetail.tasks) {
+      return packageDetail.tasks.reduce((total, task) => total + (task.duration || 0), 0);
+    }
+    return 0;
+  };
+
   // Get client category styling and components
   const getClientCategoryStyling = (type?: string) => {
     switch (type) {
@@ -74,6 +82,8 @@ const ConfirmedBookingItem: React.FC<ConfirmedBookingItemProps> = ({
     }
   };
 
+  const estimatedDuration = getEstimatedDuration();
+
   return (
     <div 
       className={`rounded-lg p-4 border ${getBookingBackground(booking)} relative`}
@@ -109,9 +119,9 @@ const ConfirmedBookingItem: React.FC<ConfirmedBookingItemProps> = ({
         {/* Service Package */}
         <div className="text-gold">
           <span className="font-medium">{booking.packageType}</span>
-          {packageDetail && packageDetail.estimatedDuration && (
+          {estimatedDuration > 0 && (
             <span className="text-sm text-gray-300 ml-2">
-              ({packageDetail.estimatedDuration} mins)
+              ({estimatedDuration} mins)
             </span>
           )}
         </div>
