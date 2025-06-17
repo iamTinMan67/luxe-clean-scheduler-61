@@ -1,3 +1,4 @@
+
 export const calculateTotalBookingTime = (
   packageTasks: any[],
   additionalServices: any[]
@@ -9,10 +10,21 @@ export const calculateTotalBookingTime = (
 
   // Calculate additional services time
   const additionalTime = additionalServices.reduce((total, service) => {
-    // Add null check for service
-    if (service && typeof service === 'object' && 'duration' in service) {
-      return total + (service.duration || 0);
+    // Add comprehensive null/undefined checks for service
+    if (!service || typeof service !== 'object') {
+      return total;
     }
+    
+    // Check for duration property with proper null safety
+    if ('duration' in service && typeof service.duration === 'number') {
+      return total + service.duration;
+    }
+    
+    // Check for estimatedMinutes as fallback
+    if ('estimatedMinutes' in service && typeof service.estimatedMinutes === 'number') {
+      return total + service.estimatedMinutes;
+    }
+    
     return total;
   }, 0);
 
