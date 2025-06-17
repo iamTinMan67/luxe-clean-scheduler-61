@@ -109,9 +109,9 @@ const ConfirmedBookingItem: React.FC<ConfirmedBookingItemProps> = ({
         {/* Service Package */}
         <div className="text-gold">
           <span className="font-medium">{booking.packageType}</span>
-          {packageDetail && (
+          {packageDetail && packageDetail.estimatedDuration && (
             <span className="text-sm text-gray-300 ml-2">
-              ({packageDetail.duration} mins)
+              ({packageDetail.estimatedDuration} mins)
             </span>
           )}
         </div>
