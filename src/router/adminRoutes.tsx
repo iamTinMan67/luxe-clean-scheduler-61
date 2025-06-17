@@ -21,6 +21,7 @@ import FeedbackForm from "@/pages/admin/FeedbackForm";
 import PreInspection from "@/pages/admin/PreInspection";
 import DeclinedJobs from "@/pages/admin/DeclinedJobs";
 import TodoList from "@/pages/admin/TodoList";
+import ManualTaskGenerator from "@/pages/admin/ManualTaskGenerator";
 
 // Helper function to wrap components with ProtectedRoute
 const protectedComponent = (Component: React.ComponentType) => {
@@ -104,6 +105,10 @@ const adminRoutes: RouteObject[] = [
       {
         path: "/admin/todo-list",
         element: protectedComponent(TodoList),
+      },
+      {
+        path: "/admin/manual-task-generator",
+        element: protectedComponent(ManualTaskGenerator),
       },
     ],
   },
