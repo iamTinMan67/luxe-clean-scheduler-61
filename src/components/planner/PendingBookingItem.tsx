@@ -5,6 +5,7 @@ import { packageOptions } from "@/data/servicePackageData";
 import { additionalServices } from "@/data/servicePackageData";
 import { calculateTotalBookingTime } from "@/utils/priceCalculator";
 import { Building, Home } from 'lucide-react';
+import DeleteBookingButton from '@/components/admin/shared/DeleteBookingButton';
 
 // Import refactored components
 import BookingJobDetails from './booking-item/BookingJobDetails';
@@ -101,6 +102,9 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
       key={booking.id}
       className={`rounded-lg p-4 border ${getBookingBackground(booking)} relative`}
     >
+      {/* Delete Button */}
+      <DeleteBookingButton booking={booking} />
+
       {/* Top row with booking ID (hidden for pending) and client type */}
       <div className="flex justify-between items-start mb-3">
         {/* Only show booking ID if status is not pending */}
