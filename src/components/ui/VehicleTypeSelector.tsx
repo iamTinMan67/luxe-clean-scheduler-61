@@ -4,20 +4,24 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { ClientType, JobType } from "@/lib/types";
 import { Building, Home, Car, Truck, Box } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 interface VehicleTypeSelectorProps {
   selectedClientType: ClientType;
-  selectedJobType: JobType; // Changed from selectedVehicleType
+  selectedJobType: JobType;
   onClientTypeChange: (type: ClientType) => void;
-  onJobTypeChange: (type: JobType) => void; // Changed from onVehicleTypeChange
+  onJobTypeChange: (type: JobType) => void;
 }
 
 const VehicleTypeSelector = ({
   selectedClientType,
-  selectedJobType, // Changed from selectedVehicleType
+  selectedJobType,
   onClientTypeChange,
-  onJobTypeChange, // Changed from onVehicleTypeChange
+  onJobTypeChange,
 }: VehicleTypeSelectorProps) => {
+  const navigate = useNavigate();
+
   const clientTypes: Array<{ type: ClientType; label: string; description: string; icon: React.ReactNode; color: string }> = [
     { 
       type: "private", 
@@ -42,6 +46,18 @@ const VehicleTypeSelector = ({
   ];
 
   const selectedClientConfig = clientTypes.find(c => c.type === selectedClientType);
+
+  const handleJobTypeChange = (type: JobType) => {
+    if (type === "other") {
+      // Redirect to simple booking form for "Other" job types
+      toast.info("Redirecting to specialized form", {
+        description: "Perfect for boats, caravans, and other services."
+      });
+      navigate("/simple-booking");
+    } else {
+      onJobTypeChange(type);
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -93,7 +109,7 @@ const VehicleTypeSelector = ({
           {jobTypes.map(({ type, label, icon }) => (
             <button
               key={type}
-              onClick={() => onJobTypeChange(type)}
+              onClick={() => handleJobTypeChange(type)}
               className={cn(
                 "relative aspect-square rounded-lg overflow-hidden group border-2 transition-all",
                 selectedJobType === type ? 

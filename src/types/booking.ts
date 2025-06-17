@@ -8,7 +8,7 @@ export interface Booking {
   jobDetails?: string;
   secondVehicle?: string;
   secondVehicleReg?: string;
-  packageType: string;
+  packageType: string; // Now supports "other" for non-standard services
   date: Date | string;
   time?: string;
   startTime?: string;
@@ -25,7 +25,7 @@ export interface Booking {
   travelMinutes?: number;
   additionalServices?: string[]; // Added to track selected additional services
   clientType?: "private" | "corporate"; // Client type field
-  jobType?: string; // Changed from vehicleType to jobType
+  jobType?: string; // Supports "car", "van", "other"
 }
 
 // Helper function to validate booking status

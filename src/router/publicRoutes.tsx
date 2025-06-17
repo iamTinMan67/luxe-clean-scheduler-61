@@ -5,6 +5,7 @@ import Index from "@/pages/Index";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
 import Booking from "@/pages/Booking";
+import SimpleBooking from "@/pages/SimpleBooking";
 import ServicePackage from "@/pages/ServicePackage";
 import Feedback from "@/pages/Feedback";
 import Gallery from "@/pages/Gallery";
@@ -28,6 +29,10 @@ const publicRoutes: RouteObject[] = [
       {
         path: "/booking",
         element: <Booking />,
+      },
+      {
+        path: "/simple-booking",
+        element: <SimpleBooking />,
       },
       {
         path: "/services",
