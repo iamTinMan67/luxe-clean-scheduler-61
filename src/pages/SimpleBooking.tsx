@@ -1,8 +1,20 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import SimpleBookingForm from '@/components/booking/simple/SimpleBookingForm';
 
 const SimpleBooking = () => {
+  useEffect(() => {
+    // Scroll to top when component mounts
+    window.scrollTo(0, 0);
+    
+    // Additional safeguard for cases where immediate scroll doesn't work
+    const timer = setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black py-12">
       <div className="container mx-auto px-4 max-w-4xl">
