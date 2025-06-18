@@ -3,6 +3,8 @@ import React from 'react';
 import { useSimpleBookingForm } from '@/hooks/useSimpleBookingForm';
 import ContactDetailsSection from '@/components/booking/ContactDetailsSection';
 import JobDetailsSection from '@/components/booking/JobDetailsSection';
+import DateTimeSection from '@/components/booking/DateTimeSection';
+import BookingHelpMessage from '@/components/booking/calendar/BookingHelpMessage';
 import SubmitButton from '@/components/booking/SubmitButton';
 
 const SimpleBookingForm = () => {
@@ -19,6 +21,10 @@ const SimpleBookingForm = () => {
     setNotes,
     jobDetails,
     setJobDetails,
+    selectedDate,
+    setSelectedDate,
+    selectedTime,
+    setSelectedTime,
     handleSubmit,
   } = useSimpleBookingForm();
 
@@ -41,6 +47,15 @@ const SimpleBookingForm = () => {
         notes={notes}
         setNotes={setNotes}
       />
+      
+      <DateTimeSection
+        selectedDate={selectedDate}
+        selectedTime={selectedTime}
+        onDateChange={setSelectedDate}
+        onTimeChange={setSelectedTime}
+      />
+      
+      <BookingHelpMessage />
       
       <SubmitButton />
     </form>

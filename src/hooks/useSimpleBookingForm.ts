@@ -10,6 +10,8 @@ export const useSimpleBookingForm = () => {
   const [email, setEmail] = useState("");
   const [notes, setNotes] = useState("");
   const [jobDetails, setJobDetails] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  const [selectedTime, setSelectedTime] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,8 +32,8 @@ export const useSimpleBookingForm = () => {
         vehicleReg: "",
         jobDetails: jobDetails,
         packageType: "other", // Special package type for other services
-        date: new Date(),
-        time: "TBD",
+        date: selectedDate || new Date(),
+        time: selectedTime || "TBD",
         location: postcode,
         contact: phone,
         email: email,
@@ -63,6 +65,8 @@ export const useSimpleBookingForm = () => {
       setEmail("");
       setNotes("");
       setJobDetails("");
+      setSelectedDate(undefined);
+      setSelectedTime("");
 
     } catch (error) {
       console.error("Error submitting booking:", error);
@@ -85,6 +89,10 @@ export const useSimpleBookingForm = () => {
     setNotes,
     jobDetails,
     setJobDetails,
+    selectedDate,
+    setSelectedDate,
+    selectedTime,
+    setSelectedTime,
     handleSubmit,
   };
 };
