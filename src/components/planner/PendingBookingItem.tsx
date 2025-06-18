@@ -1,19 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Booking } from '@/types/booking';
-import { packageOptions } from "@/data/servicePackageData";
-import { additionalServices } from "@/data/servicePackageData";
+import { packageOptions, additionalServices } from "@/data/servicePackageData";
 import { calculateTotalBookingTime } from "@/utils/priceCalculator";
-import { Building, Home, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import DeleteBookingButton from '@/components/admin/shared/DeleteBookingButton';
 
 // Import refactored components
-import BookingJobDetails from './booking-item/BookingJobDetails';
-import BookingContactDetails from './booking-item/BookingContactDetails';
-import BookingAdditionalInfo from './booking-item/BookingAdditionalInfo';
-import BookingActions from './booking-item/BookingActions';
+import PendingBookingHeader from './pending-booking/PendingBookingHeader';
+import PendingBookingContent from './pending-booking/PendingBookingContent';
+import PendingBookingFooter from './pending-booking/PendingBookingFooter';
 
 interface PendingBookingItemProps {
   booking: Booking;
@@ -28,7 +23,6 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
   onCancel,
   getBookingBackground
 }) => {
-  const navigate = useNavigate();
   const [estimatedDuration, setEstimatedDuration] = useState<number>(0);
 
   // Calculate estimated duration based on package and additional services
@@ -58,65 +52,6 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
     }
   }, [booking]);
 
-  // Handle create full booking for "Other" job types
-  const handleCreateFullBooking = () => {
-    // Store customer details in localStorage to pre-populate the manual task generator
-    const customerData = {
-      customer: booking.customer,
-      email: booking.email,
-      phone: booking.contact,
-      location: booking.location,
-      jobDetails: booking.jobDetails,
-      notes: booking.notes,
-      originalBookingId: booking.id
-    };
-    
-    localStorage.setItem('pendingCustomerData', JSON.stringify(customerData));
-    navigate('/admin/manual-task-generator');
-  };
-
-  // Get package details
-  const packageDetail = packageOptions.find(p => p.type === booking.packageType);
-  
-  // Get additional services details
-  const additionalServiceDetails = booking.additionalServices && Array.isArray(booking.additionalServices) ? 
-    booking.additionalServices.map(id => additionalServices.find(s => s.id === id)).filter(Boolean) : 
-    [];
-
-  // Get client category styling and components
-  const getClientCategoryStyling = (type?: string) => {
-    switch (type) {
-      case "private":
-        return "text-blue-400 border-blue-400";
-      case "corporate":
-        return "text-green-400 border-green-400";
-      default:
-        return "text-gray-400 border-gray-400";
-    }
-  };
-
-  const getClientIcon = (type?: string) => {
-    switch (type) {
-      case "private":
-        return <Home className="w-4 h-4 mr-1" />;
-      case "corporate":
-        return <Building className="w-4 h-4 mr-1" />;
-      default:
-        return null;
-    }
-  };
-
-  const getClientLabel = (type?: string) => {
-    switch (type) {
-      case "private":
-        return "Private";
-      case "corporate":
-        return "Commercial";
-      default:
-        return null;
-    }
-  };
-
   // Check if this is an "Other" job type booking
   const isOtherJobType = booking.packageType === 'other' || booking.jobType === 'other';
 
@@ -128,79 +63,23 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
       {/* Delete Button */}
       <DeleteBookingButton booking={booking} />
 
-      {/* Top row with booking ID (hidden for pending) and client type */}
-      <div className="flex justify-between items-start mb-3">
-        {/* Only show booking ID if status is not pending */}
-        {booking.status !== 'pending' && (
-          <span className="text-xs text-gray-400">ID: {booking.id}</span>
-        )}
-        
-        {/* Client Category in top right corner */}
-        {booking.clientType && (
-          <div className={`flex items-center px-2 py-1 rounded-full border text-xs ${getClientCategoryStyling(booking.clientType)}`}>
-            {getClientIcon(booking.clientType)}
-            <span>{getClientLabel(booking.clientType)}</span>
-          </div>
-        )}
-      </div>
+      {/* Header with booking ID and client type */}
+      <PendingBookingHeader booking={booking} />
       
-      <div className="space-y-4 mb-4">
-        {/* Job Details - Now prominent at the top without customer name */}
-        <BookingJobDetails 
-          customer=""
-          packageType={booking.packageType}
-          packageDetail={packageDetail}
-          condition={booking.condition}
-          date={booking.date}
-          time={booking.time}
-          notes={booking.notes}
-          jobDetails={booking.jobDetails}
-          estimatedDuration={estimatedDuration}
-        />
-
-        {/* Additional Services */}
-        <BookingAdditionalInfo 
-          additionalServices={additionalServiceDetails}
-          secondVehicle={booking.secondVehicle}
-          secondVehicleReg={booking.secondVehicleReg}
-        />
-
-        {/* Contact Details - Now includes customer name and location */}
-        <BookingContactDetails 
-          customer={booking.customer}
-          location={booking.location}
-          email={booking.email}
-          contact={booking.contact}
-          clientType={booking.clientType}
-        />
-      </div>
+      {/* Main content area */}
+      <PendingBookingContent 
+        booking={booking}
+        estimatedDuration={estimatedDuration}
+      />
       
-      {/* Special handling for "Other" job types */}
-      {isOtherJobType ? (
-        <div className="flex gap-2">
-          <Button
-            onClick={handleCreateFullBooking}
-            className="flex-1 bg-green-600 hover:bg-green-700 text-white"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Create Full Booking
-          </Button>
-          <Button
-            onClick={() => onCancel(booking.id)}
-            variant="destructive"
-            className="px-4"
-          >
-            Cancel
-          </Button>
-        </div>
-      ) : (
-        <BookingActions 
-          booking={booking}
-          onConfirm={onConfirm}
-          onCancel={onCancel}
-          estimatedDuration={estimatedDuration}
-        />
-      )}
+      {/* Footer with actions */}
+      <PendingBookingFooter
+        booking={booking}
+        isOtherJobType={isOtherJobType}
+        onConfirm={onConfirm}
+        onCancel={onCancel}
+        estimatedDuration={estimatedDuration}
+      />
     </div>
   );
 };
