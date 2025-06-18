@@ -2,6 +2,28 @@
 import React from 'react';
 
 const BubblesEffect = () => {
+  // Define the keyframes as a CSS string that we'll inject
+  React.useEffect(() => {
+    const styleElement = document.createElement('style');
+    styleElement.textContent = `
+      @keyframes bubble-float {
+        0%, 100% {
+          transform: translateY(0) scale(1);
+          opacity: 0.2;
+        }
+        50% {
+          transform: translateY(-20px) scale(1.1);
+          opacity: 0.4;
+        }
+      }
+    `;
+    document.head.appendChild(styleElement);
+    
+    return () => {
+      document.head.removeChild(styleElement);
+    };
+  }, []);
+
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden">
       <div className="absolute inset-0">
@@ -27,19 +49,6 @@ const BubblesEffect = () => {
           </div>
         ))}
       </div>
-      
-      <style jsx>{`
-        @keyframes bubble-float {
-          0%, 100% {
-            transform: translateY(0) scale(1);
-            opacity: 0.2;
-          }
-          50% {
-            transform: translateY(-20px) scale(1.1);
-            opacity: 0.4;
-          }
-        }
-      `}</style>
     </div>
   );
 };
