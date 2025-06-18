@@ -1,11 +1,9 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
 import { Booking } from "@/types/booking";
 
 export const useSimpleBookingForm = () => {
-  const navigate = useNavigate();
   const [yourName, setYourName] = useState("");
   const [postcode, setPostcode] = useState("");
   const [phone, setPhone] = useState("");
@@ -48,8 +46,8 @@ export const useSimpleBookingForm = () => {
       const updatedBookings = [...existingBookings, newBooking];
       localStorage.setItem('bookings', JSON.stringify(updatedBookings));
 
-      // Show success confirmation message
-      toast.success("Your request was successful!", {
+      // Show success message
+      toast.success("Request Submitted!", {
         description: "We'll contact you soon to discuss your requirements.",
         style: {
           background: '#f97316', // Orange background
@@ -65,11 +63,6 @@ export const useSimpleBookingForm = () => {
       setEmail("");
       setNotes("");
       setJobDetails("");
-
-      // Redirect to feedback page after successful submission
-      setTimeout(() => {
-        navigate("/feedback");
-      }, 2000);
 
     } catch (error) {
       console.error("Error submitting booking:", error);

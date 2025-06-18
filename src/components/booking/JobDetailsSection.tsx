@@ -26,7 +26,7 @@ const JobDetailsSection = ({
         </Label>
         <Input 
           id="jobDetails" 
-          placeholder="Boat, Caravan, etc."
+          placeholder="If vehicle enter reg."
           value={jobDetails}
           onChange={(e) => setJobDetails(e.target.value)}
           className="bg-gray-800 border-gray-700 text-white"
@@ -37,7 +37,7 @@ const JobDetailsSection = ({
         <Label htmlFor="notes" className="text-white">Any Notes</Label>
         <Textarea 
           id="notes" 
-          placeholder="Brief job requirements and any notes"
+          placeholder="Any special instructions or requirements?"
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           className="bg-gray-800 border-gray-700 text-white h-24"
