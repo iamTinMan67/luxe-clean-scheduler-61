@@ -28,6 +28,13 @@ interface AdminFunction {
   category: 'planning' | 'management' | 'feedback' | 'inventory' | 'analytics';
 }
 
+interface CategoryConfig {
+  title: string;
+  icon: React.ComponentType<any>;
+  color: string;
+  featured?: boolean;
+}
+
 const adminFunctions: AdminFunction[] = [
   // Analytics (Featured)
   {
@@ -144,7 +151,7 @@ const adminFunctions: AdminFunction[] = [
   }
 ];
 
-const categoryConfig = {
+const categoryConfig: Record<string, CategoryConfig> = {
   analytics: {
     title: 'Analytics & Insights',
     icon: BarChart3,
@@ -199,6 +206,7 @@ const AdminSplashScreen = () => {
       {Object.entries(groupedFunctions).map(([category, functions], categoryIndex) => {
         const config = categoryConfig[category as keyof typeof categoryConfig];
         const IconComponent = config.icon;
+        const isFeatured = config.featured || false;
         
         return (
           <motion.div
@@ -210,11 +218,11 @@ const AdminSplashScreen = () => {
           >
             {/* Category Header */}
             <div className="flex items-center space-x-3 mb-4">
-              <div className={`p-2 rounded-lg ${config.featured ? 'bg-gold/20 border-gold/30' : `bg-${config.color}-500/20 border-${config.color}-500/30`} border`}>
-                <IconComponent className={`w-5 h-5 ${config.featured ? 'text-gold' : `text-${config.color}-400`}`} />
+              <div className={`p-2 rounded-lg ${isFeatured ? 'bg-gold/20 border-gold/30' : `bg-${config.color}-500/20 border-${config.color}-500/30`} border`}>
+                <IconComponent className={`w-5 h-5 ${isFeatured ? 'text-gold' : `text-${config.color}-400`}`} />
               </div>
               <h3 className="text-lg font-semibold text-white">{config.title}</h3>
-              {config.featured && (
+              {isFeatured && (
                 <span className="px-2 py-1 text-xs bg-gold/20 text-gold rounded-full border border-gold/30">
                   Featured
                 </span>
@@ -222,7 +230,7 @@ const AdminSplashScreen = () => {
             </div>
 
             {/* Function Cards Grid */}
-            <div className={`grid gap-4 ${config.featured ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
+            <div className={`grid gap-4 ${isFeatured ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
               {functions.map((func, index) => {
                 const FunctionIcon = func.icon;
                 
@@ -239,14 +247,14 @@ const AdminSplashScreen = () => {
                     whileTap={{ scale: 0.98 }}
                   >
                     <Link to={func.path}>
-                      <Card className={`${config.featured ? 'bg-gradient-to-r from-gold/10 to-gold/5 border-gold/30' : 'bg-gray-900 border-gray-800'} hover:border-gold/50 transition-all duration-300 cursor-pointer group`}>
-                        <CardContent className={`${config.featured ? 'p-8' : 'p-6'}`}>
+                      <Card className={`${isFeatured ? 'bg-gradient-to-r from-gold/10 to-gold/5 border-gold/30' : 'bg-gray-900 border-gray-800'} hover:border-gold/50 transition-all duration-300 cursor-pointer group`}>
+                        <CardContent className={`${isFeatured ? 'p-8' : 'p-6'}`}>
                           <div className="flex items-start space-x-4">
-                            <div className={`${config.featured ? 'p-4' : 'p-3'} bg-gray-800 rounded-lg group-hover:bg-gold/20 transition-colors`}>
-                              <FunctionIcon className={`${config.featured ? 'w-8 h-8' : 'w-6 h-6'} text-gold`} />
+                            <div className={`${isFeatured ? 'p-4' : 'p-3'} bg-gray-800 rounded-lg group-hover:bg-gold/20 transition-colors`}>
+                              <FunctionIcon className={`${isFeatured ? 'w-8 h-8' : 'w-6 h-6'} text-gold`} />
                             </div>
                             <div className="flex-1">
-                              <h4 className={`${config.featured ? 'text-lg' : 'text-base'} font-semibold text-white mb-1 group-hover:text-gold transition-colors`}>
+                              <h4 className={`${isFeatured ? 'text-lg' : 'text-base'} font-semibold text-white mb-1 group-hover:text-gold transition-colors`}>
                                 {func.title}
                               </h4>
                               <p className="text-sm text-gray-400">
