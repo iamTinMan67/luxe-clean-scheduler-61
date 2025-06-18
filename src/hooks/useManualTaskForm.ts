@@ -1,5 +1,5 @@
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Booking } from '@/types/booking';
 
@@ -11,6 +11,16 @@ interface TaskItem {
   cost: number;
 }
 
+interface CustomerData {
+  customer: string;
+  email: string;
+  phone: string;
+  location: string;
+  jobDetails: string;
+  notes: string;
+  originalBookingId: string;
+}
+
 export const useManualTaskForm = () => {
   const [bookingDate, setBookingDate] = useState<Date | undefined>();
   const [timeSlot, setTimeSlot] = useState('');
@@ -18,6 +28,32 @@ export const useManualTaskForm = () => {
   const [travel, setTravel] = useState(0);
   const [other, setOther] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [customerData, setCustomerData] = useState<CustomerData | null>(null);
+
+  // Check for pre-populated customer data on mount
+  useEffect(() => {
+    const storedCustomerData = localStorage.getItem('pendingCustomerData');
+    if (storedCustomerData) {
+      try {
+        const parsedData = JSON.parse(storedCustomerData);
+        setCustomerData(parsedData);
+        // Clear the stored data after using it
+        localStorage.removeItem('pendingCustomerData');
+        
+        // Show notification that customer data was loaded
+        toast.success('Customer details loaded', {
+          description: `Pre-populated with details for ${parsedData.customer}`,
+          style: {
+            background: '#16a34a',
+            color: 'white',
+            border: '1px solid #15803d'
+          }
+        });
+      } catch (error) {
+        console.error('Error parsing customer data:', error);
+      }
+    }
+  }, []);
 
   // Calculate subtotal from tasks
   const subtotal = useMemo(() => {
@@ -95,16 +131,18 @@ export const useManualTaskForm = () => {
       // Create a manual booking entry
       const manualBooking: Booking = {
         id: `manual-${Date.now()}`,
-        customer: 'Manual Task',
+        customer: customerData?.customer || 'Manual Task',
         vehicle: 'Custom Job',
         packageType: 'custom',
         date: bookingDate,
         time: timeSlot,
-        location: 'To be determined',
+        location: customerData?.location || 'To be determined',
+        contact: customerData?.phone,
+        email: customerData?.email,
         status: 'confirmed',
         totalPrice: total,
-        notes: `Manual task with ${tasks.length} items:\n${tasks.map(t => `- ${t.description} (${t.hours}h @ £${t.rate}/h)`).join('\n')}`,
-        jobDetails: tasks.map(t => t.description).join('; '),
+        notes: customerData?.notes ? `${customerData.notes}\n\nManual task with ${tasks.length} items:\n${tasks.map(t => `- ${t.description} (${t.hours}h @ £${t.rate}/h)`).join('\n')}` : `Manual task with ${tasks.length} items:\n${tasks.map(t => `- ${t.description} (${t.hours}h @ £${t.rate}/h)`).join('\n')}`,
+        jobDetails: customerData?.jobDetails ? `${customerData.jobDetails}; ${tasks.map(t => t.description).join('; ')}` : tasks.map(t => t.description).join('; '),
         clientType: 'private',
         jobType: 'other',
         staff: ['Admin'],
@@ -120,8 +158,15 @@ export const useManualTaskForm = () => {
       const plannerBookings = JSON.parse(localStorage.getItem('plannerCalendarBookings') || '[]');
       localStorage.setItem('plannerCalendarBookings', JSON.stringify([...plannerBookings, manualBooking]));
 
+      // If this was created from a pending "Other" booking, remove the original pending booking
+      if (customerData?.originalBookingId) {
+        const pendingBookings = JSON.parse(localStorage.getItem('bookings') || '[]');
+        const filteredPendingBookings = pendingBookings.filter((booking: Booking) => booking.id !== customerData.originalBookingId);
+        localStorage.setItem('bookings', JSON.stringify(filteredPendingBookings));
+      }
+
       toast.success('Manual job created successfully!', {
-        description: `Job scheduled for ${bookingDate.toDateString()} at ${timeSlot}`,
+        description: `Job scheduled for ${bookingDate.toDateString()} at ${timeSlot}${customerData ? ` for ${customerData.customer}` : ''}`,
         style: {
           background: '#f97316',
           color: 'white',
@@ -135,6 +180,7 @@ export const useManualTaskForm = () => {
       setTasks([]);
       setTravel(0);
       setOther(0);
+      setCustomerData(null);
 
     } catch (error) {
       console.error('Error creating manual job:', error);
@@ -162,6 +208,7 @@ export const useManualTaskForm = () => {
     setOther,
     total,
     handleSubmit,
-    isSubmitting
+    isSubmitting,
+    customerData
   };
 };

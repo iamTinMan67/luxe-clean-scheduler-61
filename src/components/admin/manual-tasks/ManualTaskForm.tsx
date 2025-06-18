@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon, Plus, Trash2, ChevronUp, ChevronDown } from 'lucide-react';
+import { CalendarIcon, Plus, Trash2, ChevronUp, ChevronDown, User, Phone, Mail, MapPin } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -30,11 +30,56 @@ const ManualTaskForm = () => {
     setOther,
     total,
     handleSubmit,
-    isSubmitting
+    isSubmitting,
+    customerData
   } = useManualTaskForm();
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Customer Information (if pre-populated) */}
+      {customerData && (
+        <div className="bg-green-900/20 border border-green-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-green-400 mb-3 flex items-center">
+            <User className="w-5 h-5 mr-2" />
+            Customer Information
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div className="flex items-center text-white">
+              <User className="w-4 h-4 mr-2 text-green-400" />
+              <span className="font-medium">Name:</span>
+              <span className="ml-2">{customerData.customer}</span>
+            </div>
+            <div className="flex items-center text-white">
+              <Phone className="w-4 h-4 mr-2 text-green-400" />
+              <span className="font-medium">Phone:</span>
+              <span className="ml-2">{customerData.phone}</span>
+            </div>
+            <div className="flex items-center text-white">
+              <Mail className="w-4 h-4 mr-2 text-green-400" />
+              <span className="font-medium">Email:</span>
+              <span className="ml-2">{customerData.email}</span>
+            </div>
+            <div className="flex items-center text-white">
+              <MapPin className="w-4 h-4 mr-2 text-green-400" />
+              <span className="font-medium">Location:</span>
+              <span className="ml-2">{customerData.location}</span>
+            </div>
+            {customerData.jobDetails && (
+              <div className="md:col-span-2 text-white">
+                <span className="font-medium">Job Details:</span>
+                <span className="ml-2">{customerData.jobDetails}</span>
+              </div>
+            )}
+            {customerData.notes && (
+              <div className="md:col-span-2 text-white">
+                <span className="font-medium">Notes:</span>
+                <span className="ml-2">{customerData.notes}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Booking Date and Time */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">

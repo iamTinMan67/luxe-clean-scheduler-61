@@ -1,10 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Booking } from '@/types/booking';
 import { packageOptions } from "@/data/servicePackageData";
 import { additionalServices } from "@/data/servicePackageData";
 import { calculateTotalBookingTime } from "@/utils/priceCalculator";
-import { Building, Home } from 'lucide-react';
+import { Building, Home, Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import DeleteBookingButton from '@/components/admin/shared/DeleteBookingButton';
 
 // Import refactored components
@@ -26,6 +28,7 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
   onCancel,
   getBookingBackground
 }) => {
+  const navigate = useNavigate();
   const [estimatedDuration, setEstimatedDuration] = useState<number>(0);
 
   // Calculate estimated duration based on package and additional services
@@ -54,6 +57,23 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
       }
     }
   }, [booking]);
+
+  // Handle create full booking for "Other" job types
+  const handleCreateFullBooking = () => {
+    // Store customer details in localStorage to pre-populate the manual task generator
+    const customerData = {
+      customer: booking.customer,
+      email: booking.email,
+      phone: booking.contact,
+      location: booking.location,
+      jobDetails: booking.jobDetails,
+      notes: booking.notes,
+      originalBookingId: booking.id
+    };
+    
+    localStorage.setItem('pendingCustomerData', JSON.stringify(customerData));
+    navigate('/admin/manual-task-generator');
+  };
 
   // Get package details
   const packageDetail = packageOptions.find(p => p.type === booking.packageType);
@@ -96,6 +116,9 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
         return null;
     }
   };
+
+  // Check if this is an "Other" job type booking
+  const isOtherJobType = booking.packageType === 'other' || booking.jobType === 'other';
 
   return (
     <div 
@@ -152,12 +175,32 @@ const PendingBookingItem: React.FC<PendingBookingItemProps> = ({
         />
       </div>
       
-      <BookingActions 
-        booking={booking}
-        onConfirm={onConfirm}
-        onCancel={onCancel}
-        estimatedDuration={estimatedDuration}
-      />
+      {/* Special handling for "Other" job types */}
+      {isOtherJobType ? (
+        <div className="flex gap-2">
+          <Button
+            onClick={handleCreateFullBooking}
+            className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Create Full Booking
+          </Button>
+          <Button
+            onClick={() => onCancel(booking.id)}
+            variant="destructive"
+            className="px-4"
+          >
+            Cancel
+          </Button>
+        </div>
+      ) : (
+        <BookingActions 
+          booking={booking}
+          onConfirm={onConfirm}
+          onCancel={onCancel}
+          estimatedDuration={estimatedDuration}
+        />
+      )}
     </div>
   );
 };
