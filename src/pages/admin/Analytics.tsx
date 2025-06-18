@@ -1,23 +1,23 @@
 
 import { motion } from "framer-motion";
 import AdminPageTitle from "@/components/admin/AdminPageTitle";
-import AdminSplashScreen from "@/components/admin/AdminSplashScreen";
+import { DashboardContent } from "@/components/dashboard";
 
-const Dashboard = () => {
+const Analytics = () => {
   return (
     <div className="min-h-screen bg-black pb-16">
       <section className="relative py-8">
         <div className="container mx-auto px-4">
           <AdminPageTitle 
-            title="Admin Dashboard" 
-            subtitle="Select a function to manage your business" 
+            title="Analytics" 
+            subtitle="Business insights and performance metrics" 
           />
           
-          <AdminSplashScreen />
+          <DashboardContent />
         </div>
       </section>
     </div>
   );
 };
 
-export default Dashboard;
+export default Analytics;

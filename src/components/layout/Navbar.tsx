@@ -52,6 +52,7 @@ const Navbar = () => {
 
   const adminRoutes: AdminRoute[] = [
     { path: "/admin/dashboard", label: "Dashboard" },
+    { path: "/admin/analytics", label: "Analytics" },
     { path: "/admin/planner-calendar", label: "Planners" },
     { path: "/admin/pre-inspection", label: "Pre-Inspection" },
     { path: "/admin/todo-list", label: "To-do List" },
