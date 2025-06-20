@@ -7,6 +7,12 @@ import DesktopMenu from "./DesktopMenu";
 import MobileMenu from "./MobileMenu";
 import ContactInfo from "./ContactInfo";
 
+interface AdminRoute {
+  path: string;
+  label: string;
+  subRoutes?: AdminRoute[];
+}
+
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -43,6 +49,35 @@ const Navbar = () => {
   useEffect(() => {
     closeMenu();
   }, [location]);
+
+  const adminRoutes: AdminRoute[] = [
+    { path: "/admin/dashboard", label: "Dashboard" },
+    { path: "/admin/analytics", label: "Analytics" },
+    { path: "/admin/planner-calendar", label: "Planners" },
+    { path: "/admin/pre-inspection", label: "Pre-Inspection" },
+    { path: "/admin/todo-list", label: "To-do List" },
+    { 
+      label: "Management",
+      path: "#",
+      subRoutes: [
+        { path: "/admin/invoices", label: "Invoices" },
+        { path: "/admin/history", label: "History" },
+        { path: "/admin/brochure", label: "Brochure" },
+        { path: "/admin/manage-packages", label: "Manage Packages" },
+        { path: "/admin/gallery-manager", label: "Gallery Manager" },
+        { path: "/admin/van-inventory", label: "Van Inventory" },
+        { path: "/admin/warehouse-inventory", label: "Warehouse Inventory" }
+      ]
+    },
+    { 
+      label: "Feedback",
+      path: "#",
+      subRoutes: [
+        { path: "/admin/feedback-form", label: "Feedback Form" },
+        { path: "/admin/feedback-manager", label: "Feedback Manager" }
+      ]
+    },
+  ];
 
   return (
     <header
@@ -81,7 +116,7 @@ const Navbar = () => {
           )}
         </div>
         
-        <DesktopMenu />
+        <DesktopMenu adminRoutes={adminRoutes} />
 
         {/* Mobile Menu Button */}
         <button
@@ -94,7 +129,7 @@ const Navbar = () => {
         </button>
       </div>
 
-      <MobileMenu isOpen={isMenuOpen} isAdminPage={isAdminRelatedPage()} />
+      <MobileMenu isOpen={isMenuOpen} adminRoutes={adminRoutes} isAdminPage={isAdminRelatedPage()} />
     </header>
   );
 };
