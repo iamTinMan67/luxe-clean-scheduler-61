@@ -7,7 +7,7 @@ export interface AdminFunction {
   description: string;
   icon: LucideIcon;
   path: string;
-  category: 'planning' | 'management' | 'feedback' | 'inventory' | 'analytics';
+  category: 'notifications' | 'planning' | 'management' | 'feedback' | 'inventory' | 'analytics';
 }
 
 export interface CategoryConfig {

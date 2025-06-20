@@ -11,19 +11,38 @@ import {
   Warehouse,
   BarChart3,
   CheckSquare,
-  Star
+  Star,
+  Bell,
+  Clock,
+  AlertTriangle
 } from "lucide-react";
 import { AdminFunction } from "./types";
 
 export const adminFunctions: AdminFunction[] = [
-  // Analytics (Featured)
+  // Notifications (Featured)
   {
-    id: 'analytics',
-    title: 'Business Analytics',
-    description: 'Performance metrics and insights',
-    icon: BarChart3,
-    path: '/admin/analytics',
-    category: 'analytics'
+    id: 'pending-bookings',
+    title: 'Pending Bookings',
+    description: 'Review and approve new bookings',
+    icon: Clock,
+    path: '/admin/planner-calendar',
+    category: 'notifications'
+  },
+  {
+    id: 'urgent-tasks',
+    title: 'Urgent Tasks',
+    description: 'High priority items requiring attention',
+    icon: AlertTriangle,
+    path: '/admin/todo-list',
+    category: 'notifications'
+  },
+  {
+    id: 'new-feedback',
+    title: 'New Feedback',
+    description: 'Recent customer feedback to review',
+    icon: Bell,
+    path: '/admin/feedback-manager',
+    category: 'notifications'
   },
 
   // Planning & Scheduling
@@ -128,5 +147,15 @@ export const adminFunctions: AdminFunction[] = [
     icon: Warehouse,
     path: '/admin/warehouse-inventory',
     category: 'inventory'
+  },
+
+  // Analytics (Moved to bottom)
+  {
+    id: 'analytics',
+    title: 'Business Analytics',
+    description: 'Performance metrics and insights',
+    icon: BarChart3,
+    path: '/admin/analytics',
+    category: 'analytics'
   }
 ];

@@ -19,6 +19,11 @@ const UserMenu = () => {
     navigate('/');
     setIsMenuOpen(false);
   };
+
+  const handleAdminDashboard = () => {
+    navigate('/admin/dashboard');
+    setIsMenuOpen(false);
+  };
   
   if (!user) {
     // Render login button if not logged in
@@ -64,14 +69,13 @@ const UserMenu = () => {
         
         <div className="py-1">
           {(isAdmin || isStaff) && (
-            <Link
-              to="/admin/dashboard"
-              className="block px-4 py-2 text-sm text-white hover:text-gold"
-              onClick={() => setIsMenuOpen(false)}
+            <button
+              onClick={handleAdminDashboard}
+              className="w-full text-left px-4 py-2 text-sm text-white hover:text-gold"
             >
               <Settings size={16} className="inline-block mr-2" />
               Admin Dashboard
-            </Link>
+            </button>
           )}
           
           <button

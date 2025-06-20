@@ -26,19 +26,16 @@ const FunctionCard = ({ func, index, categoryIndex, isFeatured }: FunctionCardPr
       whileTap={{ scale: 0.98 }}
     >
       <Link to={func.path}>
-        <Card className={`${isFeatured ? 'bg-gradient-to-r from-gold/10 to-gold/5 border-gold/30' : 'bg-gray-900 border-gray-800'} hover:border-gold/50 transition-all duration-300 cursor-pointer group`}>
-          <CardContent className={`${isFeatured ? 'p-8' : 'p-6'}`}>
-            <div className="flex items-start space-x-4">
-              <div className={`${isFeatured ? 'p-4' : 'p-3'} bg-gray-800 rounded-lg group-hover:bg-gold/20 transition-colors`}>
-                <FunctionIcon className={`${isFeatured ? 'w-8 h-8' : 'w-6 h-6'} text-gold`} />
+        <Card className={`${isFeatured ? 'bg-gradient-to-r from-blue-500/10 to-blue-500/5 border-blue-500/30' : 'bg-gray-900 border-gray-800'} hover:border-gold/50 transition-all duration-300 cursor-pointer group`}>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-gray-800 rounded-lg group-hover:bg-gold/20 transition-colors">
+                <FunctionIcon className="w-5 h-5 text-gold" />
               </div>
               <div className="flex-1">
-                <h4 className={`${isFeatured ? 'text-lg' : 'text-base'} font-semibold text-white mb-1 group-hover:text-gold transition-colors`}>
+                <h4 className="text-sm font-semibold text-white group-hover:text-gold transition-colors">
                   {func.title}
                 </h4>
-                <p className="text-sm text-gray-400">
-                  {func.description}
-                </p>
               </div>
             </div>
           </CardContent>

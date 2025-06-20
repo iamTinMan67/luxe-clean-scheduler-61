@@ -4,15 +4,16 @@ import {
   Calendar,
   Settings,
   MessageSquare,
-  Package
+  Package,
+  Bell
 } from "lucide-react";
 import { CategoryConfig } from "./types";
 
 export const categoryConfig: Record<string, CategoryConfig> = {
-  analytics: {
-    title: 'Analytics & Insights',
-    icon: BarChart3,
-    color: 'gold',
+  notifications: {
+    title: 'Pending Notifications',
+    icon: Bell,
+    color: 'blue',
     featured: true
   },
   planning: {
@@ -34,5 +35,10 @@ export const categoryConfig: Record<string, CategoryConfig> = {
     title: 'Inventory Management',
     icon: Package,
     color: 'orange'
+  },
+  analytics: {
+    title: 'Analytics & Insights',
+    icon: BarChart3,
+    color: 'gold'
   }
 };

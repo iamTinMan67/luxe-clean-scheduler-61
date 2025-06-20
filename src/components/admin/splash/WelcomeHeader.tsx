@@ -9,8 +9,7 @@ const WelcomeHeader = () => {
       transition={{ duration: 0.5 }}
       className="text-center mb-8"
     >
-      <h2 className="text-2xl font-bold text-white mb-2">Welcome to Admin Dashboard</h2>
-      <p className="text-gray-400">Select a function to get started</p>
+      <h2 className="text-2xl font-bold text-white mb-2">Admin Dashboard</h2>
     </motion.div>
   );
 };
