@@ -1,40 +1,22 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import NavLink from "./NavLink";
 import { useAuth } from "@/context/AuthContext";
 import ContactInfo from "./ContactInfo";
 
-interface AdminRoute {
-  path: string;
-  label: string;
-  subRoutes?: AdminRoute[];
-}
-
 interface MobileMenuProps {
   isOpen: boolean;
-  adminRoutes: AdminRoute[];
   isAdminPage: boolean;
 }
 
-const MobileMenu = ({ isOpen, adminRoutes, isAdminPage }: MobileMenuProps) => {
-  const [adminDropdownOpen, setAdminDropdownOpen] = useState(false);
+const MobileMenu = ({ isOpen, isAdminPage }: MobileMenuProps) => {
   const [contactDropdownOpen, setContactDropdownOpen] = useState(false);
-  const [openSubmenus, setOpenSubmenus] = useState<string[]>([]);
   const { user, signOut, isAdmin, isStaff } = useAuth();
   
-  const toggleAdminDropdown = () => setAdminDropdownOpen(!adminDropdownOpen);
   const toggleContactDropdown = () => setContactDropdownOpen(!contactDropdownOpen);
-
-  const toggleSubmenu = (label: string) => {
-    setOpenSubmenus(prev => 
-      prev.includes(label) 
-        ? prev.filter(item => item !== label) 
-        : [...prev, label]
-    );
-  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -75,61 +57,20 @@ const MobileMenu = ({ isOpen, adminRoutes, isAdminPage }: MobileMenuProps) => {
         )}
         
         {(isAdmin || isStaff) && (
-          <>
-            <button
-              className="text-left py-3 px-4 w-full text-lg text-white flex items-center justify-between"
-              onClick={toggleAdminDropdown}
-              aria-expanded={adminDropdownOpen}
-            >
-              <span>Admin</span>
-              <ChevronDown size={16} className={cn(
-                "transition-transform duration-200",
-                adminDropdownOpen ? "rotate-180" : ""
-              )} />
-            </button>
-            
-            {adminDropdownOpen && (
-              <div className="pl-4 space-y-1 border-l border-gold/30 ml-4">
-                {adminRoutes.map((route) => (
-                  route.subRoutes ? (
-                    <div key={route.label}>
-                      <button
-                        className="text-left py-2 px-4 w-full text-lg text-white flex items-center justify-between"
-                        onClick={() => toggleSubmenu(route.label)}
-                      >
-                        <span>{route.label}</span>
-                        <ChevronRight 
-                          size={16} 
-                          className={cn(
-                            "transition-transform",
-                            openSubmenus.includes(route.label) ? "rotate-90" : ""
-                          )}
-                        />
-                      </button>
-                      
-                      {openSubmenus.includes(route.label) && (
-                        <div className="pl-4 border-l border-gold/30 ml-4 space-y-1">
-                          {route.subRoutes.map((subRoute) => (
-                            <NavLink 
-                              key={subRoute.path} 
-                              to={subRoute.path} 
-                              isMobile
-                            >
-                              {subRoute.label}
-                            </NavLink>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <NavLink key={route.path} to={route.path} isMobile>
-                      {route.label}
-                    </NavLink>
-                  )
-                ))}
-              </div>
-            )}
-          </>
+          <div className="space-y-1">
+            <NavLink to="/admin/dashboard" isMobile>Dashboard</NavLink>
+            <NavLink to="/admin/analytics" isMobile>Analytics</NavLink>
+            <NavLink to="/admin/planner-calendar" isMobile>Planner</NavLink>
+            <NavLink to="/admin/pre-inspection" isMobile>Pre-Inspection</NavLink>
+            <NavLink to="/admin/todo-list" isMobile>To-do List</NavLink>
+            <NavLink to="/admin/invoices" isMobile>Invoices</NavLink>
+            <NavLink to="/admin/history" isMobile>History</NavLink>
+            <NavLink to="/admin/manage-packages" isMobile>Packages</NavLink>
+            <NavLink to="/admin/gallery-manager" isMobile>Gallery Manager</NavLink>
+            <NavLink to="/admin/feedback-manager" isMobile>Feedback</NavLink>
+            <NavLink to="/admin/van-inventory" isMobile>Van Inventory</NavLink>
+            <NavLink to="/admin/warehouse-inventory" isMobile>Warehouse</NavLink>
+          </div>
         )}
         
         {user ? (
