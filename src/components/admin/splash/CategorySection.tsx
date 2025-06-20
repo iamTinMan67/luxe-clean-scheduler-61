@@ -23,7 +23,7 @@ const CategorySection = ({ category, functions, config, categoryIndex }: Categor
     >
       <CategoryHeader config={config} isFeatured={isFeatured} />
 
-      <div className={`grid gap-4 ${isFeatured ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
+      <div className={`grid gap-4 ${isFeatured ? 'grid-cols-1' : 'grid-cols-2 md:grid-cols-4 lg:grid-cols-6'}`}>
         {functions.map((func, index) => (
           <FunctionCard
             key={func.id}
