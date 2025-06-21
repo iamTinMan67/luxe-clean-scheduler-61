@@ -1,6 +1,8 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import { usePlannerCalendar } from "@/hooks/usePlannerCalendar";
 import CalendarHeader from "@/components/planner/CalendarHeader";
 import PlannerContent from "@/components/planner/PlannerContent";
@@ -46,6 +48,16 @@ const PlannerCalendar = () => {
     <div className="min-h-screen bg-black pb-16" key={key}>
       <section className="relative py-8">
         <div className="container mx-auto px-4">
+          <div className="flex items-center mb-8">
+            <Link 
+              to="/admin/dashboard" 
+              className="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300 transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              <span>Back to Dashboard</span>
+            </Link>
+          </div>
+
           {/* Calendar header with navigation */}
           <CalendarHeader 
             date={date}

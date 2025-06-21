@@ -1,6 +1,8 @@
 
 import { useEffect } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import VehicleInfoForm from "@/components/admin/preinspection/VehicleInfoForm";
 import ImageUploadSection from "@/components/admin/preinspection/ImageUploadSection";
 import ActionButtons from "@/components/admin/preinspection/ActionButtons";
@@ -65,6 +67,16 @@ const PreInspection = () => {
       exit={{ opacity: 0, y: 20 }}
       className="container mx-auto py-8 px-4"
     >
+      <div className="flex items-center mb-8">
+        <Link 
+          to="/admin/dashboard" 
+          className="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300 transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span>Back to Dashboard</span>
+        </Link>
+      </div>
+
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-bold text-white mb-2">Pre-Inspection Report</h1>
         <p className="text-gold">Document the vehicle condition before commencement</p>
