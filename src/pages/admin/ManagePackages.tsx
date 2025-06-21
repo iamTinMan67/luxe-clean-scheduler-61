@@ -119,8 +119,8 @@ const ManagePackages = () => {
               <TabsContent value="package-selector">
                 <PackageSelector
                   packages={packages}
-                  selectedPackage={selectedPackage}
-                  onSelectPackage={(pkg) => handleSelectPackage(pkg.type)}
+                  selectedPackage={selectedPackageType}
+                  onSelectPackage={handleSelectPackage}
                   searchTerm={searchTerm}
                   onSearchChange={setSearchTerm}
                   filteredPackages={packages}
