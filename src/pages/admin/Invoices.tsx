@@ -4,8 +4,18 @@ import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import AdminPageTitle from "@/components/admin/AdminPageTitle";
 import InvoiceManagement from "@/components/invoices/InvoiceManagement";
+import { useInvoiceReport } from "@/hooks/useInvoiceReport";
 
 const Invoices = () => {
+  const {
+    filteredInvoices,
+    searchTerm,
+    setSearchTerm,
+    activeTab,
+    setActiveTab,
+    formatCurrency
+  } = useInvoiceReport();
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -28,7 +38,14 @@ const Invoices = () => {
         subtitle="Manage billing and payments" 
       />
       
-      <InvoiceManagement />
+      <InvoiceManagement 
+        invoices={filteredInvoices}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        formatCurrency={formatCurrency}
+      />
     </motion.div>
   );
 };
