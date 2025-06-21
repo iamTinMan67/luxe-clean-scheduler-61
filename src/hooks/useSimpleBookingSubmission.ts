@@ -17,16 +17,20 @@ export const useSimpleBookingSubmission = () => {
   const submitBooking = async (formData: FormData, resetForm: () => void) => {
     const { yourName, postcode, phone, email, notes, jobDetails, selectedDate, selectedTime } = formData;
     
+    console.log("Simple booking submission data:", formData);
+    
     if (!yourName || !postcode || !phone || !email || !jobDetails) {
       toast.error("Oops! Check Again", {
         description: "Please fill in all required fields"
       });
+      console.log("Validation failed - missing required fields");
       return;
     }
 
     try {
       // Get saved client type
       const savedClientType = localStorage.getItem('selectedClientType') || 'private';
+      console.log("Retrieved client type:", savedClientType);
       
       // Create a simplified booking for "Other" job types
       const newBooking: Booking = {
@@ -47,10 +51,14 @@ export const useSimpleBookingSubmission = () => {
         jobType: "other"
       };
 
+      console.log("Creating new booking:", newBooking);
+
       // Save to localStorage (existing booking storage)
       const existingBookings = JSON.parse(localStorage.getItem('bookings') || '[]');
       const updatedBookings = [...existingBookings, newBooking];
       localStorage.setItem('bookings', JSON.stringify(updatedBookings));
+
+      console.log("Booking saved to localStorage. Total bookings:", updatedBookings.length);
 
       // Clear the saved client type
       localStorage.removeItem('selectedClientType');

@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,6 +13,8 @@ import {
   ClipboardList,
   Truck
 } from "lucide-react";
+import CompactPendingBookings from "./splash/CompactPendingBookings";
+import CompactInventoryAlerts from "./splash/CompactInventoryAlerts";
 
 const AdminSplashScreen = () => {
   const categories = [
@@ -55,11 +58,17 @@ const AdminSplashScreen = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="max-w-4xl mx-auto"
+        className="max-w-6xl mx-auto"
       >
         <h1 className="text-3xl font-bold text-center mb-12 text-yellow-400">
           Admin Dashboard
         </h1>
+
+        {/* Quick Status Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+          <CompactPendingBookings />
+          <CompactInventoryAlerts />
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* General Section - Direct Links */}
