@@ -113,6 +113,12 @@
     transform: rotate(-45deg);
     filter: blur(1px);
   }
+
+  .soap-bubble {
+    @apply absolute rounded-full pointer-events-none;
+    z-index: 50;
+    animation: gentle-float 8s ease-in-out infinite;
+  }
 }
 
 @keyframes float {
@@ -121,8 +127,26 @@
   100% { transform: translateY(0px); }
 }
 
+@keyframes gentle-float {
+  0%, 100% { 
+    transform: translateY(0px) scale(1); 
+    filter: hue-rotate(0deg);
+  }
+  25% { 
+    transform: translateY(-10px) scale(1.02); 
+    filter: hue-rotate(5deg);
+  }
+  50% { 
+    transform: translateY(-5px) scale(0.98); 
+    filter: hue-rotate(-5deg);
+  }
+  75% { 
+    transform: translateY(-15px) scale(1.01); 
+    filter: hue-rotate(3deg);
+  }
+}
+
 @keyframes pulse-subtle {
   0%, 100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.05); opacity: 0.9; }
 }
-
