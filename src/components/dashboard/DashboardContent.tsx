@@ -8,7 +8,7 @@ import InventoryAlerts from "./InventoryAlerts";
 import { DashboardData } from "./DashboardData";
 
 export const DashboardContent = () => {
-  const { stats, revenueData, packageData, bookings, inventoryAlerts } = DashboardData();
+  const { stats, revenueData, bookings } = DashboardData();
 
   return (
     <div className="space-y-8">
@@ -22,14 +22,14 @@ export const DashboardContent = () => {
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <RevenueChart data={revenueData} />
-        <PackageDistribution data={packageData} />
+        <PackageDistribution />
       </div>
 
       {/* Recent Bookings */}
       <RecentBookings bookings={bookings} />
 
       {/* Inventory Alerts */}
-      <InventoryAlerts alerts={inventoryAlerts} />
+      <InventoryAlerts />
     </div>
   );
 };
