@@ -20,10 +20,8 @@ const AdminSplashScreen = () => {
       id: 'general',
       title: 'General',
       items: [
-        { title: 'Daily', path: '/admin/planner-calendar', icon: Calendar },
-        { title: 'Booking Forms', path: '/admin/pre-inspection', icon: CheckSquare },
-        { title: 'Invoices', path: '/admin/invoices', icon: FileText },
-        { title: 'To-do List', path: '/admin/todo-list', icon: ClipboardList }
+        { title: 'Daily', path: '/admin/daily', icon: Calendar },
+        { title: 'Invoices', path: '/admin/invoices', icon: FileText }
       ]
     },
     {

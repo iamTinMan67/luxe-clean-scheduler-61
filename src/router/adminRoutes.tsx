@@ -6,6 +6,7 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 // Admin pages
 import Dashboard from "@/pages/admin/Dashboard";
+import Daily from "@/pages/admin/Daily";
 import Analytics from "@/pages/admin/Analytics";
 import InvoiceReport from "@/pages/admin/InvoiceReport";
 import PlannerCalendar from "@/pages/admin/PlannerCalendar";
@@ -50,6 +51,10 @@ const adminRoutes: RouteObject[] = [
       {
         path: "/admin/dashboard",
         element: protectedComponent(Dashboard),
+      },
+      {
+        path: "/admin/daily",
+        element: protectedComponent(Daily),
       },
       {
         path: "/admin/planning",
