@@ -29,8 +29,8 @@ const BubbleEffect = ({ bubbleCount = 15, className = "" }: BubbleEffectProps) =
           id: i,
           x: Math.random() * 90 + 5, // Keep bubbles away from edges
           y: Math.random() * 90 + 5,
-          vx: (Math.random() - 0.5) * 0.8, // Increased speed
-          vy: (Math.random() - 0.5) * 0.8,
+          vx: (Math.random() - 0.5) * 0.3, // Reduced speed for less animation
+          vy: (Math.random() - 0.5) * 0.3,
           size: Math.random() * 40 + 30, // Slightly larger bubbles
           hue: Math.random() * 60 + 180 // Blue to cyan range for soap bubble effect
         });
@@ -130,30 +130,24 @@ const BubbleEffect = ({ bubbleCount = 15, className = "" }: BubbleEffectProps) =
   }, [bubbles.length]);
 
   return (
-    <div className={`fixed inset-0 pointer-events-none overflow-hidden z-0 ${className}`}>
+    <div className={`fixed inset-0 pointer-events-none overflow-hidden -z-10 ${className}`}>
       {bubbles.map((bubble) => (
         <div
           key={bubble.id}
-          className="soap-bubble absolute"
+          className="bubble absolute"
           style={{
             left: `${bubble.x}%`,
             top: `${bubble.y}%`,
             width: `${bubble.size}px`,
             height: `${bubble.size}px`,
-            background: `radial-gradient(circle at 30% 20%, 
-              hsla(${bubble.hue}, 70%, 90%, 0.9) 0%,
-              hsla(${bubble.hue + 20}, 60%, 80%, 0.7) 30%,
-              hsla(${bubble.hue + 40}, 50%, 70%, 0.5) 60%,
-              hsla(${bubble.hue + 60}, 40%, 60%, 0.3) 100%)`,
+            background: `radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05))`,
             boxShadow: `
-              inset 0 0 ${bubble.size * 0.3}px hsla(0, 0%, 100%, 0.8),
-              inset 0 0 ${bubble.size * 0.6}px hsla(${bubble.hue}, 50%, 90%, 0.6),
-              0 0 ${bubble.size * 0.5}px hsla(${bubble.hue}, 60%, 80%, 0.4),
-              0 ${bubble.size * 0.1}px ${bubble.size * 0.3}px rgba(0, 0, 0, 0.2)
+              inset 0 0 ${bubble.size * 0.3}px rgba(255, 255, 255, 0.2),
+              0 0 ${bubble.size * 0.2}px rgba(255, 255, 255, 0.1)
             `,
             borderRadius: '50%',
             backdropFilter: 'blur(1px)',
-            border: `1px solid hsla(${bubble.hue}, 60%, 90%, 0.3)`,
+            border: `1px solid rgba(255, 255, 255, 0.1)`,
             transform: 'translateZ(0)', // Hardware acceleration
           }}
         >
@@ -163,7 +157,7 @@ const BubbleEffect = ({ bubbleCount = 15, className = "" }: BubbleEffectProps) =
             style={{
               width: '25%',
               height: '15%',
-              background: 'rgba(255, 255, 255, 0.9)',
+              background: 'rgba(255, 255, 255, 0.3)',
               top: '15%',
               left: '25%',
               transform: 'rotate(-20deg)',
@@ -176,27 +170,11 @@ const BubbleEffect = ({ bubbleCount = 15, className = "" }: BubbleEffectProps) =
             style={{
               width: '15%',
               height: '10%',
-              background: 'rgba(255, 255, 255, 0.6)',
+              background: 'rgba(255, 255, 255, 0.2)',
               top: '35%',
               left: '15%',
               transform: 'rotate(-45deg)',
               filter: 'blur(0.5px)',
-            }}
-          />
-          {/* Iridescent reflection */}
-          <div 
-            className="absolute rounded-full"
-            style={{
-              width: '40%',
-              height: '8%',
-              background: `linear-gradient(90deg, 
-                hsla(${bubble.hue + 100}, 80%, 70%, 0.4) 0%,
-                hsla(${bubble.hue + 150}, 70%, 80%, 0.3) 50%,
-                hsla(${bubble.hue + 200}, 60%, 90%, 0.2) 100%)`,
-              top: '60%',
-              left: '30%',
-              transform: 'rotate(15deg)',
-              filter: 'blur(1px)',
             }}
           />
         </div>
