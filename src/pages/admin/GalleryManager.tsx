@@ -44,7 +44,7 @@ const GalleryManager = () => {
     console.log("Delete image");
   };
 
-  const handleCreateAlbum = (albumData: any) => {
+  const handleCreateAlbum = () => {
     handleSave();
   };
 
@@ -88,10 +88,9 @@ const GalleryManager = () => {
           <CardContent>
             <AlbumsList
               galleryItems={albums}
-              selectedAlbum={currentItem}
-              onSelectAlbum={handleEditItem}
-              onDeleteAlbum={handleDeleteAlbum}
-              loading={false}
+              onEdit={handleEditItem}
+              onDelete={handleDeleteAlbum}
+              onRemoveImage={removeImageFromAlbum}
             />
           </CardContent>
         </Card>

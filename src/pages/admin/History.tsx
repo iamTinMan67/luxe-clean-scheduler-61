@@ -4,29 +4,40 @@ import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import AdminPageTitle from "@/components/admin/AdminPageTitle";
 import RecentBookings from "@/components/dashboard/RecentBookings";
+import { Booking } from "@/types/booking";
 
 const History = () => {
-  // Mock bookings data for the RecentBookings component
-  const mockBookings = [
+  // Mock bookings data that matches the Booking type structure
+  const mockBookings: Booking[] = [
     {
       id: "1",
-      customerName: "John Smith",
+      customer: "John Smith",
+      vehicle: "car",
+      vehicleReg: "ABC123",
+      packageType: "premium",
       date: "2024-01-15",
       time: "10:00",
-      packageType: "premium",
-      status: "completed",
+      location: "Customer Location",
+      status: "finished",
       totalPrice: 45,
-      vehicleType: "car"
+      contact: "+44 7123 456789",
+      email: "john.smith@email.com",
+      createdAt: "2024-01-14"
     },
     {
       id: "2", 
-      customerName: "Jane Doe",
+      customer: "Jane Doe",
+      vehicle: "suv",
+      vehicleReg: "XYZ789",
+      packageType: "standard",
       date: "2024-01-14",
       time: "14:00",
-      packageType: "standard",
-      status: "completed",
+      location: "Customer Location",
+      status: "finished",
       totalPrice: 25,
-      vehicleType: "suv"
+      contact: "+44 7987 654321",
+      email: "jane.doe@email.com",
+      createdAt: "2024-01-13"
     }
   ];
 

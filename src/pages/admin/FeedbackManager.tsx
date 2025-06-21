@@ -54,8 +54,8 @@ const FeedbackManager = () => {
       {selectedFeedback && (
         <FeedbackDetailsDialog
           feedback={selectedFeedback}
-          isOpen={!!selectedFeedback}
-          onClose={() => setSelectedFeedback(null)}
+          open={!!selectedFeedback}
+          onOpenChange={() => setSelectedFeedback(null)}
           onMarkAsResponded={markAsResponded}
         />
       )}
