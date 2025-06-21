@@ -122,3 +122,14 @@ export const inventoryAlerts = [
     reorderPoint: 3
   }
 ];
+
+// Main function that returns all dashboard data
+export const DashboardData = () => {
+  return {
+    stats: statsData,
+    revenueData,
+    bookings: recentBookings,
+    packageData,
+    inventoryAlerts
+  };
+};

@@ -5,7 +5,7 @@ import PackageDistribution from './PackageDistribution';
 import FeedbackDistribution from './FeedbackDistribution';
 import InventoryAlerts from './InventoryAlerts';
 import RecentBookings from './RecentBookings';
-import DashboardContent from './DashboardContent';
+import { DashboardContent } from './DashboardContent';
 
 export {
   StatsCard,
