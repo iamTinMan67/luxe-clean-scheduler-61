@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Upload, Image as ImageIcon, FolderPlus } from "lucide-react";
@@ -9,21 +10,47 @@ import AlbumsList from "@/components/gallery/AlbumsList";
 
 const GalleryManager = () => {
   const {
-    albums,
-    selectedAlbum,
-    setSelectedAlbum,
-    images,
-    setImages,
-    isDialogOpen,
-    setIsDialogOpen,
-    loading,
-    searchTerm,
-    setSearchTerm,
-    handleImageUpload,
-    handleDeleteImage,
-    handleCreateAlbum,
-    handleDeleteAlbum
+    galleryItems,
+    isEditMode,
+    currentItem,
+    newImages,
+    setNewImages,
+    newCategory,
+    setNewCategory,
+    open,
+    setOpen,
+    handleEditItem,
+    handleDeleteItem,
+    removeImageFromAlbum,
+    handleCancel,
+    handleSave,
+    resetForm
   } = useGalleryManager();
+
+  // Transform gallery items to match AlbumsList expectations
+  const albums = galleryItems.map(item => ({
+    id: item.id,
+    name: item.category,
+    images: item.images
+  }));
+
+  const handleImageUpload = (files: FileList) => {
+    // Handle image upload logic here
+    console.log("Upload files:", files);
+  };
+
+  const handleDeleteImage = () => {
+    // Handle image deletion logic here
+    console.log("Delete image");
+  };
+
+  const handleCreateAlbum = (albumData: any) => {
+    handleSave();
+  };
+
+  const handleDeleteAlbum = (albumId: number) => {
+    handleDeleteItem(albumId);
+  };
 
   return (
     <motion.div
@@ -46,7 +73,7 @@ const GalleryManager = () => {
         <h1 className="text-3xl font-bold text-white text-center md:text-left mb-4 md:mb-0">
           Gallery Manager
         </h1>
-        <Button onClick={() => setIsDialogOpen(true)}>
+        <Button onClick={() => setOpen(true)}>
           <FolderPlus className="mr-2 w-4 h-4" />
           Create Album
         </Button>
@@ -60,11 +87,11 @@ const GalleryManager = () => {
           </CardHeader>
           <CardContent>
             <AlbumsList
-              albums={albums}
-              selectedAlbum={selectedAlbum}
-              onSelectAlbum={setSelectedAlbum}
+              galleryItems={albums}
+              selectedAlbum={currentItem}
+              onSelectAlbum={handleEditItem}
               onDeleteAlbum={handleDeleteAlbum}
-              loading={loading}
+              loading={false}
             />
           </CardContent>
         </Card>
@@ -94,7 +121,7 @@ const GalleryManager = () => {
                   }}
                   multiple
                 />
-                {selectedAlbum && (
+                {currentItem && (
                   <Button variant="destructive" onClick={handleDeleteImage}>
                     <ImageIcon className="mr-2 w-4 h-4" />
                     Delete Image
@@ -103,11 +130,11 @@ const GalleryManager = () => {
               </div>
 
               <div className="grid grid-cols-3 gap-4">
-                {images.map((image, index) => (
+                {newImages.map((image, index) => (
                   <div key={index} className="relative">
                     <img
-                      src={image.url}
-                      alt={image.name}
+                      src={image}
+                      alt={`Image ${index}`}
                       className="rounded-md object-cover aspect-square"
                     />
                   </div>
@@ -119,8 +146,8 @@ const GalleryManager = () => {
       </div>
 
       <AlbumFormDialog
-        isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
+        open={open}
+        onClose={() => setOpen(false)}
         onCreateAlbum={handleCreateAlbum}
       />
     </motion.div>

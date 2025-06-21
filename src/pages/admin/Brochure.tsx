@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import BrochurePreview from "@/components/brochure/BrochurePreview";
+import { packageOptions } from "@/data/packageOptions";
 
 const BrochurePage = () => {
   return (
@@ -31,7 +32,7 @@ const BrochurePage = () => {
           <CardTitle className="text-white">Service Information</CardTitle>
         </CardHeader>
         <CardContent>
-          <BrochurePreview />
+          <BrochurePreview packages={packageOptions} />
         </CardContent>
       </Card>
     </motion.div>

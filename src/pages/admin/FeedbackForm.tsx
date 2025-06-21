@@ -31,7 +31,10 @@ const FeedbackForm = () => {
             <CardTitle className="text-white">Submit Feedback</CardTitle>
           </CardHeader>
           <CardContent>
-            <FeedbackFormComponent />
+            <FeedbackFormComponent 
+              bookingId="admin-form"
+              redirectPath="/admin/feedback"
+            />
           </CardContent>
         </Card>
       </div>

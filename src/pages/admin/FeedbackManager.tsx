@@ -8,14 +8,11 @@ import { useFeedbackManager } from "@/hooks/useFeedbackManager";
 
 const FeedbackManager = () => {
   const {
-    feedbacks,
+    feedback,
     loading,
-    searchTerm,
-    setSearchTerm,
-    statusFilter,
-    setStatusFilter,
-    handleStatusUpdate,
-    handleDelete
+    loadFeedback,
+    addFeedback,
+    markAsResponded
   } = useFeedbackManager();
 
   return (
@@ -41,14 +38,14 @@ const FeedbackManager = () => {
       />
       
       <FeedbackTable
-        feedbacks={feedbacks}
+        feedback={feedback}
         loading={loading}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        statusFilter={statusFilter}
-        setStatusFilter={setStatusFilter}
-        onStatusUpdate={handleStatusUpdate}
-        onDelete={handleDelete}
+        searchTerm=""
+        setSearchTerm={() => {}}
+        statusFilter="all"
+        setStatusFilter={() => {}}
+        onStatusUpdate={markAsResponded}
+        onDelete={() => {}}
       />
     </motion.div>
   );

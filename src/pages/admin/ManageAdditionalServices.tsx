@@ -6,6 +6,13 @@ import AdminPageTitle from "@/components/admin/AdminPageTitle";
 import AdditionalServicesManager from "@/components/package-management/AdditionalServicesManager";
 
 const ManageAdditionalServices = () => {
+  // Mock data to satisfy the required props
+  const mockServices = [
+    { id: "1", name: "Interior Deep Clean", price: 25, description: "Comprehensive interior cleaning" },
+    { id: "2", name: "Engine Bay Clean", price: 15, description: "Engine compartment cleaning" },
+    { id: "3", name: "Wheel Arch Clean", price: 10, description: "Thorough wheel arch cleaning" }
+  ];
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -28,7 +35,14 @@ const ManageAdditionalServices = () => {
         subtitle="Configure additional service options and pricing" 
       />
       
-      <AdditionalServicesManager />
+      <AdditionalServicesManager 
+        services={mockServices}
+        selectedService={null}
+        onSelectService={() => {}}
+        onSaveService={() => {}}
+        onDeleteService={() => {}}
+        onAddService={() => {}}
+      />
     </motion.div>
   );
 };

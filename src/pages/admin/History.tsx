@@ -25,7 +25,7 @@ const History = () => {
             subtitle="View past bookings and service records" 
           />
           
-          <RecentBookings showAllBookings={true} />
+          <RecentBookings />
         </div>
       </section>
     </div>
