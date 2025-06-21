@@ -25,7 +25,7 @@ const AdminSplashScreen = () => {
     },
     {
       id: 'management',
-      title: 'Management',
+      title: 'Manage',
       path: '/admin/management',
       icon: Settings
     },
@@ -109,7 +109,7 @@ const AdminSplashScreen = () => {
             className="space-y-6"
           >
             <h2 className="text-xl font-semibold text-yellow-400 mb-6">
-              Categories
+              Management
             </h2>
             
             <div className="space-y-4">
