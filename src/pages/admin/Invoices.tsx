@@ -1,20 +1,22 @@
 
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AdminPageTitle from "@/components/admin/AdminPageTitle";
-import InvoiceManagement from "@/components/invoices/InvoiceManagement";
-import { useInvoiceReport } from "@/hooks/useInvoiceReport";
+import InvoiceListWithDatabase from "@/components/invoices/InvoiceListWithDatabase";
+import CreateInvoiceForm from "@/components/invoices/CreateInvoiceForm";
+import { useState } from "react";
 
 const Invoices = () => {
-  const {
-    filteredInvoices,
-    searchTerm,
-    setSearchTerm,
-    activeTab,
-    setActiveTab,
-    formatCurrency
-  } = useInvoiceReport();
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  const handleInvoiceCreated = () => {
+    setShowCreateForm(false);
+    setRefreshTrigger(prev => prev + 1);
+  };
 
   return (
     <motion.div
@@ -33,19 +35,43 @@ const Invoices = () => {
         </Link>
       </div>
 
-      <AdminPageTitle 
-        title="Invoice Management" 
-        subtitle="Manage billing and payments" 
-      />
+      <div className="flex justify-between items-center mb-8">
+        <AdminPageTitle 
+          title="Invoice Management" 
+          subtitle="Create, view, and manage customer invoices" 
+        />
+        
+        <Button 
+          onClick={() => setShowCreateForm(!showCreateForm)}
+          className="bg-yellow-600 hover:bg-yellow-700 text-white"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          {showCreateForm ? 'Cancel' : 'Create Invoice'}
+        </Button>
+      </div>
+
+      {showCreateForm && (
+        <Card className="bg-gray-900 border-gray-800 mb-8">
+          <CardHeader>
+            <CardTitle className="text-white">Create New Invoice</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CreateInvoiceForm onInvoiceCreated={handleInvoiceCreated} />
+          </CardContent>
+        </Card>
+      )}
       
-      <InvoiceManagement 
-        invoices={filteredInvoices}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        formatCurrency={formatCurrency}
-      />
+      <Card className="bg-gray-900 border-gray-800">
+        <CardHeader>
+          <CardTitle className="text-white">All Invoices</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <InvoiceListWithDatabase 
+            key={refreshTrigger}
+            onInvoiceUpdate={() => setRefreshTrigger(prev => prev + 1)} 
+          />
+        </CardContent>
+      </Card>
     </motion.div>
   );
 };
