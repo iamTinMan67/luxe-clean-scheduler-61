@@ -8,33 +8,44 @@ import FeedbackSnippet from "@/components/home/feedback/FeedbackSnippet";
 
 const FeedbackScreen = () => {
   const feedbackItems = [
-    { title: 'Feedback Form', path: '/admin/feedback-form', icon: MessageSquare },
-    { title: 'Feedback Manager', path: '/admin/feedback-manager', icon: Star }
+    {
+      title: 'Feedback Form',
+      description: 'Customer feedback collection',
+      path: '/admin/feedback-form',
+      icon: MessageSquare
+    },
+    {
+      title: 'Feedback Manager',
+      description: 'Review and respond to feedback',
+      path: '/admin/feedback-manager',
+      icon: Star
+    }
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white p-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-4xl mx-auto"
-      >
-        <div className="flex items-center mb-8">
-          <Link 
-            to="/admin/dashboard" 
-            className="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span>Back to Dashboard</span>
-          </Link>
-        </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      className="container mx-auto py-8 px-4"
+    >
+      <div className="flex items-center mb-8">
+        <Link 
+          to="/admin/dashboard" 
+          className="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300 transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span>Back to Dashboard</span>
+        </Link>
+      </div>
 
-        <h1 className="text-3xl font-bold text-center mb-12 text-yellow-400">
-          Feedback
-        </h1>
+      <div className="mb-8 text-center">
+        <h1 className="text-3xl font-bold text-white mb-2">Customer Feedback</h1>
+        <p className="text-gold">Manage customer feedback and reviews</p>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto mb-12">
+      <div className="max-w-4xl mx-auto space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {feedbackItems.map((item, index) => {
             const IconComponent = item.icon;
             return (
@@ -45,13 +56,20 @@ const FeedbackScreen = () => {
                 transition={{ duration: 0.3, delay: index * 0.1 }}
               >
                 <Link to={item.path}>
-                  <Card className="bg-gray-900 border-gray-700 hover:border-yellow-400 transition-all duration-300 cursor-pointer group">
-                    <CardContent className="p-6">
+                  <Card className="bg-gray-900 border-gray-700 hover:border-yellow-400 transition-all duration-300 cursor-pointer group h-full">
+                    <CardContent className="p-6 text-center">
                       <div className="flex flex-col items-center space-y-4">
-                        <IconComponent className="w-8 h-8 text-gray-400 group-hover:text-yellow-400 transition-colors duration-300" />
-                        <span className="text-white group-hover:text-yellow-400 transition-colors duration-300 font-medium text-center">
-                          {item.title}
-                        </span>
+                        <div className="p-4 bg-gray-800 rounded-lg group-hover:bg-yellow-400/20 transition-colors">
+                          <IconComponent className="w-8 h-8 text-yellow-400" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-white group-hover:text-yellow-400 transition-colors mb-2">
+                            {item.title}
+                          </h3>
+                          <p className="text-gray-400 text-sm">
+                            {item.description}
+                          </p>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -76,8 +94,8 @@ const FeedbackScreen = () => {
 
           <FeedbackDistribution />
         </div>
-      </motion.div>
-    </div>
+      </div>
+    </motion.div>
   );
 };
 

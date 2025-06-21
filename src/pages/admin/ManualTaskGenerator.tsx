@@ -16,11 +16,11 @@ const ManualTaskGenerator = () => {
     >
       <div className="flex items-center mb-8">
         <Link 
-          to="/admin/dashboard" 
+          to="/admin/planning" 
           className="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
-          <span>Back to Dashboard</span>
+          <span>Back to Planning</span>
         </Link>
       </div>
 

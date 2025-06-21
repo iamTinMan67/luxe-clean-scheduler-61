@@ -6,33 +6,44 @@ import { Card, CardContent } from "@/components/ui/card";
 
 const InventoryScreen = () => {
   const inventoryItems = [
-    { title: 'Van Inventory', path: '/admin/van-inventory', icon: Truck },
-    { title: 'Warehouse Inventory', path: '/admin/warehouse-inventory', icon: Warehouse }
+    {
+      title: 'Van Inventory',
+      description: 'Mobile equipment tracking',
+      path: '/admin/van-inventory',
+      icon: Truck
+    },
+    {
+      title: 'Warehouse Inventory',
+      description: 'Storage and supplies management',
+      path: '/admin/warehouse-inventory',
+      icon: Warehouse
+    }
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white p-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-4xl mx-auto"
-      >
-        <div className="flex items-center mb-8">
-          <Link 
-            to="/admin/dashboard" 
-            className="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span>Back to Dashboard</span>
-          </Link>
-        </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      className="container mx-auto py-8 px-4"
+    >
+      <div className="flex items-center mb-8">
+        <Link 
+          to="/admin/dashboard" 
+          className="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300 transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span>Back to Dashboard</span>
+        </Link>
+      </div>
 
-        <h1 className="text-3xl font-bold text-center mb-12 text-yellow-400">
-          Inventory Management
-        </h1>
+      <div className="mb-8 text-center">
+        <h1 className="text-3xl font-bold text-white mb-2">Inventory Management</h1>
+        <p className="text-gold">Track equipment and supplies</p>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+      <div className="max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {inventoryItems.map((item, index) => {
             const IconComponent = item.icon;
             return (
@@ -43,13 +54,20 @@ const InventoryScreen = () => {
                 transition={{ duration: 0.3, delay: index * 0.1 }}
               >
                 <Link to={item.path}>
-                  <Card className="bg-gray-900 border-gray-700 hover:border-yellow-400 transition-all duration-300 cursor-pointer group">
-                    <CardContent className="p-6">
+                  <Card className="bg-gray-900 border-gray-700 hover:border-yellow-400 transition-all duration-300 cursor-pointer group h-full">
+                    <CardContent className="p-6 text-center">
                       <div className="flex flex-col items-center space-y-4">
-                        <IconComponent className="w-8 h-8 text-gray-400 group-hover:text-yellow-400 transition-colors duration-300" />
-                        <span className="text-white group-hover:text-yellow-400 transition-colors duration-300 font-medium text-center">
-                          {item.title}
-                        </span>
+                        <div className="p-4 bg-gray-800 rounded-lg group-hover:bg-yellow-400/20 transition-colors">
+                          <IconComponent className="w-8 h-8 text-yellow-400" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-white group-hover:text-yellow-400 transition-colors mb-2">
+                            {item.title}
+                          </h3>
+                          <p className="text-gray-400 text-sm">
+                            {item.description}
+                          </p>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -58,8 +76,8 @@ const InventoryScreen = () => {
             );
           })}
         </div>
-      </motion.div>
-    </div>
+      </div>
+    </motion.div>
   );
 };
 

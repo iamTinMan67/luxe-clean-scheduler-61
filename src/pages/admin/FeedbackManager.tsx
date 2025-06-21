@@ -1,46 +1,56 @@
 
-import { useState } from "react";
-import FeedbackDetailsDialog from "@/components/feedback/FeedbackDetailsDialog";
-import FeedbackTabs from "@/components/feedback/FeedbackTabs";
-import { useFeedbackData } from "@/hooks/useFeedbackData";
-import { CustomerFeedback } from "@/components/feedback/types";
-import { Skeleton } from "@/components/ui/skeleton";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import AdminPageTitle from "@/components/admin/AdminPageTitle";
+import FeedbackTable from "@/components/feedback/FeedbackTable";
+import { useFeedbackManager } from "@/hooks/useFeedbackManager";
 
 const FeedbackManager = () => {
-  const { feedback, markAsResponded } = useFeedbackData();
-  const [selectedFeedback, setSelectedFeedback] = useState<CustomerFeedback | null>(null);
-  const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
-  
-  // View feedback details
-  const viewFeedbackDetails = (feedbackItem: CustomerFeedback) => {
-    setSelectedFeedback(feedbackItem);
-    setFeedbackDialogOpen(true);
-  };
-
-  // Handle marking feedback as responded
-  const handleMarkAsResponded = (feedbackId: string) => {
-    markAsResponded(feedbackId);
-    setFeedbackDialogOpen(false);
-  };
+  const {
+    feedbacks,
+    loading,
+    searchTerm,
+    setSearchTerm,
+    statusFilter,
+    setStatusFilter,
+    handleStatusUpdate,
+    handleDelete
+  } = useFeedbackManager();
 
   return (
-    <div className="container px-4 py-8">
-      <AdminPageTitle title="Manager" />
-      
-      <FeedbackTabs 
-        feedback={feedback} 
-        onViewFeedback={viewFeedbackDetails} 
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="container mx-auto py-12 px-4"
+    >
+      <div className="flex items-center mb-8">
+        <Link 
+          to="/admin/feedback" 
+          className="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300 transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span>Back to Feedback</span>
+        </Link>
+      </div>
+
+      <AdminPageTitle 
+        title="Feedback Manager" 
+        subtitle="Review and manage customer feedback" 
       />
       
-      {/* Feedback Details Dialog */}
-      <FeedbackDetailsDialog 
-        open={feedbackDialogOpen}
-        onOpenChange={setFeedbackDialogOpen}
-        feedback={selectedFeedback}
-        onMarkAsResponded={handleMarkAsResponded}
+      <FeedbackTable
+        feedbacks={feedbacks}
+        loading={loading}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        onStatusUpdate={handleStatusUpdate}
+        onDelete={handleDelete}
       />
-    </div>
+    </motion.div>
   );
 };
 

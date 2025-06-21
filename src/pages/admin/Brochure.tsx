@@ -1,30 +1,41 @@
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { packageOptions } from "@/data/servicePackageData";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import BrochurePreview from "@/components/brochure/BrochurePreview";
-import AdminPageTitle from "@/components/admin/AdminPageTitle";
 
-const Brochure = () => {
+const BrochurePage = () => {
   return (
-    <div className="container py-20 px-4 mx-auto max-w-7xl">
-      <AdminPageTitle 
-        title="Service Brochure" 
-        subtitle="Preview and print an A5 brochure of our services" 
-      />
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="container mx-auto py-12 px-4"
+    >
+      <div className="flex items-center mb-8">
+        <Link 
+          to="/admin/management" 
+          className="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300 transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span>Back to Management</span>
+        </Link>
+      </div>
+
+      <h1 className="text-3xl font-bold text-white mb-6 text-center">Service Brochure</h1>
       
       <Card className="bg-black/60 border-gold/30">
         <CardHeader>
-          <CardTitle className="text-white">Brochure Generator</CardTitle>
-          <CardDescription className="text-gold/70">
-            This brochure is formatted for A5 paper size and includes all service packages
-          </CardDescription>
+          <CardTitle className="text-white">Service Information</CardTitle>
         </CardHeader>
         <CardContent>
-          <BrochurePreview packages={packageOptions} />
+          <BrochurePreview />
         </CardContent>
       </Card>
-    </div>
+    </motion.div>
   );
 };
 
-export default Brochure;
+export default BrochurePage;
