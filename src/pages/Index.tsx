@@ -7,7 +7,7 @@ import CopyrightSection from "@/components/home/CopyrightSection";
 
 export default function Index() {
   return (
-    <div>
+    <div className="relative">
       {/* Hero Section */}
       <HeroSection />
       
