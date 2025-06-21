@@ -56,7 +56,7 @@ const ManagementScreen = () => {
       </div>
 
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-white mb-2">Business Management</h1>
+        <h1 className="text-3xl font-bold text-white mb-2">Management</h1>
         <p className="text-gold">Configure services and manage business operations</p>
       </div>
 

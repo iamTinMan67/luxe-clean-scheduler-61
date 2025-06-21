@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,26 +24,20 @@ const AdminSplashScreen = () => {
       ]
     },
     {
-      id: 'planning',
-      title: 'Planning & Scheduling',
-      path: '/admin/planning',
-      icon: Calendar
-    },
-    {
       id: 'management',
-      title: 'Business Management',
+      title: 'Management',
       path: '/admin/management',
       icon: Settings
     },
     {
       id: 'feedback',
-      title: 'Customer Feedback',
+      title: 'Feedback',
       path: '/admin/feedback',
       icon: MessageSquare
     },
     {
       id: 'inventory',
-      title: 'Inventory Management',
+      title: 'Inventory',
       path: '/admin/inventory',
       icon: Truck
     },
@@ -92,10 +85,10 @@ const AdminSplashScreen = () => {
                   >
                     <Link to={item.path}>
                       <Card className="bg-gray-900 border-gray-700 hover:border-yellow-400 transition-all duration-300 cursor-pointer group">
-                        <CardContent className="p-4">
+                        <CardContent className="p-3">
                           <div className="flex items-center space-x-4">
                             <IconComponent className="w-5 h-5 text-gray-400 group-hover:text-yellow-400 transition-colors duration-300" />
-                            <span className="text-white group-hover:text-yellow-400 transition-colors duration-300 font-medium">
+                            <span className="text-white group-hover:text-yellow-400 transition-colors duration-300 font-medium text-sm">
                               {item.title}
                             </span>
                           </div>
@@ -108,7 +101,7 @@ const AdminSplashScreen = () => {
             </div>
           </motion.div>
 
-          {/* Management Section */}
+          {/* Other Categories Section */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -116,7 +109,7 @@ const AdminSplashScreen = () => {
             className="space-y-6"
           >
             <h2 className="text-xl font-semibold text-yellow-400 mb-6">
-              Management
+              Categories
             </h2>
             
             <div className="space-y-4">
@@ -131,10 +124,10 @@ const AdminSplashScreen = () => {
                   >
                     <Link to={category.path}>
                       <Card className="bg-gray-900 border-gray-700 hover:border-yellow-400 transition-all duration-300 cursor-pointer group">
-                        <CardContent className="p-4">
+                        <CardContent className="p-3">
                           <div className="flex items-center space-x-4">
                             <IconComponent className="w-5 h-5 text-gray-400 group-hover:text-yellow-400 transition-colors duration-300" />
-                            <span className="text-white group-hover:text-yellow-400 transition-colors duration-300 font-medium">
+                            <span className="text-white group-hover:text-yellow-400 transition-colors duration-300 font-medium text-sm">
                               {category.title}
                             </span>
                           </div>

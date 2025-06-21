@@ -40,7 +40,7 @@ const FeedbackScreen = () => {
       </div>
 
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-white mb-2">Customer Feedback</h1>
+        <h1 className="text-3xl font-bold text-white mb-2">Feedback</h1>
         <p className="text-gold">Manage customer feedback and reviews</p>
       </div>
 

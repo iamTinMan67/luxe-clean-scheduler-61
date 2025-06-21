@@ -38,7 +38,7 @@ const InventoryScreen = () => {
       </div>
 
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-white mb-2">Inventory Management</h1>
+        <h1 className="text-3xl font-bold text-white mb-2">Inventory</h1>
         <p className="text-gold">Track equipment and supplies</p>
       </div>
 
