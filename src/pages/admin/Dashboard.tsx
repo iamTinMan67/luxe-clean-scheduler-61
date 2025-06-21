@@ -17,7 +17,7 @@ const Dashboard = () => {
   }, [user, isAdmin, isStaff, navigate]);
 
   return (
-    <div className="min-h-screen bg-black pb-16 relative z-10">
+    <div className="min-h-screen bg-black pb-16">
       <AdminSplashScreen />
     </div>
   );

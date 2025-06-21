@@ -7,7 +7,7 @@ import { DashboardContent } from "@/components/dashboard";
 
 const Analytics = () => {
   return (
-    <div className="min-h-screen bg-black pb-16 relative z-10">
+    <div className="min-h-screen bg-black pb-16">
       <section className="relative py-8">
         <div className="container mx-auto px-4">
           <div className="flex items-center mb-8">

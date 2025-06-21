@@ -53,7 +53,7 @@ const AdminSplashScreen = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white p-8 relative z-10">
+    <div className="min-h-screen bg-black text-white p-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

@@ -43,7 +43,7 @@ const ManagementScreen = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
-      className="container mx-auto py-8 px-4 relative z-10"
+      className="container mx-auto py-8 px-4"
     >
       <div className="flex items-center mb-8">
         <Link 
