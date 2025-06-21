@@ -38,7 +38,7 @@ const BubbleEffect = ({ bubbleCount = 15, className = "" }: BubbleEffectProps) =
   }, [bubbleCount]);
 
   return (
-    <div className={`fixed inset-0 pointer-events-none overflow-hidden z-0 ${className}`}>
+    <div className={`fixed inset-0 pointer-events-none overflow-hidden z-50 ${className}`}>
       {bubbles.map((bubble) => (
         <div
           key={bubble.id}

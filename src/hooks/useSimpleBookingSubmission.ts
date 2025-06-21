@@ -64,7 +64,7 @@ export const useSimpleBookingSubmission = () => {
       localStorage.removeItem('selectedClientType');
 
       // Show success message
-      toast.success("Request Submitted!", {
+      toast.success("Booking Request Submitted!", {
         description: "We'll contact you soon to discuss your requirements and provide a quote.",
         style: {
           background: '#f97316', // Orange background

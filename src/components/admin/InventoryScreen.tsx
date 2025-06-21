@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Truck, Warehouse } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import CompactInventoryAlerts from "./splash/CompactInventoryAlerts";
 
 const InventoryScreen = () => {
   const inventoryItems = [
@@ -42,6 +43,12 @@ const InventoryScreen = () => {
         <p className="text-gold">Track equipment and supplies</p>
       </div>
 
+      {/* Inventory Alerts Section */}
+      <div className="max-w-4xl mx-auto mb-8">
+        <CompactInventoryAlerts />
+      </div>
+
+      {/* Navigation Links */}
       <div className="max-w-4xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {inventoryItems.map((item, index) => {

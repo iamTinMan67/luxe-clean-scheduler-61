@@ -193,7 +193,7 @@ const SimpleBookingForm = () => {
             type="submit" 
             className="w-full bg-gold text-black hover:bg-gold/90 font-bold py-3 text-lg transition-all hover:shadow-lg hover:shadow-gold/20"
           >
-            Request Service Quote
+            Request Booking
           </Button>
         </div>
       </form>
