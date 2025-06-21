@@ -1,16 +1,14 @@
 
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Package, Camera, FileText, BarChart3 } from "lucide-react";
+import { ArrowLeft, Calendar, CheckSquare, ClipboardList } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
-const ManagementScreen = () => {
-  const managementItems = [
-    { title: 'Manage Packages', path: '/admin/manage-packages', icon: Package },
-    { title: 'Gallery Manager', path: '/admin/gallery-manager', icon: Camera },
-    { title: 'Brochure', path: '/admin/brochure', icon: FileText },
-    { title: 'History', path: '/admin/history', icon: FileText },
-    { title: 'Analytics', path: '/admin/analytics', icon: BarChart3 }
+const PlanningScreen = () => {
+  const planningItems = [
+    { title: 'Planner Calendar', path: '/admin/planner-calendar', icon: Calendar },
+    { title: 'Pre-Inspection', path: '/admin/pre-inspection', icon: CheckSquare },
+    { title: 'To-do List', path: '/admin/todo-list', icon: ClipboardList }
   ];
 
   return (
@@ -32,11 +30,11 @@ const ManagementScreen = () => {
         </div>
 
         <h1 className="text-3xl font-bold text-center mb-12 text-yellow-400">
-          Business Management
+          Planning & Scheduling
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {managementItems.map((item, index) => {
+          {planningItems.map((item, index) => {
             const IconComponent = item.icon;
             return (
               <motion.div
@@ -66,4 +64,4 @@ const ManagementScreen = () => {
   );
 };
 
-export default ManagementScreen;
+export default PlanningScreen;

@@ -10,7 +10,8 @@ import {
   Package,
   BarChart3,
   CheckSquare,
-  ClipboardList
+  ClipboardList,
+  Truck
 } from "lucide-react";
 
 const AdminSplashScreen = () => {
@@ -26,14 +27,34 @@ const AdminSplashScreen = () => {
       ]
     },
     {
+      id: 'planning',
+      title: 'Planning & Scheduling',
+      path: '/admin/planning',
+      icon: Calendar
+    },
+    {
       id: 'management',
-      title: 'Management',
-      items: [
-        { title: 'Inventory', path: '/admin/management/inventory', icon: Package },
-        { title: 'Feedback', path: '/admin/management/feedback', icon: MessageSquare },
-        { title: 'Packages', path: '/admin/management/packages', icon: Package },
-        { title: 'Misc Pages', path: '/admin/management/misc', icon: Settings }
-      ]
+      title: 'Business Management',
+      path: '/admin/management',
+      icon: Settings
+    },
+    {
+      id: 'feedback',
+      title: 'Customer Feedback',
+      path: '/admin/feedback',
+      icon: MessageSquare
+    },
+    {
+      id: 'inventory',
+      title: 'Inventory Management',
+      path: '/admin/inventory',
+      icon: Truck
+    },
+    {
+      id: 'analytics',
+      title: 'Analytics',
+      path: '/admin/analytics',
+      icon: BarChart3
     }
   ];
 
@@ -49,48 +70,84 @@ const AdminSplashScreen = () => {
           Admin Dashboard
         </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          {categories.map((category) => (
-            <motion.div
-              key={category.id}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3, delay: category.id === 'general' ? 0 : 0.1 }}
-              className="space-y-6"
-            >
-              <h2 className="text-xl font-semibold text-yellow-400 mb-6">
-                {category.title}
-              </h2>
-              
-              <div className="space-y-4">
-                {category.items.map((item, index) => {
-                  const IconComponent = item.icon;
-                  return (
-                    <motion.div
-                      key={item.title}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: index * 0.1 }}
-                    >
-                      <Link to={item.path}>
-                        <Card className="bg-gray-900 border-gray-700 hover:border-yellow-400 transition-all duration-300 cursor-pointer group">
-                          <CardContent className="p-4">
-                            <div className="flex items-center space-x-4">
-                              <div className="w-6 h-6 border-2 border-gray-400 group-hover:border-yellow-400 transition-colors duration-300" />
-                              <IconComponent className="w-5 h-5 text-gray-400 group-hover:text-yellow-400 transition-colors duration-300" />
-                              <span className="text-white group-hover:text-yellow-400 transition-colors duration-300 font-medium">
-                                {item.title}
-                              </span>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </motion.div>
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* General Section - Direct Links */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-6"
+          >
+            <h2 className="text-xl font-semibold text-yellow-400 mb-6">
+              General
+            </h2>
+            
+            <div className="space-y-4">
+              {categories[0].items.map((item, index) => {
+                const IconComponent = item.icon;
+                return (
+                  <motion.div
+                    key={item.title}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                  >
+                    <Link to={item.path}>
+                      <Card className="bg-gray-900 border-gray-700 hover:border-yellow-400 transition-all duration-300 cursor-pointer group">
+                        <CardContent className="p-4">
+                          <div className="flex items-center space-x-4">
+                            <IconComponent className="w-5 h-5 text-gray-400 group-hover:text-yellow-400 transition-colors duration-300" />
+                            <span className="text-white group-hover:text-yellow-400 transition-colors duration-300 font-medium">
+                              {item.title}
+                            </span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+
+          {/* Category Links */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+            className="space-y-6"
+          >
+            <h2 className="text-xl font-semibold text-yellow-400 mb-6">
+              Categories
+            </h2>
+            
+            <div className="space-y-4">
+              {categories.slice(1).map((category, index) => {
+                const IconComponent = category.icon;
+                return (
+                  <motion.div
+                    key={category.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                  >
+                    <Link to={category.path}>
+                      <Card className="bg-gray-900 border-gray-700 hover:border-yellow-400 transition-all duration-300 cursor-pointer group">
+                        <CardContent className="p-4">
+                          <div className="flex items-center space-x-4">
+                            <IconComponent className="w-5 h-5 text-gray-400 group-hover:text-yellow-400 transition-colors duration-300" />
+                            <span className="text-white group-hover:text-yellow-400 transition-colors duration-300 font-medium">
+                              {category.title}
+                            </span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
         </div>
       </motion.div>
     </div>

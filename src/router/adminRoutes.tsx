@@ -1,3 +1,4 @@
+
 import { Navigate } from "react-router-dom";
 import type { RouteObject } from "react-router-dom";
 import { RouteLayout } from "./routeLayout";
@@ -23,6 +24,9 @@ import DeclinedJobs from "@/pages/admin/DeclinedJobs";
 import TodoList from "@/pages/admin/TodoList";
 import ManualTaskGenerator from "@/pages/admin/ManualTaskGenerator";
 import ManagementDashboard from "@/pages/admin/ManagementDashboard";
+import PlanningDashboard from "@/pages/admin/PlanningDashboard";
+import FeedbackDashboard from "@/pages/admin/FeedbackDashboard";
+import InventoryDashboard from "@/pages/admin/InventoryDashboard";
 
 // Helper function to wrap components with ProtectedRoute
 const protectedComponent = (Component: React.ComponentType) => {
@@ -48,8 +52,20 @@ const adminRoutes: RouteObject[] = [
         element: protectedComponent(Dashboard),
       },
       {
+        path: "/admin/planning",
+        element: protectedComponent(PlanningDashboard),
+      },
+      {
         path: "/admin/management",
         element: protectedComponent(ManagementDashboard),
+      },
+      {
+        path: "/admin/feedback",
+        element: protectedComponent(FeedbackDashboard),
+      },
+      {
+        path: "/admin/inventory",
+        element: protectedComponent(InventoryDashboard),
       },
       {
         path: "/admin/analytics",
