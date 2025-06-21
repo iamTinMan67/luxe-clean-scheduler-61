@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowLeft, MessageSquare, Star } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import FeedbackDistribution from "@/components/dashboard/FeedbackDistribution";
+import FeedbackSnippet from "@/components/home/feedback/FeedbackSnippet";
 
 const FeedbackScreen = () => {
   const feedbackItems = [
@@ -32,7 +34,7 @@ const FeedbackScreen = () => {
           Feedback
         </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto mb-12">
           {feedbackItems.map((item, index) => {
             const IconComponent = item.icon;
             return (
@@ -57,6 +59,21 @@ const FeedbackScreen = () => {
               </motion.div>
             );
           })}
+        </div>
+
+        {/* Feedback Analytics Section */}
+        <div className="space-y-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <Card className="bg-gray-900 border-gray-800 p-6">
+              <FeedbackSnippet dashboardMode={true} />
+            </Card>
+          </motion.div>
+
+          <FeedbackDistribution />
         </div>
       </motion.div>
     </div>
