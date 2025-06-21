@@ -1,83 +1,43 @@
 
-import { Booking, validateBookingStatus } from '@/types/booking';
+import { Booking } from "@/types/booking";
 
-export interface SupabaseBookingData {
-  id: string;
-  customer_name: string;
-  vehicle_type: string;
+interface FormData {
+  yourName: string;
+  postcode: string;
+  phone: string;
+  email: string;
   notes: string;
-  package_type: string;
-  date: string;
-  time: string;
-  start_time?: string;
-  end_time?: string;
-  location: string;
-  customer_phone?: string;
-  customer_email?: string;
-  status: string;
-  condition?: number;
-  staff?: any;
-  created_at?: string;
-  total_price?: number;
+  jobDetails: string;
+  selectedDate: Date | undefined;
+  selectedTime: string;
 }
 
-export const transformSupabaseBooking = (booking: SupabaseBookingData): Booking => {
-  // Safely convert staff JSONB to string array
-  let staff: string[] = [];
-  if (booking.staff) {
-    if (Array.isArray(booking.staff)) {
-      staff = booking.staff.filter((item): item is string => typeof item === 'string');
-    } else if (typeof booking.staff === 'string') {
-      try {
-        const parsed = JSON.parse(booking.staff);
-        if (Array.isArray(parsed)) {
-          staff = parsed.filter((item): item is string => typeof item === 'string');
-        }
-      } catch {
-        // If parsing fails, keep empty array
-      }
-    }
-  }
-
-  const transformedBooking: Booking = {
-    id: booking.id,
-    customer: booking.customer_name,
-    vehicle: booking.vehicle_type,
-    vehicleReg: '',
-    jobDetails: booking.notes,
-    secondVehicle: '',
-    secondVehicleReg: '',
-    packageType: booking.package_type,
-    date: new Date(booking.date + 'T' + (booking.time || '09:00')),
-    time: booking.time,
-    startTime: booking.start_time,
-    endTime: booking.end_time,
-    location: booking.location,
-    contact: booking.customer_phone,
-    email: booking.customer_email,
-    notes: booking.notes,
-    status: validateBookingStatus(booking.status),
-    condition: booking.condition || 5,
-    staff: staff,
-    createdAt: booking.created_at,
-    totalPrice: booking.total_price,
-    travelMinutes: 0,
-    additionalServices: [],
-    clientType: "private",
-    jobType: booking.vehicle_type // Changed from vehicleType to jobType
+export const transformFormDataToBooking = (formData: FormData): Booking => {
+  const { yourName, postcode, phone, email, notes, jobDetails, selectedDate, selectedTime } = formData;
+  
+  // Get saved client type
+  const savedClientType = localStorage.getItem('selectedClientType') || 'private';
+  console.log("Retrieved client type:", savedClientType);
+  
+  // Create a simplified booking for "Other" job types
+  const newBooking: Booking = {
+    id: `other-${Date.now()}`,
+    customer: yourName,
+    vehicle: "Other Service", // Generic vehicle for other services
+    vehicleReg: "",
+    jobDetails: jobDetails,
+    packageType: "other", // Special package type for other services
+    date: selectedDate || new Date(),
+    time: selectedTime || "TBD",
+    location: postcode,
+    contact: phone,
+    email: email,
+    notes: notes,
+    status: "pending",
+    clientType: savedClientType as "private" | "corporate",
+    jobType: "other"
   };
 
-  return transformedBooking;
-};
-
-export const logTransformedBooking = (booking: Booking) => {
-  const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
-  
-  console.log("Transformed booking:", {
-    id: booking.id,
-    customer: booking.customer,
-    status: booking.status,
-    date: booking.date,
-    dateString: bookingDate.toDateString()
-  });
+  console.log("Creating new booking:", newBooking);
+  return newBooking;
 };
