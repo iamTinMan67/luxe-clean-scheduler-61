@@ -25,6 +25,9 @@ export const useSimpleBookingSubmission = () => {
     }
 
     try {
+      // Get saved client type
+      const savedClientType = localStorage.getItem('selectedClientType') || 'private';
+      
       // Create a simplified booking for "Other" job types
       const newBooking: Booking = {
         id: `other-${Date.now()}`,
@@ -40,7 +43,7 @@ export const useSimpleBookingSubmission = () => {
         email: email,
         notes: notes,
         status: "pending",
-        clientType: "private", // Default to private
+        clientType: savedClientType as "private" | "corporate",
         jobType: "other"
       };
 
@@ -49,9 +52,12 @@ export const useSimpleBookingSubmission = () => {
       const updatedBookings = [...existingBookings, newBooking];
       localStorage.setItem('bookings', JSON.stringify(updatedBookings));
 
+      // Clear the saved client type
+      localStorage.removeItem('selectedClientType');
+
       // Show success message
       toast.success("Request Submitted!", {
-        description: "We'll contact you soon to discuss your requirements.",
+        description: "We'll contact you soon to discuss your requirements and provide a quote.",
         style: {
           background: '#f97316', // Orange background
           color: 'white',

@@ -49,11 +49,16 @@ const VehicleTypeSelector = ({
 
   const handleJobTypeChange = (type: JobType) => {
     if (type === "other") {
+      // Store client type for the simple booking form
+      localStorage.setItem('selectedClientType', selectedClientType);
+      
       // Redirect to simple booking form for "Other" job types
       toast.info("Redirecting to specialized form", {
         description: "Perfect for boats, caravans, and other services."
       });
-      navigate("/simple-booking");
+      
+      // Use replace to prevent back button issues
+      navigate("/simple-booking", { replace: true });
     } else {
       onJobTypeChange(type);
     }
