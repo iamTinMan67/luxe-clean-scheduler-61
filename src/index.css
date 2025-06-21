@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -96,24 +95,29 @@
   
   .bubble {
     @apply absolute rounded-full pointer-events-none;
-    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.1));
     box-shadow: 
-      inset 0 0 20px rgba(255, 255, 255, 0.2),
-      0 0 15px rgba(255, 255, 255, 0.1);
+      inset 0 0 20px rgba(255, 255, 255, 0.5),
+      0 0 15px rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(1px);
-    z-index: -10;
-    animation: gentle-float 12s ease-in-out infinite;
+    z-index: 50;
   }
   
   .bubble-shimmer {
     @apply absolute rounded-full;
     width: 30%;
     height: 10%;
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.8);
     top: 20%;
     left: 20%;
     transform: rotate(-45deg);
     filter: blur(1px);
+  }
+
+  .soap-bubble {
+    @apply absolute rounded-full pointer-events-none;
+    z-index: 50;
+    animation: gentle-float 8s ease-in-out infinite;
   }
 }
 
@@ -129,16 +133,16 @@
     filter: hue-rotate(0deg);
   }
   25% { 
-    transform: translateY(-5px) scale(1.01); 
-    filter: hue-rotate(2deg);
+    transform: translateY(-10px) scale(1.02); 
+    filter: hue-rotate(5deg);
   }
   50% { 
-    transform: translateY(-3px) scale(0.99); 
-    filter: hue-rotate(-2deg);
+    transform: translateY(-5px) scale(0.98); 
+    filter: hue-rotate(-5deg);
   }
   75% { 
-    transform: translateY(-8px) scale(1.005); 
-    filter: hue-rotate(1deg);
+    transform: translateY(-15px) scale(1.01); 
+    filter: hue-rotate(3deg);
   }
 }
 
