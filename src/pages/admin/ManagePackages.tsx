@@ -5,7 +5,9 @@ import { ServiceTask } from "@/lib/types";
 import PackageSelector from "@/components/package-management/PackageSelector";
 import PackageTaskList from "@/components/package-management/PackageTaskList";
 import TaskOperations from "@/components/package-management/TaskOperations";
+import PackageDistribution from "@/components/dashboard/PackageDistribution";
 import { usePackageManager } from "@/hooks/usePackageManager";
+import { DashboardData } from "@/components/dashboard/DashboardData";
 
 const ManagePackages = () => {
   const {
@@ -19,6 +21,8 @@ const ManagePackages = () => {
     handleMoveToPackage,
     handleUpdateTaskDuration
   } = usePackageManager(packageOptions);
+
+  const { packageData } = DashboardData();
 
   const handleAddTask = () => {
     document.getElementById("add-task-button")?.click();
@@ -35,6 +39,11 @@ const ManagePackages = () => {
         <p className="text-gold/70 mt-2">
           Update service packages, manage tasks, and set durations
         </p>
+      </div>
+
+      {/* Service Package Distribution */}
+      <div className="mb-8">
+        <PackageDistribution data={packageData} />
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">

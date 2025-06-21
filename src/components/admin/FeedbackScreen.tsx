@@ -69,6 +69,7 @@ const FeedbackScreen = () => {
             transition={{ duration: 0.5, delay: 0.3 }}
           >
             <Card className="bg-gray-900 border-gray-800 p-6">
+              <h3 className="text-lg font-bold text-white mb-4">Recent Customer Feedback</h3>
               <FeedbackSnippet dashboardMode={true} />
             </Card>
           </motion.div>
