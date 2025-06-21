@@ -1,38 +1,48 @@
 
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
-  Calendar,
-  FileText,
-  Settings,
-  MessageSquare,
   Package,
-  BarChart3,
-  CheckSquare,
-  ClipboardList
+  Truck,
+  Warehouse,
+  Camera,
+  FileText,
+  MessageSquare,
+  Star,
+  Settings
 } from "lucide-react";
 
-const AdminSplashScreen = () => {
-  const categories = [
+const ManagementScreen = () => {
+  const managementItems = [
     {
-      id: 'general',
-      title: 'General',
+      category: 'Inventory',
       items: [
-        { title: 'Daily', path: '/admin/planner-calendar', icon: Calendar },
-        { title: 'Booking Forms', path: '/admin/pre-inspection', icon: CheckSquare },
-        { title: 'Invoices', path: '/admin/invoices', icon: FileText },
-        { title: 'To-do List', path: '/admin/todo-list', icon: ClipboardList }
+        { title: 'Van Inventory', path: '/admin/van-inventory', icon: Truck },
+        { title: 'Warehouse Inventory', path: '/admin/warehouse-inventory', icon: Warehouse }
       ]
     },
     {
-      id: 'management',
-      title: 'Management',
+      category: 'Feedback',
       items: [
-        { title: 'Inventory', path: '/admin/management/inventory', icon: Package },
-        { title: 'Feedback', path: '/admin/management/feedback', icon: MessageSquare },
-        { title: 'Packages', path: '/admin/management/packages', icon: Package },
-        { title: 'Misc Pages', path: '/admin/management/misc', icon: Settings }
+        { title: 'Feedback Form', path: '/admin/feedback-form', icon: MessageSquare },
+        { title: 'Feedback Manager', path: '/admin/feedback-manager', icon: Star }
+      ]
+    },
+    {
+      category: 'Packages',
+      items: [
+        { title: 'Manage Packages', path: '/admin/manage-packages', icon: Package }
+      ]
+    },
+    {
+      category: 'Misc Pages',
+      items: [
+        { title: 'Gallery Manager', path: '/admin/gallery-manager', icon: Camera },
+        { title: 'Brochure', path: '/admin/brochure', icon: FileText },
+        { title: 'History', path: '/admin/history', icon: FileText },
+        { title: 'Analytics', path: '/admin/analytics', icon: Settings }
       ]
     }
   ];
@@ -45,25 +55,35 @@ const AdminSplashScreen = () => {
         transition={{ duration: 0.5 }}
         className="max-w-4xl mx-auto"
       >
+        <div className="flex items-center mb-8">
+          <Link 
+            to="/admin/dashboard" 
+            className="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300 transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Back to Dashboard</span>
+          </Link>
+        </div>
+
         <h1 className="text-3xl font-bold text-center mb-12 text-yellow-400">
-          Admin Dashboard
+          Management
         </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          {categories.map((category) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {managementItems.map((section) => (
             <motion.div
-              key={category.id}
+              key={section.category}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3, delay: category.id === 'general' ? 0 : 0.1 }}
+              transition={{ duration: 0.3 }}
               className="space-y-6"
             >
-              <h2 className="text-xl font-semibold text-yellow-400 mb-6">
-                {category.title}
+              <h2 className="text-xl font-semibold text-yellow-400 mb-4">
+                {section.category}
               </h2>
               
               <div className="space-y-4">
-                {category.items.map((item, index) => {
+                {section.items.map((item, index) => {
                   const IconComponent = item.icon;
                   return (
                     <motion.div
@@ -97,4 +117,4 @@ const AdminSplashScreen = () => {
   );
 };
 
-export default AdminSplashScreen;
+export default ManagementScreen;

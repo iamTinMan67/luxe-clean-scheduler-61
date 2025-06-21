@@ -3,9 +3,9 @@ import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import AdminSplashScreen from "@/components/admin/AdminSplashScreen";
+import ManagementScreen from "@/components/admin/ManagementScreen";
 
-const Dashboard = () => {
+const ManagementDashboard = () => {
   const { isAdmin, isStaff, user } = useAuth();
   const navigate = useNavigate();
 
@@ -18,9 +18,9 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-black pb-16">
-      <AdminSplashScreen />
+      <ManagementScreen />
     </div>
   );
 };
 
-export default Dashboard;
+export default ManagementDashboard;
