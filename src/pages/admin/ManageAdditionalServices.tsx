@@ -8,10 +8,26 @@ import AdditionalServicesManager from "@/components/package-management/Additiona
 const ManageAdditionalServices = () => {
   // Mock data to satisfy the required props
   const mockServices = [
-    { id: "1", name: "Interior Deep Clean", price: 25, description: "Comprehensive interior cleaning" },
-    { id: "2", name: "Engine Bay Clean", price: 15, description: "Engine compartment cleaning" },
-    { id: "3", name: "Wheel Arch Clean", price: 10, description: "Thorough wheel arch cleaning" }
+    { id: "1", name: "Interior Deep Clean", price: 25, description: "Comprehensive interior cleaning", duration: 30 },
+    { id: "2", name: "Engine Bay Clean", price: 15, description: "Engine compartment cleaning", duration: 20 },
+    { id: "3", name: "Wheel Arch Clean", price: 10, description: "Thorough wheel arch cleaning", duration: 15 }
   ];
+
+  const handleSelectService = (service: any) => {
+    console.log("Selected service:", service);
+  };
+
+  const handleSaveService = (service: any) => {
+    console.log("Saved service:", service);
+  };
+
+  const handleDeleteService = (serviceId: string) => {
+    console.log("Deleted service:", serviceId);
+  };
+
+  const handleUpdateServiceDuration = (serviceId: string, duration: number) => {
+    console.log("Updated service duration:", serviceId, duration);
+  };
 
   return (
     <motion.div
@@ -38,10 +54,10 @@ const ManageAdditionalServices = () => {
       <AdditionalServicesManager 
         services={mockServices}
         selectedService={null}
-        onSelectService={() => {}}
-        onSaveService={() => {}}
-        onDeleteService={() => {}}
-        onAddService={() => {}}
+        onSelectService={handleSelectService}
+        onSaveService={handleSaveService}
+        onDeleteService={handleDeleteService}
+        onUpdateServiceDuration={handleUpdateServiceDuration}
       />
     </motion.div>
   );

@@ -6,6 +6,30 @@ import AdminPageTitle from "@/components/admin/AdminPageTitle";
 import RecentBookings from "@/components/dashboard/RecentBookings";
 
 const History = () => {
+  // Mock bookings data for the RecentBookings component
+  const mockBookings = [
+    {
+      id: "1",
+      customerName: "John Smith",
+      date: "2024-01-15",
+      time: "10:00",
+      packageType: "premium",
+      status: "completed",
+      totalPrice: 45,
+      vehicleType: "car"
+    },
+    {
+      id: "2", 
+      customerName: "Jane Doe",
+      date: "2024-01-14",
+      time: "14:00",
+      packageType: "standard",
+      status: "completed",
+      totalPrice: 25,
+      vehicleType: "suv"
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-black pb-16">
       <section className="relative py-8">
@@ -25,7 +49,7 @@ const History = () => {
             subtitle="View past bookings and service records" 
           />
           
-          <RecentBookings />
+          <RecentBookings bookings={mockBookings} />
         </div>
       </section>
     </div>

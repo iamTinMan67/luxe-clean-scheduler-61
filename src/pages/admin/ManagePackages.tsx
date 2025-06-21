@@ -10,6 +10,7 @@ import PackageTaskList from "@/components/package-management/PackageTaskList";
 import TaskFormDialog from "@/components/package-management/TaskFormDialog";
 import PackageSelector from "@/components/package-management/PackageSelector";
 import PackageDistribution from "@/components/dashboard/PackageDistribution";
+import { useState } from "react";
 
 const ManagePackages = () => {
   const {
@@ -17,21 +18,49 @@ const ManagePackages = () => {
     selectedPackageType,
     selectedPackage,
     handleSelectPackage,
-    handleCreateTask,
-    handleUpdateTask,
     handleDeleteTask,
-    handleToggleTaskCompletion,
     handleUpdateTaskDuration
   } = usePackageManager();
 
-  // Mock the missing properties for backward compatibility
-  const mockTasks = selectedPackage?.tasks || [];
-  const mockLoading = false;
-  const mockOpen = false;
-  const mockSetOpen = () => {};
-  const mockSearchTerm = "";
-  const mockSetSearchTerm = () => {};
-  const mockFilteredPackages = packages;
+  const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Mock handlers for missing functionality
+  const handleCreateTask = (task: any) => {
+    console.log("Create task:", task);
+    setIsTaskDialogOpen(false);
+  };
+
+  const handleUpdateTask = (task: any) => {
+    console.log("Update task:", task);
+  };
+
+  const handleToggleTaskCompletion = (taskId: string) => {
+    console.log("Toggle task completion:", taskId);
+  };
+
+  const handleAddTask = () => {
+    setIsTaskDialogOpen(true);
+  };
+
+  const handleEditTask = (task: any) => {
+    console.log("Edit task:", task);
+  };
+
+  const handleMoveTask = (taskId: string, direction: "up" | "down") => {
+    console.log("Move task:", taskId, direction);
+  };
+
+  const handleMoveToPackage = (taskId: string, targetPackageId: string) => {
+    console.log("Move to package:", taskId, targetPackageId);
+  };
+
+  // Mock data for distribution chart
+  const mockDistributionData = [
+    { name: "Basic", value: 30, color: "#FFD700" },
+    { name: "Standard", value: 40, color: "#FFA500" },
+    { name: "Premium", value: 30, color: "#FF6347" }
+  ];
 
   return (
     <motion.div
@@ -60,7 +89,7 @@ const ManagePackages = () => {
           <CardHeader>
             <CardTitle className="flex items-center justify-between text-white">
               <span>Package Tasks</span>
-              <Button onClick={() => mockSetOpen(true)}>
+              <Button onClick={handleAddTask}>
                 <Plus className="mr-2 h-4 w-4" />
                 Add Task
               </Button>
@@ -73,22 +102,27 @@ const ManagePackages = () => {
                 <TabsTrigger value="package-selector">Selector</TabsTrigger>
               </TabsList>
               <TabsContent value="package-tasks">
-                <PackageTaskList
-                  tasks={mockTasks}
-                  loading={mockLoading}
-                  onUpdateTask={handleUpdateTask}
-                  onDeleteTask={handleDeleteTask}
-                  onToggleTaskCompletion={handleToggleTaskCompletion}
-                />
+                {selectedPackage && (
+                  <PackageTaskList
+                    packageOption={selectedPackage}
+                    allPackages={packages}
+                    onAddTask={handleAddTask}
+                    onEditTask={handleEditTask}
+                    onDeleteTask={handleDeleteTask}
+                    onMoveTask={handleMoveTask}
+                    onUpdateTaskDuration={handleUpdateTaskDuration}
+                    onMoveToPackage={handleMoveToPackage}
+                  />
+                )}
               </TabsContent>
               <TabsContent value="package-selector">
                 <PackageSelector
                   packages={packages}
                   selectedPackage={selectedPackage}
-                  onSelectPackage={(pkg) => handleSelectPackage(pkg.type)}
-                  searchTerm={mockSearchTerm}
-                  onSearchChange={mockSetSearchTerm}
-                  filteredPackages={mockFilteredPackages}
+                  onSelectPackage={handleSelectPackage}
+                  searchTerm={searchTerm}
+                  onSearchChange={setSearchTerm}
+                  filteredPackages={packages}
                 />
               </TabsContent>
             </Tabs>
@@ -100,16 +134,16 @@ const ManagePackages = () => {
             <CardTitle className="text-white">Package Distribution</CardTitle>
           </CardHeader>
           <CardContent>
-            <PackageDistribution />
+            <PackageDistribution data={mockDistributionData} />
           </CardContent>
         </Card>
       </div>
 
       <TaskFormDialog
-        open={mockOpen}
-        setOpen={mockSetOpen}
-        onCreateTask={handleCreateTask}
-        selectedPackage={selectedPackage}
+        isOpen={isTaskDialogOpen}
+        onClose={() => setIsTaskDialogOpen(false)}
+        onSave={handleCreateTask}
+        isEditing={false}
       />
     </motion.div>
   );

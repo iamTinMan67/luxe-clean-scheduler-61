@@ -6,6 +6,46 @@ import AdminPageTitle from "@/components/admin/AdminPageTitle";
 import InventoryOverview from "@/components/warehouse-inventory/InventoryOverview";
 
 const WarehouseInventory = () => {
+  // Mock data for warehouse inventory
+  const mockInventory = [
+    {
+      id: "1",
+      name: "Premium Car Wax",
+      category: "chemicals",
+      stockIn: 50,
+      stockOut: 10,
+      dateAdded: "2024-01-01",
+      lastUpdated: "2024-01-15",
+      supplier: "AutoCare Supplies",
+      reorderPoint: 15,
+      allocatedStock: { "VAN-001": 5, "VAN-002": 3 }
+    },
+    {
+      id: "2",
+      name: "Microfiber Towels",
+      category: "cleaning",
+      stockIn: 100,
+      stockOut: 25,
+      dateAdded: "2024-01-01",
+      lastUpdated: "2024-01-14",
+      supplier: "Cleaning Solutions Ltd",
+      reorderPoint: 20,
+      allocatedStock: { "VAN-001": 10, "VAN-002": 8 }
+    }
+  ];
+
+  const handleAddNewItem = () => {
+    console.log("Add new inventory item");
+  };
+
+  const handleExportInventory = () => {
+    console.log("Export inventory report");
+  };
+
+  const handleCheckLowStock = () => {
+    console.log("Check low stock items");
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -28,7 +68,12 @@ const WarehouseInventory = () => {
         subtitle="Manage warehouse stock and supplies" 
       />
       
-      <InventoryOverview />
+      <InventoryOverview 
+        inventory={mockInventory}
+        onAddNewItem={handleAddNewItem}
+        onExportInventory={handleExportInventory}
+        onCheckLowStock={handleCheckLowStock}
+      />
     </motion.div>
   );
 };

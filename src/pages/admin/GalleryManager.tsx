@@ -30,7 +30,7 @@ const GalleryManager = () => {
   // Transform gallery items to match AlbumsList expectations
   const albums = galleryItems.map(item => ({
     id: item.id,
-    name: item.category,
+    category: item.category,
     images: item.images
   }));
 
@@ -146,9 +146,11 @@ const GalleryManager = () => {
       </div>
 
       <AlbumFormDialog
-        open={open}
+        isOpen={open}
         onClose={() => setOpen(false)}
-        onCreateAlbum={handleCreateAlbum}
+        onSave={handleCreateAlbum}
+        albumData={currentItem}
+        isEditing={isEditMode}
       />
     </motion.div>
   );

@@ -5,6 +5,9 @@ import { ArrowLeft } from "lucide-react";
 import AdminPageTitle from "@/components/admin/AdminPageTitle";
 import FeedbackTable from "@/components/feedback/FeedbackTable";
 import { useFeedbackManager } from "@/hooks/useFeedbackManager";
+import { useState } from "react";
+import { CustomerFeedback } from "@/components/feedback/types";
+import FeedbackDetailsDialog from "@/components/feedback/FeedbackDetailsDialog";
 
 const FeedbackManager = () => {
   const {
@@ -14,6 +17,12 @@ const FeedbackManager = () => {
     addFeedback,
     markAsResponded
   } = useFeedbackManager();
+
+  const [selectedFeedback, setSelectedFeedback] = useState<CustomerFeedback | null>(null);
+
+  const handleViewFeedback = (feedbackItem: CustomerFeedback) => {
+    setSelectedFeedback(feedbackItem);
+  };
 
   return (
     <motion.div
@@ -39,14 +48,17 @@ const FeedbackManager = () => {
       
       <FeedbackTable
         feedback={feedback}
-        loading={loading}
-        searchTerm=""
-        setSearchTerm={() => {}}
-        statusFilter="all"
-        setStatusFilter={() => {}}
-        onStatusUpdate={markAsResponded}
-        onDelete={() => {}}
+        onViewFeedback={handleViewFeedback}
       />
+
+      {selectedFeedback && (
+        <FeedbackDetailsDialog
+          feedback={selectedFeedback}
+          isOpen={!!selectedFeedback}
+          onClose={() => setSelectedFeedback(null)}
+          onMarkAsResponded={markAsResponded}
+        />
+      )}
     </motion.div>
   );
 };
