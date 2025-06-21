@@ -1,5 +1,7 @@
 
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import FinancialSummary from "@/components/invoices/FinancialSummary";
 import QuickActions from "@/components/invoices/QuickActions";
 import StaffAssignment from "@/components/invoices/StaffAssignment";
@@ -28,6 +30,16 @@ const InvoiceReport = () => {
       exit={{ opacity: 0, y: 20 }}
       className="container mx-auto py-8 px-4"
     >
+      <div className="flex items-center mb-8">
+        <Link 
+          to="/admin/dashboard" 
+          className="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300 transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span>Back to Dashboard</span>
+        </Link>
+      </div>
+
       <AdminPageTitle 
         title="Invoice Reports" 
         subtitle="Track payments and manage customer invoices" 
