@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Plus } from "lucide-react";
@@ -121,9 +120,6 @@ const ManagePackages = () => {
                   packages={packages}
                   selectedPackage={selectedPackageType}
                   onSelectPackage={handleSelectPackage}
-                  searchTerm={searchTerm}
-                  onSearchChange={setSearchTerm}
-                  filteredPackages={packages}
                 />
               </TabsContent>
             </Tabs>
