@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AdminPageTitle from "@/components/admin/AdminPageTitle";
 import InvoiceListWithDatabase from "@/components/invoices/InvoiceListWithDatabase";
-import CreateInvoiceForm from "@/components/invoices/CreateInvoiceForm";
+import CreateInvoiceFormDialog from "@/components/invoices/CreateInvoiceFormDialog";
 import { useState } from "react";
 
 const Invoices = () => {
@@ -42,24 +42,19 @@ const Invoices = () => {
         />
         
         <Button 
-          onClick={() => setShowCreateForm(!showCreateForm)}
+          onClick={() => setShowCreateForm(true)}
           className="bg-yellow-600 hover:bg-yellow-700 text-white"
         >
           <Plus className="w-4 h-4 mr-2" />
-          {showCreateForm ? 'Cancel' : 'Create Invoice'}
+          Create Invoice
         </Button>
       </div>
 
-      {showCreateForm && (
-        <Card className="bg-gray-900 border-gray-800 mb-8">
-          <CardHeader>
-            <CardTitle className="text-white">Create New Invoice</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CreateInvoiceForm onInvoiceCreated={handleInvoiceCreated} />
-          </CardContent>
-        </Card>
-      )}
+      <CreateInvoiceFormDialog 
+        open={showCreateForm}
+        onOpenChange={setShowCreateForm}
+        onInvoiceCreated={handleInvoiceCreated}
+      />
       
       <Card className="bg-gray-900 border-gray-800">
         <CardHeader>
