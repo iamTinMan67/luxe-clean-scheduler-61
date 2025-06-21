@@ -145,11 +145,16 @@ const GalleryManager = () => {
       </div>
 
       <AlbumFormDialog
-        isOpen={open}
-        onClose={() => setOpen(false)}
+        open={open}
+        setOpen={setOpen}
+        isEditMode={isEditMode}
+        currentItem={currentItem}
+        newCategory={newCategory}
+        setNewCategory={setNewCategory}
+        newImages={newImages}
+        setNewImages={setNewImages}
         onSave={handleCreateAlbum}
-        albumData={currentItem}
-        isEditing={isEditMode}
+        onCancel={handleCancel}
       />
     </motion.div>
   );

@@ -4,17 +4,16 @@ import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import AdminPageTitle from "@/components/admin/AdminPageTitle";
 import RecentBookings from "@/components/dashboard/RecentBookings";
-import { Booking } from "@/types/booking";
 
 const History = () => {
-  // Mock bookings data that matches the Booking type structure
-  const mockBookings: Booking[] = [
+  // Mock bookings data that matches the RecentBookings component expectations
+  const mockBookings = [
     {
       id: "1",
       customer: "John Smith",
       vehicle: "car",
       vehicleReg: "ABC123",
-      packageType: "premium",
+      package: "premium",
       date: "2024-01-15",
       time: "10:00",
       location: "Customer Location",
@@ -29,7 +28,7 @@ const History = () => {
       customer: "Jane Doe",
       vehicle: "suv",
       vehicleReg: "XYZ789",
-      packageType: "standard",
+      package: "standard",
       date: "2024-01-14",
       time: "14:00",
       location: "Customer Location",

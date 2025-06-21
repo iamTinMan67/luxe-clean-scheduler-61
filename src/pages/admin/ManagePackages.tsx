@@ -11,6 +11,7 @@ import TaskFormDialog from "@/components/package-management/TaskFormDialog";
 import PackageSelector from "@/components/package-management/PackageSelector";
 import PackageDistribution from "@/components/dashboard/PackageDistribution";
 import { useState } from "react";
+import { packageOptions } from "@/data/packageOptions";
 
 const ManagePackages = () => {
   const {
@@ -20,7 +21,7 @@ const ManagePackages = () => {
     handleSelectPackage,
     handleDeleteTask,
     handleUpdateTaskDuration
-  } = usePackageManager();
+  } = usePackageManager(packageOptions);
 
   const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -119,7 +120,7 @@ const ManagePackages = () => {
                 <PackageSelector
                   packages={packages}
                   selectedPackage={selectedPackage}
-                  onSelectPackage={handleSelectPackage}
+                  onSelectPackage={(pkg) => handleSelectPackage(pkg.type)}
                   searchTerm={searchTerm}
                   onSearchChange={setSearchTerm}
                   filteredPackages={packages}
