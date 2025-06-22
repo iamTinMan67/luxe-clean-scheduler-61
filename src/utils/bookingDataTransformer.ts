@@ -1,5 +1,6 @@
 
 import { Booking } from "@/types/booking";
+import { generateBookingId } from "./bookingIdGenerator";
 
 interface FormData {
   yourName: string;
@@ -57,9 +58,12 @@ export const transformFormDataToBooking = (formData: FormData): Booking => {
   console.log("Booking date type:", typeof bookingDate);
   console.log("Booking date ISO string:", bookingDate.toISOString());
   
+  // Generate new booking ID with the new format
+  const newBookingId = generateBookingId(savedClientType as "private" | "corporate", "other");
+  
   // Create a simplified booking for "Other" job types
   const newBooking: Booking = {
-    id: `other-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    id: newBookingId, // Use the new ID format
     customer: yourName,
     vehicle: "Other Service", // Generic vehicle for other services
     vehicleReg: "",

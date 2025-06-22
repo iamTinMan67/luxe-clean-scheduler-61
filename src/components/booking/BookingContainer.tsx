@@ -6,6 +6,7 @@ import BookingForm from "./BookingForm";
 import DateTimeSection from "./DateTimeSection";
 import VehicleConditionSection from "./VehicleConditionSection";
 import { Vehicle } from "@/lib/types";
+import { generateBookingId } from "@/utils/bookingIdGenerator";
 
 const BookingContainer = () => {
   const navigate = useNavigate();
@@ -89,8 +90,8 @@ const BookingContainer = () => {
     const existingBookings = localStorage.getItem('pendingBookings');
     const bookings = existingBookings ? JSON.parse(existingBookings) : [];
     
-    // Generate a unique ID for the new booking
-    const bookingId = Math.random().toString(36).substring(2, 15);
+    // Generate a unique ID using the new system
+    const bookingId = generateBookingId(clientType as "private" | "corporate", vehicleType);
     
     // Calculate total price
     let totalPrice = 0;
@@ -106,7 +107,7 @@ const BookingContainer = () => {
     
     // Add the new booking to the array
     bookings.push({
-      id: bookingId,
+      id: bookingId, // Use the new ID format
       ...bookingData,
       status: "pending",
       customer: `${formData.yourName}`,
@@ -119,7 +120,8 @@ const BookingContainer = () => {
       notes: formData.notes,
       condition: vehicleCondition,
       additionalServices: additionalServicesInfo,
-      totalPrice: totalPrice
+      totalPrice: totalPrice,
+      jobType: vehicleType
     });
     
     // Save the updated bookings array back to localStorage
@@ -132,7 +134,7 @@ const BookingContainer = () => {
       : '';
     
     toast.success("Booking request submitted!", {
-      description: `${packageInfo} Package ${additionalInfo} for ${formData.yourName}. Total: £${totalPrice}`,
+      description: `${packageInfo} Package ${additionalInfo} for ${formData.yourName}. Booking ID: ${bookingId}. Total: £${totalPrice}`,
     });
     
     // Change redirection to gallery page instead

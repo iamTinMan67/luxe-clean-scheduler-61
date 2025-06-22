@@ -1,5 +1,4 @@
 
-// Make sure this file doesn't already exist, since we're recreating it
 import { Booking } from "@/types/booking";
 import { toast } from "sonner";
 
@@ -21,9 +20,9 @@ export const generateInvoice = (booking: Booking) => {
     }
   ];
   
-  // Create the invoice object using the booking.id as the invoice ID
+  // Create the invoice object using the booking.id (which now uses the new format)
   const invoice = {
-    id: booking.id, // Use booking ID as invoice ID
+    id: booking.id, // This now uses the new ID format (PC/PV/PO/CC/CV/CO + timestamp)
     bookingId: booking.id,
     customerId: booking.id,
     items: items,
@@ -70,9 +69,9 @@ export const sendNotification = (booking: Booking, type: "invoice" | "update" | 
       message = `Thank you for your business, ${booking.customer}! Your valet service is complete. Once payment is processed, you'll be able to provide feedback on our service.`;
     }
   } else if (type === "invoice") {
-    message = `New invoice generated for ${booking.customer}`;
+    message = `New invoice generated for ${booking.customer} (Booking ID: ${booking.id})`;
   } else if (type === "update") {
-    message = `Booking updated for ${booking.customer}`;
+    message = `Booking updated for ${booking.customer} (Booking ID: ${booking.id})`;
   }
   
   console.log("SMS Notification:", message);

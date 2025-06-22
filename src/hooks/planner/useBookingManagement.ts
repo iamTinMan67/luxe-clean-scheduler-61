@@ -1,8 +1,8 @@
-
 import { Booking } from '@/types/booking';
 import { toast } from 'sonner';
 import { generateInvoice } from '@/utils/bookingUtils';
 import { syncBookingToSupabase, deleteBookingFromSupabase } from '@/services/bookingSyncService';
+import { generateBookingId } from '@/utils/bookingIdGenerator';
 
 export const useBookingManagement = (
   pendingBookings: Booking[],
@@ -63,10 +63,10 @@ export const useBookingManagement = (
       toast.warning('Booking confirmed locally but database sync failed');
     }
     
-    // Create invoice
+    // Create invoice (this will now use the new booking ID)
     generateInvoice(confirmedBooking);
     
-    toast.success(`${confirmedBooking.packageType} Package confirmed successfully for ${confirmedBooking.customer}`);
+    toast.success(`${confirmedBooking.packageType} Package confirmed successfully for ${confirmedBooking.customer} (ID: ${confirmedBooking.id})`);
   };
   
   // Function to cancel a booking
@@ -109,7 +109,7 @@ export const useBookingManagement = (
       console.warn('Failed to delete from database:', error);
     }
     
-    toast.success(`${cancelledBooking.packageType} Package cancelled for ${cancelledBooking.customer}`);
+    toast.success(`${cancelledBooking.packageType} Package cancelled for ${cancelledBooking.customer} (ID: ${cancelledBooking.id})`);
   };
   
   // Function to get background color based on booking status

@@ -37,9 +37,9 @@ export const useSimpleBookingSubmission = () => {
         return;
       }
 
-      // Transform form data to booking
+      // Transform form data to booking (this now uses the new ID system)
       const newBooking = transformFormDataToBooking(formData);
-      console.log("Transformed booking:", newBooking);
+      console.log("Transformed booking with new ID:", newBooking);
 
       // Save booking to storage (this will now save to 'pendingBookings' key)
       saveBookingToStorage(newBooking);
