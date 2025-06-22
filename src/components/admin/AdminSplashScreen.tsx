@@ -69,8 +69,8 @@ const AdminSplashScreen = () => {
         {/* Quick Status Overview - 3 features on same line */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <CompactPendingBookings />
-          <CompactInventoryAlerts />
           <CompactPendingInvoices />
+          <CompactInventoryAlerts />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -155,10 +155,10 @@ const AdminSplashScreen = () => {
                                 {category.title}
                               </h3>
                               <p className="text-gray-400 text-xs">
-                                {category.title === 'Manage' ? 'Business management tools' : 
+                                {category.title === 'Manage' ? 'Management tools' : 
                                  category.title === 'Feedback' ? 'Customer feedback and reviews' :
                                  category.title === 'Inventory' ? 'Stock and equipment tracking' :
-                                 'Business insights and reports'}
+                                 'Insights and reports'}
                               </p>
                             </div>
                           </div>
