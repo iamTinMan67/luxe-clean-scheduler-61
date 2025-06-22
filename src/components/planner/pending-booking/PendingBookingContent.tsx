@@ -3,7 +3,6 @@ import React from 'react';
 import { Booking } from '@/types/booking';
 import { Clock, Car, Truck, Briefcase, Package, FileText, Wrench, Plus } from 'lucide-react';
 import BookingContactDetails from '../booking-item/BookingContactDetails';
-import { additionalServices } from "@/data/servicePackageData";
 
 interface PendingBookingContentProps {
   booking: Booking;
@@ -16,7 +15,9 @@ const PendingBookingContent: React.FC<PendingBookingContentProps> = ({
 }) => {
   // Function to get the appropriate icon based on job type
   const getJobTypeIcon = (jobType?: string) => {
-    switch (jobType?.toLowerCase()) {
+    if (!jobType) return <Car className="w-4 h-4 text-gray-400" />;
+    
+    switch (jobType.toLowerCase()) {
       case 'car':
         return <Car className="w-4 h-4 text-gray-400" />;
       case 'van':
@@ -24,13 +25,13 @@ const PendingBookingContent: React.FC<PendingBookingContentProps> = ({
       case 'other':
         return <Wrench className="w-4 h-4 text-gray-400" />;
       default:
-        return <Car className="w-4 h-4 text-gray-400" />; // Default fallback
+        return <Car className="w-4 h-4 text-gray-400" />;
     }
   };
 
   // Function to get job type display text
   const getJobTypeDisplay = (jobType?: string) => {
-    if (!jobType) return null;
+    if (!jobType) return 'Car Service';
     
     switch (jobType.toLowerCase()) {
       case 'car':
@@ -46,12 +47,18 @@ const PendingBookingContent: React.FC<PendingBookingContentProps> = ({
 
   // Function to get all additional services
   const getAllAdditionalServices = (serviceIds?: string[]) => {
-    if (!serviceIds || serviceIds.length === 0) return [];
+    if (!serviceIds || !Array.isArray(serviceIds) || serviceIds.length === 0) return [];
     
-    return serviceIds.map(id => {
-      const service = additionalServices.find(s => s.id === id);
-      return service ? service.name : id;
-    });
+    try {
+      const { additionalServices } = require("@/data/servicePackageData");
+      return serviceIds.map(id => {
+        const service = additionalServices?.find((s: any) => s.id === id);
+        return service ? service.name : id;
+      }).filter(Boolean);
+    } catch (error) {
+      console.warn("Could not load additional services data:", error);
+      return serviceIds; // Return the IDs as fallback
+    }
   };
 
   const additionalServicesList = getAllAdditionalServices(booking.additionalServices);
@@ -64,7 +71,7 @@ const PendingBookingContent: React.FC<PendingBookingContentProps> = ({
         <span className="text-gray-300">
           {booking.date instanceof Date 
             ? booking.date.toLocaleDateString() 
-            : new Date(booking.date).toLocaleDateString()} at {booking.time}
+            : new Date(booking.date).toLocaleDateString()} at {booking.time || 'No time set'}
         </span>
       </div>
       
@@ -101,7 +108,7 @@ const PendingBookingContent: React.FC<PendingBookingContentProps> = ({
       {/* Line 5: Package Selected */}
       <div className="flex items-center space-x-2">
         <Package className="w-4 h-4 text-gray-400" />
-        <span className="text-gray-300">{booking.packageType}</span>
+        <span className="text-gray-300">{booking.packageType || 'No package selected'}</span>
       </div>
       
       {/* All Additional Services */}
@@ -129,8 +136,8 @@ const PendingBookingContent: React.FC<PendingBookingContentProps> = ({
 
       {/* Collapsible Contact Details */}
       <BookingContactDetails
-        customer={booking.customer}
-        location={booking.location}
+        customer={booking.customer || 'Unknown customer'}
+        location={booking.location || 'No location'}
         email={booking.email}
         contact={booking.contact}
         clientType={booking.clientType}
