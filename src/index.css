@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -95,23 +96,21 @@
   
   .bubble {
     @apply absolute rounded-full pointer-events-none;
-    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.1));
-    box-shadow: 
-      inset 0 0 20px rgba(255, 255, 255, 0.5),
-      0 0 15px rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(1px);
-    z-index: 50;
+    will-change: transform, opacity;
+    transform-style: preserve-3d;
+  }
+  
+  .bubble-body {
+    will-change: transform;
+    transform-style: preserve-3d;
   }
   
   .bubble-shimmer {
-    @apply absolute rounded-full;
-    width: 30%;
-    height: 10%;
-    background: rgba(255, 255, 255, 0.8);
-    top: 20%;
-    left: 20%;
-    transform: rotate(-45deg);
-    filter: blur(1px);
+    will-change: opacity;
+  }
+  
+  .animate-pop {
+    animation: pop 0.3s ease-out forwards;
   }
 }
 
@@ -126,3 +125,38 @@
   50% { transform: scale(1.05); opacity: 0.9; }
 }
 
+@keyframes pop {
+  0% { 
+    transform: scale(1); 
+    opacity: 1; 
+  }
+  50% { 
+    transform: scale(1.4); 
+    opacity: 0.8; 
+    filter: blur(2px);
+  }
+  100% { 
+    transform: scale(0); 
+    opacity: 0; 
+    filter: blur(4px);
+  }
+}
+
+/* Performance optimizations for bubbles */
+.bubble * {
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .bubble {
+    animation-duration: 8s !important;
+    animation-timing-function: linear !important;
+  }
+  
+  .animate-pop {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+}
