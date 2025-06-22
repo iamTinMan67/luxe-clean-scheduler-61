@@ -78,17 +78,11 @@ const PendingBookingContent: React.FC<PendingBookingContentProps> = ({
         </span>
       </div>
       
-      {/* Line 2: Job Type (if available) with icon on right corner */}
+      {/* Line 2: Job Type (if available) with single icon */}
       {booking.jobType && (
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            {getJobTypeIcon(booking.jobType)}
-            <span className="text-gray-300">{getJobTypeDisplay(booking.jobType)}</span>
-          </div>
-          {/* Job category icon on the right corner */}
-          <div className="flex-shrink-0">
-            {getJobTypeIcon(booking.jobType)}
-          </div>
+        <div className="flex items-center space-x-2">
+          {getJobTypeIcon(booking.jobType)}
+          <span className="text-gray-300">{getJobTypeDisplay(booking.jobType)}</span>
         </div>
       )}
       
