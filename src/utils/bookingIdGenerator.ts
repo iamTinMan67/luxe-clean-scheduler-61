@@ -18,13 +18,21 @@ export const generateBookingId = (clientType: "private" | "corporate", jobType: 
       break;
   }
   
-  // Generate timestamp
-  const timestamp = Date.now();
+  // Generate short date format: YYMMDDHHMM
+  const now = new Date();
+  const year = now.getFullYear().toString().slice(-2); // Last 2 digits of year
+  const month = (now.getMonth() + 1).toString().padStart(2, '0'); // Month (01-12)
+  const day = now.getDate().toString().padStart(2, '0'); // Day (01-31)
+  const hour = now.getHours().toString().padStart(2, '0'); // Hour (00-23)
+  const minute = now.getMinutes().toString().padStart(2, '0'); // Minute (00-59)
+  
+  const shortTimestamp = `${year}${month}${day}${hour}${minute}`;
   
   // Create the booking ID
-  const bookingId = `${clientPrefix}${jobPrefix}${timestamp}`;
+  const bookingId = `${clientPrefix}${jobPrefix}${shortTimestamp}`;
   
   console.log(`Generated booking ID: ${bookingId} for ${clientType} ${jobType}`);
+  console.log(`Short timestamp format: ${shortTimestamp} (YYMMDDHHMM)`);
   
   return bookingId;
 };
@@ -54,5 +62,23 @@ export const parseBookingId = (bookingId: string) => {
       break;
   }
   
-  return { clientType, jobType, timestamp };
+  // Parse the short timestamp format (YYMMDDHHMM) if it's 10 digits
+  let parsedDate = null;
+  if (timestamp.length === 10) {
+    const year = 2000 + parseInt(timestamp.substring(0, 2));
+    const month = parseInt(timestamp.substring(2, 4)) - 1; // Month is 0-indexed in Date
+    const day = parseInt(timestamp.substring(4, 6));
+    const hour = parseInt(timestamp.substring(6, 8));
+    const minute = parseInt(timestamp.substring(8, 10));
+    
+    parsedDate = new Date(year, month, day, hour, minute);
+  }
+  
+  return { 
+    clientType, 
+    jobType, 
+    timestamp,
+    parsedDate,
+    readableDate: parsedDate ? parsedDate.toLocaleString() : "Unknown date"
+  };
 };
