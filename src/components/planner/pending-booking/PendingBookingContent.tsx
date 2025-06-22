@@ -17,7 +17,7 @@ const PendingBookingContent: React.FC<PendingBookingContentProps> = ({
       <div className="flex items-center space-x-2">
         <User className="w-4 h-4 text-gray-400" />
         <span className="text-white font-medium">{booking.customer}</span>
-        <ClientTypeBadge booking={booking} />
+        <ClientTypeBadge clientType={booking.clientType} />
       </div>
       
       {/* Date and Time */}
