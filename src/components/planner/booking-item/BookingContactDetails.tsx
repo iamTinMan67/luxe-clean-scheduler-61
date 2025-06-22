@@ -36,21 +36,19 @@ const BookingContactDetails: React.FC<BookingContactDetailsProps> = ({
         )}
       </CollapsibleTrigger>
       <CollapsibleContent className="space-y-2 pt-2">
-        {/* Customer Name */}
+        {/* Line 1: Customer Name */}
         <div className="flex items-center text-gray-300">
           <User className="w-4 h-4 mr-2 text-gold" />
           <span className="font-medium text-white">{customer}</span>
         </div>
         
-        {/* Email */}
-        {email && (
-          <div className="flex items-center text-gray-300">
-            <Mail className="w-4 h-4 mr-2 text-gold" />
-            <span>{email}</span>
-          </div>
-        )}
+        {/* Line 2: Post Code/Location */}
+        <div className="flex items-center text-gray-300">
+          <MapPin className="w-4 h-4 mr-2 text-gold" />
+          <span>{location}</span>
+        </div>
         
-        {/* Phone */}
+        {/* Line 3: Phone */}
         {contact && (
           <div className="flex items-center text-gray-300">
             <Phone className="w-4 h-4 mr-2 text-gold" />
@@ -58,11 +56,13 @@ const BookingContactDetails: React.FC<BookingContactDetailsProps> = ({
           </div>
         )}
         
-        {/* Post Code/Location */}
-        <div className="flex items-center text-gray-300">
-          <MapPin className="w-4 h-4 mr-2 text-gold" />
-          <span>{location}</span>
-        </div>
+        {/* Line 4: Email */}
+        {email && (
+          <div className="flex items-center text-gray-300">
+            <Mail className="w-4 h-4 mr-2 text-gold" />
+            <span>{email}</span>
+          </div>
+        )}
       </CollapsibleContent>
     </Collapsible>
   );
