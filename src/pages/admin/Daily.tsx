@@ -4,8 +4,11 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Calendar, CheckSquare, ClipboardList } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import RecentBookings from "@/components/dashboard/RecentBookings";
+import { useCurrentBookings } from "@/hooks/useCurrentBookings";
 
 const Daily = () => {
+  const { currentBookings, loading } = useCurrentBookings();
+
   const dailyItems = [
     {
       title: 'Planner Calendar',
@@ -24,37 +27,6 @@ const Daily = () => {
       description: 'Task management and tracking',
       path: '/admin/todo-list',
       icon: ClipboardList
-    }
-  ];
-
-  // Sample bookings data (same as Analytics page)
-  const sampleBookings = [
-    {
-      id: "B001",
-      customer: "John Smith",
-      vehicle: "BMW 3 Series",
-      package: "Premium Wash",
-      date: "2024-01-15",
-      time: "10:00 AM",
-      status: "confirmed"
-    },
-    {
-      id: "B002", 
-      customer: "Sarah Johnson",
-      vehicle: "Audi A4",
-      package: "Interior Detail",
-      date: "2024-01-15",
-      time: "2:00 PM",
-      status: "in-progress"
-    },
-    {
-      id: "B003",
-      customer: "Mike Wilson",
-      vehicle: "Mercedes C-Class",
-      package: "Full Service",
-      date: "2024-01-16",
-      time: "9:00 AM",
-      status: "pending"
     }
   ];
 
@@ -82,7 +54,13 @@ const Daily = () => {
 
       <div className="max-w-4xl mx-auto">
         {/* Current Bookings Section */}
-        <RecentBookings bookings={sampleBookings} />
+        {loading ? (
+          <div className="mb-8 text-center text-gray-400">
+            <p>Loading current bookings...</p>
+          </div>
+        ) : (
+          <RecentBookings bookings={currentBookings} />
+        )}
 
         {/* Daily Operations Buttons */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

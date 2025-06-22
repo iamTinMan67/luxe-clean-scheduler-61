@@ -4,8 +4,12 @@ import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import AdminPageTitle from "@/components/admin/AdminPageTitle";
 import { DashboardContent } from "@/components/dashboard";
+import RecentBookings from "@/components/dashboard/RecentBookings";
+import { useCurrentBookings } from "@/hooks/useCurrentBookings";
 
 const Analytics = () => {
+  const { currentBookings, loading } = useCurrentBookings();
+
   return (
     <div className="min-h-screen bg-black pb-16 relative z-10">
       <section className="relative py-8">
@@ -24,6 +28,15 @@ const Analytics = () => {
             title="Analytics" 
             subtitle="Business insights and performance metrics" 
           />
+          
+          {/* Current Bookings Section */}
+          {loading ? (
+            <div className="mb-8 text-center text-gray-400">
+              <p>Loading current bookings...</p>
+            </div>
+          ) : (
+            <RecentBookings bookings={currentBookings} />
+          )}
           
           <DashboardContent />
         </div>
