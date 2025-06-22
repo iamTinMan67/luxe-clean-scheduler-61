@@ -40,6 +40,10 @@ const MobileMenu = ({ isOpen, adminRoutes, isAdminPage }: MobileMenuProps) => {
         <NavLink to="/" isMobile>Home</NavLink>
         <NavLink to="/gallery" isMobile>Gallery</NavLink>
         
+        {user && (
+          <NavLink to="/admin/dashboard" isMobile>Dashboard</NavLink>
+        )}
+        
         {/* Contact Us Dropdown - Hide on Admin Pages */}
         {!isAdminPage && (
           <>
