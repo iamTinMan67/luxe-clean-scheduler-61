@@ -1,8 +1,9 @@
 
 import React from 'react';
 import { Booking } from '@/types/booking';
-import { Clock, Car, Truck, Briefcase, Package, FileText, Wrench } from 'lucide-react';
+import { Clock, Car, Truck, Briefcase, Package, FileText, Wrench, Plus } from 'lucide-react';
 import BookingContactDetails from '../booking-item/BookingContactDetails';
+import { additionalServices } from "@/data/servicePackageData";
 
 interface PendingBookingContentProps {
   booking: Booking;
@@ -43,6 +44,18 @@ const PendingBookingContent: React.FC<PendingBookingContentProps> = ({
     }
   };
 
+  // Function to get all additional services
+  const getAllAdditionalServices = (serviceIds?: string[]) => {
+    if (!serviceIds || serviceIds.length === 0) return [];
+    
+    return serviceIds.map(id => {
+      const service = additionalServices.find(s => s.id === id);
+      return service ? service.name : id;
+    });
+  };
+
+  const additionalServicesList = getAllAdditionalServices(booking.additionalServices);
+
   return (
     <div className="space-y-3">
       {/* Line 1: Date and Time */}
@@ -55,11 +68,17 @@ const PendingBookingContent: React.FC<PendingBookingContentProps> = ({
         </span>
       </div>
       
-      {/* Line 2: Job Type (if available) */}
+      {/* Line 2: Job Type (if available) with icon on right corner */}
       {booking.jobType && (
-        <div className="flex items-center space-x-2">
-          {getJobTypeIcon(booking.jobType)}
-          <span className="text-gray-300">{getJobTypeDisplay(booking.jobType)}</span>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            {getJobTypeIcon(booking.jobType)}
+            <span className="text-gray-300">{getJobTypeDisplay(booking.jobType)}</span>
+          </div>
+          {/* Job category icon on the right corner */}
+          <div className="flex-shrink-0">
+            {getJobTypeIcon(booking.jobType)}
+          </div>
         </div>
       )}
       
@@ -84,6 +103,18 @@ const PendingBookingContent: React.FC<PendingBookingContentProps> = ({
         <Package className="w-4 h-4 text-gray-400" />
         <span className="text-gray-300">{booking.packageType}</span>
       </div>
+      
+      {/* All Additional Services */}
+      {additionalServicesList.length > 0 && (
+        <div className="space-y-2">
+          {additionalServicesList.map((serviceName, index) => (
+            <div key={index} className="flex items-center space-x-2">
+              <Plus className="w-4 h-4 text-blue-400" />
+              <span className="text-blue-400">{serviceName}</span>
+            </div>
+          ))}
+        </div>
+      )}
       
       {/* Line 6: Notes */}
       {booking.notes && (

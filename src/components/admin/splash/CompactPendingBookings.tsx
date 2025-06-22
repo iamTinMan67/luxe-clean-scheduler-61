@@ -38,16 +38,14 @@ const CompactPendingBookings = () => {
     }
   };
 
-  // Helper function to get additional services display
-  const getAdditionalServicesDisplay = (serviceIds?: string[]) => {
-    if (!serviceIds || serviceIds.length === 0) return null;
+  // Helper function to get additional services display - show ALL services
+  const getAllAdditionalServices = (serviceIds?: string[]) => {
+    if (!serviceIds || serviceIds.length === 0) return [];
     
-    const serviceNames = serviceIds.map(id => {
+    return serviceIds.map(id => {
       const service = additionalServices.find(s => s.id === id);
       return service ? service.name : id;
     });
-    
-    return serviceNames.join(', ');
   };
 
   return (
@@ -82,7 +80,7 @@ const CompactPendingBookings = () => {
           ) : (
             <div className="space-y-2 max-h-32 overflow-y-auto">
               {pendingBookings.slice(0, 3).map(booking => {
-                const additionalServicesText = getAdditionalServicesDisplay(booking.additionalServices);
+                const additionalServicesList = getAllAdditionalServices(booking.additionalServices);
                 
                 return (
                   <div key={booking.id} className="bg-gray-800 rounded p-2 space-y-1">
@@ -94,13 +92,17 @@ const CompactPendingBookings = () => {
                       </span>
                     </div>
                     
-                    {/* Additional Services */}
-                    {additionalServicesText && (
-                      <div className="flex items-center gap-2">
-                        <Plus className="w-3 h-3 text-blue-400" />
-                        <span className="text-xs text-blue-400">
-                          {additionalServicesText}
-                        </span>
+                    {/* All Additional Services */}
+                    {additionalServicesList.length > 0 && (
+                      <div className="space-y-1">
+                        {additionalServicesList.map((serviceName, index) => (
+                          <div key={index} className="flex items-center gap-2">
+                            <Plus className="w-3 h-3 text-blue-400" />
+                            <span className="text-xs text-blue-400">
+                              {serviceName}
+                            </span>
+                          </div>
+                        ))}
                       </div>
                     )}
                     
