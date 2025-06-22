@@ -93,13 +93,20 @@ const AdminSplashScreen = () => {
                     transition={{ duration: 0.3, delay: index * 0.1 }}
                   >
                     <Link to={item.path}>
-                      <Card className="bg-gray-900 border-gray-700 hover:border-yellow-400 transition-all duration-300 cursor-pointer group">
-                        <CardContent className="p-3">
-                          <div className="flex items-center space-x-4">
-                            <IconComponent className="w-5 h-5 text-gray-400 group-hover:text-yellow-400 transition-colors duration-300" />
-                            <span className="text-white group-hover:text-yellow-400 transition-colors duration-300 font-medium text-sm">
-                              {item.title}
-                            </span>
+                      <Card className="bg-gray-900 border-gray-700 hover:border-yellow-400 transition-all duration-300 cursor-pointer group h-full">
+                        <CardContent className="p-6 text-center">
+                          <div className="flex flex-col items-center space-y-4">
+                            <div className="p-4 bg-gray-800 rounded-lg group-hover:bg-yellow-400/20 transition-colors">
+                              <IconComponent className="w-8 h-8 text-yellow-400" />
+                            </div>
+                            <div>
+                              <h3 className="text-lg font-semibold text-white group-hover:text-yellow-400 transition-colors mb-2">
+                                {item.title}
+                              </h3>
+                              <p className="text-gray-400 text-sm">
+                                {item.title === 'Daily' ? 'Access your daily workflow tools' : 'Create, view, and manage customer invoices'}
+                              </p>
+                            </div>
                           </div>
                         </CardContent>
                       </Card>
@@ -132,13 +139,23 @@ const AdminSplashScreen = () => {
                     transition={{ duration: 0.3, delay: index * 0.1 }}
                   >
                     <Link to={category.path}>
-                      <Card className="bg-gray-900 border-gray-700 hover:border-yellow-400 transition-all duration-300 cursor-pointer group">
-                        <CardContent className="p-3">
-                          <div className="flex items-center space-x-4">
-                            <IconComponent className="w-5 h-5 text-gray-400 group-hover:text-yellow-400 transition-colors duration-300" />
-                            <span className="text-white group-hover:text-yellow-400 transition-colors duration-300 font-medium text-sm">
-                              {category.title}
-                            </span>
+                      <Card className="bg-gray-900 border-gray-700 hover:border-yellow-400 transition-all duration-300 cursor-pointer group h-full">
+                        <CardContent className="p-6 text-center">
+                          <div className="flex flex-col items-center space-y-4">
+                            <div className="p-4 bg-gray-800 rounded-lg group-hover:bg-yellow-400/20 transition-colors">
+                              <IconComponent className="w-8 h-8 text-yellow-400" />
+                            </div>
+                            <div>
+                              <h3 className="text-lg font-semibold text-white group-hover:text-yellow-400 transition-colors mb-2">
+                                {category.title}
+                              </h3>
+                              <p className="text-gray-400 text-sm">
+                                {category.title === 'Manage' ? 'Business management tools' : 
+                                 category.title === 'Feedback' ? 'Customer feedback and reviews' :
+                                 category.title === 'Inventory' ? 'Stock and equipment tracking' :
+                                 'Business insights and reports'}
+                              </p>
+                            </div>
                           </div>
                         </CardContent>
                       </Card>
