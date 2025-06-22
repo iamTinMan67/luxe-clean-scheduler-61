@@ -40,19 +40,22 @@ const CompactPendingBookings = () => {
   };
 
   // Helper function to get additional services display - show ALL services
-  const getAllAdditionalServices = (serviceIds?: string[]) => {
+  const getAllAdditionalServices = (serviceIds?: string[]): string[] => {
     if (!serviceIds || !Array.isArray(serviceIds) || serviceIds.length === 0) return [];
     
     // Import additionalServices safely
     try {
       const { additionalServices } = require("@/data/servicePackageData");
       return serviceIds.map(id => {
-        const service = additionalServices?.find((s: any) => s.id === id);
-        return service ? service.name : id;
+        // Ensure id is a string and not an object
+        const serviceId = typeof id === 'string' ? id : String(id);
+        const service = additionalServices?.find((s: any) => s.id === serviceId);
+        return service ? String(service.name) : serviceId;
       }).filter(Boolean);
     } catch (error) {
       console.warn("Could not load additional services data:", error);
-      return serviceIds; // Return the IDs as fallback
+      // Return service IDs as strings, ensuring they're not objects
+      return serviceIds.map(id => typeof id === 'string' ? id : String(id)).filter(Boolean);
     }
   };
 
