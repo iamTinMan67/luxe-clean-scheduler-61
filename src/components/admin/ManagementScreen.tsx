@@ -19,21 +19,15 @@ const ManagementScreen = () => {
       icon: Settings
     },
     {
-      title: 'Gallery Manager',
+      title: 'Manage Gallery',
       description: 'Photo and media management',
       path: '/admin/gallery-manager',
       icon: Camera
     },
     {
-      title: 'Brochure',
+      title: 'Manage Brochure',
       description: 'Marketing materials management',
       path: '/admin/brochure',
-      icon: FileText
-    },
-    {
-      title: 'History',
-      description: 'Past bookings and records',
-      path: '/admin/history',
       icon: FileText
     }
   ];

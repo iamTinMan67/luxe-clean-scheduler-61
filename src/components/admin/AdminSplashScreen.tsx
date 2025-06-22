@@ -23,7 +23,8 @@ const AdminSplashScreen = () => {
       title: 'General',
       items: [
         { title: 'Daily', path: '/admin/daily', icon: Calendar },
-        { title: 'Invoices', path: '/admin/invoices', icon: FileText }
+        { title: 'Invoices', path: '/admin/invoices', icon: FileText },
+        { title: 'History', path: '/admin/history', icon: ClipboardList }
       ]
     },
     {
@@ -104,7 +105,9 @@ const AdminSplashScreen = () => {
                                 {item.title}
                               </h3>
                               <p className="text-gray-400 text-sm">
-                                {item.title === 'Daily' ? 'Access your daily workflow tools' : 'Create, view, and manage customer invoices'}
+                                {item.title === 'Daily' ? 'Access your daily workflow tools' : 
+                                 item.title === 'Invoices' ? 'Create, view, and manage customer invoices' :
+                                 'View past bookings and service records'}
                               </p>
                             </div>
                           </div>

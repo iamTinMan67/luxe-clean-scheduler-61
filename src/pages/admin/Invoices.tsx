@@ -7,11 +7,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AdminPageTitle from "@/components/admin/AdminPageTitle";
 import InvoiceListWithDatabase from "@/components/invoices/InvoiceListWithDatabase";
 import CreateInvoiceFormDialog from "@/components/invoices/CreateInvoiceFormDialog";
+import PendingInvoicesList from "@/components/invoices/PendingInvoicesList";
+import { useInvoiceDatabase } from "@/hooks/invoices/useInvoiceDatabase";
 import { useState } from "react";
 
 const Invoices = () => {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const { invoices, loading } = useInvoiceDatabase();
 
   const handleInvoiceCreated = () => {
     setShowCreateForm(false);
@@ -34,6 +37,9 @@ const Invoices = () => {
           <span>Back to Dashboard</span>
         </Link>
       </div>
+
+      {/* Pending Invoices Section - Above navigation buttons */}
+      <PendingInvoicesList invoices={invoices} loading={loading} />
 
       <div className="flex justify-between items-center mb-8">
         <AdminPageTitle 
