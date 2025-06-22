@@ -7,7 +7,7 @@ export const useCurrentBookings = () => {
   const [currentBookings, setCurrentBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Get all appointments except completed/finished ones
+  // Get all appointments except finished ones
   const { appointments, loading: appointmentsLoading } = useScheduledAppointments();
 
   useEffect(() => {
@@ -16,9 +16,9 @@ export const useCurrentBookings = () => {
       console.log("All appointments received:", appointments.length);
       console.log("All appointment statuses:", appointments.map(a => `${a.customer}:${a.status}`));
 
-      // Filter out completed and finished bookings
+      // Filter out finished bookings
       const filteredBookings = appointments.filter(booking => {
-        const isExcluded = booking.status === 'completed' || booking.status === 'finished';
+        const isExcluded = booking.status === 'finished';
         console.log(`Booking ${booking.id} (${booking.customer}): status=${booking.status}, excluded=${isExcluded}`);
         return !isExcluded;
       });
@@ -35,7 +35,7 @@ export const useCurrentBookings = () => {
       }));
 
       console.log("=== Current Bookings Final Results ===");
-      console.log("Filtered bookings (excluding completed/finished):", transformedBookings.length);
+      console.log("Filtered bookings (excluding finished):", transformedBookings.length);
       console.log("Final bookings:", transformedBookings.map(b => ({
         id: b.id,
         customer: b.customer,
