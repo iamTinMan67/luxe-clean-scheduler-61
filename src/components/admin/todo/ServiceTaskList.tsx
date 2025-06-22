@@ -72,32 +72,19 @@ const ServiceTaskList = ({
           <p>Status: <span className="capitalize text-gold">{currentBooking.status}</span></p>
         </div>
         
-        {/* Progress bar */}
+        {/* Enhanced progress bar */}
         <div className="mt-3">
           <div className="flex justify-between text-sm text-gray-400 mb-1">
             <span>Progress</span>
             <span>{completedTasks}/{serviceTasks.length} tasks completed ({progressPercentage}%)</span>
           </div>
-          <div className="w-full bg-gray-700 rounded-full h-2">
+          <div className="w-full bg-gray-700 rounded-full h-3">
             <div 
-              className="bg-gold h-2 rounded-full transition-all duration-300" 
+              className="bg-gradient-to-r from-gold to-yellow-400 h-3 rounded-full transition-all duration-300" 
               style={{ width: `${progressPercentage}%` }}
             ></div>
           </div>
         </div>
-
-        {/* Finish Job Button - only show for in-progress bookings when all tasks are completed */}
-        {currentBooking.status === "in-progress" && allTasksCompleted && onFinishJob && (
-          <div className="mt-4 text-center">
-            <Button 
-              onClick={onFinishJob}
-              className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-medium"
-            >
-              <CheckCircle className="h-4 w-4 mr-2" />
-              Finish Job & Generate Invoice
-            </Button>
-          </div>
-        )}
 
         {/* Show completed status for finished jobs */}
         {currentBooking.status === "finished" && (
@@ -117,7 +104,7 @@ const ServiceTaskList = ({
         <div className="col-span-3 text-center">Actual Time</div>
       </div>
       
-      <ul className="space-y-2">
+      <ul className="space-y-2 mb-6">
         {serviceTasks.map((task) => (
           <li key={task.id} className="flex items-center border border-gray-800 p-3 rounded-md bg-gray-900/30">
             <div className="grid grid-cols-12 gap-2 w-full items-center">
@@ -194,6 +181,24 @@ const ServiceTaskList = ({
           </li>
         ))}
       </ul>
+
+      {/* Finish Job Button - moved to bottom for easier access */}
+      {currentBooking.status === "in-progress" && allTasksCompleted && onFinishJob && (
+        <div className="mt-6 p-4 border border-green-500/30 rounded-md bg-green-900/20">
+          <div className="text-center">
+            <p className="text-green-400 mb-3 font-medium">All tasks completed!</p>
+            <Button 
+              onClick={onFinishJob}
+              className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-md font-medium text-lg"
+              size="lg"
+            >
+              <CheckCircle className="h-5 w-5 mr-2" />
+              Finish Job & Generate Invoice
+            </Button>
+            <p className="text-sm text-gray-400 mt-2">This will complete the job and generate an invoice for the customer</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

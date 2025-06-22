@@ -1,5 +1,6 @@
 
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 import { useTrackingData } from "@/hooks/tracking/useTrackingData";
 import TrackingNotFound from "./TrackingNotFound";
 import BookingDetailsCard from "./BookingDetailsCard";
@@ -11,6 +12,22 @@ interface TrackingFormProps {
 
 const TrackingForm = ({ bookingId }: TrackingFormProps) => {
   const { booking, tasks, isInspected, progress } = useTrackingData(bookingId);
+
+  // Listen for service progress updates
+  useEffect(() => {
+    const handleProgressUpdate = (event: CustomEvent) => {
+      if (event.detail.bookingId === bookingId) {
+        console.log('Real-time progress update received:', event.detail);
+        // The useTrackingData hook will automatically refresh due to localStorage changes
+      }
+    };
+
+    window.addEventListener('serviceProgressUpdate', handleProgressUpdate as EventListener);
+    
+    return () => {
+      window.removeEventListener('serviceProgressUpdate', handleProgressUpdate as EventListener);
+    };
+  }, [bookingId]);
 
   // Calculate estimated completion time based on remaining tasks
   const calculateEstimatedCompletion = () => {

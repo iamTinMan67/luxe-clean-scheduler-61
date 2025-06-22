@@ -20,6 +20,18 @@ export const useTrackingData = (bookingId: string): UseTrackingDataReturn => {
   const [sessionExpired, setSessionExpired] = useState(false);
   const navigate = useNavigate();
 
+  // Enhanced progress calculation with weighted tasks
+  const calculateProgress = (serviceTasks: ServiceTaskItem[]) => {
+    if (serviceTasks.length === 0) return 0;
+    
+    const totalWeight = serviceTasks.reduce((sum, task) => sum + task.allocatedTime, 0);
+    const completedWeight = serviceTasks
+      .filter(task => task.completed)
+      .reduce((sum, task) => sum + task.allocatedTime, 0);
+    
+    return totalWeight > 0 ? Math.round((completedWeight / totalWeight) * 100) : 0;
+  };
+
   // Load booking and tasks
   useEffect(() => {
     const loadBookingData = () => {
@@ -69,10 +81,8 @@ export const useTrackingData = (bookingId: string): UseTrackingDataReturn => {
         if (bookingProgress && bookingProgress.tasks) {
           setTasks(bookingProgress.tasks);
           
-          // Calculate progress based on task completion
-          const completedTasks = bookingProgress.tasks.filter((task: ServiceTaskItem) => task.completed).length;
-          const totalTasks = bookingProgress.tasks.length;
-          const calculatedProgress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+          // Use enhanced progress calculation
+          const calculatedProgress = calculateProgress(bookingProgress.tasks);
           setProgress(calculatedProgress);
         }
       }
@@ -87,10 +97,23 @@ export const useTrackingData = (bookingId: string): UseTrackingDataReturn => {
     // Initial load
     pollForUpdates();
     
-    // Poll every 5 seconds for updates
-    const interval = setInterval(pollForUpdates, 5000);
+    // Reduced polling interval to 2 seconds for better real-time experience
+    const interval = setInterval(pollForUpdates, 2000);
     
-    return () => clearInterval(interval);
+    // Listen for localStorage changes for immediate updates
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'serviceProgress' || e.key === 'confirmedBookings' || e.key === 'plannerCalendarBookings') {
+        console.log('Storage change detected, updating tracking data');
+        pollForUpdates();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, [bookingId, navigate]);
 
   // Start a session timeout of 15 minutes for finished bookings
