@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Booking } from '@/types/booking';
-import { Clock, Car, Van, Briefcase, Package, FileText, Wrench } from 'lucide-react';
+import { Clock, Car, Truck, Briefcase, Package, FileText, Wrench } from 'lucide-react';
 import BookingContactDetails from '../booking-item/BookingContactDetails';
 
 interface PendingBookingContentProps {
@@ -19,7 +19,7 @@ const PendingBookingContent: React.FC<PendingBookingContentProps> = ({
       case 'car':
         return <Car className="w-4 h-4 text-gray-400" />;
       case 'van':
-        return <Van className="w-4 h-4 text-gray-400" />;
+        return <Truck className="w-4 h-4 text-gray-400" />;
       case 'other':
         return <Wrench className="w-4 h-4 text-gray-400" />;
       default:

@@ -2,10 +2,53 @@
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { usePlannerCalendar } from "@/hooks/usePlannerCalendar";
-import { Clock, AlertCircle } from "lucide-react";
+import { Clock, AlertCircle, Car, Truck, Wrench, Plus } from "lucide-react";
+import { additionalServices } from "@/data/servicePackageData";
 
 const CompactPendingBookings = () => {
   const { pendingBookings, conflictCount } = usePlannerCalendar();
+
+  // Helper function to get job type icon
+  const getJobTypeIcon = (jobType?: string) => {
+    switch (jobType?.toLowerCase()) {
+      case 'car':
+        return <Car className="w-3 h-3 text-gold" />;
+      case 'van':
+        return <Truck className="w-3 h-3 text-gold" />;
+      case 'other':
+        return <Wrench className="w-3 h-3 text-gold" />;
+      default:
+        return <Car className="w-3 h-3 text-gold" />;
+    }
+  };
+
+  // Helper function to get job type display text
+  const getJobTypeDisplay = (jobType?: string) => {
+    if (!jobType) return 'Car Service';
+    
+    switch (jobType.toLowerCase()) {
+      case 'car':
+        return 'Car Service';
+      case 'van':
+        return 'Van Service';
+      case 'other':
+        return 'Custom Service';
+      default:
+        return jobType;
+    }
+  };
+
+  // Helper function to get additional services display
+  const getAdditionalServicesDisplay = (serviceIds?: string[]) => {
+    if (!serviceIds || serviceIds.length === 0) return null;
+    
+    const serviceNames = serviceIds.map(id => {
+      const service = additionalServices.find(s => s.id === id);
+      return service ? service.name : id;
+    });
+    
+    return serviceNames.join(', ');
+  };
 
   return (
     <motion.div
@@ -38,20 +81,36 @@ const CompactPendingBookings = () => {
             </div>
           ) : (
             <div className="space-y-2 max-h-32 overflow-y-auto">
-              {pendingBookings.slice(0, 3).map(booking => (
-                <div key={booking.id} className="flex items-center justify-between bg-gray-800 rounded p-2">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium text-white truncate">{booking.customer}</p>
-                    <p className="text-xs text-gray-400">{booking.vehicle || 'N/A'}</p>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    {booking.status === 'pending' && (
-                      <AlertCircle className="w-3 h-3 text-red-400" />
+              {pendingBookings.slice(0, 3).map(booking => {
+                const additionalServicesText = getAdditionalServicesDisplay(booking.additionalServices);
+                
+                return (
+                  <div key={booking.id} className="bg-gray-800 rounded p-2 space-y-1">
+                    {/* Job Type */}
+                    <div className="flex items-center gap-2">
+                      {getJobTypeIcon(booking.jobType)}
+                      <span className="text-xs font-medium text-white">
+                        {getJobTypeDisplay(booking.jobType)}
+                      </span>
+                    </div>
+                    
+                    {/* Additional Services */}
+                    {additionalServicesText && (
+                      <div className="flex items-center gap-2">
+                        <Plus className="w-3 h-3 text-blue-400" />
+                        <span className="text-xs text-blue-400">
+                          {additionalServicesText}
+                        </span>
+                      </div>
                     )}
-                    <span className="text-xs text-gray-400">{booking.time}</span>
+                    
+                    {/* Post Code */}
+                    <div className="text-xs text-gray-400">
+                      📍 {booking.location}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
               {pendingBookings.length > 3 && (
                 <div className="text-xs text-gray-400 text-center pt-1">
                   +{pendingBookings.length - 3} more
