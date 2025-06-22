@@ -114,7 +114,7 @@ const PendingBookingContent: React.FC<PendingBookingContentProps> = ({
         <span className="text-gray-300">{booking.packageType || 'No package selected'}</span>
       </div>
       
-      {/* All Additional Services */}
+      {/* Additional Services - Only show if services exist */}
       {additionalServicesList.length > 0 && (
         <div className="space-y-2">
           {additionalServicesList.map((serviceName, index) => (
