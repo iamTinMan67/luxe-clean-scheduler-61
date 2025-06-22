@@ -10,14 +10,13 @@ interface BubbleEffectProps {
 }
 
 const BubbleEffect = ({ 
-  bubbleCount = 25, 
+  bubbleCount = 15, 
   className = "",
   interactive = true 
 }: BubbleEffectProps) => {
   const bubbles = useBubbleGeneration(bubbleCount);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  // Handle mouse interaction for bubble repulsion
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (!interactive) return;
     
@@ -28,48 +27,35 @@ const BubbleEffect = ({
     setMousePosition({ x, y });
   }, [interactive]);
 
-  // Calculate repulsion effect for each bubble
   const getBubbleRepulsion = useCallback((bubble: any) => {
     if (!interactive) return {};
     
     const dx = bubble.x - mousePosition.x;
     const dy = bubble.y - mousePosition.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
-    const repulsionRadius = 15; // Percentage
+    const repulsionRadius = 12;
     
-    if (distance < repulsionRadius) {
+    if (distance < repulsionRadius && distance > 0) {
       const force = (repulsionRadius - distance) / repulsionRadius;
-      const repulsionX = (dx / distance) * force * 5;
-      const repulsionY = (dy / distance) * force * 5;
+      const repulsionX = (dx / distance) * force * 3;
+      const repulsionY = (dy / distance) * force * 3;
       
       return {
         transform: `translate(${repulsionX}%, ${repulsionY}%)`,
-        transition: 'transform 0.3s ease-out',
+        transition: 'transform 0.2s ease-out',
       };
     }
     
     return {
-      transition: 'transform 0.5s ease-out',
+      transition: 'transform 0.3s ease-out',
     };
   }, [mousePosition, interactive]);
 
   return (
     <div 
-      className={`fixed inset-0 pointer-events-none overflow-hidden z-50 ${className}`}
+      className={`fixed inset-0 pointer-events-none overflow-hidden z-10 ${className}`}
       onMouseMove={handleMouseMove}
-      style={{
-        perspective: '1000px',
-        transformStyle: 'preserve-3d',
-      }}
     >
-      {/* Background gradient overlay for depth */}
-      <div 
-        className="absolute inset-0 opacity-10"
-        style={{
-          background: 'radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 70%)',
-        }}
-      />
-      
       {bubbles.map((bubble) => (
         <div
           key={bubble.id}

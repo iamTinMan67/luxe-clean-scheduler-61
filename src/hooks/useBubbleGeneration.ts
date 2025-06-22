@@ -13,86 +13,46 @@ interface Bubble {
   velocityX: number;
   velocityY: number;
   opacity: number;
-  layer: number; // For parallax effect
+  layer: number;
 }
 
 export const useBubbleGeneration = (bubbleCount: number = 20) => {
   const [bubbles, setBubbles] = useState<Bubble[]>([]);
 
   const colors = [
-    'rgba(255, 182, 193, 0.6)', // Light pink
-    'rgba(173, 216, 230, 0.6)', // Light blue
-    'rgba(152, 251, 152, 0.6)', // Light green
-    'rgba(255, 218, 185, 0.6)', // Peach
-    'rgba(221, 160, 221, 0.6)', // Plum
-    'rgba(255, 255, 224, 0.6)', // Light yellow
-    'rgba(176, 224, 230, 0.6)', // Powder blue
-    'rgba(255, 192, 203, 0.6)', // Pink
+    'rgba(255, 182, 193, 0.8)', // Light pink
+    'rgba(173, 216, 230, 0.8)', // Light blue
+    'rgba(152, 251, 152, 0.8)', // Light green
+    'rgba(255, 218, 185, 0.8)', // Peach
+    'rgba(221, 160, 221, 0.8)', // Plum
+    'rgba(255, 255, 224, 0.8)', // Light yellow
+    'rgba(176, 224, 230, 0.8)', // Powder blue
+    'rgba(255, 192, 203, 0.8)', // Pink
   ];
 
   const animationTypes: Bubble['animationType'][] = ['float', 'spiral', 'bounce', 'drift'];
-
-  // Check collision between two bubbles
-  const checkCollision = useCallback((bubble1: Bubble, bubble2: Bubble): boolean => {
-    const dx = bubble1.x - bubble2.x;
-    const dy = bubble1.y - bubble2.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    const minDistance = (bubble1.size + bubble2.size) / 2 / 10; // Convert px to percentage
-    return distance < minDistance;
-  }, []);
-
-  // Generate position that doesn't collide with existing bubbles
-  const generateNonCollidingPosition = useCallback((newBubble: Partial<Bubble>, existingBubbles: Bubble[]): { x: number; y: number } => {
-    let attempts = 0;
-    let x, y;
-    
-    do {
-      x = Math.random() * 100;
-      y = Math.random() * 100;
-      attempts++;
-      
-      const tempBubble = { ...newBubble, x, y } as Bubble;
-      const hasCollision = existingBubbles.some(existing => checkCollision(tempBubble, existing));
-      
-      if (!hasCollision || attempts > 50) { // Max 50 attempts to avoid infinite loop
-        break;
-      }
-    } while (attempts < 50);
-    
-    return { x, y };
-  }, [checkCollision]);
 
   const generateBubbles = useCallback(() => {
     const newBubbles: Bubble[] = [];
     
     for (let i = 0; i < bubbleCount; i++) {
-      const size = Math.random() * 80 + 30; // 30-110px
+      const size = Math.random() * 60 + 20; // 20-80px
       const color = colors[Math.floor(Math.random() * colors.length)];
       const animationType = animationTypes[Math.floor(Math.random() * animationTypes.length)];
-      const layer = Math.floor(Math.random() * 3) + 1; // 1-3 layers for parallax
-      
-      // Create partial bubble for collision checking
-      const partialBubble = {
-        size,
-        color,
-        animationType,
-        layer
-      };
-      
-      const { x, y } = generateNonCollidingPosition(partialBubble, newBubbles);
+      const layer = Math.floor(Math.random() * 3) + 1;
       
       const bubble: Bubble = {
         id: i,
-        x,
-        y,
+        x: Math.random() * 90 + 5, // 5-95% to avoid edges
+        y: Math.random() * 90 + 5, // 5-95% to avoid edges
         size,
-        duration: Math.random() * 8 + 4, // 4-12s (faster than before)
-        delay: Math.random() * 3, // 0-3s delay
+        duration: Math.random() * 4 + 3, // 3-7s
+        delay: Math.random() * 2, // 0-2s delay
         color,
         animationType,
-        velocityX: (Math.random() - 0.5) * 0.5, // Horizontal drift
-        velocityY: (Math.random() - 0.5) * 0.3, // Vertical drift
-        opacity: Math.random() * 0.4 + 0.3, // 0.3-0.7 opacity
+        velocityX: (Math.random() - 0.5) * 2, // -1 to 1
+        velocityY: (Math.random() - 0.5) * 2, // -1 to 1
+        opacity: Math.random() * 0.5 + 0.3, // 0.3-0.8 opacity
         layer
       };
       
@@ -100,16 +60,14 @@ export const useBubbleGeneration = (bubbleCount: number = 20) => {
     }
     
     setBubbles(newBubbles);
-  }, [bubbleCount, generateNonCollidingPosition]);
+  }, [bubbleCount]);
 
-  // Regenerate bubbles when they complete their animation cycle
   useEffect(() => {
     generateBubbles();
     
-    // Set up regeneration interval
     const interval = setInterval(() => {
       generateBubbles();
-    }, 15000); // Regenerate every 15 seconds
+    }, 10000); // Regenerate every 10 seconds
     
     return () => clearInterval(interval);
   }, [generateBubbles]);

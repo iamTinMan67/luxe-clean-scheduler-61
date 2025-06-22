@@ -1,58 +1,79 @@
 
 import React from 'react';
 import { Booking } from '@/types/booking';
-import { packageOptions, additionalServices } from "@/data/servicePackageData";
-import BookingJobDetails from '../booking-item/BookingJobDetails';
-import BookingContactDetails from '../booking-item/BookingContactDetails';
-import BookingAdditionalInfo from '../booking-item/BookingAdditionalInfo';
+import { MapPin, Clock, User, Car, Package, Phone, Mail, FileText } from 'lucide-react';
+import ClientTypeBadge from './ClientTypeBadge';
 
 interface PendingBookingContentProps {
   booking: Booking;
-  estimatedDuration: number;
 }
 
-const PendingBookingContent: React.FC<PendingBookingContentProps> = ({ 
-  booking, 
-  estimatedDuration 
+const PendingBookingContent: React.FC<PendingBookingContentProps> = ({
+  booking
 }) => {
-  // Get package details
-  const packageDetail = packageOptions.find(p => p.type === booking.packageType);
-  
-  // Get additional services details
-  const additionalServiceDetails = booking.additionalServices && Array.isArray(booking.additionalServices) ? 
-    booking.additionalServices.map(id => additionalServices.find(s => s.id === id)).filter(Boolean) : 
-    [];
-
   return (
-    <div className="space-y-4 mb-4">
-      {/* Job Details - Now prominent at the top without customer name */}
-      <BookingJobDetails 
-        customer=""
-        packageType={booking.packageType}
-        packageDetail={packageDetail}
-        condition={booking.condition}
-        date={booking.date}
-        time={booking.time}
-        notes={booking.notes}
-        jobDetails={booking.jobDetails}
-        estimatedDuration={estimatedDuration}
-      />
-
-      {/* Additional Services */}
-      <BookingAdditionalInfo 
-        additionalServices={additionalServiceDetails}
-        secondVehicle={booking.secondVehicle}
-        secondVehicleReg={booking.secondVehicleReg}
-      />
-
-      {/* Contact Details - Now includes customer name and location */}
-      <BookingContactDetails 
-        customer={booking.customer}
-        location={booking.location}
-        email={booking.email}
-        contact={booking.contact}
-        clientType={booking.clientType}
-      />
+    <div className="space-y-3">
+      {/* Customer Information */}
+      <div className="flex items-center space-x-2">
+        <User className="w-4 h-4 text-gray-400" />
+        <span className="text-white font-medium">{booking.customer}</span>
+        <ClientTypeBadge booking={booking} />
+      </div>
+      
+      {/* Date and Time */}
+      <div className="flex items-center space-x-2">
+        <Clock className="w-4 h-4 text-gray-400" />
+        <span className="text-gray-300">
+          {booking.date instanceof Date 
+            ? booking.date.toLocaleDateString() 
+            : new Date(booking.date).toLocaleDateString()} at {booking.time}
+        </span>
+      </div>
+      
+      {/* Location */}
+      <div className="flex items-center space-x-2">
+        <MapPin className="w-4 h-4 text-gray-400" />
+        <span className="text-gray-300">{booking.location}</span>
+      </div>
+      
+      {/* Vehicle and Package Information */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="flex items-center space-x-2">
+          <Car className="w-4 h-4 text-gray-400" />
+          <span className="text-gray-300">{booking.vehicle}</span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Package className="w-4 h-4 text-gray-400" />
+          <span className="text-gray-300">{booking.packageType}</span>
+        </div>
+      </div>
+      
+      {/* Contact Information */}
+      <div className="space-y-1">
+        {booking.contact && (
+          <div className="flex items-center space-x-2">
+            <Phone className="w-4 h-4 text-gray-400" />
+            <span className="text-gray-300 text-sm">{booking.contact}</span>
+          </div>
+        )}
+        {booking.email && (
+          <div className="flex items-center space-x-2">
+            <Mail className="w-4 h-4 text-gray-400" />
+            <span className="text-gray-300 text-sm">{booking.email}</span>
+          </div>
+        )}
+      </div>
+      
+      {/* Notes */}
+      {booking.notes && (
+        <div className="flex items-start space-x-2 mt-3">
+          <FileText className="w-4 h-4 text-gray-400 mt-0.5" />
+          <div className="text-gray-300 text-sm">
+            <span className="font-medium">Notes: </span>
+            {booking.notes}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
