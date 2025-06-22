@@ -11,8 +11,7 @@ export const useBookingMutations = () => {
     pendingBookings,
     setPendingBookings,
     confirmedBookings,
-    setConfirmedBookings,
-    saveBookingsToStorage
+    setConfirmedBookings
   } = useBookingsStorage();
 
   // Update booking in the appropriate list
@@ -28,7 +27,6 @@ export const useBookingMutations = () => {
         b.id === booking.id ? booking : b
       );
       setConfirmedBookings(updatedBookings);
-      saveBookingsToStorage('confirmed', updatedBookings);
       
       // Sync to Supabase
       try {
@@ -42,7 +40,6 @@ export const useBookingMutations = () => {
         b.id === booking.id ? booking : b
       );
       setPendingBookings(updatedBookings);
-      saveBookingsToStorage('pending', updatedBookings);
     }
   };
 
@@ -50,11 +47,9 @@ export const useBookingMutations = () => {
   const moveBookingToConfirmed = async (booking: Booking): Promise<void> => {
     const updatedPending = pendingBookings.filter(b => b.id !== booking.id);
     setPendingBookings(updatedPending);
-    saveBookingsToStorage('pending', updatedPending);
     
     const updatedConfirmed = [...confirmedBookings, booking];
     setConfirmedBookings(updatedConfirmed);
-    saveBookingsToStorage('confirmed', updatedConfirmed);
     
     // Sync to Supabase
     try {
@@ -76,11 +71,9 @@ export const useBookingMutations = () => {
     if (isConfirmed) {
       const updatedBookings = confirmedBookings.filter(b => b.id !== booking.id);
       setConfirmedBookings(updatedBookings);
-      saveBookingsToStorage('confirmed', updatedBookings);
     } else {
       const updatedBookings = pendingBookings.filter(b => b.id !== booking.id);
       setPendingBookings(updatedBookings);
-      saveBookingsToStorage('pending', updatedBookings);
     }
     
     // Delete from Supabase
