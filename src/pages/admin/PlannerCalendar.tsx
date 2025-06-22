@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -9,13 +10,21 @@ import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ArchivedBookingsView from "@/components/planner/ArchivedBookingsView";
 import { useArchivedBookings } from "@/hooks/planner/useArchivedBookings";
+import { useAdminScrollToTop } from "@/hooks/useScrollToTop";
+import { cleanupMockData } from "@/utils/mockDataCleanup";
 
 const PlannerCalendar = () => {
+  // Use scroll to top for admin pages
+  useAdminScrollToTop();
+
   // Force re-render on mount to ensure latest data is loaded
   const [key, setKey] = useState(0);
   const [activeTab, setActiveTab] = useState<"calendar" | "archived">("calendar");
 
   useEffect(() => {
+    // Clean up mock data on component mount
+    cleanupMockData();
+    
     // This will force the component to re-render on mount
     // which will reload all bookings from localStorage
     setKey(prev => prev + 1);

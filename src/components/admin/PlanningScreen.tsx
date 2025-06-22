@@ -3,8 +3,12 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Calendar, CheckSquare, ClipboardList } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { useAdminScrollToTop } from "@/hooks/useScrollToTop";
 
 const PlanningScreen = () => {
+  // Use scroll to top for admin pages
+  useAdminScrollToTop();
+
   const planningItems = [
     {
       title: 'Planner Calendar',

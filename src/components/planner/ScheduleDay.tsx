@@ -1,7 +1,8 @@
+
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { Booking } from '@/types/booking';
-import { Clock, MapPin, Phone, FileText, ChevronDown, ChevronUp, Mail, Building, Home, MoreVertical, Edit, Trash2 } from 'lucide-react';
+import { Clock, MapPin, Phone, FileText, ChevronDown, ChevronUp, Mail, Building, Home, MoreVertical, Edit, Trash2, Settings } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -144,8 +145,12 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({
                   {booking.status === 'confirmed' && (
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-gray-400 hover:text-white">
-                          <MoreVertical className="h-4 w-4" />
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="h-8 w-8 p-0 border-gold/50 bg-gold/10 hover:bg-gold/20 text-gold hover:text-gold"
+                        >
+                          <Settings className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="bg-gray-800 border-gray-700">
@@ -153,7 +158,7 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({
                           booking={booking}
                           onReschedule={handleReschedule}
                           trigger={
-                            <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-blue-400 hover:text-blue-300">
+                            <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-blue-400 hover:text-blue-300 hover:bg-blue-900/20">
                               <Edit className="mr-2 h-4 w-4" />
                               Reschedule
                             </DropdownMenuItem>
@@ -161,7 +166,7 @@ const ScheduleDay: React.FC<ScheduleDayProps> = ({
                         />
                         <DropdownMenuItem 
                           onClick={() => handleDelete(booking)}
-                          className="text-red-400 hover:text-red-300"
+                          className="text-red-400 hover:text-red-300 hover:bg-red-900/20"
                         >
                           <Trash2 className="mr-2 h-4 w-4" />
                           Delete
