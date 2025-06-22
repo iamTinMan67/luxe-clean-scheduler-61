@@ -6,10 +6,12 @@ import ClientTypeBadge from './ClientTypeBadge';
 
 interface PendingBookingContentProps {
   booking: Booking;
+  estimatedDuration?: number;
 }
 
 const PendingBookingContent: React.FC<PendingBookingContentProps> = ({
-  booking
+  booking,
+  estimatedDuration
 }) => {
   return (
     <div className="space-y-3">
@@ -27,6 +29,11 @@ const PendingBookingContent: React.FC<PendingBookingContentProps> = ({
           {booking.date instanceof Date 
             ? booking.date.toLocaleDateString() 
             : new Date(booking.date).toLocaleDateString()} at {booking.time}
+          {estimatedDuration && (
+            <span className="ml-2 text-yellow-400 text-sm">
+              (~{estimatedDuration} min)
+            </span>
+          )}
         </span>
       </div>
       
