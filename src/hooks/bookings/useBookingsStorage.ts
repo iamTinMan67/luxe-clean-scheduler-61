@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Booking } from '@/types/booking';
 import { fetchBookingsFromSupabase } from '@/services/bookingDataService';
 import { syncMultipleBookingsToSupabase } from '@/services/bookingSyncService';
+import { loadBookingsFromLocalStorage, clearMockDataFromStorage } from '@/utils/bookingStorageFallback';
 
 export const useBookingsStorage = () => {
   const [pendingBookings, setPendingBookings] = useState<Booking[]>([]);
@@ -15,18 +16,24 @@ export const useBookingsStorage = () => {
     setIsLoading(true);
     
     try {
-      // Load from localStorage first
-      const pendingFromStorage = JSON.parse(localStorage.getItem('pendingBookings') || '[]');
-      const confirmedFromStorage = JSON.parse(localStorage.getItem('confirmedBookings') || '[]');
+      // Clear mock data first
+      clearMockDataFromStorage();
       
-      console.log("Loaded from localStorage:", {
-        pending: pendingFromStorage.length,
-        confirmed: confirmedFromStorage.length
+      // Load from standardized localStorage function
+      const allLocalBookings = loadBookingsFromLocalStorage();
+      
+      // Separate into pending and confirmed
+      const localPending = allLocalBookings.filter(b => b.status === 'pending');
+      const localConfirmed = allLocalBookings.filter(b => b.status !== 'pending');
+      
+      console.log("Loaded from localStorage (after mock cleanup):", {
+        pending: localPending.length,
+        confirmed: localConfirmed.length
       });
 
       // Set initial state from localStorage
-      setPendingBookings(pendingFromStorage);
-      setConfirmedBookings(confirmedFromStorage);
+      setPendingBookings(localPending);
+      setConfirmedBookings(localConfirmed);
 
       // Try to load from Supabase
       try {
@@ -39,8 +46,8 @@ export const useBookingsStorage = () => {
         });
 
         // Merge with localStorage data (Supabase takes precedence for existing IDs)
-        const mergedPending = mergBookings(pendingFromStorage, supabasePendingBookings);
-        const mergedConfirmed = mergBookings(confirmedFromStorage, supabaseConfirmedBookings);
+        const mergedPending = mergBookings(localPending, supabasePendingBookings);
+        const mergedConfirmed = mergBookings(localConfirmed, supabaseConfirmedBookings);
 
         setPendingBookings(mergedPending);
         setConfirmedBookings(mergedConfirmed);
