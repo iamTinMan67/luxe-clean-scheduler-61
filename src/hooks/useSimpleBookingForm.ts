@@ -23,10 +23,16 @@ export const useSimpleBookingForm = () => {
     resetForm,
   } = useSimpleBookingFormState();
 
-  const { submitBooking } = useSimpleBookingSubmission();
+  const { submitBooking, isSubmitting } = useSimpleBookingSubmission();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Form submission initiated");
+    
+    if (isSubmitting) {
+      console.log("Already submitting, ignoring duplicate submission");
+      return;
+    }
     
     const formData = {
       yourName,
@@ -39,6 +45,7 @@ export const useSimpleBookingForm = () => {
       selectedTime,
     };
 
+    console.log("Calling submitBooking with data:", formData);
     await submitBooking(formData, resetForm);
   };
 
@@ -60,5 +67,6 @@ export const useSimpleBookingForm = () => {
     selectedTime,
     setSelectedTime,
     handleSubmit,
+    isSubmitting,
   };
 };

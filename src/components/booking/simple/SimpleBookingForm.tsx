@@ -2,6 +2,7 @@
 import React from 'react';
 import { useSimpleBookingForm } from '@/hooks/useSimpleBookingForm';
 import { Button } from '@/components/ui/button';
+import { Loader2 } from 'lucide-react';
 import ClientTypeDisplay from './ClientTypeDisplay';
 import ContactDetailsForm from './ContactDetailsForm';
 import ServiceDetailsForm from './ServiceDetailsForm';
@@ -26,6 +27,7 @@ const SimpleBookingForm = () => {
     selectedTime,
     setSelectedTime,
     handleSubmit,
+    isSubmitting,
   } = useSimpleBookingForm();
 
   const onFormSubmit = (e: React.FormEvent) => {
@@ -72,9 +74,17 @@ const SimpleBookingForm = () => {
         <div className="pt-4">
           <Button 
             type="submit" 
-            className="w-full bg-gold text-black hover:bg-gold/90 font-bold py-3 text-lg transition-all hover:shadow-lg hover:shadow-gold/20"
+            disabled={isSubmitting}
+            className="w-full bg-gold text-black hover:bg-gold/90 font-bold py-3 text-lg transition-all hover:shadow-lg hover:shadow-gold/20 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Request Booking
+            {isSubmitting ? (
+              <div className="flex items-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Submitting Request...
+              </div>
+            ) : (
+              "Request Booking"
+            )}
           </Button>
         </div>
       </form>

@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { validateBookingForm } from "@/utils/bookingValidation";
 import { transformFormDataToBooking } from "@/utils/bookingDataTransformer";
 import { saveBookingToStorage, clearClientTypeFromStorage } from "@/utils/bookingStorage";
@@ -16,17 +17,26 @@ interface FormData {
 }
 
 export const useSimpleBookingSubmission = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const submitBooking = async (formData: FormData, resetForm: () => void) => {
-    console.log("=== Simple booking submission started ===");
-    console.log("Simple booking submission data:", formData);
-    
-    // Validate form data
-    if (!validateBookingForm(formData)) {
-      console.log("Form validation failed");
+    if (isSubmitting) {
+      console.log("Submission already in progress, ignoring duplicate request");
       return;
     }
 
+    console.log("=== Simple booking submission started ===");
+    console.log("Simple booking submission data:", formData);
+    
+    setIsSubmitting(true);
+
     try {
+      // Validate form data
+      if (!validateBookingForm(formData)) {
+        console.log("Form validation failed");
+        return;
+      }
+
       // Transform form data to booking
       const newBooking = transformFormDataToBooking(formData);
       console.log("Transformed booking:", newBooking);
@@ -43,6 +53,7 @@ export const useSimpleBookingSubmission = () => {
         console.log("✅ Booking successfully saved and verified:", justSavedBooking);
       } else {
         console.error("❌ Booking not found in pendingBookings after save");
+        throw new Error("Booking could not be verified in storage");
       }
 
       // Clear the saved client type
@@ -51,16 +62,21 @@ export const useSimpleBookingSubmission = () => {
       // Show success notification
       showBookingSuccessNotification();
 
-      // Reset form
-      resetForm();
+      // Wait a moment before resetting form to allow user to see the success message
+      setTimeout(() => {
+        resetForm();
+        console.log("Form reset after successful submission");
+      }, 1500);
       
       console.log("=== Simple booking submission completed successfully ===");
 
     } catch (error) {
       console.error("Error submitting booking:", error);
       showBookingErrorNotification();
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  return { submitBooking };
+  return { submitBooking, isSubmitting };
 };
