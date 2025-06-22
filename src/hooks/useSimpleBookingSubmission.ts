@@ -4,6 +4,7 @@ import { validateBookingForm } from "@/utils/bookingValidation";
 import { transformFormDataToBooking } from "@/utils/bookingDataTransformer";
 import { saveBookingToStorage, clearClientTypeFromStorage } from "@/utils/bookingStorage";
 import { showBookingSuccessNotification, showBookingErrorNotification } from "@/utils/bookingNotifications";
+import { syncBookingToSupabase } from "@/services/bookingSyncService";
 
 interface FormData {
   yourName: string;
@@ -54,6 +55,17 @@ export const useSimpleBookingSubmission = () => {
       } else {
         console.error("❌ Booking not found in pendingBookings after save");
         throw new Error("Booking could not be verified in storage");
+      }
+
+      // Sync booking to Supabase
+      console.log("Syncing booking to Supabase...");
+      const syncSuccess = await syncBookingToSupabase(newBooking);
+      
+      if (syncSuccess) {
+        console.log("✅ Booking successfully synced to Supabase");
+      } else {
+        console.warn("⚠️ Failed to sync booking to Supabase, but saved locally");
+        // Don't throw error - booking is still saved locally
       }
 
       // Clear the saved client type
