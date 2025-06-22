@@ -17,19 +17,33 @@ interface FormData {
 
 export const useSimpleBookingSubmission = () => {
   const submitBooking = async (formData: FormData, resetForm: () => void) => {
+    console.log("=== Simple booking submission started ===");
     console.log("Simple booking submission data:", formData);
     
     // Validate form data
     if (!validateBookingForm(formData)) {
+      console.log("Form validation failed");
       return;
     }
 
     try {
       // Transform form data to booking
       const newBooking = transformFormDataToBooking(formData);
+      console.log("Transformed booking:", newBooking);
 
-      // Save booking to storage
+      // Save booking to storage (this will now save to 'pendingBookings' key)
       saveBookingToStorage(newBooking);
+
+      // Verify the booking was saved correctly
+      const savedBookings = JSON.parse(localStorage.getItem('pendingBookings') || '[]');
+      console.log("Verification - pendingBookings after save:", savedBookings.length);
+      
+      const justSavedBooking = savedBookings.find((b: any) => b.id === newBooking.id);
+      if (justSavedBooking) {
+        console.log("✅ Booking successfully saved and verified:", justSavedBooking);
+      } else {
+        console.error("❌ Booking not found in pendingBookings after save");
+      }
 
       // Clear the saved client type
       clearClientTypeFromStorage();
@@ -39,6 +53,8 @@ export const useSimpleBookingSubmission = () => {
 
       // Reset form
       resetForm();
+      
+      console.log("=== Simple booking submission completed successfully ===");
 
     } catch (error) {
       console.error("Error submitting booking:", error);

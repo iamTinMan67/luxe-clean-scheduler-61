@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +10,17 @@ interface PendingInvoicesListProps {
 }
 
 const PendingInvoicesList = ({ invoices, loading }: PendingInvoicesListProps) => {
+  console.log("=== PendingInvoicesList Debug ===");
+  console.log("All invoices received:", invoices.length);
+  console.log("Loading state:", loading);
+  
+  // Also check localStorage for debugging
+  const pendingBookingsFromStorage = JSON.parse(localStorage.getItem('pendingBookings') || '[]');
+  console.log("Direct pendingBookings from localStorage:", pendingBookingsFromStorage.length);
+  console.log("PendingBookings data:", pendingBookingsFromStorage);
+  
   const pendingInvoices = invoices.filter(invoice => !invoice.paid);
+  console.log("Filtered pending invoices:", pendingInvoices.length);
 
   if (loading) {
     return (
@@ -43,6 +52,11 @@ const PendingInvoicesList = ({ invoices, loading }: PendingInvoicesListProps) =>
         <CardContent>
           <div className="text-center py-4">
             <p className="text-gray-400">No pending invoices found</p>
+            {pendingBookingsFromStorage.length > 0 && (
+              <p className="text-sm text-yellow-400 mt-2">
+                Debug: Found {pendingBookingsFromStorage.length} pending bookings in localStorage
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>
