@@ -15,7 +15,7 @@ const PendingBookingHeader: React.FC<PendingBookingHeaderProps> = ({ booking }) 
         <span className="text-xs text-gray-400">ID: {booking.id}</span>
       )}
       
-      {/* Client Category in top right corner */}
+      {/* Client Category in top right corner - this is the only instance */}
       <ClientTypeBadge clientType={booking.clientType} />
     </div>
   );

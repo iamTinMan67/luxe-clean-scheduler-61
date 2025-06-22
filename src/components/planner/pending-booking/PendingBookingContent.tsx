@@ -1,8 +1,8 @@
 
 import React from 'react';
 import { Booking } from '@/types/booking';
-import { MapPin, Clock, User, Car, Package, Phone, Mail, FileText } from 'lucide-react';
-import ClientTypeBadge from './ClientTypeBadge';
+import { MapPin, Clock, Car, Package, FileText } from 'lucide-react';
+import BookingContactDetails from '../booking-item/BookingContactDetails';
 
 interface PendingBookingContentProps {
   booking: Booking;
@@ -15,25 +15,18 @@ const PendingBookingContent: React.FC<PendingBookingContentProps> = ({
 }) => {
   return (
     <div className="space-y-3">
-      {/* Customer Information */}
+      {/* Customer Information - No duplicate client type badge here */}
       <div className="flex items-center space-x-2">
-        <User className="w-4 h-4 text-gray-400" />
-        <span className="text-white font-medium">{booking.customer}</span>
-        <ClientTypeBadge clientType={booking.clientType} />
+        <span className="text-white font-medium text-lg">{booking.customer}</span>
       </div>
       
-      {/* Date and Time */}
+      {/* Date and Time - No package duration displayed */}
       <div className="flex items-center space-x-2">
         <Clock className="w-4 h-4 text-gray-400" />
         <span className="text-gray-300">
           {booking.date instanceof Date 
             ? booking.date.toLocaleDateString() 
             : new Date(booking.date).toLocaleDateString()} at {booking.time}
-          {estimatedDuration && (
-            <span className="ml-2 text-yellow-400 text-sm">
-              (~{estimatedDuration} min)
-            </span>
-          )}
         </span>
       </div>
       
@@ -55,22 +48,6 @@ const PendingBookingContent: React.FC<PendingBookingContentProps> = ({
         </div>
       </div>
       
-      {/* Contact Information */}
-      <div className="space-y-1">
-        {booking.contact && (
-          <div className="flex items-center space-x-2">
-            <Phone className="w-4 h-4 text-gray-400" />
-            <span className="text-gray-300 text-sm">{booking.contact}</span>
-          </div>
-        )}
-        {booking.email && (
-          <div className="flex items-center space-x-2">
-            <Mail className="w-4 h-4 text-gray-400" />
-            <span className="text-gray-300 text-sm">{booking.email}</span>
-          </div>
-        )}
-      </div>
-      
       {/* Notes */}
       {booking.notes && (
         <div className="flex items-start space-x-2 mt-3">
@@ -81,6 +58,15 @@ const PendingBookingContent: React.FC<PendingBookingContentProps> = ({
           </div>
         </div>
       )}
+
+      {/* Collapsible Contact Details */}
+      <BookingContactDetails
+        customer={booking.customer}
+        location={booking.location}
+        email={booking.email}
+        contact={booking.contact}
+        clientType={booking.clientType}
+      />
     </div>
   );
 };
