@@ -1,5 +1,5 @@
 
-import { Toaster } from "@/components/ui/toast";
+import { ToastProvider, ToastViewport } from "@/components/ui/toast";
 import { Toaster as Sonner } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -21,13 +21,15 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <AuthProvider>
-            <AppContent />
-          </AuthProvider>
-        </BrowserRouter>
+        <ToastProvider>
+          <ToastViewport />
+          <Sonner />
+          <BrowserRouter>
+            <AuthProvider>
+              <AppContent />
+            </AuthProvider>
+          </BrowserRouter>
+        </ToastProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );
