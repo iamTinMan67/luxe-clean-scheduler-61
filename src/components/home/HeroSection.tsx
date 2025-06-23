@@ -27,7 +27,7 @@ const HeroSection = () => {
       <div className="container mx-auto px-4 relative z-20 text-center max-w-4xl">
         {/* Logo */}
         <motion.div
-          className="mb-12"
+          className="mb-6"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7 }}
@@ -39,22 +39,12 @@ const HeroSection = () => {
           />
         </motion.div>
         
-        {/* Subtitle */}
-        <motion.h2 
-          className="text-2xl md:text-3xl text-gray-300 mb-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.2 }}
-        >
-          Premium Car Care at Your Location
-        </motion.h2>
-        
         {/* Description */}
         <motion.p 
           className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.7, delay: 0.4 }}
+          transition={{ duration: 0.7, delay: 0.2 }}
         >
           Fully, self-sufficient, mobile, cleaning and fine-detailing services. From cars, boats
           and even <span className="text-gold">airplanes.</span> We can do the lot!
@@ -70,7 +60,7 @@ const HeroSection = () => {
           className="bg-gold text-black px-8 py-4 rounded-lg text-lg font-semibold hover:bg-yellow-400 transition-all duration-300 flex items-center gap-2 mx-auto"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.6 }}
+          transition={{ duration: 0.7, delay: 0.4 }}
           whileHover={{ scale: 1.05 }}
         >
           Book Your Service
