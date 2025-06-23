@@ -89,11 +89,14 @@ const Navbar = () => {
       <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
         {/* Logo and Contact Section */}
         <div className="flex flex-col">
-          <Link to="/" className="flex items-center space-x-2" aria-label="Home">
+          <Link to="/" className="flex items-center space-x-2 group" aria-label="Home">
             <img 
               src="/lovable-uploads/20bcd8db-4042-4d14-9238-3fe36de9757f.png" 
               alt="Mid-Cheshire Mobile Valeting" 
-              className="h-20 w-auto" 
+              className="h-20 w-auto opacity-85 transition-all duration-300 hover:opacity-100 mix-blend-screen filter drop-shadow-lg"
+              style={{
+                filter: 'drop-shadow(0 0 10px rgba(255, 255, 255, 0.3))'
+              }}
             />
           </Link>
           
