@@ -6,7 +6,6 @@ import CTASection from "@/components/home/CTASection";
 import CopyrightSection from "@/components/home/CopyrightSection";
 import BubbleEffect from "@/components/ui/BubbleEffect";
 import DataMigration from "@/components/DataMigration";
-import DataMigrationTrigger from "@/components/DataMigrationTrigger";
 
 export default function Index() {
   return (
@@ -28,9 +27,6 @@ export default function Index() {
       
       {/* Customer Feedback Section - Now shows 6 items */}
       <FeedbackSection />
-      
-      {/* Data Migration Trigger for Admin Users */}
-      <DataMigrationTrigger />
       
       {/* Copyright Section - Only on home page */}
       <CopyrightSection />
