@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils";
 import DesktopMenu from "./DesktopMenu";
 import MobileMenu from "./MobileMenu";
 import ContactInfo from "./ContactInfo";
+import SyncStatusIndicator from "@/components/admin/SyncStatusIndicator";
+import { useAuth } from "@/context/AuthContext";
 
 interface AdminRoute {
   path: string;
@@ -19,6 +21,7 @@ const Navbar = () => {
   const [showContact, setShowContact] = useState(false);
   const location = useLocation();
   const isHomePage = location.pathname === '/';
+  const { isAdmin } = useAuth();
   
   // Function to check if current page is admin-related
   const isAdminRelatedPage = () => {
@@ -126,7 +129,11 @@ const Navbar = () => {
           )}
         </div>
         
-        <DesktopMenu adminRoutes={adminRoutes} />
+        {/* Desktop Menu and Sync Status */}
+        <div className="hidden md:flex items-center gap-4">
+          <DesktopMenu adminRoutes={adminRoutes} />
+          {isAdmin && <SyncStatusIndicator />}
+        </div>
 
         {/* Mobile Menu Button */}
         <button
