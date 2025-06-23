@@ -7,21 +7,20 @@ import BookingDetailsCard from "./BookingDetailsCard";
 import ServiceTasksCard from "./ServiceTasksCard";
 import { AlertCircle, Loader2 } from "lucide-react";
 
-interface TrackingFormProps {
+interface TrackingFormV2Props {
   bookingId: string;
 }
 
-const TrackingForm = ({ bookingId }: TrackingFormProps) => {
+const TrackingFormV2 = ({ bookingId }: TrackingFormV2Props) => {
   const { booking, tasks, isInspected, progress, isLoading, error } = useTrackingDataV2(bookingId);
   const [lastUpdateTime, setLastUpdateTime] = useState(new Date());
 
-  // Listen for service progress updates with enhanced real-time feedback
+  // Listen for service progress updates
   useEffect(() => {
     const handleProgressUpdate = (event: CustomEvent) => {
       if (event.detail.bookingId === bookingId) {
-        console.log('Real-time progress update received:', event.detail);
+        console.log('Real-time progress update received in TrackingFormV2:', event.detail);
         setLastUpdateTime(new Date());
-        // The useTrackingDataV2 hook will automatically refresh due to custom events
       }
     };
 
@@ -156,4 +155,4 @@ const TrackingForm = ({ bookingId }: TrackingFormProps) => {
   );
 };
 
-export default TrackingForm;
+export default TrackingFormV2;

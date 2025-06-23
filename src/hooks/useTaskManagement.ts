@@ -1,9 +1,10 @@
 
 import { useBookingSelection } from "./useBookingSelection";
-import { useServiceTasks } from "./useServiceTasks";
+import { useServiceTasksV2 } from "./useServiceTasksV2";
 import { useBookingStateManager } from "./bookings/useBookingStateManager";
 import { syncBookingToSupabase } from "@/services/bookingSyncService";
 import { generateInvoice } from "@/utils/bookingUtils";
+import { useDataSynchronization } from "./tracking/useDataSynchronization";
 import { toast } from "sonner";
 
 export const useTaskManagement = () => {
@@ -20,24 +21,28 @@ export const useTaskManagement = () => {
     setSearchTerm
   } = useBookingSelection();
   
-  // Use the specialized hook for service tasks management
+  // Use the enhanced V2 service tasks management
   const {
     serviceTasks,
     handleUpdateTimeAllocation,
     handleToggleTaskCompletion,
     handleSetActualTime,
     handleSaveServiceProgress
-  } = useServiceTasks(selectedAppointment, currentBooking);
+  } = useServiceTasksV2(selectedAppointment, currentBooking);
 
+  // Use enhanced data synchronization
+  const { syncBookingData } = useDataSynchronization();
+  
   // Use booking state manager for updating booking status
   const { updateBooking } = useBookingStateManager();
 
-  // Handle finishing the job
+  // Handle finishing the job with enhanced synchronization
   const handleFinishJob = async () => {
     if (!currentBooking) return;
 
     try {
-      console.log("Finishing job for booking:", currentBooking.customer);
+      console.log("=== Enhanced Finishing Job ===");
+      console.log("Booking:", currentBooking.customer, currentBooking.id);
       
       // Update booking status to finished
       const finishedBooking = {
@@ -45,7 +50,13 @@ export const useTaskManagement = () => {
         status: "finished" as const
       };
 
-      // Update locally
+      // Update locally using enhanced sync
+      const syncSuccess = syncBookingData(finishedBooking);
+      if (syncSuccess) {
+        console.log('Local booking sync successful');
+      }
+      
+      // Also use the existing booking state manager
       await updateBooking(finishedBooking);
       
       // Sync to Supabase
