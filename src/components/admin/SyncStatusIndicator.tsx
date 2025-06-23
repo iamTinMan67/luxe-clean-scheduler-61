@@ -11,12 +11,24 @@ export default function SyncStatusIndicator() {
   useEffect(() => {
     const checkSyncStatus = () => {
       const isInProgress = dataSyncService.isSyncInProgress();
-      setSyncStatus(isInProgress ? 'syncing' : 'idle');
+      if (isInProgress && syncStatus !== 'syncing') {
+        setSyncStatus('syncing');
+      } else if (!isInProgress && syncStatus === 'syncing') {
+        setSyncStatus('success');
+        setLastSyncTime(new Date());
+        // Reset to idle after showing success for 3 seconds
+        setTimeout(() => setSyncStatus('idle'), 3000);
+      }
     };
 
     const interval = setInterval(checkSyncStatus, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [syncStatus]);
+
+  // Only show indicator when actively syncing or showing success
+  if (syncStatus === 'idle') {
+    return null;
+  }
 
   const getStatusConfig = () => {
     switch (syncStatus) {
@@ -39,15 +51,12 @@ export default function SyncStatusIndicator() {
           variant: 'destructive' as const
         };
       default:
-        return {
-          icon: <CheckCircle size={14} />,
-          text: 'Ready',
-          variant: 'outline' as const
-        };
+        return null;
     }
   };
 
   const config = getStatusConfig();
+  if (!config) return null;
 
   return (
     <div className="flex items-center gap-2">
@@ -55,9 +64,9 @@ export default function SyncStatusIndicator() {
         {config.icon}
         {config.text}
       </Badge>
-      {lastSyncTime && (
+      {lastSyncTime && syncStatus === 'success' && (
         <span className="text-xs text-gray-500">
-          Last sync: {lastSyncTime.toLocaleTimeString()}
+          {lastSyncTime.toLocaleTimeString()}
         </span>
       )}
     </div>

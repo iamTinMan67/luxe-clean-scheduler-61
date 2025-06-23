@@ -11,7 +11,7 @@ export const useDataSync = () => {
 
     const initializeSync = async () => {
       if (user && mounted) {
-        console.log('User authenticated, initializing data sync...');
+        console.log('User authenticated, initializing silent data sync...');
         await dataSyncService.initialize();
       }
     };
@@ -27,9 +27,10 @@ export const useDataSync = () => {
     };
   }, [user]);
 
-  // Manual sync function
+  // Manual sync function for debugging purposes only
   const triggerManualSync = async () => {
     if (user) {
+      console.log('Manual sync triggered by admin');
       return await dataSyncService.manualSync();
     }
     console.warn('User not authenticated, cannot sync');

@@ -2,12 +2,12 @@
 import { supabase } from "@/integrations/supabase/client";
 import { migrateAllData } from "@/utils/migrationUtils";
 import { syncLocalStorageToSupabase } from "@/utils/dataSyncUtils";
-import { toast } from "sonner";
 
 class DataSyncService {
   private static instance: DataSyncService;
   private syncInterval: NodeJS.Timeout | null = null;
   private isSyncing = false;
+  private migrationAttempted = false;
 
   static getInstance(): DataSyncService {
     if (!DataSyncService.instance) {
@@ -16,31 +16,38 @@ class DataSyncService {
     return DataSyncService.instance;
   }
 
-  // Check if initial migration is needed
-  async checkAndPerformInitialMigration(): Promise<void> {
+  // Silently check and perform initial migration
+  async checkAndPerformInitialMigration(): Promise<void> => {
+    if (this.migrationAttempted) {
+      return; // Only attempt migration once per session
+    }
+    
+    this.migrationAttempted = true;
+    
     try {
       const migrationComplete = localStorage.getItem('dataMigrationComplete') === 'true';
       
       if (!migrationComplete) {
-        console.log('Initial migration needed - checking for data...');
+        console.log('Silent migration check - looking for local data...');
         
         // Check if we have data in localStorage that needs migrating
         const hasLocalData = this.hasLocalStorageData();
         
         if (hasLocalData) {
-          console.log('Local data found - starting migration...');
+          console.log('Local data found - starting silent migration...');
           await migrateAllData();
-          console.log('Initial migration completed');
+          console.log('Silent migration completed successfully');
         } else {
           // No local data to migrate, mark as complete
           localStorage.setItem('dataMigrationComplete', 'true');
-          console.log('No local data to migrate');
+          console.log('No local data to migrate - marking as complete');
         }
       } else {
         console.log('Migration already completed');
       }
     } catch (error) {
-      console.error('Error during initial migration check:', error);
+      console.error('Error during silent migration:', error);
+      // Don't throw error to avoid disrupting app startup
     }
   }
 
@@ -93,7 +100,7 @@ class DataSyncService {
     }
   }
 
-  // Perform sync operation
+  // Perform sync operation silently
   async performSync(): Promise<boolean> {
     if (this.isSyncing) {
       console.log('Sync already in progress, skipping...');
@@ -103,31 +110,22 @@ class DataSyncService {
     this.isSyncing = true;
     
     try {
-      console.log('Starting data sync...');
+      console.log('Starting silent data sync...');
       await syncLocalStorageToSupabase();
-      console.log('Data sync completed successfully');
+      console.log('Silent data sync completed successfully');
       return true;
     } catch (error) {
-      console.error('Data sync failed:', error);
+      console.error('Silent data sync failed:', error);
       return false;
     } finally {
       this.isSyncing = false;
     }
   }
 
-  // Manual sync with user feedback
+  // Manual sync with minimal feedback (for debugging purposes)
   async manualSync(): Promise<boolean> {
-    toast.info('Starting manual data sync...');
-    
-    const success = await this.performSync();
-    
-    if (success) {
-      toast.success('Data sync completed successfully');
-    } else {
-      toast.error('Data sync failed - please try again');
-    }
-    
-    return success;
+    console.log('Manual sync triggered');
+    return await this.performSync();
   }
 
   // Check sync status
@@ -135,17 +133,18 @@ class DataSyncService {
     return this.isSyncing;
   }
 
-  // Initialize the service
+  // Initialize the service with silent migration
   async initialize(): Promise<void> {
     try {
-      // Check for initial migration
+      console.log('Initializing data sync service...');
+      
+      // Perform silent migration check
       await this.checkAndPerformInitialMigration();
       
-      // Start periodic sync if migration is complete
-      const migrationComplete = localStorage.getItem('dataMigrationComplete') === 'true';
-      if (migrationComplete) {
-        this.startPeriodicSync();
-      }
+      // Start periodic sync once migration is handled
+      this.startPeriodicSync();
+      
+      console.log('Data sync service initialized successfully');
     } catch (error) {
       console.error('Error initializing data sync service:', error);
     }
@@ -154,6 +153,7 @@ class DataSyncService {
   // Cleanup method
   cleanup(): void {
     this.stopPeriodicSync();
+    this.migrationAttempted = false;
   }
 }
 
