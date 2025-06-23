@@ -1,5 +1,7 @@
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { useBubblePhysics } from './useBubblePhysics';
+import { useBubbleCollisions } from './useBubbleCollisions';
 
 interface Bubble {
   id: number;
@@ -18,6 +20,20 @@ interface Bubble {
 
 export const useBubbleGeneration = (bubbleCount: number = 20) => {
   const [bubbles, setBubbles] = useState<Bubble[]>([]);
+  const { 
+    initializeBubble, 
+    updatePhysics, 
+    getBubblePhysics, 
+    clearPhysics 
+  } = useBubblePhysics();
+  const { 
+    initializeQuadrants, 
+    updateSpatialGrid, 
+    getPotentialCollisions 
+  } = useBubbleCollisions();
+  
+  const animationFrameRef = useRef<number>();
+  const lastUpdateRef = useRef<number>(Date.now());
 
   const colors = [
     'rgba(255, 182, 193, 0.8)', // Light pink
@@ -34,6 +50,7 @@ export const useBubbleGeneration = (bubbleCount: number = 20) => {
 
   const generateBubbles = useCallback(() => {
     const newBubbles: Bubble[] = [];
+    clearPhysics();
     
     for (let i = 0; i < bubbleCount; i++) {
       const size = Math.random() * 60 + 20; // 20-80px
@@ -43,34 +60,72 @@ export const useBubbleGeneration = (bubbleCount: number = 20) => {
       
       const bubble: Bubble = {
         id: i,
-        x: Math.random() * 90 + 5, // 5-95% to avoid edges
-        y: Math.random() * 90 + 5, // 5-95% to avoid edges
+        x: Math.random() * 80 + 10, // 10-90% to avoid edges
+        y: Math.random() * 80 + 10, // 10-90% to avoid edges
         size,
         duration: Math.random() * 4 + 3, // 3-7s
         delay: Math.random() * 2, // 0-2s delay
         color,
         animationType,
-        velocityX: (Math.random() - 0.5) * 2, // -1 to 1
-        velocityY: (Math.random() - 0.5) * 2, // -1 to 1
+        velocityX: (Math.random() - 0.5) * 1, // -0.5 to 0.5
+        velocityY: (Math.random() - 0.5) * 1, // -0.5 to 0.5
         opacity: Math.random() * 0.5 + 0.3, // 0.3-0.8 opacity
         layer
       };
       
+      initializeBubble(bubble);
       newBubbles.push(bubble);
     }
     
     setBubbles(newBubbles);
-  }, [bubbleCount]);
+  }, [bubbleCount, clearPhysics, initializeBubble]);
+
+  const updateBubblePositions = useCallback(() => {
+    const now = Date.now();
+    const deltaTime = now - lastUpdateRef.current;
+    lastUpdateRef.current = now;
+    
+    setBubbles(prevBubbles => {
+      updateSpatialGrid(prevBubbles);
+      const updatedPhysics = updatePhysics(deltaTime);
+      
+      return prevBubbles.map(bubble => {
+        const physics = getBubblePhysics(bubble.id);
+        if (physics) {
+          return {
+            ...bubble,
+            x: physics.x,
+            y: physics.y,
+            velocityX: physics.velocityX,
+            velocityY: physics.velocityY
+          };
+        }
+        return bubble;
+      });
+    });
+    
+    animationFrameRef.current = requestAnimationFrame(updateBubblePositions);
+  }, [updatePhysics, getBubblePhysics, updateSpatialGrid]);
 
   useEffect(() => {
+    initializeQuadrants();
     generateBubbles();
     
     const interval = setInterval(() => {
       generateBubbles();
-    }, 10000); // Regenerate every 10 seconds
+    }, 15000); // Regenerate every 15 seconds
     
-    return () => clearInterval(interval);
-  }, [generateBubbles]);
+    // Start physics animation loop
+    animationFrameRef.current = requestAnimationFrame(updateBubblePositions);
+    
+    return () => {
+      clearInterval(interval);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      clearPhysics();
+    };
+  }, [generateBubbles, updateBubblePositions, initializeQuadrants, clearPhysics]);
 
   return bubbles;
 };
