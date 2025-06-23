@@ -82,13 +82,14 @@ const Navbar = () => {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 w-full z-40 transition-all duration-300",
+        "fixed top-0 left-0 w-full transition-all duration-300",
         scrolled ? "backdrop-blur-md py-2 shadow-md" : "py-4"
       )}
       style={{
         background: scrolled 
           ? 'rgba(0, 0, 0, 0.3)' 
-          : 'transparent'
+          : 'transparent',
+        zIndex: 10 // Above bubbles but allow transparency
       }}
     >
       <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
@@ -96,11 +97,12 @@ const Navbar = () => {
         <div className="flex flex-col">
           <Link to="/" className="flex items-center space-x-2 group" aria-label="Home">
             <img 
-              src="/lovable-uploads/20bcd8db-4042-4d14-9238-3fe36de9757f.png" 
+              src="/lovable-uploads/db88bc12-bb88-4318-a91c-da8a3314c406.png" 
               alt="Mid-Cheshire Mobile Valeting" 
-              className="h-20 w-auto opacity-75 transition-all duration-300 hover:opacity-90 mix-blend-screen filter drop-shadow-lg relative z-10"
+              className="h-20 w-auto opacity-90 transition-all duration-300 hover:opacity-100"
               style={{
-                filter: 'drop-shadow(0 0 10px rgba(255, 255, 255, 0.3))'
+                filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3))',
+                mixBlendMode: 'normal'
               }}
             />
           </Link>
@@ -116,7 +118,7 @@ const Navbar = () => {
               </button>
               
               {showContact && (
-                <div className="absolute bg-black/90 p-3 rounded-md shadow-lg border border-gold/20 mt-1">
+                <div className="absolute bg-black/90 p-3 rounded-md shadow-lg border border-gold/20 mt-1" style={{ zIndex: 20 }}>
                   <ContactInfo />
                 </div>
               )}

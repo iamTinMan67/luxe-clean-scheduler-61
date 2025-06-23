@@ -10,13 +10,12 @@ interface BubbleEffectProps {
 }
 
 const BubbleEffect = ({ 
-  bubbleCount = 12, // Reduced count for better performance with physics
+  bubbleCount = 8, // Reduced for better performance
   className = "",
   interactive = true 
 }: BubbleEffectProps) => {
   const bubbles = useBubbleGeneration(bubbleCount);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [mouseVelocity, setMouseVelocity] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (!interactive) return;
@@ -25,14 +24,8 @@ const BubbleEffect = ({
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
     
-    // Calculate mouse velocity for enhanced interactions
-    setMouseVelocity({
-      x: x - mousePosition.x,
-      y: y - mousePosition.y
-    });
-    
     setMousePosition({ x, y });
-  }, [interactive, mousePosition]);
+  }, [interactive]);
 
   const getBubbleRepulsion = useCallback((bubble: any) => {
     if (!interactive) return {};
@@ -40,63 +33,44 @@ const BubbleEffect = ({
     const dx = bubble.x - mousePosition.x;
     const dy = bubble.y - mousePosition.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
-    const repulsionRadius = 15;
+    const repulsionRadius = 12;
     
     if (distance < repulsionRadius && distance > 0) {
       const force = (repulsionRadius - distance) / repulsionRadius;
-      // Factor in mouse velocity for more dynamic interactions
-      const velocityFactor = Math.sqrt(mouseVelocity.x * mouseVelocity.x + mouseVelocity.y * mouseVelocity.y) * 0.1;
-      const enhancedForce = force * (1 + velocityFactor);
-      
-      const repulsionX = (dx / distance) * enhancedForce * 4;
-      const repulsionY = (dy / distance) * enhancedForce * 4;
+      const repulsionX = (dx / distance) * force * 3;
+      const repulsionY = (dy / distance) * force * 3;
       
       return {
         transform: `translate(${repulsionX}%, ${repulsionY}%) scale(${1 + force * 0.1})`,
-        transition: 'transform 0.15s ease-out',
-        filter: `brightness(${1 + force * 0.3})`,
+        transition: 'transform 0.2s ease-out',
       };
     }
     
     return {
-      transition: 'transform 0.3s ease-out, filter 0.3s ease-out',
-      filter: 'brightness(1)',
+      transition: 'transform 0.4s ease-out',
     };
-  }, [mousePosition, mouseVelocity, interactive]);
-
-  // Performance monitoring
-  useEffect(() => {
-    const logPerformance = () => {
-      console.log(`Bubble Physics: ${bubbles.length} bubbles active`);
-    };
-    
-    const interval = setInterval(logPerformance, 5000);
-    return () => clearInterval(interval);
-  }, [bubbles.length]);
+  }, [mousePosition, interactive]);
 
   return (
     <div 
-      className={`fixed inset-0 pointer-events-none overflow-hidden z-50 ${className}`}
+      className={`fixed inset-0 pointer-events-none overflow-hidden ${className}`}
       onMouseMove={handleMouseMove}
+      style={{ zIndex: 1 }} // Behind navbar but above page content
     >
       {bubbles.map((bubble) => (
         <div
           key={bubble.id}
-          style={getBubbleRepulsion(bubble)}
-          className="absolute"
+          style={{
+            position: 'absolute',
+            left: `${bubble.x}%`,
+            top: `${bubble.y}%`,
+            zIndex: 1,
+            ...getBubbleRepulsion(bubble)
+          }}
         >
           <Bubble bubble={bubble} />
         </div>
       ))}
-      
-      {/* Debug info (only in development) */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="absolute top-4 right-4 text-xs text-white/50 pointer-events-auto">
-          <div>Bubbles: {bubbles.length}</div>
-          <div>Mouse: {mousePosition.x.toFixed(1)}, {mousePosition.y.toFixed(1)}</div>
-          <div>Velocity: {mouseVelocity.x.toFixed(2)}, {mouseVelocity.y.toFixed(2)}</div>
-        </div>
-      )}
     </div>
   );
 };
