@@ -96,28 +96,31 @@
   
   .bubble {
     @apply absolute rounded-full pointer-events-none;
-    will-change: transform, opacity;
+    will-change: transform, opacity, filter;
     transform-style: preserve-3d;
+    contain: layout style paint;
   }
   
   .bubble-body {
-    will-change: transform;
+    will-change: transform, opacity;
     transform-style: preserve-3d;
+    contain: layout style paint;
   }
   
   .bubble-shimmer {
-    will-change: opacity;
+    will-change: opacity, transform;
+    contain: layout style paint;
   }
   
   .animate-pop {
-    animation: pop 0.3s ease-out forwards;
+    animation: pop 0.4s ease-out forwards;
   }
 }
 
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-  100% { transform: translateY(0px); }
+  0% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-20px) scale(1.02); }
+  100% { transform: translateY(0px) scale(1); }
 }
 
 @keyframes pulse-subtle {
@@ -131,27 +134,50 @@
     opacity: 1; 
   }
   50% { 
-    transform: scale(1.4); 
-    opacity: 0.8; 
-    filter: blur(2px);
+    transform: scale(1.6); 
+    opacity: 0.7; 
+    filter: blur(3px);
   }
   100% { 
     transform: scale(0); 
     opacity: 0; 
-    filter: blur(4px);
+    filter: blur(6px);
   }
 }
 
-/* Performance optimizations for bubbles */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    transform: scale(1); 
+    opacity: 0.8; 
+  }
+  50% { 
+    transform: scale(1.1); 
+    opacity: 1; 
+  }
+}
+
+/* Enhanced performance optimizations for bubbles */
+.bubble,
 .bubble * {
   backface-visibility: hidden;
   transform-style: preserve-3d;
+  contain: layout style paint;
+}
+
+/* GPU acceleration for smooth animations */
+.bubble {
+  transform: translateZ(0);
 }
 
 /* Reduced motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
   .bubble {
-    animation-duration: 8s !important;
+    animation-duration: 10s !important;
     animation-timing-function: linear !important;
   }
   
@@ -159,4 +185,23 @@
     animation: none !important;
     opacity: 0 !important;
   }
+  
+  /* Disable complex animations for reduced motion */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+  }
+}
+
+/* Performance optimizations */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+.contain-layout {
+  contain: layout;
 }
