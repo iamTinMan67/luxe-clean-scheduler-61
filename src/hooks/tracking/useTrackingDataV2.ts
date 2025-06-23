@@ -1,8 +1,9 @@
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Booking } from "@/types/booking";
 import { ServiceTaskItem } from "@/types/task";
+import { trackingDataSync } from "@/services/trackingDataSync";
 
 interface UseTrackingDataReturn {
   booking: Booking | null;
@@ -23,6 +24,7 @@ export const useTrackingDataV2 = (bookingId: string): UseTrackingDataReturn => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const lastLoadTime = useRef<number>(0);
 
   // Enhanced progress calculation with weighted tasks
   const calculateProgress = useCallback((serviceTasks: ServiceTaskItem[]) => {
@@ -60,44 +62,28 @@ export const useTrackingDataV2 = (bookingId: string): UseTrackingDataReturn => {
     ];
   }, []);
 
-  // Unified data loader function
+  // Enhanced data loader with consistency validation
   const loadAllData = useCallback(() => {
-    console.log('=== Loading Tracking Data ===');
+    console.log('=== Enhanced Loading Tracking Data ===');
     console.log('Booking ID:', bookingId);
+    
+    // Prevent excessive loading calls
+    const now = Date.now();
+    if (now - lastLoadTime.current < 500) {
+      console.log('Throttling load call - too recent');
+      return;
+    }
+    lastLoadTime.current = now;
+    
     setError(null);
     
     try {
-      // Load booking from all possible sources
-      const confirmedBookingsStr = localStorage.getItem('confirmedBookings');
-      const plannerBookingsStr = localStorage.getItem('plannerCalendarBookings');
+      // Get comprehensive tracking data
+      const trackingData = trackingDataSync.getTrackingData(bookingId);
+      console.log('Tracking data:', trackingData);
       
-      let foundBooking: Booking | null = null;
-      
-      // Check confirmed bookings first
-      if (confirmedBookingsStr) {
-        try {
-          const confirmedBookings = JSON.parse(confirmedBookingsStr);
-          foundBooking = confirmedBookings.find((b: Booking) => b.id === bookingId) || null;
-          if (foundBooking) {
-            console.log('Found booking in confirmedBookings:', foundBooking.customer, foundBooking.status);
-          }
-        } catch (e) {
-          console.error('Error parsing confirmedBookings:', e);
-        }
-      }
-      
-      // Check planner bookings if not found
-      if (!foundBooking && plannerBookingsStr) {
-        try {
-          const plannerBookings = JSON.parse(plannerBookingsStr);
-          foundBooking = plannerBookings.find((b: Booking) => b.id === bookingId) || null;
-          if (foundBooking) {
-            console.log('Found booking in plannerCalendarBookings:', foundBooking.customer, foundBooking.status);
-          }
-        } catch (e) {
-          console.error('Error parsing plannerCalendarBookings:', e);
-        }
-      }
+      // Find booking from either source
+      const foundBooking = trackingData.confirmedBooking || trackingData.plannerBooking;
       
       if (!foundBooking) {
         console.log('Booking not found in any localStorage source');
@@ -115,6 +101,7 @@ export const useTrackingDataV2 = (bookingId: string): UseTrackingDataReturn => {
         return;
       }
 
+      console.log('Found booking:', foundBooking.customer, foundBooking.status);
       setBooking(foundBooking);
       setIsInspected(foundBooking.status === "inspected" || foundBooking.status === "in-progress" || foundBooking.status === "finished");
       
@@ -126,37 +113,27 @@ export const useTrackingDataV2 = (bookingId: string): UseTrackingDataReturn => {
         setProgress(0);
         console.log('Using placeholder tasks for inspecting status');
       } else {
-        // Load real service tasks from localStorage
-        const serviceProgressStr = localStorage.getItem('serviceProgress');
-        
-        if (serviceProgressStr) {
-          try {
-            const serviceProgress = JSON.parse(serviceProgressStr);
-            const bookingProgress = serviceProgress.find((p: any) => p.bookingId === bookingId);
-            
-            if (bookingProgress && bookingProgress.tasks && Array.isArray(bookingProgress.tasks)) {
-              console.log('Found service progress:', bookingProgress.tasks.length, 'tasks');
-              setTasks(bookingProgress.tasks);
-              
-              // Calculate progress using enhanced method
-              const calculatedProgress = calculateProgress(bookingProgress.tasks);
-              setProgress(calculatedProgress);
-              console.log('Calculated progress:', calculatedProgress + '%');
-            } else {
-              console.log('No service progress found for booking, using empty tasks');
-              setTasks([]);
-              setProgress(0);
-            }
-          } catch (e) {
-            console.error('Error parsing serviceProgress:', e);
-            setTasks([]);
-            setProgress(0);
-          }
+        // Load real service tasks from serviceProgress
+        if (trackingData.serviceProgress && trackingData.serviceProgress.tasks) {
+          console.log('Found service progress:', trackingData.serviceProgress.tasks.length, 'tasks');
+          setTasks(trackingData.serviceProgress.tasks);
+          
+          // Use the stored progress percentage or calculate it
+          const calculatedProgress = trackingData.serviceProgress.progressPercentage || 
+                                   calculateProgress(trackingData.serviceProgress.tasks);
+          setProgress(calculatedProgress);
+          console.log('Progress:', calculatedProgress + '%');
         } else {
-          console.log('No serviceProgress in localStorage');
+          console.log('No service progress found for booking');
           setTasks([]);
           setProgress(0);
         }
+      }
+      
+      // Validate data consistency
+      const isConsistent = trackingDataSync.validateDataConsistency(bookingId);
+      if (!isConsistent) {
+        console.warn('Data consistency issues detected');
       }
       
       // Extended session management
@@ -165,10 +142,10 @@ export const useTrackingDataV2 = (bookingId: string): UseTrackingDataReturn => {
       }
       
       setIsLoading(false);
-      console.log('=== Data Loading Complete ===');
+      console.log('=== Enhanced Data Loading Complete ===');
       
     } catch (error) {
-      console.error('Error in loadAllData:', error);
+      console.error('Error in enhanced loadAllData:', error);
       setError('Failed to load tracking data');
       setIsLoading(false);
     }
@@ -189,54 +166,81 @@ export const useTrackingDataV2 = (bookingId: string): UseTrackingDataReturn => {
 
   // Initial load effect
   useEffect(() => {
-    loadAllData();
-  }, [loadAllData]);
+    if (bookingId) {
+      loadAllData();
+    }
+  }, [bookingId, loadAllData]);
 
-  // Real-time updates via storage events
+  // Enhanced real-time event listeners
   useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'serviceProgress' || e.key === 'confirmedBookings' || e.key === 'plannerCalendarBookings') {
-        console.log('Storage change detected for key:', e.key);
+    const handleSyncEvents = (event: CustomEvent) => {
+      console.log('Real-time sync event received:', event.type, event.detail);
+      
+      if (event.detail.bookingId === bookingId) {
+        console.log('Event matches current booking, refreshing data');
         loadAllData();
+      }
+    };
+
+    // Listen to both new and legacy events
+    const eventTypes = ['booking-updated', 'service-progress-updated', 'serviceProgressUpdate'];
+    
+    eventTypes.forEach(eventType => {
+      window.addEventListener(eventType, handleSyncEvents as EventListener);
+    });
+    
+    return () => {
+      eventTypes.forEach(eventType => {
+        window.removeEventListener(eventType, handleSyncEvents as EventListener);
+      });
+    };
+  }, [bookingId, loadAllData]);
+
+  // Storage change listener with throttling
+  useEffect(() => {
+    let throttleTimeout: NodeJS.Timeout;
+    
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'serviceProgress' || e.key === 'confirmedBookings' || e.key === 'plannerCalendarBookings' || e.key === 'trackingProgress') {
+        console.log('Storage change detected for key:', e.key);
+        
+        // Throttle storage events to prevent excessive updates
+        clearTimeout(throttleTimeout);
+        throttleTimeout = setTimeout(() => {
+          loadAllData();
+        }, 300);
       }
     };
     
     window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearTimeout(throttleTimeout);
+    };
   }, [loadAllData]);
 
-  // Custom event listener for real-time updates
+  // Reduced polling frequency with smarter updates
   useEffect(() => {
-    const handleProgressUpdate = (event: CustomEvent) => {
-      if (event.detail.bookingId === bookingId) {
-        console.log('Real-time progress update received:', event.detail);
+    if (!bookingId) return;
+    
+    const interval = setInterval(() => {
+      // Only poll if we're not in an error state and the booking exists
+      if (!error && booking) {
         loadAllData();
       }
-    };
-
-    window.addEventListener('serviceProgressUpdate', handleProgressUpdate as EventListener);
-    return () => {
-      window.removeEventListener('serviceProgressUpdate', handleProgressUpdate as EventListener);
-    };
-  }, [bookingId, loadAllData]);
-
-  // Polling for updates every 2 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      loadAllData();
-    }, 2000);
+    }, 3000); // Reduced from 2s to 3s
     
     return () => clearInterval(interval);
-  }, [loadAllData]);
+  }, [bookingId, loadAllData, error, booking]);
 
-  // Redirect if session expired
+  // Redirect handlers
   useEffect(() => {
     if (sessionExpired) {
       navigate("/track");
     }
   }, [sessionExpired, navigate]);
 
-  // Redirect if booking not found and loading complete
   useEffect(() => {
     if (!isLoading && !booking && !error) {
       navigate("/track");

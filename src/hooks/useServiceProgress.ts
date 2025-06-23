@@ -2,13 +2,12 @@
 import { useToast } from "@/hooks/use-toast";
 import { Booking } from "@/types/booking";
 import { ServiceTaskItem } from "@/types/task";
-import { useDataSynchronization } from "./tracking/useDataSynchronization";
+import { trackingDataSync } from '@/services/trackingDataSync';
 
 export const useServiceProgress = () => {
   const { toast } = useToast();
-  const { syncServiceProgress, syncBookingData } = useDataSynchronization();
   
-  // Save service progress with enhanced synchronization
+  // Enhanced save service progress with comprehensive synchronization
   const saveServiceProgress = (bookingId: string, serviceTasks: ServiceTaskItem[]) => {
     if (!bookingId) {
       console.error('No booking ID provided for saveServiceProgress');
@@ -19,36 +18,15 @@ export const useServiceProgress = () => {
     console.log('Booking ID:', bookingId);
     console.log('Tasks:', serviceTasks.length);
     
-    const success = syncServiceProgress(bookingId, serviceTasks);
+    const success = trackingDataSync.syncServiceProgress(bookingId, serviceTasks);
     
     if (success) {
-      // Check if all tasks are completed and update booking status
-      const allTasksCompleted = serviceTasks.every(task => task.completed);
-      
-      if (allTasksCompleted) {
-        // Find and update the booking status
-        const confirmedBookingsStr = localStorage.getItem('confirmedBookings');
-        const plannerBookingsStr = localStorage.getItem('plannerCalendarBookings');
-        
-        let foundBooking: Booking | null = null;
-        
-        if (confirmedBookingsStr) {
-          const confirmedBookings = JSON.parse(confirmedBookingsStr);
-          foundBooking = confirmedBookings.find((b: Booking) => b.id === bookingId);
-        }
-        
-        if (!foundBooking && plannerBookingsStr) {
-          const plannerBookings = JSON.parse(plannerBookingsStr);
-          foundBooking = plannerBookings.find((b: Booking) => b.id === bookingId);
-        }
-        
-        if (foundBooking && foundBooking.status !== "finished") {
-          const updatedBooking = { ...foundBooking, status: "finished" as const };
-          syncBookingData(updatedBooking);
-          console.log('Updated booking status to finished');
-        }
-      }
+      console.log('Enhanced save service progress completed successfully');
+    } else {
+      console.error('Enhanced save service progress failed');
     }
+    
+    return success;
   };
 
   // Function to save progress with enhanced notification
@@ -58,12 +36,20 @@ export const useServiceProgress = () => {
       const totalTasks = serviceTasks.length;
       const progressPercentage = Math.round((completedTasks / totalTasks) * 100);
       
-      saveServiceProgress(bookingId, serviceTasks);
+      const success = saveServiceProgress(bookingId, serviceTasks);
       
-      toast({
-        title: "Service progress updated",
-        description: `Progress: ${completedTasks}/${totalTasks} tasks complete (${progressPercentage}%)`,
-      });
+      if (success) {
+        toast({
+          title: "Service progress updated",
+          description: `Progress: ${completedTasks}/${totalTasks} tasks complete (${progressPercentage}%)`,
+        });
+      } else {
+        toast({
+          title: "Update failed",
+          description: "Failed to save service progress. Please try again.",
+          variant: "destructive"
+        });
+      }
     }
   };
 
