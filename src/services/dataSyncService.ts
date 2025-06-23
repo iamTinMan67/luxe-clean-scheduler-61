@@ -17,7 +17,7 @@ class DataSyncService {
   }
 
   // Silently check and perform initial migration
-  async checkAndPerformInitialMigration(): Promise<void> => {
+  async checkAndPerformInitialMigration(): Promise<void> {
     if (this.migrationAttempted) {
       return; // Only attempt migration once per session
     }
