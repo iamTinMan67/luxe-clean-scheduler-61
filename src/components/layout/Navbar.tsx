@@ -89,7 +89,7 @@ const Navbar = () => {
         background: scrolled 
           ? 'rgba(0, 0, 0, 0.3)' 
           : 'transparent',
-        zIndex: 10 // Above bubbles but allow transparency
+        zIndex: 50 // Increased z-index to be above bubbles
       }}
     >
       <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
@@ -97,7 +97,7 @@ const Navbar = () => {
         <div className="flex flex-col">
           <Link to="/" className="flex items-center space-x-2 group" aria-label="Home">
             <img 
-              src="/lovable-uploads/db88bc12-bb88-4318-a91c-da8a3314c406.png" 
+              src="/lovable-uploads/20bcd8db-4042-4d14-9238-3fe36de9757f.png" 
               alt="Mid-Cheshire Mobile Valeting" 
               className="h-20 w-auto opacity-90 transition-all duration-300 hover:opacity-100"
               style={{
@@ -118,7 +118,7 @@ const Navbar = () => {
               </button>
               
               {showContact && (
-                <div className="absolute bg-black/90 p-3 rounded-md shadow-lg border border-gold/20 mt-1" style={{ zIndex: 20 }}>
+                <div className="absolute bg-black/90 p-3 rounded-md shadow-lg border border-gold/20 mt-1" style={{ zIndex: 60 }}>
                   <ContactInfo />
                 </div>
               )}

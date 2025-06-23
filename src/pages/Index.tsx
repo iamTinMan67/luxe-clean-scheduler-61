@@ -4,10 +4,14 @@ import FeaturesSection from "@/components/home/FeaturesSection";
 import FeedbackSection from "@/components/home/FeedbackSection";
 import CTASection from "@/components/home/CTASection";
 import CopyrightSection from "@/components/home/CopyrightSection";
+import BubbleEffect from "@/components/ui/BubbleEffect";
 
 export default function Index() {
   return (
     <div className="relative">
+      {/* Bubble Effect - Behind everything except navbar */}
+      <BubbleEffect bubbleCount={12} interactive={true} />
+      
       {/* Hero Section */}
       <HeroSection />
       

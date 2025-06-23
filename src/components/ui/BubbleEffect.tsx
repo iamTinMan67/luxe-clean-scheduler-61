@@ -55,7 +55,7 @@ const BubbleEffect = ({
     <div 
       className={`fixed inset-0 pointer-events-none overflow-hidden ${className}`}
       onMouseMove={handleMouseMove}
-      style={{ zIndex: 1 }} // Behind navbar but above page content
+      style={{ zIndex: 10 }} // Above page content but below navbar (z-index 50)
     >
       {bubbles.map((bubble) => (
         <div
@@ -64,7 +64,7 @@ const BubbleEffect = ({
             position: 'absolute',
             left: `${bubble.x}%`,
             top: `${bubble.y}%`,
-            zIndex: 1,
+            zIndex: 10,
             ...getBubbleRepulsion(bubble)
           }}
         >

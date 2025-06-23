@@ -33,7 +33,7 @@ const HeroSection = () => {
           transition={{ duration: 0.7 }}
         >
           <img 
-            src="/lovable-uploads/db88bc12-bb88-4318-a91c-da8a3314c406.png" 
+            src="/lovable-uploads/20bcd8db-4042-4d14-9238-3fe36de9757f.png" 
             alt="Mid-Cheshire Valeting" 
             className="mx-auto w-auto h-40 md:h-56"
           />
