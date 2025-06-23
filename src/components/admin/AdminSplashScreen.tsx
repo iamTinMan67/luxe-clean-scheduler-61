@@ -4,7 +4,6 @@ import WelcomeHeader from "./splash/WelcomeHeader";
 import CategorySection from "./splash/CategorySection";
 import QuickStatsFooter from "./splash/QuickStatsFooter";
 import PendingNotificationsView from "./splash/PendingNotificationsView";
-import ManualDataMigration from "./ManualDataMigration";
 import { categoryConfig } from "./splash/categoryConfig";
 import { adminFunctions } from "./splash/adminFunctionsData";
 
@@ -28,9 +27,6 @@ const AdminSplashScreen = () => {
       className="container mx-auto py-8 px-4 space-y-8"
     >
       <WelcomeHeader />
-      
-      {/* Data Migration Section */}
-      <ManualDataMigration />
       
       <PendingNotificationsView />
       
