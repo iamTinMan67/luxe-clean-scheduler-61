@@ -27,35 +27,24 @@ const HeroSection = () => {
       <div className="container mx-auto px-4 relative z-20 text-center max-w-4xl">
         {/* Logo */}
         <motion.div
-          className="mb-8"
+          className="mb-12"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7 }}
         >
           <img 
-            src="/lovable-uploads/20bcd8db-4042-4d14-9238-3fe36de9757f.png" 
+            src="/lovable-uploads/db88bc12-bb88-4318-a91c-da8a3314c406.png" 
             alt="Mid-Cheshire Valeting" 
-            className="mx-auto w-auto h-32 md:h-40 drop-shadow-lg"
+            className="mx-auto w-auto h-40 md:h-48 drop-shadow-2xl"
           />
         </motion.div>
-
-        {/* Main Title */}
-        <motion.h1 
-          className="text-5xl md:text-7xl font-bold text-white mb-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.2 }}
-        >
-          Mid-Cheshire
-          <span className="text-gold block">Valeting</span>
-        </motion.h1>
         
         {/* Subtitle */}
         <motion.h2 
           className="text-2xl md:text-3xl text-gray-300 mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.4 }}
+          transition={{ duration: 0.7, delay: 0.2 }}
         >
           Premium Car Care at Your Location
         </motion.h2>
@@ -65,7 +54,7 @@ const HeroSection = () => {
           className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.7, delay: 0.6 }}
+          transition={{ duration: 0.7, delay: 0.4 }}
         >
           Fully, self-sufficient, mobile, cleaning and fine-detailing services. From cars, boats
           and even <span className="text-gold">airplanes.</span> We can do the lot!
@@ -81,7 +70,7 @@ const HeroSection = () => {
           className="bg-gold text-black px-8 py-4 rounded-lg text-lg font-semibold hover:bg-yellow-400 transition-all duration-300 flex items-center gap-2 mx-auto"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.8 }}
+          transition={{ duration: 0.7, delay: 0.6 }}
           whileHover={{ scale: 1.05 }}
         >
           Book Your Service
