@@ -1,38 +1,17 @@
 
-import { ToastProvider, ToastViewport } from "@/components/ui/toast";
-import { Toaster as Sonner } from "sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter } from "react-router-dom";
+import { RouterProvider } from 'react-router-dom'
+import router from './router'
+import DataMigration from "@/components/DataMigration";
 import { AuthProvider } from "@/context/AuthContext";
-import AppRouter from "@/router";
-import { useDataSync } from "@/hooks/useDataSync";
 
-const queryClient = new QueryClient();
-
-function AppContent() {
-  // Initialize data sync
-  useDataSync();
-
-  return <AppRouter />;
-}
-
-function App() {
+const App = () => {
+  console.log("App component rendering");
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <ToastProvider>
-          <ToastViewport />
-          <Sonner />
-          <BrowserRouter>
-            <AuthProvider>
-              <AppContent />
-            </AuthProvider>
-          </BrowserRouter>
-        </ToastProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <AuthProvider>
+      <DataMigration />
+      <RouterProvider router={router} />
+    </AuthProvider>
   );
-}
+};
 
 export default App;

@@ -1,10 +1,11 @@
 
 import { syncMultipleBookingsToSupabase } from '@/services/bookingSyncService';
 import { Booking } from '@/types/booking';
+import { toast } from 'sonner';
 
 export const syncLocalStorageToSupabase = async (): Promise<void> => {
   try {
-    console.log('=== Starting silent localStorage to Supabase sync ===');
+    console.log('=== Starting localStorage to Supabase sync ===');
     
     // Collect all bookings from different localStorage sources
     let allBookingsToSync: Booking[] = [];
@@ -42,34 +43,43 @@ export const syncLocalStorageToSupabase = async (): Promise<void> => {
     });
     
     console.log(`Found ${allBookingsToSync.length} unique bookings to sync from localStorage`);
+    console.log('Bookings to sync:', allBookingsToSync.map(b => ({
+      id: b.id,
+      customer: b.customer,
+      status: b.status,
+      date: b.date
+    })));
     
     if (allBookingsToSync.length === 0) {
       console.log('No bookings to sync');
       return;
     }
     
-    // Sync all bookings to Supabase silently
+    // Sync all bookings to Supabase with improved error handling
     const syncSuccess = await syncMultipleBookingsToSupabase(allBookingsToSync);
     
     if (syncSuccess) {
-      console.log('=== Silent sync completed successfully ===');
+      console.log('=== Sync completed successfully ===');
+      // Don't show toast for automatic syncs to avoid spam
     } else {
       console.warn('=== Partial sync completed - some bookings may have UUID format issues ===');
+      // Still consider partial sync as acceptable for now
     }
     
   } catch (error) {
-    console.error('Error during silent data sync:', error);
+    console.error('Error during data sync:', error);
+    // Don't show error toast for automatic syncs to avoid alarming users
   }
 };
 
 export const manualDataSync = async (): Promise<boolean> => {
   try {
-    console.log('Manual sync requested');
     await syncLocalStorageToSupabase();
-    console.log('Manual sync completed successfully');
+    toast.success('Manual sync completed successfully');
     return true;
   } catch (error) {
     console.error('Manual sync failed:', error);
+    toast.error('Manual sync failed - some data may not be synchronized');
     return false;
   }
 };

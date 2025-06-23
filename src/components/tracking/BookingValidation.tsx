@@ -1,34 +1,48 @@
 
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useBookingIdValidation } from "@/hooks/tracking/useBookingIdValidation";
-import TrackingFormV2 from "./TrackingFormV2";
-import TrackingNotFound from "./TrackingNotFound";
-import { Loader2 } from "lucide-react";
+import TrackingForm from "./TrackingForm";
 
 interface BookingValidationProps {
   bookingId: string;
 }
 
 const BookingValidation = ({ bookingId }: BookingValidationProps) => {
+  const navigate = useNavigate();
   const { isValid, isLoading } = useBookingIdValidation(bookingId);
-
+  
+  useEffect(() => {
+    if (isValid === false) {
+      setTimeout(() => {
+        navigate("/track");
+      }, 3000);
+    }
+  }, [isValid, navigate]);
+  
   if (isLoading) {
     return (
-      <div className="container mx-auto py-8 px-4">
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-gold" />
-            <p className="text-gray-400">Validating booking...</p>
-          </div>
+      <div className="min-h-screen bg-black text-white py-20">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-xl font-medium text-white">Validating booking...</h2>
         </div>
       </div>
     );
   }
-
-  if (!isValid) {
-    return <TrackingNotFound />;
+  
+  if (isValid === false) {
+    return (
+      <div className="min-h-screen bg-black text-white py-20">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-xl font-medium text-white mb-2">Invalid Booking</h2>
+          <p className="text-gray-400">The booking reference is invalid or cannot be tracked.</p>
+          <p className="text-gray-400 mt-4">Redirecting to tracking page...</p>
+        </div>
+      </div>
+    );
   }
-
-  return <TrackingFormV2 bookingId={bookingId} />;
+  
+  return <TrackingForm bookingId={bookingId} />;
 };
 
 export default BookingValidation;

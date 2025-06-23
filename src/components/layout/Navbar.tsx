@@ -6,8 +6,6 @@ import { cn } from "@/lib/utils";
 import DesktopMenu from "./DesktopMenu";
 import MobileMenu from "./MobileMenu";
 import ContactInfo from "./ContactInfo";
-import SyncStatusIndicator from "@/components/admin/SyncStatusIndicator";
-import { useAuth } from "@/context/AuthContext";
 
 interface AdminRoute {
   path: string;
@@ -21,7 +19,6 @@ const Navbar = () => {
   const [showContact, setShowContact] = useState(false);
   const location = useLocation();
   const isHomePage = location.pathname === '/';
-  const { isAdmin } = useAuth();
   
   // Function to check if current page is admin-related
   const isAdminRelatedPage = () => {
@@ -85,28 +82,18 @@ const Navbar = () => {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 w-full transition-all duration-300",
-        scrolled ? "backdrop-blur-md py-2 shadow-md" : "py-4"
+        "fixed top-0 left-0 w-full z-50 transition-all duration-300",
+        scrolled ? "bg-black/90 backdrop-blur-md py-2 shadow-md" : "bg-transparent py-4"
       )}
-      style={{
-        background: scrolled 
-          ? 'rgba(0, 0, 0, 0.3)' 
-          : 'transparent',
-        zIndex: 50 // Increased z-index to be above bubbles
-      }}
     >
       <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
         {/* Logo and Contact Section */}
         <div className="flex flex-col">
-          <Link to="/" className="flex items-center space-x-2 group" aria-label="Home">
+          <Link to="/" className="flex items-center space-x-2" aria-label="Home">
             <img 
               src="/lovable-uploads/20bcd8db-4042-4d14-9238-3fe36de9757f.png" 
               alt="Mid-Cheshire Mobile Valeting" 
-              className="h-20 w-auto opacity-90 transition-all duration-300 hover:opacity-100"
-              style={{
-                filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3))',
-                mixBlendMode: 'normal'
-              }}
+              className="h-20 w-auto" 
             />
           </Link>
           
@@ -121,7 +108,7 @@ const Navbar = () => {
               </button>
               
               {showContact && (
-                <div className="absolute bg-black/90 p-3 rounded-md shadow-lg border border-gold/20 mt-1" style={{ zIndex: 60 }}>
+                <div className="absolute bg-black/90 p-3 rounded-md shadow-lg border border-gold/20 mt-1">
                   <ContactInfo />
                 </div>
               )}
@@ -129,11 +116,7 @@ const Navbar = () => {
           )}
         </div>
         
-        {/* Desktop Menu and Sync Status */}
-        <div className="hidden md:flex items-center gap-4">
-          <DesktopMenu adminRoutes={adminRoutes} />
-          {isAdmin && <SyncStatusIndicator />}
-        </div>
+        <DesktopMenu adminRoutes={adminRoutes} />
 
         {/* Mobile Menu Button */}
         <button

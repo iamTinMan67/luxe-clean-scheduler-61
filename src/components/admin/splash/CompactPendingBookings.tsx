@@ -103,7 +103,7 @@ const CompactPendingBookings = () => {
                       </span>
                     </div>
                     
-                    {/* Additional Services - Only show if services exist */}
+                    {/* All Additional Services */}
                     {additionalServicesList.length > 0 && (
                       <div className="space-y-1">
                         {additionalServicesList.map((serviceName, index) => (

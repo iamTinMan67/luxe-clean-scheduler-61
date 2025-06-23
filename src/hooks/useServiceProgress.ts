@@ -2,54 +2,77 @@
 import { useToast } from "@/hooks/use-toast";
 import { Booking } from "@/types/booking";
 import { ServiceTaskItem } from "@/types/task";
-import { trackingDataSync } from '@/services/trackingDataSync';
+import { updateTrackingProgress } from "@/utils/taskUtils";
 
 export const useServiceProgress = () => {
   const { toast } = useToast();
   
-  // Enhanced save service progress with comprehensive synchronization
+  // Save service progress to localStorage
   const saveServiceProgress = (bookingId: string, serviceTasks: ServiceTaskItem[]) => {
-    if (!bookingId) {
-      console.error('No booking ID provided for saveServiceProgress');
-      return;
-    }
+    if (!bookingId) return;
 
-    console.log('=== Enhanced Save Service Progress ===');
-    console.log('Booking ID:', bookingId);
-    console.log('Tasks:', serviceTasks.length);
+    // Check if all tasks are completed
+    const allTasksCompleted = serviceTasks.every(task => task.completed);
+    const newStatus = allTasksCompleted ? "completed" : "in-progress";
     
-    const success = trackingDataSync.syncServiceProgress(bookingId, serviceTasks);
+    // Update booking status in localStorage
+    const confirmedBookings = JSON.parse(localStorage.getItem('confirmedBookings') || '[]');
+    const updatedBookings = confirmedBookings.map((booking: Booking) => {
+      if (booking.id === bookingId) {
+        return {
+          ...booking,
+          status: newStatus
+        };
+      }
+      return booking;
+    });
     
-    if (success) {
-      console.log('Enhanced save service progress completed successfully');
+    localStorage.setItem('confirmedBookings', JSON.stringify(updatedBookings));
+    
+    // Also update in planner calendar bookings if it exists there
+    const plannerBookings = JSON.parse(localStorage.getItem('plannerCalendarBookings') || '[]');
+    const updatedPlannerBookings = plannerBookings.map((booking: Booking) => {
+      if (booking.id === bookingId) {
+        return {
+          ...booking,
+          status: newStatus
+        };
+      }
+      return booking;
+    });
+    
+    localStorage.setItem('plannerCalendarBookings', JSON.stringify(updatedPlannerBookings));
+    
+    // Save service tasks progress to localStorage
+    const serviceProgress = {
+      bookingId: bookingId,
+      tasks: serviceTasks,
+      lastUpdated: new Date().toISOString()
+    };
+    
+    const savedProgress = JSON.parse(localStorage.getItem('serviceProgress') || '[]');
+    const existingProgressIndex = savedProgress.findIndex((p: any) => p.bookingId === bookingId);
+    
+    if (existingProgressIndex >= 0) {
+      savedProgress[existingProgressIndex] = serviceProgress;
     } else {
-      console.error('Enhanced save service progress failed');
+      savedProgress.push(serviceProgress);
     }
     
-    return success;
+    localStorage.setItem('serviceProgress', JSON.stringify(savedProgress));
+    
+    // Update progress percentage for Track My Valet feature
+    updateTrackingProgress(bookingId, serviceTasks);
   };
 
-  // Function to save progress with enhanced notification
+  // Function to save progress with toast notification
   const saveProgressWithNotification = (bookingId: string, serviceTasks: ServiceTaskItem[]) => {
     if (bookingId) {
-      const completedTasks = serviceTasks.filter(task => task.completed).length;
-      const totalTasks = serviceTasks.length;
-      const progressPercentage = Math.round((completedTasks / totalTasks) * 100);
-      
-      const success = saveServiceProgress(bookingId, serviceTasks);
-      
-      if (success) {
-        toast({
-          title: "Service progress updated",
-          description: `Progress: ${completedTasks}/${totalTasks} tasks complete (${progressPercentage}%)`,
-        });
-      } else {
-        toast({
-          title: "Update failed",
-          description: "Failed to save service progress. Please try again.",
-          variant: "destructive"
-        });
-      }
+      saveServiceProgress(bookingId, serviceTasks);
+      toast({
+        title: "Service progress saved",
+        description: `All progress has been saved and tracking is updated`,
+      });
     }
   };
 

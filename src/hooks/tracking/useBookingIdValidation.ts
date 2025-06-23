@@ -32,8 +32,8 @@ export const useBookingIdValidation = (bookingId?: string): UseBookingIdValidati
           
           if (booking) {
             found = true;
-            // Allow tracking for "inspecting", "inspected", and "in-progress" statuses
-            if (booking.status === "inspecting" || booking.status === "inspected" || booking.status === "in-progress") {
+            // Only allow tracking if status is "inspected" or "in-progress"
+            if (booking.status === "inspected" || booking.status === "in-progress") {
               isValidStatus = true;
             }
           }
@@ -46,8 +46,8 @@ export const useBookingIdValidation = (bookingId?: string): UseBookingIdValidati
           
           if (booking) {
             found = true;
-            // Allow tracking for "inspecting", "inspected", and "in-progress" statuses
-            if (booking.status === "inspecting" || booking.status === "inspected" || booking.status === "in-progress") {
+            // Only allow tracking if status is "inspected" or "in-progress"
+            if (booking.status === "inspected" || booking.status === "in-progress") {
               isValidStatus = true;
             }
           }

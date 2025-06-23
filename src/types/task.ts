@@ -1,11 +1,10 @@
+
 export interface ServiceTaskItem {
   id: string;
   name: string;
   completed: boolean;
   allocatedTime: number; // in minutes
   actualTime?: number; // in minutes
-  completedAt?: string; // ISO timestamp when task was completed
-  updatedAt?: string; // ISO timestamp when task was last updated
 }
 
 export interface ServiceProgress {

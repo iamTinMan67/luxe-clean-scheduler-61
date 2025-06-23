@@ -24,10 +24,10 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black z-10"></div>
       
       {/* Content */}
-      <div className="container mx-auto px-4 relative z-20 text-center max-w-4xl">
-        {/* Logo */}
+      <div className="container mx-auto px-4 relative z-20 text-center max-w-4xl mt-[-6rem]">
+        {/* Logo at the top */}
         <motion.div
-          className="mb-6"
+          className="mb-8"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7 }}
@@ -35,16 +35,15 @@ const HeroSection = () => {
           <img 
             src="/lovable-uploads/db88bc12-bb88-4318-a91c-da8a3314c406.png" 
             alt="Mid-Cheshire Valeting" 
-            className="mx-auto w-auto h-40 md:h-48 drop-shadow-2xl"
+            className="mx-auto w-auto h-40 md:h-56"
           />
         </motion.div>
         
-        {/* Description */}
         <motion.p 
           className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.7, delay: 0.2 }}
+          transition={{ duration: 0.7, delay: 0.4 }}
         >
           Fully, self-sufficient, mobile, cleaning and fine-detailing services. From cars, boats
           and even <span className="text-gold">airplanes.</span> We can do the lot!
@@ -53,19 +52,6 @@ const HeroSection = () => {
           We strive for excellence and <span className="text-gold">high-end</span> results
           every time. You can also check our progress, almost in REAL-TIME, with our UNIQUE Track Our Progress."
         </motion.p>
-
-        {/* Call to Action Button */}
-        <motion.button
-          onClick={handleBooking}
-          className="bg-gold text-black px-8 py-4 rounded-lg text-lg font-semibold hover:bg-yellow-400 transition-all duration-300 flex items-center gap-2 mx-auto"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.4 }}
-          whileHover={{ scale: 1.05 }}
-        >
-          Book Your Service
-          <ArrowRight size={20} />
-        </motion.button>
       </div>
     </section>
   );

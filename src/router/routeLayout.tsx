@@ -1,7 +1,13 @@
 
 import Layout from "@/components/layout/Layout";
+import DataMigrationTrigger from "@/components/DataMigrationTrigger";
 
-// Simplified layout wrapper without DataMigrationTrigger
+// Shared layout wrapper with DataMigrationTrigger
 export const RouteLayout = () => {
-  return <Layout />;
+  return (
+    <>
+      <DataMigrationTrigger />
+      <Layout />
+    </>
+  );
 };

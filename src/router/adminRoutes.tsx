@@ -1,3 +1,4 @@
+
 import { Navigate } from "react-router-dom";
 import type { RouteObject } from "react-router-dom";
 import { RouteLayout } from "./routeLayout";
@@ -5,7 +6,6 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 // Admin pages
 import Dashboard from "@/pages/admin/Dashboard";
-import BusinessDashboard from "@/pages/admin/BusinessDashboard";
 import Daily from "@/pages/admin/Daily";
 import Analytics from "@/pages/admin/Analytics";
 import InvoiceReport from "@/pages/admin/InvoiceReport";
@@ -51,10 +51,6 @@ const adminRoutes: RouteObject[] = [
       {
         path: "/admin/dashboard",
         element: protectedComponent(Dashboard),
-      },
-      {
-        path: "/admin/business-dashboard",
-        element: protectedComponent(BusinessDashboard),
       },
       {
         path: "/admin/daily",
