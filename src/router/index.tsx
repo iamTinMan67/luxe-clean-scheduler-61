@@ -1,8 +1,8 @@
 
 import { Routes, Route } from "react-router-dom";
-import { publicRoutes } from "./publicRoutes";
-import { adminRoutes } from "./adminRoutes";
-import { dataMigrationRoutes } from "./dataMigrationRoutes";
+import publicRoutes from "./publicRoutes";
+import adminRoutes from "./adminRoutes";
+import dataMigrationRoutes from "./dataMigrationRoutes";
 import Layout from "@/components/layout/Layout";
 import NotFound from "@/pages/NotFound";
 
