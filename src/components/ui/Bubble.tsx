@@ -58,6 +58,27 @@ const Bubble = ({ bubble }: BubbleProps) => {
 
   if (!isVisible) return null;
 
+  // Separate animation properties to avoid conflicts
+  const getAnimationStyle = () => {
+    if (shouldPop) {
+      return {
+        animationName: `pop-${bubble.id}`,
+        animationDuration: '0.4s',
+        animationTimingFunction: 'ease-out',
+        animationFillMode: 'forwards' as const,
+        animationDelay: '0s'
+      };
+    }
+    
+    return {
+      animationName: animationName,
+      animationDuration: `${bubble.duration}s`,
+      animationTimingFunction: 'ease-in-out',
+      animationIterationCount: 'infinite' as const,
+      animationDelay: `${bubble.delay}s`
+    };
+  };
+
   return (
     <>
       <BubbleAnimations bubble={bubble} />
@@ -68,13 +89,10 @@ const Bubble = ({ bubble }: BubbleProps) => {
           width: `${bubble.size}px`,
           height: `${bubble.size}px`,
           opacity: bubble.opacity,
-          animation: shouldPop 
-            ? `pop-${bubble.id} 0.4s ease-out forwards`
-            : `${animationName} ${bubble.duration}s ease-in-out infinite`,
-          animationDelay: `${bubble.delay}s`,
           zIndex: bubble.layer,
           filter: `blur(${bubble.blurAmount * 0.5}px)`, // Subtle blur for depth
           transition: 'filter 0.3s ease-in-out',
+          ...getAnimationStyle()
         }}
       >
         <BubbleStyles bubble={bubble} />
