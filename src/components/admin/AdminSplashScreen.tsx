@@ -6,8 +6,20 @@ import QuickStatsFooter from "./splash/QuickStatsFooter";
 import PendingNotificationsView from "./splash/PendingNotificationsView";
 import ManualDataMigration from "./ManualDataMigration";
 import { categoryConfig } from "./splash/categoryConfig";
+import { adminFunctions } from "./splash/adminFunctionsData";
 
 const AdminSplashScreen = () => {
+  // Group functions by category
+  const categorizedFunctions = Object.entries(categoryConfig).map(([categoryKey, config], index) => {
+    const functions = adminFunctions.filter(func => func.category === categoryKey);
+    return {
+      category: categoryKey,
+      functions,
+      config,
+      categoryIndex: index
+    };
+  });
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -23,11 +35,13 @@ const AdminSplashScreen = () => {
       <PendingNotificationsView />
       
       <div className="grid gap-8">
-        {categoryConfig.map((category, index) => (
+        {categorizedFunctions.map(({ category, functions, config, categoryIndex }) => (
           <CategorySection 
-            key={category.id} 
-            category={category} 
-            index={index}
+            key={category} 
+            category={category}
+            functions={functions}
+            config={config}
+            categoryIndex={categoryIndex}
           />
         ))}
       </div>
