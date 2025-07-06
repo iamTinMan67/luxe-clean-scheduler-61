@@ -268,7 +268,7 @@ export type Database = {
           second_vehicle_reg?: string | null
           staff?: Json | null
           start_time?: string | null
-          status: string
+          status?: string
           time: string
           total_price: number
           travel_minutes?: number | null

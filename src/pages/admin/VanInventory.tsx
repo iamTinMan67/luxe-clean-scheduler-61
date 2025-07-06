@@ -6,7 +6,7 @@ import AdminPageTitle from "@/components/admin/AdminPageTitle";
 import VanOverview from "@/components/van-inventory/VanOverview";
 
 const VanInventory = () => {
-  // Mock data for van inventory
+  // Enhanced mock data for van inventory with proper structure
   const mockInventory = [
     {
       id: "1",
@@ -15,25 +15,64 @@ const VanInventory = () => {
       quantity: 15,
       minLevel: 10,
       lastRestocked: "2024-01-10",
-      vanId: "van-001"
+      vanId: "van-001",
+      unit: "units",
+      threshold: 5
     },
     {
       id: "2",
-      name: "Car Soap",
+      name: "Car Soap - Premium",
       category: "chemicals",
       quantity: 3,
       minLevel: 5,
       lastRestocked: "2024-01-08",
-      vanId: "van-001"
+      vanId: "van-001",
+      unit: "bottles",
+      threshold: 3
+    },
+    {
+      id: "3",
+      name: "Tire Shine Spray",
+      category: "chemicals",
+      quantity: 8,
+      minLevel: 6,
+      lastRestocked: "2024-01-12",
+      vanId: "van-001",
+      unit: "bottles",
+      threshold: 4
+    },
+    {
+      id: "4",
+      name: "Interior Vacuum Bags",
+      category: "equipment",
+      quantity: 12,
+      minLevel: 8,
+      lastRestocked: "2024-01-05",
+      vanId: "van-001",
+      unit: "pieces",
+      threshold: 5
+    },
+    {
+      id: "5",
+      name: "Glass Cleaner",
+      category: "chemicals",
+      quantity: 6,
+      minLevel: 4,
+      lastRestocked: "2024-01-11",
+      vanId: "van-001",
+      unit: "bottles",
+      threshold: 3
     }
   ];
 
   const handleRestockRequest = () => {
     console.log("Restock request submitted");
+    // This would typically trigger a notification or API call
   };
 
   const handleAddItem = () => {
-    console.log("Add new item");
+    console.log("Add new item to van inventory");
+    // This would open a dialog to add new inventory items
   };
 
   return (
