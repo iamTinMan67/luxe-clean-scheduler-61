@@ -20,11 +20,12 @@ export const useCurrentBookings = () => {
       const today = new Date();
       console.log("Today's date:", today.toDateString());
 
-      // Filter by today's date and specified statuses
+      // Filter by today's date and include pending bookings for today
       const filteredBookings = appointments.filter(booking => {
         const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
         const isToday = isSameDay(bookingDate, today);
-        const hasValidStatus = ['in-progress', 'confirmed', 'finished', 'inspecting', 'inspected'].includes(booking.status);
+        // Include pending bookings that are scheduled for today, plus all confirmed/progressed statuses
+        const hasValidStatus = ['pending', 'in-progress', 'confirmed', 'finished', 'inspecting', 'inspected'].includes(booking.status);
         
         console.log(`Booking ${booking.id} (${booking.customer}): date=${bookingDate.toDateString()}, status=${booking.status}, isToday=${isToday}, hasValidStatus=${hasValidStatus}`);
         
@@ -32,7 +33,7 @@ export const useCurrentBookings = () => {
       });
 
       console.log("=== Current Bookings Final Results ===");
-      console.log("Filtered bookings (today + valid status):", filteredBookings.length);
+      console.log("Filtered bookings (today + valid status including pending):", filteredBookings.length);
       console.log("Final bookings:", filteredBookings.map(b => ({
         id: b.id,
         customer: b.customer,
