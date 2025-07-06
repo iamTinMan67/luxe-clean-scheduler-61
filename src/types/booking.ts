@@ -9,6 +9,7 @@ export interface Booking {
   secondVehicle?: string;
   secondVehicleReg?: string;
   packageType: string; // Now supports "other" for non-standard services
+  package?: string; // Added for backward compatibility
   date: Date | string;
   time?: string;
   startTime?: string;
@@ -28,10 +29,13 @@ export interface Booking {
   jobType?: string; // Supports "car", "van", "other"
 }
 
+// Export the BookingStatus type
+export type BookingStatus = "pending" | "confirmed" | "cancelled" | "inspecting" | "inspected" | "in-progress" | "finished";
+
 // Helper function to validate booking status
-export const validateBookingStatus = (status: string): "pending" | "confirmed" | "cancelled" | "inspecting" | "inspected" | "in-progress" | "finished" => {
-  const validStatuses = ["pending", "confirmed", "cancelled", "inspecting", "inspected", "in-progress", "finished"];
-  return validStatuses.includes(status) 
-    ? (status as "pending" | "confirmed" | "cancelled" | "inspecting" | "inspected" | "in-progress" | "finished") 
+export const validateBookingStatus = (status: string): BookingStatus => {
+  const validStatuses: BookingStatus[] = ["pending", "confirmed", "cancelled", "inspecting", "inspected", "in-progress", "finished"];
+  return validStatuses.includes(status as BookingStatus) 
+    ? (status as BookingStatus) 
     : "pending"; // Default to pending if invalid status
 };

@@ -10,6 +10,12 @@ import { useCurrentBookings } from "@/hooks/useCurrentBookings";
 const Analytics = () => {
   const { currentBookings, loading } = useCurrentBookings();
 
+  // Transform bookings to ensure they have the package property for compatibility
+  const transformedBookings = currentBookings.map(booking => ({
+    ...booking,
+    package: booking.packageType || booking.package || 'standard'
+  }));
+
   return (
     <div className="min-h-screen bg-black pb-16 relative z-10">
       <section className="relative py-8">
@@ -35,7 +41,7 @@ const Analytics = () => {
               <p>Loading current bookings...</p>
             </div>
           ) : (
-            <RecentBookings bookings={currentBookings} />
+            <RecentBookings bookings={transformedBookings} />
           )}
           
           <DashboardContent />

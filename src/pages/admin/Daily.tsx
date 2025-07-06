@@ -9,6 +9,12 @@ import { useCurrentBookings } from "@/hooks/useCurrentBookings";
 const Daily = () => {
   const { currentBookings, loading } = useCurrentBookings();
 
+  // Transform bookings to ensure they have the package property for compatibility
+  const transformedBookings = currentBookings.map(booking => ({
+    ...booking,
+    package: booking.packageType || booking.package || 'standard'
+  }));
+
   const dailyItems = [
     {
       title: 'Planner Calendar',
@@ -59,7 +65,7 @@ const Daily = () => {
             <p>Loading current bookings...</p>
           </div>
         ) : (
-          <RecentBookings bookings={currentBookings} />
+          <RecentBookings bookings={transformedBookings} />
         )}
 
         {/* Daily Operations Buttons */}
