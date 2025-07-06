@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -5,15 +6,10 @@ import { ArrowLeft } from "lucide-react";
 import { usePlannerCalendar } from "@/hooks/usePlannerCalendar";
 import CalendarHeader from "@/components/planner/CalendarHeader";
 import PlannerContent from "@/components/planner/PlannerContent";
-import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ArchivedBookingsView from "@/components/planner/ArchivedBookingsView";
-import { useArchivedBookings } from "@/hooks/planner/useArchivedBookings";
 
 const PlannerCalendar = () => {
   // Force re-render on mount to ensure latest data is loaded
   const [key, setKey] = useState(0);
-  const [activeTab, setActiveTab] = useState<"calendar" | "archived">("calendar");
 
   useEffect(() => {
     // This will force the component to re-render on mount
@@ -40,9 +36,6 @@ const PlannerCalendar = () => {
     conflictCount
   } = usePlannerCalendar();
 
-  // Archived bookings functionality
-  const { archivedBookings } = useArchivedBookings();
-
   return (
     <div className="min-h-screen bg-black pb-16" key={key}>
       <section className="relative py-8">
@@ -65,47 +58,25 @@ const PlannerCalendar = () => {
             pendingBookingsCount={pendingBookings.length}
           />
           
-          {/* Main content with tabs for planner and archived jobs */}
-          <Tabs 
-            value={activeTab} 
-            onValueChange={(value) => setActiveTab(value as "calendar" | "archived")}
-            className="mt-6"
-          >
-            <TabsList className="bg-gray-800 border border-gray-700">
-              <TabsTrigger value="calendar" className="data-[state=active]:bg-gold data-[state=active]:text-black">
-                Calendar View
-              </TabsTrigger>
-              <TabsTrigger value="archived" className="data-[state=active]:bg-gold data-[state=active]:text-black">
-                Archived Jobs ({archivedBookings.length})
-              </TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="calendar" className="mt-4">
-              {/* Main planner content */}
-              <PlannerContent
-                date={date}
-                setDate={setDate}
-                view={view}
-                setView={setView}
-                pendingBookings={pendingBookings}
-                confirmedBookings={confirmedBookings}
-                schedule={schedule}
-                handleConfirmBooking={handleConfirmBooking}
-                handleCancelBooking={handleCancelBooking}
-                getBookingBackground={getBookingBackground}
-                hasBookingsOnDate={hasBookingsOnDate}
-                checkTimeConflict={checkTimeConflict}
-                navigatePrevious={navigatePrevious}
-                navigateNext={navigateNext}
-                navigateToday={navigateToday}
-                conflictCount={conflictCount}
-              />
-            </TabsContent>
-            
-            <TabsContent value="archived" className="mt-4">
-              <ArchivedBookingsView archivedBookings={archivedBookings} />
-            </TabsContent>
-          </Tabs>
+          {/* Main planner content */}
+          <PlannerContent
+            date={date}
+            setDate={setDate}
+            view={view}
+            setView={setView}
+            pendingBookings={pendingBookings}
+            confirmedBookings={confirmedBookings}
+            schedule={schedule}
+            handleConfirmBooking={handleConfirmBooking}
+            handleCancelBooking={handleCancelBooking}
+            getBookingBackground={getBookingBackground}
+            hasBookingsOnDate={hasBookingsOnDate}
+            checkTimeConflict={checkTimeConflict}
+            navigatePrevious={navigatePrevious}
+            navigateNext={navigateNext}
+            navigateToday={navigateToday}
+            conflictCount={conflictCount}
+          />
         </div>
       </section>
     </div>

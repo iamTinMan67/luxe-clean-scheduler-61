@@ -2,15 +2,16 @@
 import React from 'react';
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
+import { AlertTriangle } from "lucide-react";
 import { Booking } from '@/types/booking';
-import PendingBookingItem from './PendingBookingItem';
+import BookingCard from '@/components/booking/BookingCard';
 
 interface PendingBookingsListProps {
   pendingBookings: Booking[];
   handleConfirmBooking: (bookingId: string, selectedStaff: string[], travelMinutes: number) => void;
   handleCancelBooking: (bookingId: string) => void;
   getBookingBackground: (booking: Booking) => string;
-  conflictCount?: number;
+  conflictCount: number;
 }
 
 const PendingBookingsList: React.FC<PendingBookingsListProps> = ({
@@ -18,91 +19,50 @@ const PendingBookingsList: React.FC<PendingBookingsListProps> = ({
   handleConfirmBooking,
   handleCancelBooking,
   getBookingBackground,
-  conflictCount = 0
+  conflictCount
 }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.1 }}
+      transition={{ duration: 0.5 }}
       className="mb-8"
     >
       <Card className="bg-gray-900 border-gray-800 p-6">
-        <PendingBookingsHeader 
-          pendingCount={pendingBookings.length}
-          conflictCount={conflictCount}
-        />
-        
-        <PendingBookingsContent 
-          pendingBookings={pendingBookings}
-          handleConfirmBooking={handleConfirmBooking}
-          handleCancelBooking={handleCancelBooking}
-          getBookingBackground={getBookingBackground}
-        />
-      </Card>
-    </motion.div>
-  );
-};
-
-interface PendingBookingsHeaderProps {
-  pendingCount: number;
-  conflictCount: number;
-}
-
-const PendingBookingsHeader: React.FC<PendingBookingsHeaderProps> = ({ 
-  pendingCount, 
-  conflictCount 
-}) => {
-  return (
-    <div className="flex justify-between items-center mb-6">
-      <h2 className="text-xl font-bold text-white">Pending Bookings</h2>
-      <div className="flex items-center space-x-2">
-        <div className="px-3 py-1 rounded-full bg-red-900/30 text-red-400 border border-red-700 text-xs font-medium">
-          {pendingCount} pending
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold text-white">Pending Bookings</h2>
+          <div className="flex items-center space-x-4">
+            <span className="bg-amber-900/30 text-amber-400 px-3 py-1 rounded-full text-sm border border-amber-700">
+              {pendingBookings.length} pending
+            </span>
+            {conflictCount > 0 && (
+              <div className="flex items-center space-x-2 bg-red-900/30 text-red-400 px-3 py-1 rounded-full text-sm border border-red-700">
+                <AlertTriangle className="w-4 h-4" />
+                <span>{conflictCount} conflicts</span>
+              </div>
+            )}
+          </div>
         </div>
-        {conflictCount > 0 && (
-          <div className="px-3 py-1 rounded-full bg-orange-900/30 text-orange-400 border border-orange-700 text-xs font-medium">
-            {conflictCount} conflicts
+        
+        {pendingBookings.length > 0 ? (
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+            {pendingBookings.map(booking => (
+              <BookingCard
+                key={booking.id}
+                booking={booking}
+                variant="default"
+                showActions={true}
+                className="border-l-4 border-amber-500"
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8">
+            <p className="text-gray-400">No pending bookings</p>
           </div>
         )}
-      </div>
-    </div>
-  );
-};
-
-interface PendingBookingsContentProps {
-  pendingBookings: Booking[];
-  handleConfirmBooking: (bookingId: string, selectedStaff: string[], travelMinutes: number) => void;
-  handleCancelBooking: (bookingId: string) => void;
-  getBookingBackground: (booking: Booking) => string;
-}
-
-const PendingBookingsContent: React.FC<PendingBookingsContentProps> = ({
-  pendingBookings,
-  handleConfirmBooking,
-  handleCancelBooking,
-  getBookingBackground
-}) => {
-  if (pendingBookings.length === 0) {
-    return (
-      <div className="text-center py-8 text-gray-400">
-        <p>No pending bookings to display</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {pendingBookings.map(booking => (
-        <PendingBookingItem 
-          key={booking.id}
-          booking={booking}
-          onConfirm={handleConfirmBooking}
-          onCancel={handleCancelBooking}
-          getBookingBackground={getBookingBackground}
-        />
-      ))}
-    </div>
+      </Card>
+    </motion.div>
   );
 };
 

@@ -5,10 +5,10 @@ import { useScheduledAppointments } from './useScheduledAppointments';
 import { isSameDay } from '@/utils/dateParsingUtils';
 
 export const useCurrentBookings = () => {
-  const [currentBookings, setCurrentBookings] = useState<any[]>([]);
+  const [currentBookings, setCurrentBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Get all appointments except finished ones
+  // Get all appointments except cancelled ones
   const { appointments, loading: appointmentsLoading } = useScheduledAppointments();
 
   useEffect(() => {
@@ -24,34 +24,23 @@ export const useCurrentBookings = () => {
       const filteredBookings = appointments.filter(booking => {
         const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
         const isToday = isSameDay(bookingDate, today);
-        const hasValidStatus = ['in-progress', 'confirmed', 'finished'].includes(booking.status);
+        const hasValidStatus = ['in-progress', 'confirmed', 'finished', 'inspecting', 'inspected'].includes(booking.status);
         
         console.log(`Booking ${booking.id} (${booking.customer}): date=${bookingDate.toDateString()}, status=${booking.status}, isToday=${isToday}, hasValidStatus=${hasValidStatus}`);
         
         return isToday && hasValidStatus;
       });
 
-      // Transform to match the RecentBookings component format
-      const transformedBookings = filteredBookings.map(booking => ({
-        id: booking.id,
-        customer: booking.customer,
-        vehicle: booking.vehicle || 'Unknown Vehicle',
-        package: booking.packageType || 'Unknown Package',
-        date: booking.date instanceof Date ? booking.date.toLocaleDateString() : booking.date,
-        time: booking.time || 'Time TBD',
-        status: booking.status
-      }));
-
       console.log("=== Current Bookings Final Results ===");
-      console.log("Filtered bookings (today + valid status):", transformedBookings.length);
-      console.log("Final bookings:", transformedBookings.map(b => ({
+      console.log("Filtered bookings (today + valid status):", filteredBookings.length);
+      console.log("Final bookings:", filteredBookings.map(b => ({
         id: b.id,
         customer: b.customer,
         status: b.status,
         date: b.date
       })));
 
-      setCurrentBookings(transformedBookings);
+      setCurrentBookings(filteredBookings);
       setLoading(false);
     }
   }, [appointments, appointmentsLoading]);
