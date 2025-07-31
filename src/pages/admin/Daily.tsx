@@ -12,7 +12,8 @@ const Daily = () => {
   // Transform bookings to ensure they have the package property for compatibility
   const transformedBookings = currentBookings.map(booking => ({
     ...booking,
-    package: booking.packageType || booking.package || 'standard'
+    package: booking.packageType || booking.package || 'standard',
+    date: booking.date instanceof Date ? booking.date.toISOString().split('T')[0] : booking.date
   }));
 
   const dailyItems = [
