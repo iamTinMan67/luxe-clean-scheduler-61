@@ -10,7 +10,8 @@ export const getStatusInfo = (status: string) => {
         badgeColor: "red-600",
         textColor: "text-red-400",
         nextStatus: "confirmed",
-        nextLabel: "Confirm"
+        nextLabel: "Confirm",
+        actionLabel: "Confirm"
       };
     case "confirmed":
       return {
@@ -19,7 +20,8 @@ export const getStatusInfo = (status: string) => {
         badgeColor: "orange-600", 
         textColor: "text-orange-400",
         nextStatus: "inspecting",
-        nextLabel: "Start Inspection"
+        nextLabel: "Start Inspection",
+        actionLabel: "Start Inspection"
       };
     case "inspecting":
       return {
@@ -28,7 +30,8 @@ export const getStatusInfo = (status: string) => {
         badgeColor: "yellow-600",
         textColor: "text-yellow-400",
         nextStatus: "inspected",
-        nextLabel: "Complete Inspection"
+        nextLabel: "Complete Inspection",
+        actionLabel: "Complete Inspection"
       };
     case "inspected":
       return {
@@ -37,7 +40,8 @@ export const getStatusInfo = (status: string) => {
         badgeColor: "teal-600",
         textColor: "text-teal-400",
         nextStatus: "in-progress",
-        nextLabel: "Start Service"
+        nextLabel: "Start Service",
+        actionLabel: "Start Service"
       };
     case "in-progress":
       return {
@@ -46,7 +50,8 @@ export const getStatusInfo = (status: string) => {
         badgeColor: "blue-600",
         textColor: "text-blue-400",
         nextStatus: "finished",
-        nextLabel: "Finish Service"
+        nextLabel: "Finish Service",
+        actionLabel: "Finish Service"
       };
     case "finished":
       return {
@@ -55,7 +60,8 @@ export const getStatusInfo = (status: string) => {
         badgeColor: "green-600",
         textColor: "text-green-400",
         nextStatus: null,
-        nextLabel: null
+        nextLabel: null,
+        actionLabel: null
       };
     case "cancelled":
       return {
@@ -64,7 +70,8 @@ export const getStatusInfo = (status: string) => {
         badgeColor: "red-600",
         textColor: "text-red-400",
         nextStatus: null,
-        nextLabel: null
+        nextLabel: null,
+        actionLabel: null
       };
     default:
       return {
@@ -73,7 +80,8 @@ export const getStatusInfo = (status: string) => {
         badgeColor: "gray-600",
         textColor: "text-gray-400",
         nextStatus: null,
-        nextLabel: null
+        nextLabel: null,
+        actionLabel: null
       };
   }
 };

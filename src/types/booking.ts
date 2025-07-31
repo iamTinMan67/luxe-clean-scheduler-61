@@ -11,7 +11,7 @@ export interface Booking {
   packageType: string; // Now supports "other" for non-standard services
   package?: string; // Added for backward compatibility
   date: Date | string;
-  time?: string;
+  time: string;
   startTime?: string;
   endTime?: string;
   location: string;
