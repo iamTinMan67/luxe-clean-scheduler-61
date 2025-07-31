@@ -59,21 +59,52 @@ const DeclinedJobs = () => {
       ? format(selectedJob.date, 'dd/MM/yyyy') 
       : format(new Date(selectedJob.date), 'dd/MM/yyyy');
     
-    const content = `
-      <h1>Declined Job Report</h1>
-      <p><strong>Customer:</strong> ${selectedJob.customer}</p>
-      <p><strong>Vehicle:</strong> ${selectedJob.vehicle}</p>
-      <p><strong>Date:</strong> ${jobDate}</p>
-      <p><strong>Time:</strong> ${selectedJob.time}</p>
-      <p><strong>Declined At:</strong> ${formatDate(selectedJob.declinedAt)}</p>
-      <h2>Reasons for Declining:</h2>
-      <h3>Exterior Issues:</h3>
-      <p>${selectedJob.exteriorNotes || 'None specified'}</p>
-      <h3>Interior Issues:</h3>
-      <p>${selectedJob.interiorNotes || 'None specified'}</p>
-    `;
+    // Create safe DOM element instead of HTML string
+    const reportContainer = document.createElement('div');
+    reportContainer.style.cssText = 'font-family: Arial, sans-serif; padding: 20px; max-width: 800px;';
     
-    downloadPDF(`declined-job-${selectedJob.id}`, content);
+    const title = document.createElement('h1');
+    title.textContent = 'Declined Job Report';
+    reportContainer.appendChild(title);
+    
+    const details = [
+      { label: 'Customer', value: selectedJob.customer },
+      { label: 'Vehicle', value: selectedJob.vehicle },
+      { label: 'Date', value: jobDate },
+      { label: 'Time', value: selectedJob.time },
+      { label: 'Declined At', value: formatDate(selectedJob.declinedAt) }
+    ];
+    
+    details.forEach(({ label, value }) => {
+      const p = document.createElement('p');
+      const strong = document.createElement('strong');
+      strong.textContent = `${label}: `;
+      p.appendChild(strong);
+      p.appendChild(document.createTextNode(value));
+      reportContainer.appendChild(p);
+    });
+    
+    const reasonsTitle = document.createElement('h2');
+    reasonsTitle.textContent = 'Reasons for Declining:';
+    reportContainer.appendChild(reasonsTitle);
+    
+    const exteriorTitle = document.createElement('h3');
+    exteriorTitle.textContent = 'Exterior Issues:';
+    reportContainer.appendChild(exteriorTitle);
+    
+    const exteriorP = document.createElement('p');
+    exteriorP.textContent = selectedJob.exteriorNotes || 'None specified';
+    reportContainer.appendChild(exteriorP);
+    
+    const interiorTitle = document.createElement('h3');
+    interiorTitle.textContent = 'Interior Issues:';
+    reportContainer.appendChild(interiorTitle);
+    
+    const interiorP = document.createElement('p');
+    interiorP.textContent = selectedJob.interiorNotes || 'None specified';
+    reportContainer.appendChild(interiorP);
+    
+    downloadPDF(`declined-job-${selectedJob.id}`, reportContainer);
   };
 
   return (

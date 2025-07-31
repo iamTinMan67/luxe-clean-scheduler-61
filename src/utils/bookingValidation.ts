@@ -1,5 +1,6 @@
 
 import { toast } from "sonner";
+import { validateAndSanitizeBookingData, BookingFormData } from "./inputSanitizer";
 
 interface FormData {
   yourName: string;
@@ -15,23 +16,42 @@ interface FormData {
 export const validateBookingForm = (formData: FormData): boolean => {
   const { yourName, postcode, phone, email, jobDetails } = formData;
   
-  if (!yourName || !postcode || !phone || !email || !jobDetails) {
-    toast.error("Oops! Check Again", {
-      description: "Please fill in all required fields",
+  // Create booking data object for validation
+  const bookingData: BookingFormData = {
+    yourName,
+    postcode,
+    phone,
+    email,
+    jobDetails,
+    notes: formData.notes
+  };
+  
+  // Use comprehensive validation and sanitization
+  const { isValid, errors } = validateAndSanitizeBookingData(bookingData);
+  
+  if (!isValid) {
+    toast.error("Validation Failed", {
+      description: errors.join(', '),
       duration: 4000
     });
-    console.log("Validation failed - missing required fields");
+    console.log("Validation failed:", errors);
     return false;
   }
 
-  // Email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    toast.error("Invalid Email", {
-      description: "Please enter a valid email address",
+  // Additional validation for date/time
+  if (!formData.selectedDate) {
+    toast.error("Date Required", {
+      description: "Please select a service date",
       duration: 4000
     });
-    console.log("Validation failed - invalid email format");
+    return false;
+  }
+
+  if (!formData.selectedTime) {
+    toast.error("Time Required", {
+      description: "Please select a service time",
+      duration: 4000
+    });
     return false;
   }
 

@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Mail, Lock } from "lucide-react";
 import { cleanupAuthState } from "@/utils/authCleanup";
+import { sanitizeUserInput, isValidEmail } from "@/utils/inputSanitizer";
+import { AuthRateLimit } from "@/utils/authRateLimit";
 
 interface LoginFormProps {
   openResetDialog: () => void;
@@ -22,9 +24,31 @@ const LoginForm = ({ openResetDialog, toggleMode }: LoginFormProps) => {
   
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check rate limiting before processing
+    const rateLimitCheck = AuthRateLimit.isBlocked(email || 'login');
+    if (rateLimitCheck.blocked) {
+      toast.error("Too many login attempts", {
+        description: `Account temporarily locked. Try again in ${rateLimitCheck.remainingTime} minutes.`
+      });
+      return;
+    }
+    
     setIsLoading(true);
     
     try {
+      // Validate and sanitize input
+      const sanitizedEmail = sanitizeUserInput(email.trim());
+      const sanitizedPassword = password; // Don't sanitize password as it may contain special chars
+      
+      if (!sanitizedEmail || !sanitizedPassword) {
+        throw new Error("Email and password are required");
+      }
+      
+      if (!isValidEmail(sanitizedEmail)) {
+        throw new Error("Please enter a valid email address");
+      }
+      
       // Clean up any existing auth state before login attempt
       cleanupAuthState();
       
@@ -37,22 +61,29 @@ const LoginForm = ({ openResetDialog, toggleMode }: LoginFormProps) => {
       }
       
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+        email: sanitizedEmail,
+        password: sanitizedPassword,
       });
       
       if (error) throw error;
       
+      // Record successful authentication
+      AuthRateLimit.recordAttempt(sanitizedEmail, true);
+      
       toast.success("Login successful");
       
-      // Save login info to localStorage for reference
-      localStorage.setItem('lastSignInEmail', email);
+      // Save login info to localStorage for reference (sanitized)
+      localStorage.setItem('lastSignInEmail', sanitizedEmail);
       
       // Redirect to admin dashboard after successful login
       // Use window.location to ensure a complete page refresh
       window.location.href = "/admin/dashboard";
     } catch (error: any) {
       console.error("Authentication error:", error);
+      // Record failed authentication attempt
+      const sanitizedEmail = sanitizeUserInput(email.trim());
+      AuthRateLimit.recordAttempt(sanitizedEmail, false);
+      
       toast.error(error.message || "Authentication failed");
     } finally {
       setIsLoading(false);

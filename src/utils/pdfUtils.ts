@@ -3,12 +3,12 @@ import { toast } from "sonner";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
-// Function to download PDF from HTML content
-export const downloadPDF = (fileName: string, htmlContent: string) => {
+// Function to safely create PDF from content
+export const downloadPDF = (fileName: string, content: HTMLElement) => {
   try {
-    // Create temporary container for HTML content
+    // Create temporary container for content
     const container = document.createElement('div');
-    container.innerHTML = htmlContent;
+    container.appendChild(content.cloneNode(true));
     container.style.position = 'absolute';
     container.style.left = '-9999px';
     container.style.background = 'white';

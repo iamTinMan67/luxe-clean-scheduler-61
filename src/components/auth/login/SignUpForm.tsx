@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Mail, Lock, User } from "lucide-react";
+import { sanitizeUserInput, isValidEmail } from "@/utils/inputSanitizer";
+import { AuthRateLimit } from "@/utils/authRateLimit";
 
 interface SignUpFormProps {
   toggleMode: () => void;
@@ -19,34 +21,75 @@ const SignUpForm = ({ toggleMode }: SignUpFormProps) => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check rate limiting
+    const rateLimitCheck = AuthRateLimit.isBlocked(email || 'signup');
+    if (rateLimitCheck.blocked) {
+      toast.error("Too many attempts", {
+        description: `Please wait ${rateLimitCheck.remainingTime} minutes before trying again`
+      });
+      return;
+    }
+    
     setIsLoading(true);
 
     try {
-      // Validate form inputs
-      if (!displayName.trim()) {
+      // Validate and sanitize inputs
+      const sanitizedDisplayName = sanitizeUserInput(displayName.trim());
+      const sanitizedEmail = sanitizeUserInput(email.trim());
+      
+      if (!sanitizedDisplayName) {
         throw new Error("Display name is required");
       }
+      
+      if (!sanitizedEmail) {
+        throw new Error("Email is required");
+      }
+      
+      if (!isValidEmail(sanitizedEmail)) {
+        throw new Error("Please enter a valid email address");
+      }
+      
+      // Password strength validation
+      if (password.length < 8) {
+        throw new Error("Password must be at least 8 characters long");
+      }
+      
+      const hasUpperCase = /[A-Z]/.test(password);
+      const hasLowerCase = /[a-z]/.test(password);
+      const hasNumbers = /\d/.test(password);
+      const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+      
+      if (!hasUpperCase || !hasLowerCase || !hasNumbers || !hasSpecialChar) {
+        throw new Error("Password must contain uppercase, lowercase, number, and special character");
+      }
 
-      // Sign up new user with metadata
+      // Sign up new user with metadata and redirect URL
+      const redirectUrl = `${window.location.origin}/`;
+      
       const { error } = await supabase.auth.signUp({
-        email,
+        email: sanitizedEmail,
         password,
         options: {
           data: {
-            display_name: displayName
-          }
+            display_name: sanitizedDisplayName
+          },
+          emailRedirectTo: redirectUrl
         }
       });
 
       if (error) throw error;
       
+      AuthRateLimit.recordAttempt(sanitizedEmail, true); // Record successful attempt
+      
       toast.success("Account created successfully!", {
-        description: "Please verify your email to log in."
+        description: "Please check your email to verify your account."
       });
       
       toggleMode(); // Switch back to sign in mode
     } catch (error: any) {
       console.error("Authentication error:", error);
+      AuthRateLimit.recordAttempt(email || 'signup', false); // Record failed attempt
       toast.error(error.message || "Authentication failed");
     } finally {
       setIsLoading(false);
