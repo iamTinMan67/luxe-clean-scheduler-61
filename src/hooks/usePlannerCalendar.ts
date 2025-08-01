@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { navigatePrevious, navigateNext, hasTimeConflict as checkTimeConflict } from '@/utils/dateUtils';
-import { useBookingsStorage } from './planner/useBookingsStorage';
+import { useUnifiedBookings } from './useUnifiedBookings';
 import { useBookingManagement } from './planner/useBookingManagement';
 import { useScheduleFiltering } from './planner/useScheduleFiltering';
 import { Booking } from '@/types/booking';
@@ -13,13 +13,13 @@ export const usePlannerCalendar = () => {
   const [date, setDate] = useState<Date>(new Date());
   const [view, setView] = useState<PlannerViewType>("daily");
   
-  // Get bookings from localStorage
+  // Get unified bookings (deduplicated from all sources)
   const { 
     pendingBookings, 
     setPendingBookings, 
     confirmedBookings, 
     setConfirmedBookings 
-  } = useBookingsStorage();
+  } = useUnifiedBookings();
   
   // Get booking management functions
   const { 
