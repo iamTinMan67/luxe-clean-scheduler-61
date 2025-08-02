@@ -54,14 +54,20 @@ export const useUnifiedBookings = (statusFilter?: string[]): UnifiedBookingsRetu
       const localBookings = loadBookingsFromLocalStorage();
       console.log("Unified: Local bookings loaded:", localBookings.length);
       
-      // Merge and deduplicate by ID
+      // Improved deduplication - handle both cross-source and within localStorage duplicates
       const mergedBookings = [...supabaseBookings];
       const existingIds = new Set(supabaseBookings.map(b => b.id));
       
-      localBookings.forEach(localBooking => {
+      // Deduplicate within localStorage first
+      const uniqueLocalBookings = localBookings.filter((booking, index, self) => 
+        index === self.findIndex(b => b.id === booking.id)
+      );
+      
+      uniqueLocalBookings.forEach(localBooking => {
         if (!existingIds.has(localBooking.id)) {
           console.log("Unified: Adding unique local booking:", localBooking.id, localBooking.customer);
           mergedBookings.push(localBooking);
+          existingIds.add(localBooking.id);
         } else {
           console.log("Unified: Skipping duplicate booking:", localBooking.id, localBooking.customer);
         }
@@ -123,14 +129,19 @@ export const useUnifiedBookings = (statusFilter?: string[]): UnifiedBookingsRetu
   const pendingBookings = allBookings.filter(booking => booking.status === 'pending');
   const confirmedBookings = allBookings.filter(booking => booking.status !== 'pending');
 
-  // State setters for compatibility with existing code
+  // State setters for compatibility with existing code - now with localStorage persistence
   const setPendingBookings = useCallback((updateFn: React.SetStateAction<Booking[]>) => {
     setAllBookings(current => {
       const nonPending = current.filter(b => b.status !== 'pending');
       const newPending = typeof updateFn === 'function' ? 
         updateFn(current.filter(b => b.status === 'pending')) : 
         updateFn;
-      return [...nonPending, ...newPending];
+      
+      // Persist pending bookings to localStorage
+      localStorage.setItem('pendingBookings', JSON.stringify(newPending));
+      
+      const updated = [...nonPending, ...newPending];
+      return updated;
     });
   }, []);
 
@@ -140,7 +151,15 @@ export const useUnifiedBookings = (statusFilter?: string[]): UnifiedBookingsRetu
       const newConfirmed = typeof updateFn === 'function' ? 
         updateFn(current.filter(b => b.status !== 'pending')) : 
         updateFn;
-      return [...pending, ...newConfirmed];
+      
+      // Persist confirmed bookings to localStorage
+      localStorage.setItem('confirmedBookings', JSON.stringify(newConfirmed));
+      
+      // Also update planner calendar bookings
+      localStorage.setItem('plannerCalendarBookings', JSON.stringify(newConfirmed));
+      
+      const updated = [...pending, ...newConfirmed];
+      return updated;
     });
   }, []);
 

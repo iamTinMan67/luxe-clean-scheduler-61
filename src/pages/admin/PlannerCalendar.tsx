@@ -8,14 +8,7 @@ import CalendarHeader from "@/components/planner/CalendarHeader";
 import PlannerContent from "@/components/planner/PlannerContent";
 
 const PlannerCalendar = () => {
-  // Force re-render on mount to ensure latest data is loaded
-  const [key, setKey] = useState(0);
-
-  useEffect(() => {
-    // This will force the component to re-render on mount
-    // which will reload all bookings from localStorage
-    setKey(prev => prev + 1);
-  }, []);
+  // No longer need force re-render hack - unified bookings handle state properly
 
   const {
     date,
@@ -37,7 +30,7 @@ const PlannerCalendar = () => {
   } = usePlannerCalendar();
 
   return (
-    <div className="min-h-screen bg-black pb-16" key={key}>
+    <div className="min-h-screen bg-black pb-16">
       <section className="relative py-8">
         <div className="container mx-auto px-4">
           <div className="flex items-center mb-8">

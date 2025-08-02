@@ -10,7 +10,7 @@ export const useBookingManagement = (
   confirmedBookings: Booking[],
   setConfirmedBookings: React.Dispatch<React.SetStateAction<Booking[]>>
 ) => {
-  // Function to confirm a booking
+  // Function to confirm a booking - now using unified state management
   const handleConfirmBooking = async (bookingId: string, selectedStaff: string[] = ['Karl', 'Salleah'], travelMinutes: number = 15) => {
     // Find the booking to confirm
     const bookingToConfirm = pendingBookings.find(booking => booking.id === bookingId);
@@ -28,26 +28,9 @@ export const useBookingManagement = (
       travelMinutes
     };
     
-    // Update localStorage first
-    const updatedPendingBookings = pendingBookings.filter(booking => booking.id !== bookingId);
-    setPendingBookings(updatedPendingBookings);
-    
-    const updatedConfirmedBookings = [...confirmedBookings, confirmedBooking];
-    setConfirmedBookings(updatedConfirmedBookings);
-    
-    // Save to localStorage
-    localStorage.setItem('pendingBookings', JSON.stringify(updatedPendingBookings));
-    localStorage.setItem('confirmedBookings', JSON.stringify(updatedConfirmedBookings));
-    
-    // Update planner calendar bookings as well
-    const existingPlannerBookings = localStorage.getItem('plannerCalendarBookings') 
-      ? JSON.parse(localStorage.getItem('plannerCalendarBookings') || '[]') 
-      : [];
-    
-    localStorage.setItem('plannerCalendarBookings', JSON.stringify([
-      ...existingPlannerBookings,
-      confirmedBooking
-    ]));
+    // Use unified state setters - they now handle localStorage persistence
+    setPendingBookings(current => current.filter(booking => booking.id !== bookingId));
+    setConfirmedBookings(current => [...current, confirmedBooking]);
     
     // Sync to Supabase
     try {
@@ -69,9 +52,9 @@ export const useBookingManagement = (
     toast.success(`${confirmedBooking.packageType} Package confirmed successfully for ${confirmedBooking.customer} (ID: ${confirmedBooking.id})`);
   };
   
-  // Function to cancel a booking
+  // Function to cancel a booking - now using unified state management
   const handleCancelBooking = async (bookingId: string) => {
-    // Update the booking status to cancelled
+    // Find the booking to cancel
     const bookingToCancel = pendingBookings.find(booking => booking.id === bookingId);
     
     if (!bookingToCancel) {
@@ -85,13 +68,10 @@ export const useBookingManagement = (
       status: "cancelled"
     };
     
-    // Update localStorage
-    const updatedPendingBookings = pendingBookings.filter(booking => booking.id !== bookingId);
-    setPendingBookings(updatedPendingBookings);
+    // Use unified state setter - it now handles localStorage persistence
+    setPendingBookings(current => current.filter(booking => booking.id !== bookingId));
     
-    localStorage.setItem('pendingBookings', JSON.stringify(updatedPendingBookings));
-    
-    // Store cancelled bookings separately if needed
+    // Store cancelled bookings separately
     const cancelledBookings = localStorage.getItem('cancelledBookings') 
       ? JSON.parse(localStorage.getItem('cancelledBookings') || '[]') 
       : [];
