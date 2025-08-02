@@ -163,7 +163,11 @@ const DailyPlanner: React.FC<DailyPlannerProps> = ({
                                     {booking.vehicleReg}
                                   </Badge>
                                 )}
-                                <Badge className={`mt-1 text-xs ${booking.status === "confirmed" ? "bg-green-900/60 text-green-300" : "bg-amber-900/60 text-amber-300"}`}>
+                                <Badge className={`mt-1 text-xs ${
+                                  booking.status === "confirmed" ? "bg-green-900/60 text-green-300" : 
+                                  booking.status === "pending" ? "bg-orange-900/60 text-orange-300 border border-orange-500" :
+                                  "bg-amber-900/60 text-amber-300"
+                                }`}>
                                   {booking.status}
                                 </Badge>
                                 {booking.staff && booking.staff.length > 0 && (

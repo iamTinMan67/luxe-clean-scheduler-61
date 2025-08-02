@@ -16,15 +16,15 @@ export const useScheduleFiltering = (
     return isSameDayDate(bookingDate, date);
   });
   
-  // Get schedule for the selected view - ONLY include confirmed bookings (exclude pending)
+  // Get schedule for the selected view - include both confirmed AND pending bookings
   const getSchedule = () => {
     const daysToShow = getDaysForView(date, view);
     
     return daysToShow.map(day => {
-      const dayBookings = confirmedBookings.filter(booking => {
-        // Only show non-pending bookings in the schedule
-        if (booking.status === 'pending') return false;
-        
+      // Combine both confirmed and pending bookings for the schedule
+      const allBookingsForDay = [...confirmedBookings, ...pendingBookings];
+      
+      const dayBookings = allBookingsForDay.filter(booking => {
         // Ensure booking.date is a Date object before comparing
         const bookingDate = booking.date instanceof Date ? booking.date : new Date(booking.date);
         return isSameDayDate(bookingDate, day);

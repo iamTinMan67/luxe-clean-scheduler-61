@@ -96,7 +96,7 @@ export const useBookingManagement = (
   const getBookingBackground = (booking: Booking) => {
     switch (booking.status) {
       case "pending":
-        return "border-amber-500 bg-amber-950/30";
+        return "border-orange-500 bg-orange-950/30 border-2 shadow-lg";
       case "confirmed":
         return "border-green-500 bg-green-950/30";
       case "in-progress":
